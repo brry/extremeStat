@@ -1,0 +1,70 @@
+
+This Log of changes in my package extremeStat contains two sections:
+1. future development - a list of things I want to change
+2. development over time - a log of the changes I already made
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+1. extremeStat - future development
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+remove rainbow2 from this package after the next update of berryFunctions
+
+- distLplot:
+# support region lo and hi by supdist after next lmomco update
+# DESCRIPTION Depends on lmomco > x.x.x (version that includes supdist)
+
+- distLextreme: 
+# Include Bootstrapping with user-specified proportion left out
+# add R2/RMSE for cdf, weib and gring to output
+# add weights to output
+
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+2. extremeStat - development over time
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+
+Version 0.2 (2014-09-22)
+First version submitted to CRAN
+Documentation slightly refined here and there
+changed all "cat" to "message"
+added datname element in dlf, used for main and xlab in all suitable plots
+
+- distLplot:
+# log=TRUE now works properly, as it just draws logAxis
+# logargs argument added
+# PDF lines now truncated to support region of distribution
+# plots with xlim outside of support region now possible without error
+# new default for color vector
+# density plot now with lim0
+# if(percentline), a vartical dashed line at gofProp is drawn
+
+- distLgof:
+# plot default is now TRUE
+
+- distLfit
+#distLgof is now explicitly called with plot=FALSE
+
+- distLgofplot:
+# received a bunch of graphic arguments
+# 'order' and 'add' arguments added
+
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+
+Version 0.1 (2014-09-15)
+Initial build with the functions:
+distLextreme (replacing berryFunctions::extremeStatLmom)
+distLfit
+distLplot
+distLgof
+distLgofplot
