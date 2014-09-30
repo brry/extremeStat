@@ -1,10 +1,10 @@
 Package: extremeStat
 Type: Package
 Title: Extreme Value Statistics on a Linear Scale
-Version: 0.2.3
-Date: 2014-09-25
-Imports: lmomco, berryFunctions
-Suggests: pbapply, extRemes
+Version: 0.3
+Date: 2014-09-30
+Imports: lmomco
+Suggests: pbapply, extRemes, berryFunctions
 Author: Berry Boessenkool
 Maintainer: Berry Boessenkool <berry-b@gmx.de>
 Description: Fit, plot and compare several (extreme value) distributions by means of a plot with return periods on a linear scale

@@ -62,7 +62,7 @@ annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81
 48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
 
 # Basic examples
-library(lmomco, berryFunctions)
+library(lmomco)
 dle <- distLextreme(annMax)
 str(dle, max.lev=2)
 dle$returnlev
@@ -74,7 +74,7 @@ sort(Q80[,1], decr=TRUE)
 
 \dontrun{
 # compare with other packages:
-library2(extRemes)
+library(extRemes)
 plot(fevd(annMax))
 par(mfrow=c(1,1))
 return.level(fevd(annMax, type="GEV")) # "GP", "PP", "Gumbel", "Exponential"
