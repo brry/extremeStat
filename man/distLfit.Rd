@@ -2,12 +2,13 @@
 \alias{distLfit}
 \title{Fit distributions via linear moments}
 \description{Fit several distributions via linear moments, plot histogram and distribution densities \emph{or} ecdf with cumulated probability.}
-\usage{distLfit(dat, datname, speed=TRUE, selection, gofProp=1, gofComp=FALSE, progbars=TRUE,
+\usage{distLfit(dat, datname, speed=TRUE, ks=TRUE, selection, gofProp=1, gofComp=FALSE, progbars=TRUE,
 time=TRUE, plot=TRUE, cdf=FALSE, legargs=NULL, histargs=NULL, ... )}
 \arguments{
   \item{dat}{Vector with values}
   \item{datname}{Character string for main, xlab etc. DEFAULT: internal \code{substitute(dat)}}
   \item{speed}{If TRUE, several distributions are omitted, for the reasons shown in \code{\link[lmomco]{dist.list}()}. DEFAULT: TRUE}
+  \item{ks}{Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. DEFAULT: TRUE}
   \item{selection}{Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}. Overrides speed.}
   \item{gofProp}{Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1}
   \item{gofComp}{If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE. DEFAULT: FALSE}

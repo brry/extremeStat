@@ -18,8 +18,12 @@ lty <- rep(lty, length=3)
 # Objects from list:
 gof <- dlf$gof
 gofProp <- dlf$gofProp
+# catch ks=FALSE results:
+ks <- "ksP" %in% colnames(gof)
+if(!ks) warning("This result from distLgof with ks=FALSE ignores ks ranks.")
 # Ranks:
-Ranks <- cbind(rank(gof$RMSE), rank(-gof$R2), rank(-gof$ksP), rank(gof$ksD))
+Ranks <- cbind(rank(gof$RMSE), rank(-gof$R2))
+if(ks) Ranks <- cbind(Ranks, rank(-gof$ksP), rank(gof$ksD))
 rownames(Ranks) <- rownames(gof)
 if(order) Ranks <- Ranks[ order(Ranks[,1],     decreasing=TRUE) , ]  #order(rowMeans(Ranks)
 else      Ranks <- Ranks[ order(rownames(gof), decreasing=TRUE) , ]
@@ -32,7 +36,8 @@ if(!add) plot(Ranks[,1], 1:n, type="n", ylab="", xlab="Rank", yaxt="n", main=mai
 if(!add) axis(2, 1:n, rownames(Ranks), las=2)
 lines(Ranks[,1], 1:n, type=type, col=col[1], pch=pch[1], lty=lty[1])
 lines(Ranks[,2], 1:n, type=type, col=col[2], pch=pch[2], lty=lty[2])
+if(ks)
 lines(Ranks[,4], 1:n, type=type, col=col[3], pch=pch[3], lty=lty[3])
 abline(h=n-nbest+0.5)
-legend("bottomleft", c("RMSE","R2","ks.test"), lty=lty, col=col, pch=pch)
+legend("bottomleft", c("RMSE","R2",if(ks)"ks.test"), lty=lty, col=col, pch=pch)
 } # end of function

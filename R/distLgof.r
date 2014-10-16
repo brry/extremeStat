@@ -7,8 +7,11 @@ distLgof <- function(
 dlf, # List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, gofProp, parameter}
 gofProp, # Overrides value in list. Proportion of highest values in \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
 plot=TRUE, # Call \code{\link{distLgofplot}}?
-progbars=TRUE) # Show progress bars for each loop?
+progbars=TRUE, # Show progress bars for each loop?
+ks=TRUE # Include ks.test results in dlf$gof? Computing is much faster when FALSE
+)
 {
+#browser()
 # Progress bars
 if( require(pbapply,quietly=TRUE) & progbars ) lapply <- pbapply::pblapply
 # Objects from list:
@@ -20,16 +23,20 @@ dn <- names(parameter)
 # Error check:
 exclude <- sapply(parameter, function(x) if(!is.null(x)) any(is.na(x$para)) else TRUE)
 if(any(exclude))
-  {warning("distLgof: The following distributions were excluded since no parameters were estimated:\n",
+  {warning("The following distributions were excluded since no parameters were estimated:\n",
              paste(dn[exclude], collapse=", "))
   dn <- dn[!exclude]
+  parameter <- parameter[!exclude] # not sure whether this is always good...
   }
-# Kolmogorov-Smirnov test:
-if(progbars) print("performing ks.test:")
-ks <- lapply(dn, function(d) ks.test(dat, paste0("cdf",d), parameter[[d]]) )
-ksP <- sapply(ks, function(x) x$p.value   )
-ksD <- sapply(ks, function(x) x$statistic )
-names(ksD) <- dn
+if(ks)
+  {
+  # Kolmogorov-Smirnov test:
+  if(progbars) print("performing ks.test:")
+  ks <- lapply(dn, function(d) ks.test(dat, paste0("cdf",d), parameter[[d]]) )
+  ksP <- sapply(ks, function(x) x$p.value   )
+  ksD <- sapply(ks, function(x) x$statistic )
+  names(ksD) <- dn
+  }
 # CDFS for R2 on upper gofProp of data:
 dat2 <- sort(dat, decreasing=TRUE)[  1:(gofProp*length(dat))  ]
 if(progbars) print("calculating CDFs:")
@@ -41,9 +48,10 @@ if( require(pbapply) & progbars ) sapply <- pbapply::pbsapply
 if(progbars) print("calculating RMSE:")
 RMSE <- sapply(dn, function(d)    rmse(tcdfs[[d]], ecdfs))
 if(progbars) print("calculating R2:")
-R2   <- sapply(dn, function(d) rsquare(tcdfs[[d]], ecdfs ))
+R2   <- sapply(dn, function(d) rsquare(tcdfs[[d]], ecdfs, quiet=TRUE))
 # All into one data.frame:
-gof <- data.frame(RMSE=RMSE, R2=R2, ksP=ksP, ksD=ksD)
+gof <- data.frame(RMSE=RMSE, R2=R2)
+if(ks) {gof$ksP=ksP; gof$ksD=ksD}
 # order by GOF:
 gof <- gof[ order(gof$RMSE), ]  # -gof$R2 # which measure should I sort by?
 # output:

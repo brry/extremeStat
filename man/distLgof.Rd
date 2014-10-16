@@ -2,15 +2,17 @@
 \alias{distLgof}
 \title{quality of distribution fits}
 \description{calculate goodness of fit for several distributions, plot rank comparison.}
-\usage{distLgof(dlf, gofProp, plot=TRUE, progbars=TRUE)}
+\usage{distLgof(dlf, gofProp, plot=TRUE, progbars=TRUE, ks=TRUE)}
 \arguments{
   \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, gofProp, parameter}}
   \item{gofProp}{Overrides value in list. Proportion (0:1) of highest values in \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail}
   \item{plot}{Call \code{\link{distLgofplot}}? DEFAULT: TRUE}
   \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE)}
+  \item{ks}{Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. distLgofplot does not run on the result. DEFAULT: TRUE}
 }
 \value{List as explained in \code{\link{extremeStat}}. The added element is gof, a data.frame the root mean square error (RMSE) and R squared (R2) for the top \code{gofProp} of \code{dat}, as well as the p and D values from a simple \code{\link{ks.test}} for each distribution function.}
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014}
+\note{If you get the warning \code{In rmse(tcdfs[[d]], ecdfs) :  NAs were omitted from  data points.}, this probably means that the support of some of the fitted distributions do not span the whole data range. Instead the outside support regions get NAs that are then detected by rmse and rsquare (only rmse shows the warnings, as they are redundant).}
 \seealso{\code{\link{distLgofplot}}, \code{\link{distLfit}}. More complex estimates of quality of fits: \url{http://chjs.soche.cl/papers/vol4n1_2013/ChJS-04-01-04.pdf} }
 \examples{
 require(lmomco)
