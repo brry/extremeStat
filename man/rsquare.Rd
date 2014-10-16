@@ -2,10 +2,11 @@
 \alias{rsquare}
 \title{R squared}
 \description{R squared (coefficient of determination)}
-\usage{rsquare(a,b)}
+\usage{rsquare(a,b, quiet=FALSE)}
 \arguments{
   \item{a}{Vector with values.}
   \item{b}{Another vector of the same length.}
+  \item{quiet}{Should NA-removal warnings be suppressed? Helpful within functions. DEFAULT: FALSE}
 }
 \details{Formula used: \code{\link{cor}(a,b)^2}}
 \value{Numeric.}

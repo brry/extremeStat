@@ -2,10 +2,11 @@
 \alias{rmse}
 \title{Root Mean Squared Error}
 \description{Root Mean Squared Error}
-\usage{rmse(a,b)}
+\usage{rmse(a,b, quiet=FALSE)}
 \arguments{
   \item{a}{Vector with values.}
   \item{b}{Another vector of the same length.}
+  \item{quiet}{Should NA-removal warnings be suppressed? Helpful within functions. DEFAULT: FALSE}
 }
 \details{Formula used: \code{sqrt( sum((a-b)^2)/length(b) )}}
 \value{Numeric.}

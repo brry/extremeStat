@@ -1,13 +1,14 @@
 rsquare <- function(
                     a,
-                    b)
+                    b,
+                    quiet=FALSE)
 {
 if(!(is.vector(a) & is.vector(b))) stop("input is not vectors")
 if(length(a) != length(b)) stop("vectors not of equal length")
 if(any(is.na(a)|is.na(b)))
      {
      Na <- which(is.na(a)|is.na(b))
-     warning(length(Na), " NAs were omitted from ", length(a), " data points.")
+     if(!quiet) warning(length(Na), " NAs were omitted from ", length(a), " data points.")
      a <- a[-Na] ; b <- b[-Na]
      } # end if NA
 cor(a,b)^2

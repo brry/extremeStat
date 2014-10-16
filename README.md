@@ -17,3 +17,4 @@ install_github("BerryBoessenkool/extremeStat")
 library(extremeStat)
 
 ?extremeStat
+

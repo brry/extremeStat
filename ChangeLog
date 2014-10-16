@@ -21,6 +21,10 @@ depend on berryFunctions again?
 # add R2/RMSE for cdf, PPweib and PPgring to output
 # add weights to output
 
+- distLgof:
+# does not actually show warning when distributions are excluded. Why not?
+# replace NA removal warnings in rmse with useful error message
+
 
 
 ----------------------------------------------------------------------
