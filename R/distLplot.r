@@ -16,7 +16,8 @@ ylim,                   # \code{\link{hist}} or \code{\link{ecdf}} ylim
 xaxs="i", yaxs="i",     # \code{\link{hist}} or \code{\link{ecdf}} xaxs and yaxs. DEFAULT: both "i"
 xaxt,                   # \code{\link{par}} xaxt. "n" suppresses axis and numbers, which is used if log
 col="grey",             # \code{\link{hist}} bar color or \code{\link{ecdf}} point color
-main, xlab,             # \code{\link{hist}} or \code{\link{ecdf}} main, xlab
+main, xlab, ylab,       # \code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab
+las=1,                  # Label Axis Style for orientation of numbers along axes.
 coldist=rainbow2(nbest),# Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow2
 add=FALSE,              # If TRUE, hist is not called before adding lines. This lets you add lines highly customized one by one
 logargs=NULL,           # List of arguments passed to \code{\link{logAxis}} if \code{log=TRUE}
@@ -38,15 +39,15 @@ if(nbest > nrow(gof)) {nbest <- nrow(gof)}
 # internal defaults:
 if(missing(xaxt)       ) xaxt <- if(log) "n" else "s"
 if(missing(xlab)       ) xlab <- dlf$datname
-if(missing(main) & !cdf) main <- paste("Density distributions of", dlf$datname)
-if(missing(main) & cdf ) main <- paste("Cumulated density distributions of", dlf$datname)
 # draw histogram or ecdf
 if(!add)
   if(cdf)
   {
   if(missing(ylim)) ylim <- c(0,1)
-  ecdfdef <- list(x=ecdf(dat), col=col, xlim=xlim, xaxt=xaxt,
-             ylim=ylim, xaxs=xaxs, yaxs=yaxs, main=main, xlab=xlab)
+  if(missing(ylab)) ylab <- "(Empirical) Cumulated Density (CDF)"
+  if(missing(main)) main <- paste("Cumulated density distributions of", dlf$datname)
+  ecdfdef <- list(x=ecdf(dat), col=col, xlim=xlim, xaxt=xaxt, ylab=ylab,
+             ylim=ylim, xaxs=xaxs, yaxs=yaxs, main=main, xlab=xlab, las=las)
   do.call(plot, args=owa(ecdfdef, histargs, c("x", "y")))
   if(log)
     {do.call(logAxis, args=owa(list(from=dat, xaxt="s"), logargs))
@@ -57,9 +58,11 @@ if(!add)
   {
   if(missing(ylim)) ylim <- lim0(hist(dat, breaks=breaks, plot=FALSE)$density,
                                   curtail=if(yaxs=="i") FALSE else TRUE)
+  if(missing(ylab)) ylab <- "Probability Density Function (PDF)"
+  if(missing(main)) main <- paste("Density distributions of", dlf$datname)
   op <- par(xaxs=xaxs, yaxs=yaxs, xaxt=xaxt)
-  histdef <- list(x=dat, breaks=breaks, col=col, xlim=xlim, ylim=ylim,
-                  freq=FALSE, main=main, xlab=xlab)
+  histdef <- list(x=dat, breaks=breaks, col=col, xlim=xlim, ylim=ylim, ylab=ylab,
+                  freq=FALSE, main=main, xlab=xlab, las=las)
   do.call(hist, args=owa(histdef, histargs, c("x", "freq")))
   if(log)
     {do.call(logAxis, args=owa(list(from=dat, xaxt="s"), logargs))
