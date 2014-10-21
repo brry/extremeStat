@@ -5,9 +5,9 @@
 Fits several distributions based on linear moments, calculate return levels for given return periods.
 Plots distributions and adds plotting positions by Weibull and Gringorton.
 }
-\usage{distLextreme(dat, datname, dlf, RPs=c(2,5,10,20,50), speed=TRUE, selection, gofProp=1,
-progbars=TRUE, plot=TRUE, add=FALSE, nbest=5, xlim, ylim, las=1,
-main=datname, xlab="Return Period RP  [a]",
+\usage{distLextreme(dat, datname, dlf, RPs=c(2,5,10,20,50), speed=TRUE, ks=TRUE,
+selection, gofProp=1, progbars=TRUE, plot=TRUE, add=FALSE, nbest=5, xlim, ylim,
+las=1, main=datname, xlab="Return Period RP  [a]",
 ylab="Discharge HQ  [m^3/s]", col="black", pch=c(16,3), cex=1,
 coldist=rainbow2(nbest), lwd=1, legargs=NULL, ... )}
 \arguments{
@@ -16,6 +16,7 @@ coldist=rainbow2(nbest), lwd=1, legargs=NULL, ... )}
   \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}. Overrides dat!}
   \item{RPs}{ReturnPeriods for which discharge is estimated. DEFAULT: c(2,5,10,20,50)}
   \item{speed}{If TRUE, several computationally intensive time consuming distributions are omitted, for the reasons shown in \code{\link[lmomco]{dist.list}()}. DEFAULT: TRUE}
+  \item{ks}{Include ks.test results in \code{dlf$gof}? Computing is much faster on big datasets when FALSE. DEFAULT: TRUE}
   \item{selection}{Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}. Overrides nbest}
   \item{gofProp}{Upper proportion of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1}
   \item{progbars}{Show progress bars for each loop and \code{\link{message}} execution time? DEFAULT: TRUE}

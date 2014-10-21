@@ -4,7 +4,7 @@
 \description{plot histogram and distribution densities \emph{or} ecdf with cumulated probability}
 \usage{distLplot(dlf, nbest=5, selection, cdf=FALSE, log=FALSE, percentline=NA, supportends=TRUE,
 breaks=20, xlim=extendrange(dat, f=0.15), ylim, xaxs="i", yaxs="i", xaxt, col="grey",
-main, xlab, coldist=rainbow2(nbest), add=FALSE,
+main, xlab, ylab, las=1, coldist=rainbow2(nbest), add=FALSE,
 logargs=NULL, legargs=NULL, histargs=NULL, ... )}
 \arguments{
   \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, parameter, gof}}
@@ -20,7 +20,8 @@ logargs=NULL, legargs=NULL, histargs=NULL, ... )}
   \item{xaxs, yaxs}{\code{\link{hist}} or \code{\link{ecdf}} xaxs and yaxs. DEFAULT: both "i"}
   \item{xaxt}{\code{\link{par}} xaxt. "n" suppresses axis and numbers, which is used if log.}
   \item{col}{\code{\link{hist}} bar color or \code{\link{ecdf}} point color. DEFAULT: "grey"}
-  \item{main, xlab}{\code{\link{hist}} or \code{\link{ecdf}} main, xlab. DEFAULT: internal abstraction fom \code{dlf$datname}}
+  \item{main, xlab, ylab}{\code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab. DEFAULT: internal abstraction fom \code{dlf$datname}}
+  \item{las}{Label Axis Style for orientation of numbers along axes. DEFAULT: 1}
   \item{coldist}{Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow2(nbest)}
   \item{add}{If TRUE, hist is not called before adding lines. This lets you add lines highly customized one by one. DEFAULT: FALSE}
   \item{logargs}{List of arguments passed to \code{\link{logAxis}} if \code{log=TRUE}. DEFAULT: NULL}

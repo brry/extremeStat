@@ -11,6 +11,7 @@ datname,      # Character string for main and output list.
 dlf,          # List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}. Overrides dat!
 RPs=c(2,5,10,20,50), # ReturnPeriods for which discharge is estimated
 speed=TRUE,   # If TRUE, several computationally intensive time consuming distributions are omitted, for the reasons shown in \code{\link[lmomco]{dist.list()}}
+ks=TRUE,      # Include ks.test results in dlf$gof? Computing is much faster when FALSE
 selection,    # Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}
 gofProp=1,    # Upper proportion of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
 progbars=TRUE,# Show progress bars for each loop and \code{\link{message}} execution time?
@@ -45,7 +46,7 @@ coldist <- rep(coldist, length=nbest)
 ###require(berryFunctions) # for rsquare, RMSE, logAxis,
 #
 # fit distributions and calculate goodness of fits -----------------------------
-if( missing(dlf) )  dlf <- distLfit(dat=dat, datname=datname, speed=speed,
+if( missing(dlf) )  dlf <- distLfit(dat=dat, datname=datname, speed=speed, ks=ks,
        selection=selection, gofProp=gofProp, progbars=progbars, plot=FALSE, time=FALSE)
 output <- dlf
 # objects from the list

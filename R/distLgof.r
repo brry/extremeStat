@@ -32,9 +32,9 @@ if(ks)
   {
   # Kolmogorov-Smirnov test:
   if(progbars) print("performing ks.test:")
-  ks <- lapply(dn, function(d) ks.test(dat, paste0("cdf",d), parameter[[d]]) )
-  ksP <- sapply(ks, function(x) x$p.value   )
-  ksD <- sapply(ks, function(x) x$statistic )
+  ksA <- lapply(dn, function(d) ks.test(dat, paste0("cdf",d), parameter[[d]]) )
+  ksP <- sapply(ksA, function(x) x$p.value   )
+  ksD <- sapply(ksA, function(x) x$statistic )
   names(ksD) <- dn
   }
 # CDFS for R2 on upper gofProp of data:

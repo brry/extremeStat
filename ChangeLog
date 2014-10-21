@@ -33,6 +33,16 @@ depend on berryFunctions again?
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 
+
+Version 0.4 (2014-)
+distLgof now has ks argument
+distLplot now has las and ylab arguments
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+
 Version 0.3 (2014-09-30)
 independent from berryFunctions now.
 Thus I included lim0, logAxis, logVals, owa, rainbow2, rmse, rsquare
