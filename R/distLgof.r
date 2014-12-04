@@ -8,7 +8,8 @@ dlf, # List as returned by \code{\link{distLfit}}, containing the elements \code
 gofProp, # Overrides value in list. Proportion of highest values in \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
 plot=TRUE, # Call \code{\link{distLgofplot}}?
 progbars=TRUE, # Show progress bars for each loop?
-ks=TRUE # Include ks.test results in dlf$gof? Computing is much faster when FALSE
+ks=TRUE, # Include ks.test results in dlf$gof? Computing is much faster when FALSE
+quiet=FALSE  # Should \code{\link{rmse}} warn about NA removal?
 )
 {
 #browser()
@@ -46,7 +47,7 @@ ecdfs <- ecdf(dat)(dat2) # Empirical CDF
 # Root Mean Square Error, R squared:
 if( require(pbapply) & progbars ) sapply <- pbapply::pbsapply
 if(progbars) print("calculating RMSE:")
-RMSE <- sapply(dn, function(d)    rmse(tcdfs[[d]], ecdfs))
+RMSE <- sapply(dn, function(d)    rmse(tcdfs[[d]], ecdfs, quiet=quiet))
 if(progbars) print("calculating R2:")
 R2   <- sapply(dn, function(d) rsquare(tcdfs[[d]], ecdfs, quiet=TRUE))
 # All into one data.frame:

@@ -16,6 +16,7 @@ plot=TRUE,    # Should a histogram with densities be plotted?
 cdf=FALSE,    # If TRUE, plot cumulated DF instead of probability density
 legargs=NULL, # List of arguments passed to \code{\link{legend}} except for legend and col
 histargs=NULL,# List of arguments passed to \code{\link{hist}} except for x, breaks, col, xlim, freq
+quiet=FALSE,  # Should \code{\link{rmse}} warn about NA removal?
 ... )         # Further arguments passed to \code{\link{distLplot}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...
 {
 # preparation ------------------------------------------------------------------
@@ -61,7 +62,7 @@ if( length(parameter) != length(dn))
 else names(parameter) <- dn
 # Goodness of Fit, output list, plot -------------------------------------------
 output <- distLgof(list(dat=dat, datname=datname, gofProp=gofProp, parameter=parameter),
-                   plot=FALSE, progbars=progbars, ks=ks)
+                   plot=FALSE, progbars=progbars, ks=ks, quiet=quiet)
 # compare GOF
 if(gofComp)
   {
