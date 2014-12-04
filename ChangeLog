@@ -34,9 +34,12 @@ depend on berryFunctions again?
 ----------------------------------------------------------------------
 
 
-Version 0.4 (2014-)
-distLgof now has ks argument
-distLplot now has las and ylab arguments
+Version 0.4 (2014-12-04)
+depends on berryFunctions again (maintaning functions twice is nonsense)
+- distLgof now has ks and quiet argument
+- distLplot now has las and ylab arguments
+- distLfit gained quiet argument
+
 
 
 ----------------------------------------------------------------------
