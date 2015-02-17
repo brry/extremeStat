@@ -32,7 +32,7 @@ if(any(exclude))
 if(ks)
   {
   # Kolmogorov-Smirnov test:
-  if(progbars) print("performing ks.test:")
+  if(progbars) message("performing ks.test:")
   ksA <- lapply(dn, function(d) ks.test(dat, paste0("cdf",d), parameter[[d]]) )
   ksP <- sapply(ksA, function(x) x$p.value   )
   ksD <- sapply(ksA, function(x) x$statistic )
@@ -40,15 +40,15 @@ if(ks)
   }
 # CDFS for R2 on upper gofProp of data:
 dat2 <- sort(dat, decreasing=TRUE)[  1:(gofProp*length(dat))  ]
-if(progbars) print("calculating CDFs:")
+if(progbars) message("calculating CDFs:")
 tcdfs <- lapply(dn, function(d) plmomco(dat2,parameter[[d]]))
 names(tcdfs) <- dn # Theoretical CumulatedDensityFunctions
 ecdfs <- ecdf(dat)(dat2) # Empirical CDF
 # Root Mean Square Error, R squared:
 if( require(pbapply) & progbars ) sapply <- pbapply::pbsapply
-if(progbars) print("calculating RMSE:")
+if(progbars) message("calculating RMSE:")
 RMSE <- sapply(dn, function(d)    rmse(tcdfs[[d]], ecdfs, quiet=quiet))
-if(progbars) print("calculating R2:")
+if(progbars) message("calculating R2:")
 R2   <- sapply(dn, function(d) rsquare(tcdfs[[d]], ecdfs, quiet=TRUE))
 # All into one data.frame:
 gof <- data.frame(RMSE=RMSE, R2=R2)
