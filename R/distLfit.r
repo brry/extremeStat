@@ -45,13 +45,14 @@ if( ! missing(selection) )
 else
 # remove some to save time and errors, see ?dist.list # gld added
 if(speed) dn <- dn[ ! dn %in%
-   c("aep4","cau","emu","gep","gld","kmu","kur","lmrq","sla","st3","texp")]
+   c("aep4","cau","emu","gep","gld","kmu","kur","lmrq","sla","st3","texp","tri")]
 #
 # Fit distribution parameters --------------------------------------------------
 # L-Moments of sample  # package lmomco
 mom <- lmoms(dat, nmom=5)
 # estimate parameters for each distribution:    # this takes time!
-if(progbars) print("Parameter estimation from linear moments:")
+if(progbars) message("Parameter estimation from linear moments:")
+browser()
 parameter <- lapply(dn, function(d) lmom2par(mom, type=d) )
 # error catching:
 if( length(parameter) != length(dn))
