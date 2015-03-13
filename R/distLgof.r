@@ -2,7 +2,6 @@
 # Berry Boessenkool, Sept 2014
 # calculate 'Goodness of Fit' measures in distLfit
 
-#
 distLgof <- function(
 dlf, # List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, gofProp, parameter}
 gofProp, # Overrides value in list. Proportion of highest values in \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
@@ -12,7 +11,6 @@ ks=TRUE, # Include ks.test results in dlf$gof? Computing is much faster when FAL
 quiet=FALSE  # Should \code{\link{rmse}} warn about NA removal?
 )
 {
-#browser()
 # Progress bars
 if( require(pbapply,quietly=TRUE) & progbars ) lapply <- pbapply::pblapply
 # Objects from list:
@@ -55,6 +53,20 @@ gof <- data.frame(RMSE=RMSE, R2=R2)
 if(ks) {gof$ksP=ksP; gof$ksD=ksD}
 # order by GOF:
 gof <- gof[ order(gof$RMSE), ]  # -gof$R2 # which measure should I sort by?
+# Weights for weighted average of return values:
+# Weight including all distributions
+gof$weight1 <- gof[,"RMSE"] # the lower, the better, the more weight
+gof$weight1 <- max(gof$weight1)-gof$weight1+min(gof$weight1)  # with min or mean added,
+gof$weight1 <- gof$weight1/sum(gof$weight1)  # the worst fit is not completely excluded
+# Exclude worst fit
+gof$weight2 <- gof[,"RMSE"]
+gof$weight2 <- max(gof$weight2)-gof$weight2
+gof$weight2 <- gof$weight2/sum(gof$weight2)
+# use only best half:
+gof$weight3 <- gof[,"RMSE"]
+gof$weight3 <- max(gof$weight3)-gof$weight3
+gof$weight3[(nrow(gof)/2):nrow(gof)] <- 0    # todo: test with selection length 1
+gof$weight3 <- gof$weight3/sum(gof$weight3)
 # output:
 output <- list(dat=dat, datname=dlf$datname, gofProp=gofProp, parameter=parameter, gof=gof)
 if(plot) distLgofplot(output)

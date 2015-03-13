@@ -5,7 +5,7 @@
 Fits several distributions based on linear moments, calculate return levels for given return periods.
 Plots distributions and adds plotting positions by Weibull and Gringorton.
 }
-\usage{distLextreme(dat, datname, dlf, RPs=c(2,5,10,20,50), speed=TRUE, ks=TRUE,
+\usage{distLextreme(dat, datname, dlf, RPs=c(2,5,10,20,50), speed=TRUE, ks=FALSE,
 selection, gofProp=1, progbars=TRUE, plot=TRUE, add=FALSE, nbest=5, xlim, ylim,
 las=1, main=datname, xlab="Return Period RP  [a]",
 ylab="Discharge HQ  [m^3/s]", col="black", pch=c(16,3), cex=1,
@@ -52,6 +52,7 @@ But if you care, go ahead and google "weibull vs gringorton plotting positions".
 Christoph Mudersbach: Untersuchungen zur Ermittlung von hydrologischen Bemessungsgroessen mit Verfahren der instationaeren Extremwertstatistik }
 \seealso{\code{\link{distLfit}}. \code{\link[extRemes]{fevd}} in the package \code{extRemes}.}
 \examples{
+# Data from river in Austria
 # Basic examples
 # Goodness of fit
 # 1. Measures for GOF
@@ -60,6 +61,7 @@ Christoph Mudersbach: Untersuchungen zur Ermittlung von hydrologischen Bemessung
 # 4. effect of data proportion used to estimate GOF
 
 library(lmomco)
+library(berryFunctions)
 
 # Data from river in Austria
 annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81.9,
@@ -68,8 +70,14 @@ annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81
 
 # Basic examples
 dle <- distLextreme(annMax)
+# Why do I not get the following warning in interactive mode?
+## calculating RMSE:
+## Warning in rmse(tcdfs[[d]], ecdfs, quiet = q
+##   7 NAs were omitted from 35 data points.
+  
 str(dle, max.lev=2)
 dle$returnlev
+distLprint(dle)
 
 # Estimate discharge that empirically could occur every 80 years:
 Q80 <- distLextreme(dlf=dle, RPs=80)$returnlev
@@ -79,13 +87,24 @@ round(sort(Q80[,1], decr=TRUE),1)
 # Line colors / selection distributions to be plotted:
 distLextremePlot(dlf=dle)
 distLextremePlot(dle, nbest=18, coldist=heat.colors(18))
-distLextremePlot(dle, selection=c("gev", "gam", "gum"), coldist=3:5)
+distLextremePlot(dle, selection=c("gev", "gam", "gum"), coldist=3:5, col=3)
+# Why do I not get the following warning in interactive mode?
+## Warning in if (is.na(dn)) stop("No distributions are left with selection ",  :
+## the condition has length > 1 and only the first element will be used
+
 distLextremePlot(dle, legarg=list(cex=0.5, x="bottom", box.col="red", col=3))
-# col is ignored
-distLextremePlot(dle, pch=c(1,NA))
+# col in legarg list is (correctly) ignored
+distLextremePlot(dle, pch=c(1,NA)) # only Weibull plotting positions
+# add different dataset to existing plot:
+distLextreme(Nile/15, add=TRUE, pch=NA, coldist=1, selection="wak", legend=FALSE)
+
+# Logarithmic axis
+distLextreme(Nile, log="x", xaxt="n", pch=NA, coldist=NA, legend=FALSE)
+logAxis(1)
+distLextreme(Nile, add=TRUE, legargs=c(bg="white"), nbest=8)
 
 \dontrun{
-# compare with other packages:
+# compare extremeStat with other packages:
 library(extRemes)
 plot(fevd(annMax))
 par(mfrow=c(1,1))
@@ -98,7 +117,7 @@ distLextreme(dlf=dle, RPs=c(2,20,100))$returnlev["gev",]
 
 # Goodness of fit
 # 1. Measures for GOF ---------------------------------------------
-# how well do the distributions fit the original data?
+# GOF: how well do the distributions fit the original data?
 pairs(dle$gof) # measures of goodness of fit are correlated quite well here.
 # apparently, it does not really matter which one is used.
 dle_nile <- distLextreme(Nile)
@@ -111,72 +130,74 @@ distLgof(dle, gofProp=0.8, plot=TRUE) # more in examples in ?distLgof
 par(mfrow=c(1,1))
 
 
+
 # 2. weights based on GOF -----------------------------------------
-# normalized Goodness of Fit:
-GF <- dle$gof[,"RMSE"] # the lower, the better, the more weight
-GF <- max(GF)-GF#+mean(GF) # with mean added, the worst fit is not completely excluded
-GF <- GF/sum(GF)
-names(GF) <- rownames(dle$gof)
-#
-GF1 <- dle$gof[,"RMSE"]
-GF1 <- max(GF1)-GF1+min(GF1)
-GF1 <- GF1/sum(GF1)
-#
-plot(sort(GF1, decr=TRUE), ylim=c(0, 0.1), type="o", xaxt="n", ylab="Weight",
+plot(dle$gof$weight1, ylim=c(0, 0.13), type="o", xaxt="n", ylab="Weight",
      las=1, xlab="Dist", main="Weight of distributions for average")
-lines(sort(GF, decr=TRUE), pch=3, col=2, type="o")
-axis(1, 1:18, names(sort(GF, decr=TRUE)), las=2)
-legend("bottomleft", c("max(r)-r + min(r)","max(r)-r"), col=1:2, pch=1:2, lty=1,
-       title="Weighted by RMSE (r)")
+lines(dle$gof$weight2, pch=2, col=2, type="o")
+lines(dle$gof$weight3, pch=3, col=3, type="o")
+lines(dle$gof$RMSE, col=4)
+text(1, dle$gof$RMSE[1], "RMSE", adj=c(0,-0.5), col=4)
+axis(1, 1:18, rownames(dle$gof), las=2)
+legend("topright", c("max(r)-r", "max(r)-r + min(r)", "first half"),
+       title="Weighted by RMSE (r)", col=1:3, pch=1:3, lty=1)
+
 
 
 # 3. weighted mean based on GOF -----------------------------------
-distLextreme(dlf=dle, nbest=18, coldist="grey")
+# Discharge estimated for 50 years return period, with weighted average:
+sum(dle$gof$weight1 * dle$returnlev[,"RP.50"]) # 114.9
+sum(dle$gof$weight2 * dle$returnlev[,"RP.50"]) # 115.3
+sum(dle$gof$weight3 * dle$returnlev[,"RP.50"]) # 115.9
+distLextremePlot(dle, nbest=18, legend=FALSE)
+abline(h=115.9, v=50)
+
+# across all RPs:
 # range of discharges:
 yval <- seq(from=par("usr")[3], to=par("usr")[4], length=200)
 # add weighted average of distributions:
-CDFs <- sapply(names(GF), function(d) plmomco(yval,dle$parameter[[d]]))
-head(round(CDFs*100), 20) # has NAs out of support region
-# remove those completely from weights
-GF[ apply(CDFs, 2, function(x) any(is.na(x)))  ]  <- 0
-GF <- GF/sum(GF)
-weightedMean <- colSums( apply(CDFs, 1, function(x) x*GF), na.rm=TRUE )
+CDFs <- sapply(rownames(dle$gof), function(d) plmomco(yval,dle$parameter[[d]]))
+weightedMean <- colSums( apply(CDFs, 1, function(x) x * dle$gof$weight3), na.rm=TRUE )
 lines(1/(1-weightedMean), yval, lwd=3)
 
-# Discharge estimated for 50 years return period, with weighted average:
-sum(GF * dle$returnlev[,"RP.50"]) # 115.7
-abline(h=115.6561, v=50, col=2)
+
+head(round(CDFs*100), 20) # gov has NAs out of support region
+# remove those completely from weights
+dle$gof$weight1[ apply(CDFs, 2, function(x) any(is.na(x)))  ]  <- 0
+dle$gof$weight1 <- dle$gof$weight1/sum(dle$gof$weight1)
+weightedMean <- colSums( apply(CDFs, 1, function(x) x * dle$gof$weight1), na.rm=TRUE )
+lines(1/(1-weightedMean), yval, lwd=3, col="orange") # not very different
+
 
 \dontrun{
 # 4. effect of data proportion used to estimate GOF ---------------
+# Discharge estimated for 50 years return period
 Goodness <- function(gofProp)
-{
-esannMax <- distLextreme(dlf=dle, gofProp=gofProp, plot=FALSE, progbars=FALSE)
-esannMax <- cbind(esannMax$returnlev, esannMax$gof)
-# normalized Goodness of Fit:
-GF <- esannMax[,"RMSE"] # the lower, the better, the more weight
-GF <- max(GF)-GF#+mean(GF) # with mean added, the worst fit is not completely excluded
-GF <- GF/sum(GF)           # plot(GF1, ylim=c(0, 0.1)); points(GF, pch=3)
+{ # ExtremeStatistics
+ES <- distLextreme(annMax, gofProp=gofProp, plot=FALSE, progbars=FALSE)
+ES <- cbind(ES$returnlev, ES$gof)
 # simple mean:              # plot(sort(GF))
-av_simple <- mean(esannMax[,"RP.50"])     # 116.8383
-# Discharge estimated for 50 years return period, bei weighted average:
-av_weight <- sum(GF * esannMax[,"RP.50"]) # 117.2784
-# mean of best 3 extreme value distribution functions:
-av_3best <- mean(esannMax[ order(esannMax[,"RMSE"])[1:3] , "RP.50"]) # 118.3722
+av_simple <- mean(ES[,"RP.50"])     # 114.0178  old: 116.8383
+# weighted average:
+av_weight <- sum(ES$weight2 * ES[,"RP.50"]) # 115.2842  old: 117.2784
+# mean of best 3 distribution functions:
+av_3best <- mean(ES[1:3, "RP.50"]) # 114.7579   old: 118.3722
 # most functions underestimate the discharge, if we assume that the weibull
 # PP method correctly calculates the return period of the highest value
 c(av_simple=av_simple, av_weight=av_weight, av_3best=av_3best)
 }
 
-Goodness(0.1)
+Goodness(1)
 Goodness(0.2)
-Proportion <- seq(0.05, 1, len=100)
-GoF <- sapply(Proportion, Goodness)
-plot(Proportion, GoF[3,], type="l")
+Proportion <- seq(0.05, 1, len=50)
+GoF <- sapply(Proportion, Goodness) # takes a while to compute
+plot(Proportion, GoF[3,], type="l", las=1)
 lines(Proportion, GoF[2,], col=2)
 lines(Proportion, GoF[1,], col=3)
-title(main="The proportion of the data included for calculating RMSE does not matter!")
-# but it did before, so there may be an error here
+legend("bottomright", col=1:3, lty=1,
+   legend=c("mean of 3 dists with lowest RMSE", "weighted average", "simple average"))
+title(main="The proportion of the data included\nfor calculating RMSE does matter!")
+
 }
 
 }

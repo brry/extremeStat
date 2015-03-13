@@ -16,15 +16,14 @@ This Log of changes in my package extremeStat contains two sections:
 
 - distLextreme: 
 # Include Bootstrapping with user-specified proportion left out
-# add R2/RMSE for cdf, PPweib and PPgring to output
-# add weights to output
+# add log argument
 
 - distLgof:
 # does not actually show warning when distributions are excluded. Why not?
 # replace NA removal warnings in rmse with useful error message
 
 - distLprint:
-# (or print method) for dlf objects to be created
+# possibly change to print method for dlf objects with personal class
 
 
 
@@ -37,8 +36,9 @@ This Log of changes in my package extremeStat contains two sections:
 
 Version 0.5 (2015--)
 - various small changes, see github commit log
+distLgof now returns weights by 3 different methods
 
-new function: installB, distLextremePlot
+new function: installB, distLextremePlot, distLprint
 
 
 

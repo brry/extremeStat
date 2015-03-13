@@ -11,7 +11,7 @@ datname,      # Character string for main and output list.
 dlf,          # List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}. Overrides dat!
 RPs=c(2,5,10,20,50), # ReturnPeriods for which discharge is estimated
 speed=TRUE,   # If TRUE, several computationally intensive time consuming distributions are omitted, for the reasons shown in \code{\link[lmomco]{dist.list()}}
-ks=TRUE,      # Include ks.test results in dlf$gof? Computing is much faster when FALSE
+ks=FALSE,     # Include ks.test results in dlf$gof? Computing is much faster when FALSE
 selection=NULL, # Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}
 gofProp=1,    # Upper proportion of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
 progbars=TRUE,# Show progress bars for each loop and \code{\link{message}} execution time?
@@ -52,9 +52,12 @@ dat <- output$dat; parameter <- output$parameter;  gof <- output$gof
 # remove NAs, convert to vector:
 dat <- as.numeric( dat[!is.na(dat)]  )
 # plot -------------------------------------------------------------------------
-if(plot) do.call(distLextremePlot, args=list(dlf=dlf, selection=selection, add=add, nbest=nbest,
+###if(plot) do.call(distLextremePlot, args=list(dlf=dlf, selection=selection, add=add, nbest=nbest,
+###    xlim=xlim, ylim=ylim, las=las, main=main, xlab=xlab, ylab=ylab, col=col,
+###    pch=pch, cex=cex, coldist=coldist, lwd=lwd, legend=legend, legargs=legargs, linargs=linargs, ...))
+if(plot) output <- distLextremePlot(dlf=dlf, selection=selection, add=add, nbest=nbest,   # output <-
     xlim=xlim, ylim=ylim, las=las, main=main, xlab=xlab, ylab=ylab, col=col,
-    pch=pch, cex=cex, coldist=coldist, lwd=lwd, legend=legend, legargs=legargs, linargs=linargs, ...))
+    pch=pch, cex=cex, coldist=coldist, lwd=lwd, legend=legend, legargs=legargs, linargs=linargs, ...)
 # output (discharge) values at return periods ----------------------------------
 dn <- rownames(gof) # distribution names
 if( require(pbapply,quietly=TRUE) & progbars ) sapply <- pbapply::pbsapply
@@ -72,21 +75,3 @@ output$returnlev <- as.data.frame(returnlev)
 if(progbars) message("execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.\n")
 return(invisible(output))
 } # end of function
-
-
-
-# old call to fitting. May save a little calculation time sometimes, but is confusing.
-if(FALSE)
-{
-# fit distributions and calculate goodness of fits -----------------------------
-if(  missing(dlf) & missing(gofProp)  )
-   dlf <- distLfit(dat=dat, datname=datname, speed=speed, selection=selection, gofProp=gofProp,
-                   progbars=progbars, plot=FALSE, time=FALSE)
-if( !missing(selection)  )
-   dlf <- distLfit(dat=dat, datname=datname, speed=speed, selection=selection, gofProp=gofProp,
-                   progbars=progbars, plot=FALSE, time=FALSE)
-output <- dlf
-# save parameter estimation time if dlf is given, but gofProp also:
-if(!missing(gofProp)) output <- distLgof(list(dat=output$dat, gofProp=output$gofProp,
-                    parameter=output$parameter), progbars=progbars, plot=FALSE)
-}
