@@ -2,8 +2,9 @@
 \alias{distLplot}
 \title{plot distributions fitted with linear moments}
 \description{plot histogram and distribution densities \emph{or} ecdf with cumulated probability}
-\usage{distLplot(dlf, nbest=5, selection, cdf=FALSE, log=FALSE, percentline=NA, supportends=TRUE,
-breaks=20, xlim=extendrange(dat, f=0.15), ylim, xaxs="i", yaxs="i", xaxt, col="grey",
+\usage{distLplot(dlf, nbest=5, selection=NULL, cdf=FALSE, log=FALSE,
+percentline=NA, percentargs=NULL, supportends=TRUE,
+breaks=20, xlim=extendrange(dat, f=0.15), ylim=NULL, xaxs="i", yaxs="i", xaxt, col="grey",
 main, xlab, ylab, las=1, coldist=rainbow2(nbest), add=FALSE,
 logargs=NULL, legargs=NULL, histargs=NULL, ... )}
 \arguments{
@@ -13,10 +14,11 @@ logargs=NULL, legargs=NULL, histargs=NULL, ... )}
   \item{cdf}{If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE}
   \item{log}{If TRUE, logAxis is called. DEFAULT: FALSE}
   \item{percentline}{If TRUE, draw vertical line at 1-dlf$gofProp of dlf$dat. If NA, only do so if gofProp!=1. DEFAULT: NA}
+  \item{percentargs}{List of arguments passed to \code{\link{abline}}  DEFAULT: NULL}
   \item{supportends}{If TRUE, dots are placed at the support bounds. DEFAULT: TRUE}
   \item{breaks}{\code{\link{hist}} breaks. DEFAULT: 20}
   \item{xlim}{\code{\link{hist}} or \code{\link{ecdf}} xlim. DEFAULT: extendrange(dat, f=0.15)}
-  \item{ylim}{\code{\link{hist}} or \code{\link{ecdf}} ylim}
+  \item{ylim}{\code{\link{hist}} or \code{\link{ecdf}} ylim. DEFAULT: NULL}
   \item{xaxs, yaxs}{\code{\link{hist}} or \code{\link{ecdf}} xaxs and yaxs. DEFAULT: both "i"}
   \item{xaxt}{\code{\link{par}} xaxt. "n" suppresses axis and numbers, which is used if log.}
   \item{col}{\code{\link{hist}} bar color or \code{\link{ecdf}} point color. DEFAULT: "grey"}

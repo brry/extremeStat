@@ -5,14 +5,15 @@
 distLplot <- function(
 dlf,                    # List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}
 nbest=5,                # Number of distributions plotted, in order of goodness of fit
-selection,              # Names of distributions in \code{dlf$parameter} that will be drawn. Overrides nbest.
+selection=NULL,         # Names of distributions in \code{dlf$parameter} that will be drawn. Overrides nbest.
 cdf=FALSE,              # If TRUE, plot cumulated DF instead of probability density
 log=FALSE,              # If TRUE, logAxis is called.
 percentline=NA,         # If TRUE, draw vertical line at 1-dlf$gofProp of dlf$dat. If NA, only do so if gofProp!=1
+percentargs=NULL,       # List of arguments passed to \code{\link{abline}}.
 supportends=TRUE,       # If TRUE, dots are placed at the support bounds.
 breaks=20,              # \code{\link{hist}} breaks
 xlim=extendrange(dat, f=0.15), # \code{\link{hist}} or \code{\link{ecdf}} xlim
-ylim,                   # \code{\link{hist}} or \code{\link{ecdf}} ylim
+ylim=NULL,              # \code{\link{hist}} or \code{\link{ecdf}} ylim
 xaxs="i", yaxs="i",     # \code{\link{hist}} or \code{\link{ecdf}} xaxs and yaxs. DEFAULT: both "i"
 xaxt,                   # \code{\link{par}} xaxt. "n" suppresses axis and numbers, which is used if log
 col="grey",             # \code{\link{hist}} bar color or \code{\link{ecdf}} point color
@@ -29,7 +30,7 @@ histargs=NULL,          # List of arguments passed to \code{\link{hist}} or \cod
 dat       <- dlf$dat
 parameter <- dlf$parameter
 gof       <- dlf$gof
-if(!missing(selection))
+if(!is.null(selection))
   {gof <- gof[selection, ]
   nbest <- length(selection)
   }
@@ -43,7 +44,7 @@ if(missing(xlab)       ) xlab <- dlf$datname
 if(!add)
   if(cdf)
   {
-  if(missing(ylim)) ylim <- c(0,1)
+  if(is.null(ylim)) ylim <- c(0,1)
   if(missing(ylab)) ylab <- "(Empirical) Cumulated Density (CDF)"
   if(missing(main)) main <- paste("Cumulated density distributions of", dlf$datname)
   ecdfdef <- list(x=ecdf(dat), col=col, xlim=xlim, xaxt=xaxt, ylab=ylab,
@@ -56,7 +57,7 @@ if(!add)
   }
   else # if not cdf, then density
   {
-  if(missing(ylim)) ylim <- lim0(hist(dat, breaks=breaks, plot=FALSE)$density,
+  if(is.null(ylim)) ylim <- lim0(hist(dat, breaks=breaks, plot=FALSE)$density,
                                   curtail=if(yaxs=="i") FALSE else TRUE)
   if(missing(ylab)) ylab <- "Probability Density Function (PDF)"
   if(missing(main)) main <- paste("Density distributions of", dlf$datname)
@@ -96,7 +97,8 @@ for(i in nbest:1)
    }
 # draw vertical gofProp line:
 if(is.na(percentline)) percentline <- if(dlf$gofProp!=1) TRUE else FALSE
-if(percentline) abline(v=quantile(dat, probs=1-dlf$gofProp), lty=3, col="red")
+if(percentline) do.call(abline, args=owa(list(v=quantile(dat, probs=1-dlf$gofProp),
+                                                lty=3, col="red"), percentargs))
 # legend - write the names of distributions:
 legdef <- list(legend=dn, lwd=1, col=coldist, x="right", cex=0.7)
 do.call(legend, args=owa(legdef, legargs, c("legend","col")))
