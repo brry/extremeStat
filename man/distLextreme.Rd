@@ -9,7 +9,7 @@ Plots distributions and adds plotting positions by Weibull and Gringorton.
 selection, gofProp=1, progbars=TRUE, plot=TRUE, add=FALSE, nbest=5, xlim, ylim,
 las=1, main=datname, xlab="Return Period RP  [a]",
 ylab="Discharge HQ  [m^3/s]", col="black", pch=c(16,3), cex=1,
-coldist=rainbow2(nbest), lwd=1, legargs=NULL, ... )}
+coldist=rainbow2(nbest), lwd=1, legend=TRUE, legargs=NULL, linargs=NULL, ... )}
 \arguments{
   \item{dat}{Vector with extreme values e.g. annual discharge maxima. Ignored if dlf is given.}
   \item{datname}{Character string for main and output list. DEFAULT: internal \code{substitute(dat)}}
@@ -30,12 +30,14 @@ coldist=rainbow2(nbest), lwd=1, legargs=NULL, ... )}
   \item{xlab}{X axis label. DEFAULT: "Return Period RP  [a]"}
   \item{ylab}{Y axis label. DEFAULT: "Discharge HQ  [m^3/s]"}
   \item{col}{Plotting point color. DEFAULT: "black"}
-  \item{pch}{point characters for plotting positions after Weibull and Grongorton, respectively. DEFAULT: c(16,3)}
+  \item{pch}{point characters for plotting positions after Weibull and Grongorton, respectively. NA to suppress in plot and legend. DEFAULT: c(16,3)}
   \item{cex}{Character EXpansion of plotting points. DEFAULT: 1}
   \item{coldist}{Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow. DEFAULT: rainbow2(nbest)}
   \item{lwd}{Line WiDth of distribution lines. DEFAULT: 1}
+  \item{legend}{Logical. Add a legend? DEFAULT: TRUE}
   \item{legargs}{list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd. DEFAULT: NULL}
-  \item{\dots}{Further arguments passed to \code{\link{plot}} and \code{\link{lines}}, like lty, lwd, type, pch, ...}
+  \item{linargs}{list of arguments passed to \code{\link{lines}} like lty, lwd, type, pch, ... DEFAULT: NULL}
+  \item{\dots}{Further arguments passed to \code{\link{plot}}, like log="x", xaxt="n", ...}
 }
 \details{
 this adds weibull and gringorton plotting positions to the distribution lines, which are estimated from the linear moments of the data itself.\cr
@@ -57,21 +59,30 @@ Christoph Mudersbach: Untersuchungen zur Ermittlung von hydrologischen Bemessung
 # 3. weighted mean based on GOF
 # 4. effect of data proportion used to estimate GOF
 
+library(lmomco)
+
 # Data from river in Austria
 annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81.9,
 60.1, 72.4, 61.6, 94.8, 82.6, 57.2,  63.1, 73.8, 51.3, 93.6, 56.9, 52.1, 40.4,
 48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
 
 # Basic examples
-library(lmomco)
 dle <- distLextreme(annMax)
 str(dle, max.lev=2)
 dle$returnlev
 
 # Estimate discharge that empirically could occur every 80 years:
 Q80 <- distLextreme(dlf=dle, RPs=80)$returnlev
-sort(Q80[,1], decr=TRUE)
+round(sort(Q80[,1], decr=TRUE),1)
 # 99 to 143 m^3/s can make a relevant difference in engineering!
+
+# Line colors / selection distributions to be plotted:
+distLextremePlot(dlf=dle)
+distLextremePlot(dle, nbest=18, coldist=heat.colors(18))
+distLextremePlot(dle, selection=c("gev", "gam", "gum"), coldist=3:5)
+distLextremePlot(dle, legarg=list(cex=0.5, x="bottom", box.col="red", col=3))
+# col is ignored
+distLextremePlot(dle, pch=c(1,NA))
 
 \dontrun{
 # compare with other packages:
@@ -84,13 +95,6 @@ distLextreme(dlf=dle, RPs=c(2,20,100))$returnlev["gev",]
 # if you have time for a more thorough control, please pass me the results!
 }
 
-# Line colors / selection distributions to be plotted:
-distLextreme(dlf=dle)
-distLextreme(dlf=dle, nbest=18, coldist=heat.colors(18))
-distLextreme(dlf=dle, selection=c("gev", "gam", "gum"), coldist=3:5)
-distLextreme(dlf=dle, legarg=list(cex=0.5, x="bottom", box.col="red", col=3))
-# col is ignored. should be specified inside distLextreme
-distLextreme(dlf=dle, pch=c(1,NA))
 
 # Goodness of fit
 # 1. Measures for GOF ---------------------------------------------
@@ -180,4 +184,3 @@ title(main="The proportion of the data included for calculating RMSE does not ma
 \keyword{dplot}
 \keyword{distribution}
 \keyword{ts}
-

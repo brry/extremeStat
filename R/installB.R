@@ -12,10 +12,11 @@ if(!file.exists(path)) { substr(path, 1,1) <- "~" ; substr(path, 2,2) <- "" }
 #
 package <- deparse(substitute(package))
 package <- gsub("\"", "", package, fixed=TRUE)
+if(package=="2") package <- "extremeStat"
 # remove function objects from workspace
 d <- dir(paste0(path, "/", package, "/R"))
-d <- gsub(".r", "", d, fix=TRUE)
-d <- gsub(".R", "", d, fix=TRUE)
+d <- gsub(".r", "", d, fixed=TRUE)
+d <- gsub(".R", "", d, fixed=TRUE)
 l <- ls(globalenv())
 rm(list=l[l %in% d], envir=globalenv())
 # install

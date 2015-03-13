@@ -38,7 +38,7 @@ This Log of changes in my package extremeStat contains two sections:
 Version 0.5 (2015--)
 - various small changes, see github commit log
 
-new function: installB
+new function: installB, distLextremePlot
 
 
 
