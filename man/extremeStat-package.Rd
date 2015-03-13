@@ -10,23 +10,34 @@ This package heavily relies on and thankfully acknowledges the package lmomco by
 }
 \details{The common object to share between functions is a list (\code{dlf}) with:\cr
 \tabular{ll}{
-dat       \tab numeric vector with (extreme) values \cr
-datname   \tab character string for main, xlab etc \cr
-gofProp   \tab number between 0 and 1; upper proportion of \code{dat} to compute goodness of fit from\cr
-parameter \tab list (usually of length 18 if \code{speed=TRUE}) with parameters of each distribution\cr
-gof       \tab dataframe with 'Goodness of Fit' measures, sorted by R^2 of theoretical and empirical cumulated density\cr
-returnlev \tab dataframe with values of distributions for given return periods (\code{RPs}). This element is only added in \code{\link{distLextreme}}\cr
+\code{dat}       \tab numeric vector with (extreme) values \cr
+\code{datname}   \tab character string for main, xlab etc \cr
+\code{gofProp}   \tab number between 0 and 1; upper proportion of \code{dat} to compute goodness of fit from\cr
+\code{parameter} \tab list (usually of length 18 if \code{speed=TRUE}) with parameters of each distribution\cr
+\code{gof}       \tab dataframe with 'Goodness of Fit' measures, sorted by RMSE of theoretical and empirical cumulated density\cr
+\code{RP___}     \tab Return periods according to plotting positions, see below \cr
+\code{returnlev} \tab dataframe with values of distributions for given return periods (\code{RPs}). This element is only added in \code{\link{distLextreme}}\cr
 }
-The main functions are:
+It can be printed with \code{\link{distLprint}}, which may be transformed to aclass with printing method.\cr
+PP:\cr
+Plotting positions are not used for fitting distributions, but for plotting only\cr
+The ranks of ascendingly sorted extreme values are used to compute the probability of non-exceedence Pn:\cr
+\code{Pn_w <-  Rank      /(n+1)       # Weibull}
+\code{Pn_g <- (Rank-0.44)/(n+0.12)    # Gringorton (taken from lmom:::evplot.default)}\cr
+Finally: RP = Returnperiod = recurrence interval = 1/P_exceedence = 1/(1-P_nonexc.), thus:\cr
+\code{RPweibull = 1/(1-Pn_w)} and analogous for gringorton.\cr
+
+The main functions in the extremeStat package are:
 \tabular{ll}{
-\code{\link{distLextreme}} \tab analyse extreme value statistics, calls \code{fit}.\cr
-\code{\link{distLfit}}     \tab fit the parameters, calls \code{gof} and \code{plot}.\cr
-\code{\link{distLgof}}     \tab calculate goodness of fits, calls \code{gofplot}. Can also be executed with \code{dlf} to minimize computing time by not fitting the parameters again.\cr
-\code{\link{distLplot}}    \tab plot density or cumulated density of data and distributions.\cr
-\code{\link{distLgofplot}} \tab compare ranks of different \code{gof} methods.\cr
+\code{\link{distLextreme}}     \tab analyse extreme value statistics, calls \code{distLfit} and \code{distLextremePlot}.\cr
+\code{\link{distLextremePlot}} \tab plot distribution lines and plotting positions.\cr
+\code{\link{distLfit}}         \tab fit the parameters, calls \code{gof} and \code{distLplot}.\cr
+\code{\link{distLgof}}         \tab calculate goodness of fits, calls \code{distLgofplot}. Can also be executed with \code{dlf} to minimize computing time by not fitting the parameters again.\cr
+\code{\link{distLplot}}        \tab plot density or cumulated density of data and distributions.\cr
+\code{\link{distLgofplot}}     \tab compare distribution ranks of different \code{distLgof} methods.\cr
 }
 \code{Depends} on 'berryFunctions' for \code{\link{rmse}}, \code{\link{rsquare}}, \code{\link{logAxis}}, \code{\link{logVals}}.\cr
-\code{Suggests} 'pbapply' to see progress bars if you have large (>1e3) datasets.\cr
+\code{Suggests} 'pbapply' to see progress bars if you have large (n > 1e3) datasets.\cr
 At some places you'll find \code{## not run} in the examples.
 These code blocks were excluded from checking while building,
 mainly because they are computationally intensive and should not take so much of CRANs resources.
@@ -47,14 +58,13 @@ R in Hydrology: \url{http://abouthydrology.blogspot.de/2012/08/r-resources-for-h
 }
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, 2014}
 \examples{
-require("berryFunctions")
 # annual discharge maxima from a stream in Austria
 annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6,
    81.9, 60.1, 72.4, 61.6, 94.8, 82.6, 57.2,  63.1, 73.8, 51.3, 93.6, 56.9, 52.1,
    40.4, 48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
 # time plot:
 plot(annMax, type="l")
-lines(movAv(annMax), lwd=2, col=2)
+require("berryFunctions"); lines(movAv(annMax), lwd=2, col=2)
 dle <- distLextreme(annMax)
 cbind(dle$returnlev, dle$gof)
 }
