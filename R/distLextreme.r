@@ -87,7 +87,8 @@ points(RPg, m, pch=pch[2], cex=cex, ...)
 box()
 # write the names of distributions. - legargs: legend arguments
 legdef <- list(
-  legend=c("Weibull plotting positions","Gringorten plotting positions",dn[1:nbest]),
+  legend=c(if(!is.na(pch[1])) "Weibull plotting positions",
+           if(!is.na(pch[2]))"Gringorten plotting positions",dn[1:nbest]),
   pch=c( pch, rep(NA, nbest)),
   lwd=c(NA,NA,rep(lwd,nbest)),
   col=c(col,col,coldist), x="bottomright", cex=0.7, bty="o")

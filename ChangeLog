@@ -10,8 +10,6 @@ This Log of changes in my package extremeStat contains two sections:
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 
-depend on berryFunctions again?
-
 - distLplot:
 # support region lo and hi by supdist after next lmomco update
 # DESCRIPTION Depends on lmomco > x.x.x (version that includes supdist)
@@ -25,11 +23,25 @@ depend on berryFunctions again?
 # does not actually show warning when distributions are excluded. Why not?
 # replace NA removal warnings in rmse with useful error message
 
+- distLprint:
+# (or print method) for dlf objects to be created
+
 
 
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 2. extremeStat - development over time
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+
+Version 0.5 (2015--)
+- various small changes, see github commit log
+
+new function: installB
+
+
+
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 

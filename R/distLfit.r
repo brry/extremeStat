@@ -52,7 +52,6 @@ if(speed) dn <- dn[ ! dn %in%
 mom <- lmoms(dat, nmom=5)
 # estimate parameters for each distribution:    # this takes time!
 if(progbars) message("Parameter estimation from linear moments:")
-browser()
 parameter <- lapply(dn, function(d) lmom2par(mom, type=d) )
 # error catching:
 if( length(parameter) != length(dn))
