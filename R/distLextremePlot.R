@@ -23,6 +23,7 @@ linargs=NULL, # List of arguments passed to \code{\link{lines}} like lty, lwd, t
 ... )         # Further arguments passed to \code{\link{plot}} like log="x", xaxt="n", ...
 {
 # Input operations:
+output <- dlf
 if(length(pch)==1) pch[2] <- if(is.na(pch)) NA else if(pch[1]==3) 4 else 3
 col <- rep(col, length.out=2)
 if(!is.null(selection))  nbest <- length(selection)
@@ -44,8 +45,12 @@ RPg <- 1/(1- (Rank-0.44)/(n+0.12)  )  # Gringorton (taken from lmom:::evplot.def
 #  Selection -------------------------------------------------------------------
 dn <- rownames(gof) # distribution names
 if(!is.null(selection))
-   {names(dn) <- dn ;   dn <- dn[selection] ;   names(dn) <- NULL}
-if(is.na(dn)) stop("No distributions are left with selection ", selection)
+  {
+  names(dn) <- dn
+  dn <- dn[selection]
+  names(dn) <- NULL
+  if(is.na(dn)) stop("No distributions are left with selection ", selection)
+  }
 # Plotting ---------------------------------------------------------------------
 # Calculate plot limits if not given:
 if(is.null(ylim)) ylim <- c(min(dat), max(dat)+0.1*diff(range(dat)) )
@@ -78,4 +83,8 @@ legdef <- list(
   x="bottomright", cex=0.7, bty="o")
 do.call(graphics::legend, args=owa(legdef, legargs, "legend","pch","lwd","col"))
 }
+# output dlf object
+output$RPweibull <- RPw
+output$RPgringorton <- RPg
+return(invisible(output))
 }
