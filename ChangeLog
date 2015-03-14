@@ -18,9 +18,6 @@ This Log of changes in my package extremeStat contains two sections:
 # Include Bootstrapping with user-specified proportion left out
 # add log argument
 
-- distLgof:
-# does not actually show warning when distributions are excluded. Why not?
-
 - distLprint:
 # possibly change to print method for dlf objects with personal class
 
@@ -38,7 +35,7 @@ Version 0.5 (2015--)
 distLgof now returns weights by 3 different methods
 
 new function: installB, distLextremePlot, distLprint
-
+renamed distLgofPlot for consistency in lowerCamel case usage.
 
 
 ----------------------------------------------------------------------

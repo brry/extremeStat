@@ -5,8 +5,8 @@
 distLgof <- function(
 dlf, # List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, gofProp, parameter}
 gofProp, # Overrides value in list. Proportion of highest values in \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
-plot=TRUE, # Call \code{\link{distLgofplot}}?
-progbars=TRUE, # Show progress bars for each loop?
+plot=TRUE, # Call \code{\link{distLgofPlot}}?
+progbars=length(dlf$dat)>200, # Show progress bars for each loop?
 ks=TRUE, # Include ks.test results in dlf$gof? Computing is much faster when FALSE
 quiet=FALSE  # Should \code{\link{rmse}} warn about NA removal?
 )
@@ -28,7 +28,7 @@ exclude <- sapply(parameter, function(x)
   })
 #
 if(any(exclude))
-  {warning("The following distributions were excluded since no parameters were estimated:\n",
+  {message("note in distLgof: The following distributions were excluded since no parameters were estimated:\n",
              paste(dn[exclude], collapse=", "))
   dn <- dn[!exclude]
   parameter <- parameter[!exclude] # not sure whether this is always good...
@@ -57,7 +57,7 @@ if(!quiet)
   if(any(nNA>0)) 
     {
     dNA <- paste(paste0(dn[nNA>0], " (", nNA[nNA>0], ")"), collapse=", ")
-    warning("NAs removed in CDF: ", dNA, " of ", length(tcdfs[[1]]), " values.")
+    message("note in distLgof: NAs removed in CDF (limited support region?): ", dNA, " of ", length(tcdfs[[1]]), " values.")
     }
   }
 RMSE <- sapply(dn, function(d)    rmse(tcdfs[[d]], ecdfs, quiet=TRUE))
@@ -73,18 +73,18 @@ gof <- gof[ order(gof$RMSE), ]  # -gof$R2 # which measure should I sort by?
 gof$weight1 <- gof[,"RMSE"] # the lower, the better, the more weight
 gof$weight1 <- max(gof$weight1)-gof$weight1+min(gof$weight1)  # with min or mean added,
 gof$weight1 <- gof$weight1/sum(gof$weight1)  # the worst fit is not completely excluded
-# Exclude worst fit
+# Exclude worst fit (needs 2 or more distributions in selection to work)
 gof$weight2 <- gof[,"RMSE"]
 gof$weight2 <- max(gof$weight2)-gof$weight2
 gof$weight2 <- gof$weight2/sum(gof$weight2)
-# use only best half:
+# use only best half (needs 4 or more dists - technically, 3 should be enough...)
 gof$weight3 <- gof[,"RMSE"]
 gof$weight3 <- max(gof$weight3)-gof$weight3
-gof$weight3[(nrow(gof)/2):nrow(gof)] <- 0    # todo: test with selection length 1
+gof$weight3[(nrow(gof)/2):nrow(gof)] <- 0
 gof$weight3 <- gof$weight3/sum(gof$weight3)
 # output:
 output <- list(dat=dat, datname=dlf$datname, gofProp=gofProp, parameter=parameter, gof=gof)
-if(plot) distLgofplot(output)
+if(plot) distLgofPlot(output)
 output
 } # end of function
 
