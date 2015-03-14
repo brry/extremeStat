@@ -23,10 +23,10 @@ dn <- names(parameter)
 exclude <- sapply(parameter, function(x) 
   {
   if(is.null(x)) return(TRUE)
-  if("ifail" %in% names(x)) if(x$ifail != 0) return(TRUE)
+  # if("ifail" %in% names(x)) if(x$ifail != 0) return(TRUE) ## restriction too tight
+  if(is.null(plmomco(mean(dat),x))) return(TRUE)  # *)
   any(is.na(x$para))
-  })
-#
+  })                    #  *): CDF cannot be computed for kappa in Dresden example
 if(any(exclude))
   {message("note in distLgof: The following distributions were excluded since no parameters were estimated:\n",
              paste(dn[exclude], collapse=", "))

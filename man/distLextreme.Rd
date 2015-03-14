@@ -92,6 +92,7 @@ distLextremePlot(dle, selection=c("gev", "gam", "gum"), coldist=3:5, col=3)
 # Why do I not get the following warning in interactive mode?
 ## Warning in if (is.na(dn)) stop("No distributions are left with selection ",  :
 ## the condition has length > 1 and only the first element will be used
+# apparently, warnings do not get passed from one function to the next...
 
 distLextremePlot(dle, legarg=list(cex=0.5, x="bottom", box.col="red", col=3))
 # col in legarg list is (correctly) ignored
@@ -114,6 +115,14 @@ distLextreme(dlf=dle, RPs=c(2,20,100))$returnlev["gev",]
 # differences are small, but noticeable...
 # if you have time for a more thorough control, please pass me the results!
 }
+
+# yet another dataset for testing purposes:
+Dresden_AnnualMax <- c(403, 468, 497, 539, 542, 634, 662, 765, 834, 847, 851, 873,
+885, 983, 996, 1020, 1028, 1090, 1096, 1110, 1173, 1180, 1180,
+1220, 1270, 1285, 1329, 1360, 1360, 1387, 1401, 1410, 1410, 1456,
+1556, 1580, 1610, 1630, 1680, 1734, 1740, 1748, 1780, 1800, 1820,
+1896, 1962, 2000, 2010, 2238, 2270, 2860, 4500)
+distLextreme(Dresden_AnnualMax)
 
 
 # Goodness of fit
