@@ -6,7 +6,7 @@ Fits several distributions based on linear moments, calculate return levels for 
 Plots distributions and adds plotting positions by Weibull and Gringorton.
 }
 \usage{distLextreme(dat, datname, dlf, RPs=c(2,5,10,20,50), speed=TRUE, ks=FALSE,
-selection, gofProp=1, progbars=TRUE, plot=TRUE, add=FALSE, nbest=5, xlim, ylim,
+selection, gofProp=1, progbars=length(dat)>200, time=TRUE, plot=TRUE, add=FALSE, nbest=5, xlim, ylim,
 las=1, main=datname, xlab="Return Period RP  [a]",
 ylab="Discharge HQ  [m^3/s]", col="black", pch=c(16,3), cex=1,
 coldist=rainbow2(nbest), lwd=1, legend=TRUE, legargs=NULL, linargs=NULL, ... )}
@@ -19,7 +19,8 @@ coldist=rainbow2(nbest), lwd=1, legend=TRUE, legargs=NULL, linargs=NULL, ... )}
   \item{ks}{Include ks.test results in \code{dlf$gof}? Computing is much faster on big datasets when FALSE. DEFAULT: TRUE}
   \item{selection}{Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}. Overrides nbest}
   \item{gofProp}{Upper proportion of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1}
-  \item{progbars}{Show progress bars for each loop and \code{\link{message}} execution time? DEFAULT: TRUE}
+  \item{progbars}{Show progress bars for each loop and \code{\link{message}} execution time? DEFAULT: TRUE if n > 200}
+  \item{time}{\code{\link{message}} execution time? DEFAULT: TRUE}
   \item{plot}{Should the return periods and nbest fitted distributions be plotted? DEFAULT: TRUE}
   \item{add}{If TRUE, plot is not called before adding lines. This lets you add lines highly customized one by one. DEFAULT: FALSE}
   \item{nbest}{Number of distributions plotted, in order of goodness of fit. DEFAULT: 5}
@@ -125,7 +126,7 @@ pairs(dle_nile$gof)
 
 # compare Ranks by different GOFs
 par(mfrow=c(1,2))
-distLgofplot(dle)
+distLgofPlot(dle)
 distLgof(dle, gofProp=0.8, plot=TRUE) # more in examples in ?distLgof
 par(mfrow=c(1,1))
 

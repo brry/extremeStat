@@ -2,7 +2,7 @@
 \alias{distLfit}
 \title{Fit distributions via linear moments}
 \description{Fit several distributions via linear moments, plot histogram and distribution densities \emph{or} ecdf with cumulated probability.}
-\usage{distLfit(dat, datname, speed=TRUE, ks=TRUE, selection, gofProp=1, gofComp=FALSE, progbars=TRUE,
+\usage{distLfit(dat, datname, speed=TRUE, ks=TRUE, selection, gofProp=1, gofComp=FALSE, progbars=length(dat)>200,
 time=TRUE, plot=TRUE, cdf=FALSE, legargs=NULL, histargs=NULL, quiet=FALSE, ... )}
 \arguments{
   \item{dat}{Vector with values}
@@ -12,7 +12,7 @@ time=TRUE, plot=TRUE, cdf=FALSE, legargs=NULL, histargs=NULL, quiet=FALSE, ... )
   \item{selection}{Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}. Overrides speed.}
   \item{gofProp}{Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1}
   \item{gofComp}{If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE. DEFAULT: FALSE}
-  \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE}
+  \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n > 200}
   \item{time}{\code{\link{message}} execution time? DEFAULT: TRUE}
   \item{plot}{Should a histogram with densities be plotted? DEFAULT: TRUE}
   \item{cdf}{If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE}

@@ -1,6 +1,6 @@
 # fit many different distributions via linear moments and return goodness of fit values
 # Berry Boessenkool, Sept 2014
-# Main function calling   distLgof   and   distLgofplot or distLplot
+# Main function calling   distLgof   and   distLgofPlot or distLplot
 
 distLfit <- function(
 dat,          # Vector with values
@@ -10,7 +10,7 @@ ks=TRUE,      # Include ks.test results in dlf$gof? Computing is much faster whe
 selection=NULL, # Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}. Overrides speed.
 gofProp=1,    # Upper proportion of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
 gofComp=FALSE,# If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE
-progbars=TRUE,# Show progress bars for each loop?
+progbars=length(dat)>200,# Show progress bars for each loop?
 time=TRUE,    # \code{\link{message}} execution time?
 plot=TRUE,    # Should a histogram with densities be plotted?
 cdf=FALSE,    # If TRUE, plot cumulated DF instead of probability density
@@ -56,7 +56,7 @@ parameter <- lapply(dn, function(d) lmom2par(mom, type=d) )
 # error catching:
 if( length(parameter) != length(dn))
   {
-  on.exit(warning("Some distributions could not be fitted. Possibly cau."))
+  on.exit(message("note in distLfit: Some distributions could not be fitted. Possibly cau."))
   names(parameter) <- sapply(parameter, "[[", "type")
   }
 else names(parameter) <- dn
@@ -66,7 +66,7 @@ output <- distLgof(list(dat=dat, datname=datname, gofProp=gofProp, parameter=par
 # compare GOF
 if(gofComp)
   {
-  distLgofplot(output)
+  distLgofPlot(output)
   plot <- FALSE
   }
 if(plot) distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )

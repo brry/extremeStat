@@ -14,7 +14,8 @@ speed=TRUE,   # If TRUE, several computationally intensive time consuming distri
 ks=FALSE,     # Include ks.test results in dlf$gof? Computing is much faster when FALSE
 selection=NULL, # Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}
 gofProp=1,    # Upper proportion of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
-progbars=TRUE,# Show progress bars for each loop and \code{\link{message}} execution time?
+progbars=length(dat)>200, # Show progress bars for each loop?
+time=TRUE,    # \code{\link{message}} execution time?
 plot=TRUE,    # Should the return periods and nbest fitted distributions be plotted?
 add=FALSE,    # If TRUE, plot is not called before adding lines. This lets you add lines highly customized one by one
 nbest=5,      # Number of distributions plotted, in order of goodness of fit
@@ -38,7 +39,7 @@ StartTime <- Sys.time()
 # input checks -----------------------------------------------------------------
 if(missing(datname)) datname <- deparse(substitute(dat))
 if(!missing(dlf)) if(!missing(dat)) if(dlf$dat != dat)
-   warning("'dat' differs from 'dlf$dat'. 'dat' is ignored.")
+   message("note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored.")
 if(!missing(dlf)) datname <- dlf$datname
 ###require(lmomco) # not necessary anymore. it is listed in 'Imports' now...
 ###require(berryFunctions) # for rsquare, RMSE, logAxis,   ditto
@@ -58,7 +59,7 @@ if(plot) output <- distLextremePlot(dlf=dlf, selection=selection, add=add, nbest
 # output (discharge) values at return periods ----------------------------------
 dn <- rownames(gof) # distribution names
 if( require(pbapply,quietly=TRUE) & progbars ) sapply <- pbapply::pbsapply
-if(progbars) print("calculating return levels for return periods:")
+if(progbars) message("calculating return levels for return periods:")
 returnlev <- sapply(dn, function(d) qlmomco(1-1/RPs, parameter[[d]]))  # as.numeric(
 # if length(RPs)==1, returnlev is only a vector,
 if(is.null(dim(returnlev)))
@@ -69,6 +70,6 @@ colnames(returnlev) <- paste0("RP.", RPs)
 # add goodness of fit
 # Add to output:
 output$returnlev <- as.data.frame(returnlev)
-if(progbars) message("execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.\n")
+if(time) message("execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.\n")
 return(invisible(output))
 } # end of function
