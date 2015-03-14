@@ -70,6 +70,6 @@ if(gofComp)
   plot <- FALSE
   }
 if(plot) distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
-if(time) message("execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.\n")
+if(time) message("execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
 return(invisible(output))
 } # end of function
