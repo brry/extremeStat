@@ -1,8 +1,8 @@
-\name{distLgofplot}
-\alias{distLgofplot}
+\name{distLgofPlot}
+\alias{distLgofPlot}
 \title{rank comparison}
 \description{plot rank comparison of fitted distributions calculated by \code{\link{distLgof}}.}
-\usage{distLgofplot(dlf, nbest=NA, order=TRUE, add=FALSE,
+\usage{distLgofPlot(dlf, nbest=NA, order=TRUE, add=FALSE,
 type="o", col=c(1,3,4), pch=1:3, lty=1, ...)}
 \arguments{
   \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{gof, gofProp}}

@@ -32,9 +32,9 @@ The main functions in the extremeStat package are:
 \code{\link{distLextreme}}     \tab analyse extreme value statistics, calls \code{distLfit} and \code{distLextremePlot}.\cr
 \code{\link{distLextremePlot}} \tab plot distribution lines and plotting positions.\cr
 \code{\link{distLfit}}         \tab fit the parameters, calls \code{gof} and \code{distLplot}.\cr
-\code{\link{distLgof}}         \tab calculate goodness of fits, calls \code{distLgofplot}. Can also be executed with \code{dlf} to minimize computing time by not fitting the parameters again.\cr
+\code{\link{distLgof}}         \tab calculate goodness of fits, calls \code{distLgofPlot}. Can also be executed with \code{dlf} to minimize computing time by not fitting the parameters again.\cr
 \code{\link{distLplot}}        \tab plot density or cumulated density of data and distributions.\cr
-\code{\link{distLgofplot}}     \tab compare distribution ranks of different \code{distLgof} methods.\cr
+\code{\link{distLgofPlot}}     \tab compare distribution ranks of different \code{distLgof} methods.\cr
 }
 \code{Depends} on 'berryFunctions' for \code{\link{rmse}}, \code{\link{rsquare}}, \code{\link{logAxis}}, \code{\link{logVals}}.\cr
 \code{Suggests} 'pbapply' to see progress bars if you have large (n > 1e3) datasets.\cr

@@ -2,7 +2,7 @@
 # Berry Boessenkool, Sept 2014
 # compare ranks of 'Goodness of Fit' measures in distLfit
 
-distLgofplot <- function(
+distLgofPlot <- function(
 dlf, # List as returned by \code{\link{distLfit}}, containing the elements \code{gof, gofProp}
 nbest=NA, # Number of distributions plotted by \code{\link{distLplot}}
 order=TRUE, # If TRUE, the best distribution is at the top. False to compare across different dlfs.
@@ -20,7 +20,7 @@ gof <- dlf$gof
 gofProp <- dlf$gofProp
 # catch ks=FALSE results:
 ks <- "ksP" %in% colnames(gof)
-if(!ks) warning("This result from distLgof with ks=FALSE ignores ks ranks.")
+if(!ks) message("note in distLgofPlot: This result from distLgof with ks=FALSE ignores ks ranks.")
 # Ranks:
 Ranks <- cbind(rank(gof$RMSE), rank(-gof$R2))
 if(ks) Ranks <- cbind(Ranks, rank(-gof$ksP), rank(gof$ksD))
