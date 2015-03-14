@@ -43,7 +43,7 @@ if( ! is.null(selection) )
   names(dn) <- NULL
   }
 else
-# remove some to save time and errors, see ?dist.list # gld added
+# remove some to save time and errors, see ?dist.list # gld and tri added
 if(speed) dn <- dn[ ! dn %in%
    c("aep4","cau","emu","gep","gld","kmu","kur","lmrq","sla","st3","texp","tri")]
 #

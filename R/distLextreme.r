@@ -52,10 +52,7 @@ dat <- output$dat; parameter <- output$parameter;  gof <- output$gof
 # remove NAs, convert to vector:
 dat <- as.numeric( dat[!is.na(dat)]  )
 # plot -------------------------------------------------------------------------
-###if(plot) do.call(distLextremePlot, args=list(dlf=dlf, selection=selection, add=add, nbest=nbest,
-###    xlim=xlim, ylim=ylim, las=las, main=main, xlab=xlab, ylab=ylab, col=col,
-###    pch=pch, cex=cex, coldist=coldist, lwd=lwd, legend=legend, legargs=legargs, linargs=linargs, ...))
-if(plot) output <- distLextremePlot(dlf=dlf, selection=selection, add=add, nbest=nbest,   # output <-
+if(plot) output <- distLextremePlot(dlf=dlf, selection=selection, add=add, nbest=nbest,   
     xlim=xlim, ylim=ylim, las=las, main=main, xlab=xlab, ylab=ylab, col=col,
     pch=pch, cex=cex, coldist=coldist, lwd=lwd, legend=legend, legargs=legargs, linargs=linargs, ...)
 # output (discharge) values at return periods ----------------------------------
