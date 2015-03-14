@@ -20,7 +20,6 @@ This Log of changes in my package extremeStat contains two sections:
 
 - distLgof:
 # does not actually show warning when distributions are excluded. Why not?
-# replace NA removal warnings in rmse with useful error message
 
 - distLprint:
 # possibly change to print method for dlf objects with personal class

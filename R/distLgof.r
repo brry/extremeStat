@@ -20,7 +20,13 @@ else if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) ) stop("gofProp must
 parameter <- dlf$parameter
 dn <- names(parameter)
 # Error check:
-exclude <- sapply(parameter, function(x) if(!is.null(x)) any(is.na(x$para)) else TRUE)
+exclude <- sapply(parameter, function(x) 
+  {
+  if(is.null(x)) return(TRUE)
+  if("ifail" %in% names(x)) if(x$ifail != 0) return(TRUE)
+  any(is.na(x$para))
+  })
+#
 if(any(exclude))
   {warning("The following distributions were excluded since no parameters were estimated:\n",
              paste(dn[exclude], collapse=", "))
@@ -45,7 +51,16 @@ ecdfs <- ecdf(dat)(dat2) # Empirical CDF
 # Root Mean Square Error, R squared:
 if( require(pbapply) & progbars ) sapply <- pbapply::pbsapply
 if(progbars) message("calculating RMSE:")
-RMSE <- sapply(dn, function(d)    rmse(tcdfs[[d]], ecdfs, quiet=quiet))
+if(!quiet) 
+  {
+  nNA <- sapply(tcdfs, function(x) sum(is.na(x)))
+  if(any(nNA>0)) 
+    {
+    dNA <- paste(paste0(dn[nNA>0], " (", nNA[nNA>0], ")"), collapse=", ")
+    warning("NAs removed in CDF: ", dNA, " of ", length(tcdfs[[1]]), " values.")
+    }
+  }
+RMSE <- sapply(dn, function(d)    rmse(tcdfs[[d]], ecdfs, quiet=TRUE))
 if(progbars) message("calculating R2:")
 R2   <- sapply(dn, function(d) rsquare(tcdfs[[d]], ecdfs, quiet=TRUE))
 # All into one data.frame:
