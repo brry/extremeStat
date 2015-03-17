@@ -70,6 +70,6 @@ colnames(returnlev) <- paste0("RP.", RPs)
 # add goodness of fit
 # Add to output:
 output$returnlev <- as.data.frame(returnlev)
-if(time) message("execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
+if(time) message("distLextreme execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
 return(invisible(output))
 } # end of function
