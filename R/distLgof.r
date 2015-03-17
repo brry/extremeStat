@@ -16,7 +16,7 @@ if( require(pbapply,quietly=TRUE) & progbars ) lapply <- pbapply::pblapply
 # Objects from list:
 dat <- dlf$dat
 if(missing(gofProp)) gofProp <- dlf$gofProp
-else if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) ) stop("gofProp must be a single value between 0 and 1")
+else if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) ) stop("gofProp must be a single value between 0 and 1.")
 parameter <- dlf$parameter
 dn <- names(parameter)
 # Error check:
@@ -51,18 +51,18 @@ ecdfs <- ecdf(dat)(dat2) # Empirical CDF
 # Root Mean Square Error, R squared:
 if( require(pbapply) & progbars ) sapply <- pbapply::pbsapply
 if(progbars) message("calculating RMSE:")
-if(!quiet) 
+RMSE <- sapply(dn, function(d)    rmse(tcdfs[[d]], ecdfs, quiet=TRUE))
+if(progbars) message("calculating R2:")
+R2   <- sapply(dn, function(d) rsquare(tcdfs[[d]], ecdfs, quiet=TRUE))
+if(!quiet)
   {
-  nNA <- sapply(tcdfs, function(x) sum(is.na(x)))
+  nNA <- base::sapply(tcdfs, function(x) sum(is.na(x)))
   if(any(nNA>0)) 
     {
     dNA <- paste(paste0(dn[nNA>0], " (", nNA[nNA>0], ")"), collapse=", ")
     message("note in distLgof: NAs removed in CDF (limited support region?): ", dNA, " of ", length(tcdfs[[1]]), " values.")
     }
   }
-RMSE <- sapply(dn, function(d)    rmse(tcdfs[[d]], ecdfs, quiet=TRUE))
-if(progbars) message("calculating R2:")
-R2   <- sapply(dn, function(d) rsquare(tcdfs[[d]], ecdfs, quiet=TRUE))
 # All into one data.frame:
 gof <- data.frame(RMSE=RMSE, R2=R2)
 if(ks) {gof$ksP=ksP; gof$ksD=ksD}
