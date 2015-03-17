@@ -6,8 +6,8 @@ Fits several distributions based on linear moments, calculate return levels for 
 Plots distributions and adds plotting positions by Weibull and Gringorton.
 }
 \usage{distLextreme(dat, datname, dlf, RPs=c(2,5,10,20,50), speed=TRUE, ks=FALSE,
-selection, gofProp=1, progbars=length(dat)>200, time=TRUE, plot=TRUE, add=FALSE, nbest=5, xlim, ylim,
-las=1, main=datname, xlab="Return Period RP  [a]",
+selection, gofProp=1, progbars=length(dat)>200, time=TRUE, plot=TRUE, add=FALSE,
+nbest=5, xlim, ylim, las=1, main=datname, xlab="Return Period RP  [a]",
 ylab="Discharge HQ  [m^3/s]", col="black", pch=c(16,3), cex=1,
 coldist=rainbow2(nbest), lwd=1, legend=TRUE, legargs=NULL, linargs=NULL, ... )}
 \arguments{
