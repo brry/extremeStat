@@ -78,23 +78,20 @@ coldist <- rep(coldist, length=nbest)
 # add distributions:
 if(cdf) lfun <- plmomco else lfun <- dlmomco
 for(i in nbest:1)
-   {
-   xval <- seq(from=par("usr")[1], to=par("usr")[2], length=300)
-   # cut xval to support region
-   paramd <- parameter[[dn[i]]]
-   if(!cdf)
-     {                          # these are to be replaced with supdist!
-     lo <- par2qua(0, paramd) ; if(is.na(lo)) lo <- xval[1]
-     hi <- par2qua(1, paramd) ; if(is.na(hi)) hi <- tail(xval,1)
-     if( lo > xval[1])      {xval <- xval[xval>lo]
-        if(supportends & length(xval)>0) points(xval[1], lfun(xval[1],paramd),
-                                                        pch=16, col=coldist[i]) }
-     if( hi < tail(xval,1)) {xval <- xval[xval<hi]
-        if(supportends & length(xval)>0) points(tail(xval,1),
-                            lfun(tail(xval,1),paramd), pch=16, col=coldist[i]) }
-     }
-   if(length(xval)>0) lines(xval, lfun(xval,paramd), col=coldist[i], ...)
-   }
+  {
+  xval <- seq(from=par("usr")[1], to=par("usr")[2], length=300)
+  # cut xval to support region
+  paramd <- parameter[[dn[i]]]
+  xsup <- supdist(paramd)$support
+  xval <- xval[ xval>xsup[1] & xval<xsup[2] ]
+  # last point within support range, if support ends in graphing region:
+  lo <- if(xsup[1] > par("usr")[1])      xval[1] else NA
+  hi <- if(xsup[2] < par("usr")[2]) tail(xval,1) else NA
+  # only plot distribution line if there is some support:
+  if(length(xval)>0)            lines(xval, lfun(xval,paramd), col=coldist[i], ...)
+  if(supportends & !is.na(lo) ) points(lo, lfun(lo,paramd), pch=16, col=coldist[i])
+  if(supportends & !is.na(hi) ) points(hi, lfun(hi,paramd), pch=16, col=coldist[i])
+  }
 # draw vertical gofProp line:
 if(is.na(percentline)) percentline <- if(dlf$gofProp!=1) TRUE else FALSE
 if(percentline) do.call(abline, args=owa(list(v=quantile(dat, probs=1-dlf$gofProp),
