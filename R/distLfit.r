@@ -6,7 +6,7 @@ distLfit <- function(
 dat,          # Vector with values
 datname,      # Character string for main, xlab etc
 speed=TRUE,   # If TRUE, several distributions are omitted, for the reasons shown in \code{\link[lmomco]{dist.list}()}
-ks=TRUE,      # Include ks.test results in dlf$gof? Computing is much faster when FALSE
+ks=FALSE,     # Include ks.test results in dlf$gof? Computing is much faster when FALSE
 selection=NULL, # Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}. Overrides speed.
 gofProp=1,    # Upper proportion of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
 gofComp=FALSE,# If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE
@@ -22,13 +22,13 @@ quiet=FALSE,  # Should \code{\link{rmse}} warn about NA removal?
 # preparation ------------------------------------------------------------------
 StartTime <- Sys.time()
 if(missing(datname)) datname <- deparse(substitute(dat))
-if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) ) stop("gofProp must be a single value between 0 and 1")
 # Progress bars
 if( require(pbapply,quietly=TRUE) & progbars ) lapply <- pbapply::pblapply
 # checks:
 if( ! is.numeric(dat) ) stop("dat must be numeric.")
-if( length(gofProp) != 1  |  gofProp > 1  |  gofProp < 0 )
-   stop("gofProp must be a single value between 0 and 1.")
+if(!is.vector(dat)) message("note in distLfit: dat was not a vector.")
+if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) )
+  stop("gofProp must be a single value between 0 and 1.")
 # remove NAs, convert to vector:
 dat <- as.numeric( dat[!is.na(dat)]  )
 # possible distributions:
@@ -37,7 +37,7 @@ dn <- dist.list()
 if( ! is.null(selection) )
   {
   if(is.numeric(selection)) if(any(abs(selection)>length(dn)))
-     stop("'selection' cannot be larger than", length(dn))
+     stop("'selection' cannot be larger than", length(dn), ".")
   names(dn) <- dn # so that selection can also be character string
   dn <- dn[selection]
   names(dn) <- NULL
@@ -70,6 +70,6 @@ if(gofComp)
   plot <- FALSE
   }
 if(plot) distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
-if(time) message("execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
+if(time) message("distLfit execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
 return(invisible(output))
 } # end of function
