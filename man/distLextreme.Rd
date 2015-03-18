@@ -87,7 +87,7 @@ round(sort(Q80[,1], decr=TRUE),1)
 
 # Line colors / selection distributions to be plotted:
 distLextremePlot(dlf=dle)
-distLextremePlot(dle, nbest=18, coldist=heat.colors(18))
+distLextremePlot(dle, nbest=17, coldist=heat.colors(17))
 distLextremePlot(dle, selection=c("gev", "gam", "gum"), coldist=3:5, col=3)
 # Why do I not get the following warning in interactive mode?
 ## Warning in if (is.na(dn)) stop("No distributions are left with selection ",  :
@@ -136,19 +136,19 @@ pairs(dle_nile$gof)
 # compare Ranks by different GOFs
 par(mfrow=c(1,2))
 distLgofPlot(dle)
-distLgof(dle, gofProp=0.8, plot=TRUE) # more in examples in ?distLgof
+d <- distLgof(dle, gofProp=0.8, plot=TRUE) # more in examples in ?distLgof
 par(mfrow=c(1,1))
 
 
 
 # 2. weights based on GOF -----------------------------------------
-plot(dle$gof$weight1, ylim=c(0, 0.13), type="o", xaxt="n", ylab="Weight",
+plot(dle$gof$weight1, ylim=c(0, 0.15), type="o", xaxt="n", ylab="Weight",
      las=1, xlab="Dist", main="Weight of distributions for average")
 lines(dle$gof$weight2, pch=2, col=2, type="o")
 lines(dle$gof$weight3, pch=3, col=3, type="o")
 lines(dle$gof$RMSE, col=4)
 text(1, dle$gof$RMSE[1], "RMSE", adj=c(0,-0.5), col=4)
-axis(1, 1:18, rownames(dle$gof), las=2)
+axis(1, 1:17, rownames(dle$gof), las=2)
 legend("topright", c("max(r)-r", "max(r)-r + min(r)", "first half"),
        title="Weighted by RMSE (r)", col=1:3, pch=1:3, lty=1)
 
@@ -159,7 +159,7 @@ legend("topright", c("max(r)-r", "max(r)-r + min(r)", "first half"),
 sum(dle$gof$weight1 * dle$returnlev[,"RP.50"]) # 114.9
 sum(dle$gof$weight2 * dle$returnlev[,"RP.50"]) # 115.3
 sum(dle$gof$weight3 * dle$returnlev[,"RP.50"]) # 115.9
-distLextremePlot(dle, nbest=18, legend=FALSE)
+distLextremePlot(dle, nbest=17, legend=FALSE)
 abline(h=115.9, v=50)
 
 # across all RPs:
