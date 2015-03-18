@@ -43,9 +43,9 @@ if( ! is.null(selection) )
   names(dn) <- NULL
   }
 else
-# remove some to save time and errors, see ?dist.list # gld and tri added
+# remove some to save time and errors, see ?dist.list # gld, gov and tri added
 if(speed) dn <- dn[ ! dn %in%
-   c("aep4","cau","emu","gep","gld","kmu","kur","lmrq","sla","st3","texp","tri")]
+   c("aep4","cau","emu","gep","gld","gov","kmu","kur","lmrq","sla","st3","texp","tri")]
 #
 # Fit distribution parameters --------------------------------------------------
 # L-Moments of sample  # package lmomco
@@ -69,7 +69,7 @@ if(gofComp)
   distLgofPlot(output)
   plot <- FALSE
   }
-if(plot) distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
+if(plot) output <- distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
 if(time) message("distLfit execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
 return(invisible(output))
 } # end of function

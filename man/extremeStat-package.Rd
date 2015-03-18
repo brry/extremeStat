@@ -13,7 +13,7 @@ This package heavily relies on and thankfully acknowledges the package lmomco by
 \code{dat}       \tab numeric vector with (extreme) values \cr
 \code{datname}   \tab character string for main, xlab etc \cr
 \code{gofProp}   \tab number between 0 and 1; upper proportion of \code{dat} to compute goodness of fit from\cr
-\code{parameter} \tab list (usually of length 18 if \code{speed=TRUE}) with parameters of each distribution\cr
+\code{parameter} \tab list (usually of length 17 if \code{speed=TRUE}) with parameters of each distribution\cr
 \code{gof}       \tab dataframe with 'Goodness of Fit' measures, sorted by RMSE of theoretical and empirical cumulated density\cr
 \code{RP___}     \tab Return periods according to plotting positions, see below \cr
 \code{returnlev} \tab dataframe with values of distributions for given return periods (\code{RPs}). This element is only added in \code{\link{distLextreme}}\cr
