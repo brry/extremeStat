@@ -27,7 +27,8 @@ inparnotgof <- ! names(dlf$parameter) %in% rownames(dlf$gof)
 ingofnotpar <- ! rownames(dlf$gof) %in% names(dlf$parameter)
 PP <- "RPweibull" %in% names(dlf) | "RPgringorton" %in% names(dlf)
 RP <- "returnlev" %in% names(dlf)
-other <- ! names(dlf) %in% c(must, "RPweibull", "RPgringorton" , "returnlev")
+CD <- "coldist" %in% names(dlf)
+other <- ! names(dlf) %in% c(must, "RPweibull", "RPgringorton" , "returnlev", "coldist")
 # Further elements:
 if(PP) PPs <- vals(c(dlf$RPweibull, dlf$RPgringorton))
 if(RP) RPs <- substr(colnames(dlf$returnlev), start=4, stop=8)
@@ -41,7 +42,8 @@ if(any(inparnotgof)) "\n--> dists in parameter but not in gof: ",
 if(any(inparnotgof)) paste(names(dlf$parameter)[inparnotgof], collapse=", "),
 if(any(ingofnotpar)) "\n--> dists in gof but not in parameter: ",
 if(any(ingofnotpar)) paste(rownames(dlf$gof)[ingofnotpar], collapse=", "),
-"\ngofProp: ", dlf$gofProp, ", RMSE min/median/max: ", vals(dlf$gof$RMSE, TRUE), 
+"\ngofProp: ", dlf$gofProp, ", RMSE min/median/max: ", vals(dlf$gof$RMSE, TRUE),
+if(CD) paste("\n", length(dlf$coldist),"distribution colors:", paste(dlf$coldist, collapse=", ")),
 if(PP | RP) "\ndistLextreme elements:",
 if(PP) "\nPlotting positions min/median/max: ",
 if(PP) PPs,
@@ -49,7 +51,7 @@ if(RP) "\nReturn Periods: ",
 if(RP) pastec(RPs),
 if(RP) "\nReturn Levels min/median/max: ",
 if(RP) vals(dlf$returnlev),
-if(any(other)) paste("\n--> Other elements in the object '", obj, "': "),
+if(any(other)) paste0("\n--> Other elements in the object '", obj, "': "),
 if(any(other)) paste(names(dlf)[other], collapse=", ")
 )
 }
