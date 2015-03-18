@@ -2,15 +2,21 @@
 \alias{distLquantile}
 \title{distribution quantiles}
 \description{Parametrical quantiles of distributions fitted to a sample.}
-\usage{distLquantile(x=NULL, probs=0:4/4, truncate=0, type=NULL, dlf=NULL, order=TRUE, ... )}
+\usage{distLquantile(x=NULL, probs=0:4/4, truncate=0, type=NULL, dlf=NULL, order=TRUE,
+plot=FALSE, cdf=FALSE, lines=TRUE, linargs=NULL, empirical=TRUE, ... )}
 \arguments{
   \item{x}{Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
   \item{probs}{Numeric vector of probabilities with values in [0,1]. DEFAULT: 0:4/4}
   \item{truncate}{Number between 0 and 1. Censored quantile: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0}
   \item{type}{Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used. DEFAULT: NULL}
   \item{dlf}{dlf object described in \code{\link{extremeStat}}. Ignored if x is given. DEFAULT: NULL}
-  \item{order}{Logical; if TRUE (the default) and length(type)>1, the output is ordered by dlf$gof, else by order of appearance in dlf$parameter. DEFAULT: TRUE}
-  \item{\dots}{Arguments passed to \code{\link{distLfit}} if x is given but dlf is not.}
+  \item{order}{Sort results by GOF? If TRUE (the default) and length(type)>1, the output is ordered by dlf$gof, else by order of appearance in dlf$parameter. DEFAULT: TRUE}
+  \item{plot}{Should \code{\link{distLplot}} be called? DEFAULT: FALSE}
+  \item{cdf}{If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE}
+  \item{lines}{Should vertical lines marking the quantiles be added? DEFAULT: TRUE}
+  \item{linargs}{Arguments passed to \code{\link{lines}}. DEFAULT: NULL}
+  \item{empirical}{Add vertical line for empirical \code{\link{quantileMean}}? DEFAULT: TRUE}
+  \item{\dots}{Arguments passed to \code{\link{distLfit}} if x or truncate is given.}
 }
 \details{
 Very high quantiles (99\% and higher) need large sample sizes for \code{\link{quantile}} to yield a robust estimate.
