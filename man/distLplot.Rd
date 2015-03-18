@@ -6,7 +6,7 @@
 percentline=NA, percentargs=NULL, supportends=TRUE,
 breaks=20, xlim=extendrange(dat, f=0.15), ylim=NULL, xaxs="i", yaxs="i", xaxt, col="grey",
 main, xlab, ylab, las=1, coldist=rainbow2(nbest), add=FALSE,
-logargs=NULL, legargs=NULL, histargs=NULL, ... )}
+logargs=NULL, legend=TRUE, legargs=NULL, histargs=NULL, ... )}
 \arguments{
   \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, parameter, gof}}
   \item{nbest}{Number of distributions plotted, in order of goodness of fit. DEFAULT: 5}
@@ -27,11 +27,12 @@ logargs=NULL, legargs=NULL, histargs=NULL, ... )}
   \item{coldist}{Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow2(nbest)}
   \item{add}{If TRUE, hist is not called before adding lines. This lets you add lines highly customized one by one. DEFAULT: FALSE}
   \item{logargs}{List of arguments passed to \code{\link{logAxis}} if \code{log=TRUE}. DEFAULT: NULL}
+  \item{legend}{Should \code{\link{legend}} be called? DEFAULT: TRUE}
   \item{legargs}{List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL}
   \item{histargs}{List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} except for x, freq. DEFAULT: NULL}
   \item{\dots}{Further arguments passed to \code{\link{lines}}, like lty, type, pch, ...}
 }
-\value{None.}
+\value{dlf with coldist added, returned invisibly.}
 \details{By default, this plots density instead of CDF, because the distributions
 are easier to discern and tail behaviour is easier to judge visually.
 See also url{http://www.vosesoftware.com/vosesoftware/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_\%28histogram\%29_plots.htm}

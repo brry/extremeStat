@@ -22,6 +22,7 @@ las=1,                  # Label Axis Style for orientation of numbers along axes
 coldist=rainbow2(nbest),# Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow2
 add=FALSE,              # If TRUE, hist is not called before adding lines. This lets you add lines highly customized one by one
 logargs=NULL,           # List of arguments passed to \code{\link{logAxis}} if \code{log=TRUE}
+legend=TRUE,            # Should \code{\link{legend}} be called?
 legargs=NULL,           # List of arguments passed to \code{\link{legend}} except for legend and col
 histargs=NULL,          # List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} except for x, freq
 ... )                   # Further arguments passed to \code{\link{lines}}, like lty, type, pch, ...
@@ -98,5 +99,8 @@ if(percentline) do.call(abline, args=owa(list(v=quantile(dat, probs=1-dlf$gofPro
                                                 lty=3, col="red"), percentargs))
 # legend - write the names of distributions:
 legdef <- list(legend=dn, lwd=1, col=coldist, x="right", cex=0.7)
-do.call(legend, args=owa(legdef, legargs, c("legend","col")))
+if(legend) do.call(graphics::legend, args=owa(legdef, legargs, c("legend","col")))
+# add to output:
+dlf$coldist <- coldist
+return(invisible(dlf))
 } # end function
