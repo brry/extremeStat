@@ -12,9 +12,9 @@ What's your opinion?
 Code to install:
 
 ```R
-if(!require(devtools)) {install.packages("devtools"); require(devtools)}
-install_github("BerryBoessenkool/berryFunctions")
-install_github("BerryBoessenkool/extremeStat")
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("BerryBoessenkool/berryFunctions")
+devtools::install_github("BerryBoessenkool/extremeStat")
 library(extremeStat)
 ?extremeStat
 ```
