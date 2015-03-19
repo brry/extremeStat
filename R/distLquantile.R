@@ -13,7 +13,7 @@ cdf=FALSE,      # If TRUE, plot cumulated DF instead of probability density
 lines=TRUE,     # Should vertical lines marking the quantiles be added?
 linargs=NULL,   # Arguments passed to \code{\link{lines}}.
 empirical=TRUE, # Add vertical line for empirical \code{\link{quantileMean}}?
-...             # Arguments passed to \code{\link{distLfit}} if x or truncate is given.
+...             # Arguments passed to \code{\link{distLfit}} if x or truncate is given. Passed to \code{\link{distLplot}} if plot=TRUE and x is not given and truncate is 0.
 )
 {
 # input checks:
@@ -32,6 +32,8 @@ if(truncate!=0)
   probs2 <- (probs-truncate)/(1-truncate)
   probs2[probs < truncate] <- 0   # avoid negative values
   }
+# distLplot preparation:
+select <- type
 # available distributions
 if(is.null(type)) type <- names(dlf$parameter)
 tinp <- type %in% names(dlf$parameter)
@@ -54,6 +56,8 @@ if(truncate!=0) quan[probs < truncate,] <- NA
 # Quantile lines:
 if(plot & lines)
   {
+  # plot if distLfit is not called yet:
+  if(is.null(x) & truncate==0) distLplot(dlf, cdf=cdf, selection=select, ...)
   lfun <- if(cdf) plmomco else dlmomco
   use <- available[1:length(dlf$coldist)]
   for(i in 1:length(use))

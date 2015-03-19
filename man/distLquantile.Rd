@@ -16,7 +16,7 @@ plot=FALSE, cdf=FALSE, lines=TRUE, linargs=NULL, empirical=TRUE, ... )}
   \item{lines}{Should vertical lines marking the quantiles be added? DEFAULT: TRUE}
   \item{linargs}{Arguments passed to \code{\link{lines}}. DEFAULT: NULL}
   \item{empirical}{Add vertical line for empirical \code{\link{quantileMean}}? DEFAULT: TRUE}
-  \item{\dots}{Arguments passed to \code{\link{distLfit}} if x or truncate is given.}
+  \item{\dots}{Arguments passed to \code{\link{distLfit}} if x or truncate is given. Passed to \code{\link{distLplot}} if plot=TRUE and x is not given and truncate is 0.}
 }
 \details{
 Very high quantiles (99\% and higher) need large sample sizes for \code{\link{quantile}} to yield a robust estimate.
