@@ -3,7 +3,7 @@
 # Plot density distributions fitted by distLfit
 
 distLplot <- function(
-dlf,                    # List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}
+dlf,                    # List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname, gofProp}
 nbest=5,                # Number of distributions plotted, in order of goodness of fit
 selection=NULL,         # Names of distributions in \code{dlf$parameter} that will be drawn. Overrides nbest.
 cdf=FALSE,              # If TRUE, plot cumulated DF instead of probability density
@@ -27,10 +27,19 @@ legargs=NULL,           # List of arguments passed to \code{\link{legend}} excep
 histargs=NULL,          # List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} except for x, freq
 ... )                   # Further arguments passed to \code{\link{lines}}, like lty, type, pch, ...
 {
+# input checks:
+if(!is.list(dlf)) stop("dlf must be a list.")
 # Objects from list:
 dat       <- dlf$dat
 parameter <- dlf$parameter
 gof       <- dlf$gof
+# checking list elements:
+if(is.null(dat)) stop("dlf must contain the element dat")
+if(is.null(parameter)) stop("dlf must contain the element parameter")
+if(is.null(gof)) stop("dlf must contain the element gof")
+if(is.null(dlf$datname)) stop("dlf must contain the element datname")
+if(is.null(dlf$gofProp)) stop("dlf must contain the element gofProp")
+# distribution selection:
 if(!is.null(selection))
   {gof <- gof[selection, ]
   nbest <- length(selection)
