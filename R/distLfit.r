@@ -70,6 +70,7 @@ if(gofComp)
   plot <- FALSE
   }
 if(plot) output <- distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
+if(!plot) output$coldist <- rainbow2(if(is.null(selection)) 5 else length(selection))
 if(time) message("distLfit execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
 return(invisible(output))
 } # end of function
