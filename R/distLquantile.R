@@ -57,18 +57,22 @@ if(truncate!=0) quan[probs < truncate,] <- NA
 if(plot & lines)
   {
   # plot if distLfit is not called yet:
-  if(is.null(x) & truncate==0) distLplot(dlf, cdf=cdf, selection=select, ...)
+  if(is.null(x) & truncate==0) dlf$coldist <- distLplot(dlf, cdf=cdf, selection=select, ...)$coldist
   lfun <- if(cdf) plmomco else dlmomco
   use <- available[1:length(dlf$coldist)]
   for(i in 1:length(use))
-  do.call(graphics::lines, args=owa(list(x=quan[,use[i]], y=lfun(x=quan[,use[i]],
+  {
+  qval <- quan[,use[i]]
+  qval <- qval[ !is.finite(qval) ] # Inf ignored
+  do.call(graphics::lines, args=owa(list(x=qval, y=lfun(x=qval,
                                                   para=dlf$parameter[[use[i]]]),
                   col=dlf$coldist[i], type="h"), linargs, "x","y","col","type"))
+  }
   # empirical quantile added:
   if(empirical)
     {
     dd <- density(dlf$dat)
-    qd <- quantileMean(dlf$dat, probs=probs, truncate=truncate)
+    qd <- quantileMean(dlf$dat, probs=probs2)
     do.call(graphics::lines, args=owa(list(x=qd, y=approx(dd$x, dd$y, xout=qd)$y,
                                            type="h"), linargs, "x","y","type"))
     }

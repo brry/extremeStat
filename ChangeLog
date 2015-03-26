@@ -10,6 +10,10 @@ This Log of changes in my package extremeStat contains two sections:
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 
+- all functions:
+# print messages on.exit()
+# catch and throw useful error if selection not in list (gpd, eg)
+
 - distLextreme: 
 # Include Bootstrapping with user-specified proportion left out
 # add log argument
@@ -23,6 +27,7 @@ This Log of changes in my package extremeStat contains two sections:
 - installB:
 # move to separate package and remove devtools dependency here
 # put updatePackages stuff there as well
+# installB must first detach packages depending on the package to be updated.
 
 
 
