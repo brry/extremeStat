@@ -13,6 +13,7 @@ cdf=FALSE,      # If TRUE, plot cumulated DF instead of probability density
 lines=TRUE,     # Should vertical lines marking the quantiles be added?
 linargs=NULL,   # Arguments passed to \code{\link{lines}}.
 empirical=TRUE, # Add vertical line for empirical \code{\link{quantileMean}}?
+quiet=FALSE,    # Suppress notes?
 ...             # Arguments passed to \code{\link{distLfit}} if x or truncate is given. Passed to \code{\link{distLplot}} if plot=TRUE and x is not given and truncate is 0.
 )
 {
@@ -20,7 +21,7 @@ empirical=TRUE, # Add vertical line for empirical \code{\link{quantileMean}}?
 truncate <- truncate[1] # cannot be vectorized
 if(truncate<0 | truncate>=1) stop("truncate must be a number between 0 and 1.")
 if( is.null(x) & is.null(dlf)) stop("Either dlf or x must be given.")
-if(!is.null(x) & truncate==0) dlf <- distLfit(dat=x, selection=type, plot=plot, cdf=cdf, ...)
+if(!is.null(x) & truncate==0) dlf <- distLfit(dat=x, selection=type, plot=plot, cdf=cdf, quiet=quiet, ...)
 probs2 <- probs
 # truncation:
 if(truncate!=0)
@@ -28,7 +29,7 @@ if(truncate!=0)
   if(all(probs < truncate)) stop("probs must contain values that are bigger than truncate.")
   if(is.null(x)) x <- dlf$dat
   xtrunc <- sort(x)[ -1:-(truncate*length(x)) ]
-  dlf <- distLfit(dat=xtrunc, selection=type, plot=plot, cdf=cdf, ...)
+  dlf <- distLfit(dat=xtrunc, selection=type, plot=plot, cdf=cdf, quiet=quiet, ...)
   probs2 <- (probs-truncate)/(1-truncate)
   probs2[probs < truncate] <- 0   # avoid negative values
   }
@@ -37,15 +38,25 @@ select <- type
 # available distributions
 if(is.null(type)) type <- names(dlf$parameter)
 tinp <- type %in% names(dlf$parameter)
-if(any(!tinp)) message("note in distLquantile: Specified type (",
+if(any(!tinp) & !quiet) message("note in distLquantile: Specified type (",
          paste(type[!tinp], collapse=", ") , ") is not available in dlf$parameter.")
+natypes <- type[!tinp]
+output2 <- matrix(NA, nrow=length(probs), ncol=length(natypes))
+colnames(output2) <- natypes
+#
 type <- type[tinp]
 available <- rownames(dlf$gof)
 available <- available[available %in% type]
 if(any(!type %in% available)) stop("Specified type is not available in dlf$gof.")
 # Parameter object from list
 param <- dlf$parameter[type]
-if(length(type)==0) return() # stop("No type left")
+if(length(type)==0)
+  {
+  output <- matrix(NA, nrow=length(probs), ncol=length(param))
+  rownames(output) <- paste0(probs*100,"%")
+  colnames(output) <- names(param)
+  return(cbind(output, output2)) # stop("No type left")
+  }
 # distribution quantiles:
 quan <- sapply(param, function(p) qlmomco(f=probs2, para=p))
 if(length(probs2)==1) quan <- t(quan)
@@ -57,7 +68,7 @@ if(truncate!=0) quan[probs < truncate,] <- NA
 if(plot & lines)
   {
   # plot if distLfit is not called yet:
-  if(is.null(x) & truncate==0) dlf$coldist <- distLplot(dlf, cdf=cdf, selection=select, ...)$coldist
+  if(is.null(x) & truncate==0) dlf$coldist <- distLplot(dlf, cdf=cdf, selection=select, quiet=quiet, ...)$coldist
   lfun <- if(cdf) plmomco else dlmomco
   use <- available[1:length(dlf$coldist)]
   for(i in 1:length(use))
@@ -78,5 +89,5 @@ if(plot & lines)
     }
   }
 # final output
-quan
+cbind(quan, output2) # always return all distributions asked for (with NA)
 }
