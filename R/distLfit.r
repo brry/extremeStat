@@ -16,17 +16,18 @@ plot=TRUE,    # Should a histogram with densities be plotted?
 cdf=FALSE,    # If TRUE, plot cumulated DF instead of probability density
 legargs=NULL, # List of arguments passed to \code{\link{legend}} except for legend and col
 histargs=NULL,# List of arguments passed to \code{\link{hist}} except for x, breaks, col, xlim, freq
-quiet=FALSE,  # Should \code{\link{rmse}} warn about NA removal?
+quiet=FALSE,  # Suppress notes?
 ... )         # Further arguments passed to \code{\link{distLplot}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...
 {
 # preparation ------------------------------------------------------------------
 StartTime <- Sys.time()
 if(missing(datname)) datname <- deparse(substitute(dat))
 # Progress bars
+if(quiet) progbars <- FALSE
 if( require(pbapply,quietly=TRUE) & progbars ) lapply <- pbapply::pblapply
 # checks:
 if( ! is.numeric(dat) ) stop("dat must be numeric.")
-if(!is.vector(dat)) message("note in distLfit: dat was not a vector.")
+if(!is.vector(dat) & !quiet) message("note in distLfit: dat was not a vector.")
 if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) )
   stop("gofProp must be a single value between 0 and 1.")
 # remove NAs, convert to vector:
@@ -39,6 +40,13 @@ if( ! is.null(selection) )
   if(is.numeric(selection)) if(any(abs(selection)>length(dn)))
      stop("'selection' cannot be larger than", length(dn), ".")
   names(dn) <- dn # so that selection can also be character string
+  seldn <- !selection %in% dn
+  if(any(seldn))
+   {
+   if(!quiet) message("note in distLfit: selection '", paste(selection[seldn], collapse="', '"),
+   "' not available in lmomco::dist.list(), thus removed.")
+   selection <- selection[!seldn]
+   }
   dn <- dn[selection]
   names(dn) <- NULL
   }
@@ -56,7 +64,7 @@ parameter <- lapply(dn, function(d) lmom2par(mom, type=d) )
 # error catching:
 if( length(parameter) != length(dn))
   {
-  on.exit(message("note in distLfit: Some distributions could not be fitted. Possibly cau."))
+  if(!quiet) on.exit(message("note in distLfit: Some distributions could not be fitted. Possibly cau."))
   names(parameter) <- sapply(parameter, "[[", "type")
   }
 else names(parameter) <- dn
@@ -66,11 +74,11 @@ output <- distLgof(list(dat=dat, datname=datname, gofProp=gofProp, parameter=par
 # compare GOF
 if(gofComp)
   {
-  distLgofPlot(output)
+  distLgofPlot(output, quiet=quiet)
   plot <- FALSE
   }
-if(plot) output <- distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
+if(plot) output <- distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, quiet=quiet, ... )
 if(!plot) output$coldist <- rainbow2(if(is.null(selection)) 5 else length(selection))
-if(time) message("distLfit execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
+if(time & !quiet) message("distLfit execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
 return(invisible(output))
 } # end of function
