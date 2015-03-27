@@ -6,7 +6,7 @@
 percentline=NA, percentargs=NULL, supportends=TRUE,
 breaks=20, xlim=extendrange(dat, f=0.15), ylim=NULL, xaxs="i", yaxs="i", xaxt, col="grey",
 main, xlab, ylab, las=1, coldist=rainbow2(nbest), add=FALSE,
-logargs=NULL, legend=TRUE, legargs=NULL, histargs=NULL, ... )}
+logargs=NULL, legend=TRUE, legargs=NULL, histargs=NULL, quiet=FALSE, ... )}
 \arguments{
   \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, parameter, gof}}
   \item{nbest}{Number of distributions plotted, in order of goodness of fit. DEFAULT: 5}
@@ -30,6 +30,7 @@ logargs=NULL, legend=TRUE, legargs=NULL, histargs=NULL, ... )}
   \item{legend}{Should \code{\link{legend}} be called? DEFAULT: TRUE}
   \item{legargs}{List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL}
   \item{histargs}{List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} except for x, freq. DEFAULT: NULL}
+  \item{quiet}{Suppress notes? DEFAULT: FALSE}
   \item{\dots}{Further arguments passed to \code{\link{lines}}, like lty, type, pch, ...}
 }
 \value{dlf with coldist added, returned invisibly.}

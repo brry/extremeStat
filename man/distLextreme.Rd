@@ -9,7 +9,7 @@ Plots distributions and adds plotting positions by Weibull and Gringorton.
 selection, gofProp=1, progbars=length(dat)>200, time=TRUE, plot=TRUE, add=FALSE,
 nbest=5, xlim, ylim, las=1, main=datname, xlab="Return Period RP  [a]",
 ylab="Discharge HQ  [m^3/s]", col="black", pch=c(16,3), cex=1,
-coldist=rainbow2(nbest), lwd=1, legend=TRUE, legargs=NULL, linargs=NULL, ... )}
+coldist=rainbow2(nbest), lwd=1, legend=TRUE, legargs=NULL, linargs=NULL, quiet=FALSE, ... )}
 \arguments{
   \item{dat}{Vector with extreme values e.g. annual discharge maxima. Ignored if dlf is given.}
   \item{datname}{Character string for main and output list. DEFAULT: internal \code{substitute(dat)}}
@@ -38,6 +38,7 @@ coldist=rainbow2(nbest), lwd=1, legend=TRUE, legargs=NULL, linargs=NULL, ... )}
   \item{legend}{Logical. Add a legend? DEFAULT: TRUE}
   \item{legargs}{list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd. DEFAULT: NULL}
   \item{linargs}{list of arguments passed to \code{\link{lines}} like lty, lwd, type, pch, ... DEFAULT: NULL}
+  \item{quiet}{Suppress notes? DEFAULT: FALSE}
   \item{\dots}{Further arguments passed to \code{\link{plot}}, like log="x", xaxt="n", ...}
 }
 \details{

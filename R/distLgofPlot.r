@@ -9,6 +9,7 @@ order=TRUE, # If TRUE, the best distribution is at the top. False to compare acr
 add=FALSE, # If TRUE, just the lines and legend are added to an existing plot.
 type="o", # type of line-point combination as in \code{\link{plot}}
 col=c(1,3,4), pch=1:3, lty=1, # Vectors with 3 values for line customization. Recycled if necessary. DEFAULTS: see created plot
+quiet=FALSE, # Suppress notes?
 ...) # Further arguments passed to \code{\link{plot}}.
 {
 # recycling:
@@ -20,7 +21,7 @@ gof <- dlf$gof
 gofProp <- dlf$gofProp
 # catch ks=FALSE results:
 ks <- "ksP" %in% colnames(gof)
-if(!ks) message("note in distLgofPlot: This result from distLgof with ks=FALSE ignores ks ranks.")
+if(!ks & !quiet) message("note in distLgofPlot: This result from distLgof with ks=FALSE ignores ks ranks.")
 # Ranks:
 Ranks <- cbind(rank(gof$RMSE), rank(-gof$R2))
 if(ks) Ranks <- cbind(Ranks, rank(-gof$ksP), rank(gof$ksD))

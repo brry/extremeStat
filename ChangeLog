@@ -43,6 +43,7 @@ various changes, see github commit log at
 https://github.com/BerryBoessenkool/extremeStat/commits/master
 highlights:
 - failed parameter fitting is handled much better, warning messages became useful
+- quiet argument added throughout the package
 - several defaults were improved 
 - documentation was updated and enhanced
 - distLgof now returns weights calculated by 3 different methods

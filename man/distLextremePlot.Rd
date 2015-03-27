@@ -5,7 +5,7 @@
 \usage{distLextremePlot(dlf, selection, add=FALSE, nbest=5, xlim=NULL, ylim=NULL,
 las=1, main=dlf$datname, xlab="Return Period RP  [a]", ylab="Discharge HQ  [m^3/s]",
 col="black", pch=c(16,3), cex=1, coldist=rainbow2(nbest), lwd=1,
-legend=TRUE, legargs=NULL, linargs=NULL, ... )}
+legend=TRUE, legargs=NULL, linargs=NULL, quiet=FALSE, ... )}
 \arguments{
   \item{dlf}{List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, parameter, gof}. Overrides dat!}
   \item{selection}{Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}}
@@ -25,6 +25,7 @@ legend=TRUE, legargs=NULL, linargs=NULL, ... )}
   \item{legend}{Logical. Add a legend? DEFAULT: TRUE}
   \item{legargs}{list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd. DEFAULT: NULL}
   \item{linargs}{list of arguments passed to \code{\link{lines}} like lty, lwd, type, pch, ... DEFAULT: NULL}
+  \item{quiet}{Suppress notes? DEFAULT: FALSE}
   \item{\dots}{Further arguments passed to \code{\link{plot}}, like log="x", xaxt="n", ...}
 }
 \details{This is an auxiliary graphing function to \code{\link{distLextreme}}}

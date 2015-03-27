@@ -19,7 +19,7 @@ time=TRUE, plot=TRUE, cdf=FALSE, legargs=NULL, histargs=NULL, quiet=FALSE, ... )
   \item{cdf}{If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE}
   \item{legargs}{List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL}
   \item{histargs}{List of arguments passed to \code{\link{hist}} except for x, breaks, col, xlim, freq. DEFAULT: NULL}
-  \item{quiet}{Should \code{\link{rmse}} warn about NA removal? DEFAULT: FALSE}
+  \item{quiet}{Suppress notes? DEFAULT: FALSE}
   \item{\dots}{Further arguments passed to \code{\link{distLplot}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...}
 }
 \details{fits parameters via \code{\link[lmomco]{lmom2par}} in the package \code{lmomco}}

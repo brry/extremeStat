@@ -3,7 +3,7 @@
 \title{distribution quantiles}
 \description{Parametrical quantiles of distributions fitted to a sample.}
 \usage{distLquantile(x=NULL, probs=0:4/4, truncate=0, type=NULL, dlf=NULL, order=TRUE,
-plot=FALSE, cdf=FALSE, lines=TRUE, linargs=NULL, empirical=TRUE, ... )}
+plot=FALSE, cdf=FALSE, lines=TRUE, linargs=NULL, empirical=TRUE, quiet=FALSE, ... )}
 \arguments{
   \item{x}{Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
   \item{probs}{Numeric vector of probabilities with values in [0,1]. DEFAULT: 0:4/4}
@@ -16,6 +16,7 @@ plot=FALSE, cdf=FALSE, lines=TRUE, linargs=NULL, empirical=TRUE, ... )}
   \item{lines}{Should vertical lines marking the quantiles be added? DEFAULT: TRUE}
   \item{linargs}{Arguments passed to \code{\link{lines}}. DEFAULT: NULL}
   \item{empirical}{Add vertical line for empirical \code{\link{quantileMean}}? DEFAULT: TRUE}
+  \item{quiet}{Suppress notes? DEFAULT: FALSE}
   \item{\dots}{Arguments passed to \code{\link{distLfit}} if x or truncate is given. Passed to \code{\link{distLplot}} if plot=TRUE and x is not given and truncate is 0.}
 }
 \details{

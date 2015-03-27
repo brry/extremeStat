@@ -20,6 +20,7 @@ lwd=1,        # Line WiDth of distribution lines
 legend=TRUE,  # Logical. Add a legend?
 legargs=NULL, # list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd
 linargs=NULL, # List of arguments passed to \code{\link{lines}} like lty, lwd, type, pch, ...
+quiet=FALSE,  # Suppress notes?
 ... )         # Further arguments passed to \code{\link{plot}} like log="x", xaxt="n", ...
 {
 # Input operations:
@@ -27,7 +28,7 @@ output <- dlf
 if(length(pch)==1) pch[2] <- if(is.na(pch)) NA else if(pch[1]==3) 4 else 3
 col <- rep(col, length.out=2)
 if(!is.null(selection))  nbest <- length(selection)
-if(length(coldist) != nbest)
+if(length(coldist) != nbest & !quiet)
    message("note in distLextremePlot: Length of coldist (",length(coldist),") was not equal to nbest (",nbest,"). Is now recycled.")
 coldist <- rep(coldist, length=nbest)
 # Extract objects from dlf:

@@ -9,7 +9,7 @@
   \item{plot}{Call \code{\link{distLgofPlot}}? DEFAULT: TRUE}
   \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n > 200)}
   \item{ks}{Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. distLgofPlot does not run on the result. DEFAULT: TRUE}
-  \item{quiet}{Should \code{\link{rmse}} warn about NA removal? DEFAULT: FALSE}
+  \item{quiet}{Suppress notes? DEFAULT: FALSE}
 }
 \value{List as explained in \code{\link{extremeStat}}. The added element is gof, a data.frame the root mean square error (RMSE) and R squared (R2) for the top \code{gofProp} of \code{dat}, as well as the p and D values from a simple \code{\link{ks.test}} for each distribution function.}
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014}

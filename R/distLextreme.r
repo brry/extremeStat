@@ -33,12 +33,14 @@ lwd=1,        # Line WiDth of distribution lines
 legend=TRUE,  # Logical. Add a legend?
 legargs=NULL, # list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd
 linargs=NULL, # List of arguments passed to \code{\link{lines}} like lty, lwd, type, pch, ...
+quiet=FALSE,  # Suppress notes?
 ... )         # Further arguments passed to \code{\link{plot}} like log="x", xaxt="n", ...
 {
 StartTime <- Sys.time()
+if(quiet) progbars <- FALSE
 # input checks -----------------------------------------------------------------
 if(missing(datname)) datname <- deparse(substitute(dat))
-if(!missing(dlf)) if(!missing(dat)) if(dlf$dat != dat)
+if(!missing(dlf)) if(!missing(dat)) if(dlf$dat != dat & !quiet)
    message("note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored.")
 if(!missing(dlf)) datname <- dlf$datname
 ###require(lmomco) # not necessary anymore. it is listed in 'Imports' now...
@@ -46,7 +48,7 @@ if(!missing(dlf)) datname <- dlf$datname
 #
 # fit distributions and calculate goodness of fits -----------------------------
 if( missing(dlf) )  dlf <- distLfit(dat=dat, datname=datname, speed=speed, ks=ks,
-       selection=selection, gofProp=gofProp, progbars=progbars, plot=FALSE, time=FALSE)
+       selection=selection, gofProp=gofProp, progbars=progbars, quiet=quiet, plot=FALSE, time=FALSE)
 output <- dlf
 # objects from the list
 dat <- output$dat; parameter <- output$parameter;  gof <- output$gof
@@ -54,7 +56,7 @@ dat <- output$dat; parameter <- output$parameter;  gof <- output$gof
 dat <- as.numeric( dat[!is.na(dat)]  )
 # plot -------------------------------------------------------------------------
 if(plot) output <- distLextremePlot(dlf=dlf, selection=selection, add=add, nbest=nbest,   
-    xlim=xlim, ylim=ylim, las=las, main=main, xlab=xlab, ylab=ylab, col=col,
+    xlim=xlim, ylim=ylim, las=las, main=main, xlab=xlab, ylab=ylab, col=col, quiet=quiet,
     pch=pch, cex=cex, coldist=coldist, lwd=lwd, legend=legend, legargs=legargs, linargs=linargs, ...)
 # output (discharge) values at return periods ----------------------------------
 dn <- rownames(gof) # distribution names
@@ -71,6 +73,6 @@ colnames(returnlev) <- paste0("RP.", RPs)
 # Add to output:
 output$coldist <- coldist
 output$returnlev <- as.data.frame(returnlev)
-if(time) message("distLextreme execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
+if(time & !quiet) message("distLextreme execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
 return(invisible(output))
 } # end of function
