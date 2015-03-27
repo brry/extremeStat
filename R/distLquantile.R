@@ -55,6 +55,7 @@ if(length(type)==0)
   output <- matrix(NA, nrow=length(probs), ncol=length(param))
   rownames(output) <- paste0(probs*100,"%")
   colnames(output) <- names(param)
+  if(empirical) output <- cbind(output, quantileMean=NA)
   return(cbind(output, output2)) # stop("No type left")
   }
 # distribution quantiles:
@@ -64,6 +65,8 @@ rownames(quan) <- paste0(probs*100,"%")
 # order by goodness of fit:
 if(order & length(available)>1) quan <- quan[,available, drop=FALSE]
 if(truncate!=0) quan[probs < truncate,] <- NA
+# empirical at end:
+if(empirical) quan <- cbind(quan, quantileMean=quantileMean(dlf$dat, probs=probs2))
 # Quantile lines:
 if(plot & lines)
   {
@@ -83,7 +86,7 @@ if(plot & lines)
   if(empirical)
     {
     dd <- density(dlf$dat)
-    qd <- quantileMean(dlf$dat, probs=probs2)
+    qd <- quan[,"quantileMean"]
     do.call(graphics::lines, args=owa(list(x=qd, y=approx(dd$x, dd$y, xout=qd)$y,
                                            type="h"), linargs, "x","y","type"))
     }
