@@ -63,8 +63,8 @@ if(plot & lines)
   for(i in 1:length(use))
   {
   qval <- quan[,use[i]]
-  qval <- qval[ !is.finite(qval) ] # Inf ignored
-  do.call(graphics::lines, args=owa(list(x=qval, y=lfun(x=qval,
+  qval <- qval[ is.finite(qval) ] # Inf ignored
+  if(length(qval)>0) do.call(graphics::lines, args=owa(list(x=qval, y=lfun(x=qval,
                                                   para=dlf$parameter[[use[i]]]),
                   col=dlf$coldist[i], type="h"), linargs, "x","y","col","type"))
   }
