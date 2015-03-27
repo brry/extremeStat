@@ -8,10 +8,11 @@ gofProp, # Overrides value in list. Proportion of highest values in \code{dat} t
 plot=TRUE, # Call \code{\link{distLgofPlot}}?
 progbars=length(dlf$dat)>200, # Show progress bars for each loop?
 ks=TRUE, # Include ks.test results in dlf$gof? Computing is much faster when FALSE
-quiet=FALSE  # Should \code{\link{rmse}} warn about NA removal?
+quiet=FALSE # Suppress notes?
 )
 {
 # Progress bars
+if(quiet) progbars <- FALSE
 if( require(pbapply,quietly=TRUE) & progbars ) lapply <- pbapply::pblapply
 # Objects from list:
 dat <- dlf$dat
@@ -28,7 +29,7 @@ exclude <- sapply(parameter, function(x)
   any(is.na(x$para))
   })                    #  *): CDF cannot be computed for kappa in Dresden example
 if(any(exclude))
-  {message("note in distLgof: The following distributions were excluded since no parameters were estimated:\n",
+  {if(!quiet) message("note in distLgof: The following distributions were excluded since no parameters were estimated:\n",
              paste(dn[exclude], collapse=", "))
   dn <- dn[!exclude]
   parameter <- parameter[!exclude] # not sure whether this is always good...
@@ -65,6 +66,8 @@ if(!quiet)
   }
 # All into one data.frame:
 gof <- data.frame(RMSE=RMSE, R2=R2)
+if(!all(dim(gof) == 0)) # dim = 0,0 if all distributions are excluded
+{
 if(ks) {gof$ksP=ksP; gof$ksD=ksD}
 # order by GOF:
 gof <- gof[ order(gof$RMSE), ]  # -gof$R2 # which measure should I sort by?
@@ -82,9 +85,15 @@ gof$weight3 <- gof[,"RMSE"]
 gof$weight3 <- max(gof$weight3)-gof$weight3
 gof$weight3[(nrow(gof)/2):nrow(gof)] <- 0
 gof$weight3 <- gof$weight3/sum(gof$weight3)
+} else
+{
+gof <- data.frame(matrix(NA, ncol=5, nrow=length(dlf$parameter) ))
+colnames(gof) <- c("RMSE","R2","weight1","weight2","weight3")
+rownames(gof) <-  names(dlf$parameter)
+}
 # output:
 output <- list(dat=dat, datname=dlf$datname, gofProp=gofProp, parameter=parameter, gof=gof)
-if(plot) distLgofPlot(output)
+if(plot) distLgofPlot(output, quiet=quiet)
 output
 } # end of function
 
