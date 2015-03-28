@@ -21,6 +21,15 @@ quiet=FALSE,    # Suppress notes?
 truncate <- truncate[1] # cannot be vectorized
 if(truncate<0 | truncate>=1) stop("truncate must be a number between 0 and 1.")
 if( is.null(x) & is.null(dlf)) stop("Either dlf or x must be given.")
+# if input sample size is too small:
+NAoutput <- matrix(NA, nrow=length(probs), ncol=if(is.null(type)) 17 else length(type) )
+if(empirical) NAoutput <- cbind(NAoutput, NA)
+rownames(NAoutput) <- paste0(probs*100,"%")
+if(!is.null(x) & length(x[!is.na(x)])<5)
+  {
+  if(!quiet) message("note in distLquantile: dat sample size is too small to fit parameters.")
+  return(NAoutput)
+  }
 if(!is.null(x) & truncate==0) dlf <- distLfit(dat=x, selection=type, plot=plot, cdf=cdf, quiet=quiet, ...)
 probs2 <- probs
 # truncation:
@@ -29,6 +38,11 @@ if(truncate!=0)
   if(all(probs < truncate)) stop("probs must contain values that are bigger than truncate.")
   if(is.null(x)) x <- dlf$dat
   xtrunc <- sort(x)[ -1:-(truncate*length(x)) ]
+  if(length(xtrunc[!is.na(xtrunc)])<5)
+    {
+    if(!quiet) message("note in distLquantile: dat sample size is too small to fit parameters.")
+    return(NAoutput)
+    }
   dlf <- distLfit(dat=xtrunc, selection=type, plot=plot, cdf=cdf, quiet=quiet, ...)
   probs2 <- (probs-truncate)/(1-truncate)
   probs2[probs < truncate] <- 0   # avoid negative values

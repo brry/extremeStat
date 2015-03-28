@@ -32,6 +32,8 @@ if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) )
   stop("gofProp must be a single value between 0 and 1.")
 # remove NAs, convert to vector:
 dat <- as.numeric( dat[!is.na(dat)]  )
+if(length(dat) < 5) {message("note in distLfit: dat sample size is too small to fit parameters.")
+                     return(list(dat=dat, parameter=NA, gof=NA))}
 # possible distributions:
 dn <- dist.list()
 # Selection:
