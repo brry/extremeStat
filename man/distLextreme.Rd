@@ -6,7 +6,7 @@ Fits several distributions based on linear moments, calculate return levels for 
 Plots distributions and adds plotting positions by Weibull and Gringorton.
 }
 \usage{distLextreme(dat, datname, dlf, RPs=c(2,5,10,20,50), speed=TRUE, ks=FALSE,
-selection, gofProp=1, progbars=length(dat)>200, time=TRUE, plot=TRUE, add=FALSE,
+selection, order=FALSE, gofProp=1, progbars=length(dat)>200, time=TRUE, plot=TRUE, add=FALSE,
 nbest=5, xlim, ylim, las=1, main=datname, xlab="Return Period RP  [a]",
 ylab="Discharge HQ  [m^3/s]", col="black", pch=c(16,3), cex=1,
 coldist=rainbow2(nbest), lwd=1, legend=TRUE, legargs=NULL, linargs=NULL, quiet=FALSE, ... )}
@@ -18,7 +18,8 @@ coldist=rainbow2(nbest), lwd=1, legend=TRUE, legargs=NULL, linargs=NULL, quiet=F
   \item{speed}{If TRUE, several computationally intensive time consuming distributions are omitted, for the reasons shown in \code{\link[lmomco]{dist.list}()}. DEFAULT: TRUE}
   \item{ks}{Include ks.test results in \code{dlf$gof}? Computing is much faster on big datasets when FALSE. DEFAULT: TRUE}
   \item{selection}{Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}. Overrides nbest}
-  \item{gofProp}{Upper proportion of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1}
+  \item{order}{If selection is given, should legend and colors in \code{\link{distLextremePlot}} be ordered by gof anyways?}
+\item{gofProp}{Upper proportion of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1}
   \item{progbars}{Show progress bars for each loop and \code{\link{message}} execution time? DEFAULT: TRUE if n > 200}
   \item{time}{\code{\link{message}} execution time? DEFAULT: TRUE}
   \item{plot}{Should the return periods and nbest fitted distributions be plotted? DEFAULT: TRUE}
@@ -150,7 +151,7 @@ lines(dle$gof$weight3, pch=3, col=3, type="o")
 lines(dle$gof$RMSE, col=4)
 text(1, dle$gof$RMSE[1], "RMSE", adj=c(0,-0.5), col=4)
 axis(1, 1:17, rownames(dle$gof), las=2)
-legend("topright", c("max(r)-r", "max(r)-r + min(r)", "first half"),
+legend("topright", c("max(r)-r + min(r)", "max(r)-r", "first half"),
        title="Weighted by RMSE (r)", col=1:3, pch=1:3, lty=1)
 
 

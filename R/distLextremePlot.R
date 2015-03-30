@@ -4,6 +4,7 @@
 distLextremePlot <- function(
 dlf,          # List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, parameter, gof}. Overrides dat!
 selection=NULL,# Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}
+order=FALSE,  # If selection is given, should legend and colors be ordered by gof anyways?
 add=FALSE,    # If TRUE, plot is not called before adding lines. This lets you add lines highly customized one by one
 nbest=5,      # Number of distributions plotted, in order of goodness of fit
 xlim=NULL,         # X-axis limits. DEFAULT: xlim of plotting positions
@@ -49,9 +50,16 @@ dn <- rownames(gof) # distribution names
 if(!is.null(selection))
   {
   names(dn) <- dn
+  selection <- selection[selection %in% dn]
   dn <- dn[selection]
+  if(order)
+    {
+    dno <- rownames(gof)
+    dno <- dno[dno %in% dn]
+    dn <- dn[dno]
+    }
   names(dn) <- NULL
-  if(is.na(dn)) stop("No distributions are left with selection ", selection)
+  if(all(is.na(dn))) stop("No distributions are left with selection ", paste(selection, collapse=", "))
   }
 # Plotting ---------------------------------------------------------------------
 # Calculate plot limits if not given:

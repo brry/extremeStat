@@ -13,6 +13,7 @@ RPs=c(2,5,10,20,50), # ReturnPeriods for which discharge is estimated
 speed=TRUE,   # If TRUE, several computationally intensive time consuming distributions are omitted, for the reasons shown in \code{\link[lmomco]{dist.list()}}
 ks=FALSE,     # Include ks.test results in dlf$gof? Computing is much faster when FALSE
 selection=NULL, # Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}
+order=FALSE,  # if selection is given, should legend and colors in \code{\link{distLextremePlot}} be ordered by gof anyways?
 gofProp=1,    # Upper proportion of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
 progbars=length(dat)>200, # Show progress bars for each loop?
 time=TRUE,    # \code{\link{message}} execution time?
@@ -55,7 +56,7 @@ dat <- output$dat; parameter <- output$parameter;  gof <- output$gof
 # remove NAs, convert to vector:
 dat <- as.numeric( dat[!is.na(dat)]  )
 # plot -------------------------------------------------------------------------
-if(plot) output <- distLextremePlot(dlf=dlf, selection=selection, add=add, nbest=nbest,   
+if(plot) output <- distLextremePlot(dlf=dlf, selection=selection, order=order, add=add, nbest=nbest,
     xlim=xlim, ylim=ylim, las=las, main=main, xlab=xlab, ylab=ylab, col=col, quiet=quiet,
     pch=pch, cex=cex, coldist=coldist, lwd=lwd, legend=legend, legargs=legargs, linargs=linargs, ...)
 # output (discharge) values at return periods ----------------------------------

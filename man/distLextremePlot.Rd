@@ -2,13 +2,14 @@
 \alias{distLextremePlot}
 \title{Plot extreme value statistics}
 \description{Plots distributions fitted by L-moments and adds plotting positions by Weibull and Gringorton.}
-\usage{distLextremePlot(dlf, selection, add=FALSE, nbest=5, xlim=NULL, ylim=NULL,
+\usage{distLextremePlot(dlf, selection, order=FALSE, add=FALSE, nbest=5, xlim=NULL, ylim=NULL,
 las=1, main=dlf$datname, xlab="Return Period RP  [a]", ylab="Discharge HQ  [m^3/s]",
 col="black", pch=c(16,3), cex=1, coldist=rainbow2(nbest), lwd=1,
 legend=TRUE, legargs=NULL, linargs=NULL, quiet=FALSE, ... )}
 \arguments{
   \item{dlf}{List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, parameter, gof}. Overrides dat!}
   \item{selection}{Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}}
+  \item{order}{If selection is given, should legend and colors be ordered by gof anyways?}
   \item{add}{If TRUE, plot is not called before adding lines. This lets you add lines highly customized one by one. DEFAULT: FALSE}
   \item{nbest}{Number of distributions plotted, in order of goodness of fit. DEFAULT: 5}
   \item{xlim}{X-axis limits. DEFAULT: xlim of plotting positions}
