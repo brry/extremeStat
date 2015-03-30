@@ -25,7 +25,8 @@ if( is.null(x) & is.null(dlf)) stop("Either dlf or x must be given.")
 NAoutput <- matrix(NA, nrow=length(probs), ncol=if(is.null(type)) 17 else length(type) )
 if(empirical) NAoutput <- cbind(NAoutput, NA)
 rownames(NAoutput) <- paste0(probs*100,"%")
-if(!is.null(x) & length(x[!is.na(x)])<5)
+if(!is.null(x)) x <- x[!is.na(x)]
+if(!is.null(x) & length(x)<5)
   {
   if(!quiet) message("note in distLquantile: dat sample size is too small to fit parameters.")
   return(NAoutput)
@@ -79,6 +80,8 @@ rownames(quan) <- paste0(probs*100,"%")
 # order by goodness of fit:
 if(order & length(available)>1) quan <- quan[,available, drop=FALSE]
 if(truncate!=0) quan[probs < truncate,] <- NA
+# final output
+quan <- cbind(quan, output2) # always return all distributions asked for (with NA)
 # empirical at end:
 if(empirical) quan <- cbind(quan, quantileMean=quantileMean(dlf$dat, probs=probs2))
 # Quantile lines:
@@ -105,6 +108,6 @@ if(plot & lines)
                                            type="h"), linargs, "x","y","type"))
     }
   }
-# final output
-cbind(quan, output2) # always return all distributions asked for (with NA)
+# return output:
+quan
 }
