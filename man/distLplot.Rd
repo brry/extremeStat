@@ -11,6 +11,7 @@ logargs=NULL, legend=TRUE, legargs=NULL, histargs=NULL, ... )}
   \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, parameter, gof}}
   \item{nbest}{Number of distributions plotted, in order of goodness of fit. DEFAULT: 5}
   \item{selection}{Names of distributions in \code{dlf$parameter} that will be drawn. Overrides nbest.}
+  \item{order}{If selection is given, should legend and colors be ordered by gof anyways?}
   \item{cdf}{If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE}
   \item{log}{If TRUE, logAxis is called. DEFAULT: FALSE}
   \item{percentline}{If TRUE, draw vertical line at 1-dlf$gofProp of dlf$dat. If NA, only do so if gofProp!=1. DEFAULT: NA}
