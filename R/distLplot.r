@@ -6,6 +6,7 @@ distLplot <- function(
 dlf,                    # List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname, gofProp}
 nbest=5,                # Number of distributions plotted, in order of goodness of fit
 selection=NULL,         # Names of distributions in \code{dlf$parameter} that will be drawn. Overrides nbest.
+order=FALSE,            # If selection is given, should legend and colors be ordered by gof anyways?
 cdf=FALSE,              # If TRUE, plot cumulated DF instead of probability density
 log=FALSE,              # If TRUE, logAxis is called.
 percentline=NA,         # If TRUE, draw vertical line at 1-dlf$gofProp of dlf$dat. If NA, only do so if gofProp!=1
@@ -41,7 +42,14 @@ if(is.null(dlf$datname)) stop("dlf must contain the element datname")
 if(is.null(dlf$gofProp)) stop("dlf must contain the element gofProp")
 # distribution selection:
 if(!is.null(selection))
-  {gof <- gof[selection, ]
+  {
+  names(selection) <- selection
+  if(order) selection <- selection[rownames(gof)]
+  selection <- selection[!is.na(selection)]
+  sing <- selection %in% rownames(gof)
+  if(!any(sing)) stop("selection ", paste(selection[!sing], collapse=", "), " is not available in dlf$gof.")
+  selection <- selection[sing]
+  gof <- gof[selection, ]
   nbest <- length(selection)
   }
 # input checks:
@@ -59,10 +67,10 @@ if(!add)
   if(missing(main)) main <- paste("Cumulated density distributions of", dlf$datname)
   ecdfdef <- list(x=ecdf(dat), col=col, xlim=xlim, xaxt=xaxt, ylab=ylab,
              ylim=ylim, xaxs=xaxs, yaxs=yaxs, main=main, xlab=xlab, las=las)
-  do.call(plot, args=owa(ecdfdef, histargs, c("x", "y")))
+  do.call(plot, args=owa(ecdfdef, histargs, "x", "y"))
   if(log)
-    {do.call(logAxis, args=owa(list(from=dat, xaxt="s"), logargs))
-     do.call(lines,   args=owa(ecdfdef,                 histargs, c("x", "y")))
+    {do.call(logAxis, args=owa(list(xaxt="s"), logargs))
+     do.call(lines,   args=owa(ecdfdef,       histargs, "x", "y"))
     }
   }
   else # if not cdf, then density
@@ -74,10 +82,10 @@ if(!add)
   op <- par(xaxs=xaxs, yaxs=yaxs, xaxt=xaxt)
   histdef <- list(x=dat, breaks=breaks, col=col, xlim=xlim, ylim=ylim, ylab=ylab,
                   freq=FALSE, main=main, xlab=xlab, las=las)
-  do.call(hist, args=owa(histdef, histargs, c("x", "freq")))
+  do.call(hist, args=owa(histdef, histargs, "x", "freq"))
   if(log)
-    {do.call(logAxis, args=owa(list(from=dat, xaxt="s"), logargs))
-     do.call(hist,    args=owa(c(histdef, add=TRUE),    histargs, c("x", "freq", "add")))
+    {do.call(logAxis, args=owa(list(xaxt="s"), logargs))
+     do.call(hist,    args=owa(c(histdef, add=TRUE), histargs, "x", "freq", "add"))
     }
   par(op)
   }
