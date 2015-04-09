@@ -8,7 +8,8 @@ gofProp, # Overrides value in list. Proportion of highest values in \code{dat} t
 plot=TRUE, # Call \code{\link{distLgofPlot}}?
 progbars=length(dlf$dat)>200, # Show progress bars for each loop?
 ks=TRUE, # Include ks.test results in dlf$gof? Computing is much faster when FALSE
-quiet=FALSE # Suppress notes?
+quiet=FALSE, # Suppress notes?
+... # Further arguments passed to \code{\link{distLgofPlot}}
 )
 {
 # Progress bars
@@ -93,7 +94,7 @@ rownames(gof) <-  names(dlf$parameter)
 }
 # output:
 output <- list(dat=dat, datname=dlf$datname, gofProp=gofProp, parameter=parameter, gof=gof)
-if(plot) distLgofPlot(output, quiet=quiet)
+if(plot) distLgofPlot(output, quiet=quiet, ...)
 output
 } # end of function
 
