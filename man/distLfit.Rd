@@ -35,12 +35,15 @@ testdat <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 8
 # basic usage on real data (annual discharge maxima in Austria)
 dlf <- distLfit(testdat)
 str(dlf, max.lev=2)
+distLprint(dlf)
 
 # arguments that can be passed:
 distLfit(testdat, lty=2, col=3, legargs=list(lwd=3), main="booh!")
 dlf_b <- distLfit(rbeta(1e3, 5, 2), nbest=10, legargs=c(x="left"))
 distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"))
 distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"), order=TRUE)
+
+# Goodness of Fit is computed by RMSE, see first example of ?distLgof
 
 # logarithmic axes:
 set.seed(1)
