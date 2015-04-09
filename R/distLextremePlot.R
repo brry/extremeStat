@@ -74,7 +74,9 @@ if(nbest > length(dn)) {nbest <- length(dn)}
 coldist <- rep(coldist, length=nbest)
 for(i in nbest:1)
   {
-  linargsdefault <- list(x=1/(1-plmomco(yval,parameter[[dn[i]]])), y=yval, col=coldist[i], lwd=lwd)
+  Pnonexceed <- plmomco(yval,parameter[[dn[i]]]) # print(Pnonexceed, digits=20)
+  Pnonexceed[Pnonexceed>1] <- 1 # remove numerical errors
+  linargsdefault <- list(x=1/(1-Pnonexceed), y=yval, col=coldist[i], lwd=lwd)
   do.call(lines, args=owa(linargsdefault, linargs))
   }
 # Add plotting positions of actual data:
