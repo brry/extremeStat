@@ -57,11 +57,10 @@ Christoph Mudersbach: Untersuchungen zur Ermittlung von hydrologischen Bemessung
 \examples{
 # Data from river in Austria
 # Basic examples
-# Goodness of fit
-# 1. Measures for GOF
-# 2. weights based on GOF
-# 3. weighted mean based on GOF
-# 4. effect of data proportion used to estimate GOF
+# Advanced options
+# weighted mean based on Goodness of fit (GOF)
+# Effect of data proportion used to estimate GOF
+# compare extremeStat with other packages
 
 library(lmomco)
 library(berryFunctions)
@@ -71,24 +70,36 @@ annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81
 60.1, 72.4, 61.6, 94.8, 82.6, 57.2,  63.1, 73.8, 51.3, 93.6, 56.9, 52.1, 40.4,
 48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
 
-# Basic examples
+# Basic examples ---------------------------------------------------------------
 dle <- distLextreme(annMax)
 # Why do I not get the following warning in interactive mode?
 ## calculating RMSE:
 ## Warning in rmse(tcdfs[[d]], ecdfs, quiet = q
 ##   7 NAs were omitted from 35 data points.
-  
+
+# Object structure:
 str(dle, max.lev=2)
-dle$returnlev
 distLprint(dle)
 
-# Estimate discharge that empirically could occur every 80 years:
+# discharge levels for default return periods:
+dle$returnlev
+
+# Estimate discharge that could occur every 80 years (at least empirically):
 Q80 <- distLextreme(dlf=dle, RPs=80)$returnlev
 round(sort(Q80[,1], decr=TRUE),1)
 # 99 to 143 m^3/s can make a relevant difference in engineering!
 
-# Line colors / selection distributions to be plotted:
+# Return period of a given discharge value:
+sort(1/(1-sapply(dle$parameter, plmomco, x=150) ))
+# exponential: 105 years, gev (general extreme value dist): 536,
+# Weibull: every 1305 years only
+# averages of distribution functions weighted by fit quality: see below
+
+
+
+# Advanced options -------------------------------------------------------------
 distLextremePlot(dlf=dle)
+# Line colors / select distributions to be plotted:
 distLextremePlot(dle, nbest=17, coldist=heat.colors(17))
 distLextremePlot(dle, selection=c("gev", "gam", "gum"), coldist=3:5, col=3)
 # Why do I not get the following warning in interactive mode?
@@ -107,56 +118,14 @@ distLextreme(Nile, log="x", xaxt="n", pch=NA, coldist=NA, legend=FALSE)
 logAxis(1)
 distLextreme(Nile, add=TRUE, legargs=c(bg="white"), nbest=8)
 
-\dontrun{
-# compare extremeStat with other packages:
-library(extRemes)
-plot(fevd(annMax))
-par(mfrow=c(1,1))
-return.level(fevd(annMax, type="GEV")) # "GP", "PP", "Gumbel", "Exponential"
-distLextreme(dlf=dle, RPs=c(2,20,100))$returnlev["gev",]
-# differences are small, but noticeable...
-# if you have time for a more thorough control, please pass me the results!
-}
-
-# yet another dataset for testing purposes:
-Dresden_AnnualMax <- c(403, 468, 497, 539, 542, 634, 662, 765, 834, 847, 851, 873,
-885, 983, 996, 1020, 1028, 1090, 1096, 1110, 1173, 1180, 1180,
-1220, 1270, 1285, 1329, 1360, 1360, 1387, 1401, 1410, 1410, 1456,
-1556, 1580, 1610, 1630, 1680, 1734, 1740, 1748, 1780, 1800, 1820,
-1896, 1962, 2000, 2010, 2238, 2270, 2860, 4500)
-distLextreme(Dresden_AnnualMax)
 
 
-# Goodness of fit
-# 1. Measures for GOF ---------------------------------------------
-# GOF: how well do the distributions fit the original data?
-pairs(dle$gof) # measures of goodness of fit are correlated quite well here.
-# apparently, it does not really matter which one is used.
-dle_nile <- distLextreme(Nile)
-pairs(dle_nile$gof)
+# Weighted mean based on GOF ---------------------------------------------------
+# GOF: Goodness of fit, for details see
+?distLgof
+# weights:
+distLgofPlot(dle, ranks=FALSE)
 
-# compare Ranks by different GOFs
-par(mfrow=c(1,2))
-distLgofPlot(dle)
-d <- distLgof(dle, gofProp=0.8, plot=TRUE) # more in examples in ?distLgof
-par(mfrow=c(1,1))
-
-
-
-# 2. weights based on GOF -----------------------------------------
-plot(dle$gof$weight1, ylim=c(0, 0.15), type="o", xaxt="n", ylab="Weight",
-     las=1, xlab="Dist", main="Weight of distributions for average")
-lines(dle$gof$weight2, pch=2, col=2, type="o")
-lines(dle$gof$weight3, pch=3, col=3, type="o")
-lines(dle$gof$RMSE, col=4)
-text(1, dle$gof$RMSE[1], "RMSE", adj=c(0,-0.5), col=4)
-axis(1, 1:17, rownames(dle$gof), las=2)
-legend("topright", c("max(r)-r + min(r)", "max(r)-r", "first half"),
-       title="Weighted by RMSE (r)", col=1:3, pch=1:3, lty=1)
-
-
-
-# 3. weighted mean based on GOF -----------------------------------
 # Discharge estimated for 50 years return period, with weighted average:
 sum(dle$gof$weight1 * dle$returnlev[,"RP.50"]) # 114.9
 sum(dle$gof$weight2 * dle$returnlev[,"RP.50"]) # 115.3
@@ -164,9 +133,8 @@ sum(dle$gof$weight3 * dle$returnlev[,"RP.50"]) # 115.9
 distLextremePlot(dle, nbest=17, legend=FALSE)
 abline(h=115.9, v=50)
 
-# across all RPs:
-# range of discharges:
-yval <- seq(from=par("usr")[3], to=par("usr")[4], length=200)
+# discharge estimate continuously across all RPs:
+yval <- seq(from=par("usr")[3], to=par("usr")[4], length=200)  # range of discharges
 # add weighted average of distributions:
 CDFs <- sapply(rownames(dle$gof), function(d) plmomco(yval,dle$parameter[[d]]))
 weightedMean <- colSums( apply(CDFs, 1, function(x) x * dle$gof$weight3), na.rm=TRUE )
@@ -181,8 +149,9 @@ weightedMean <- colSums( apply(CDFs, 1, function(x) x * dle$gof$weight1), na.rm=
 lines(1/(1-weightedMean), yval, lwd=3, col="orange") # not very different
 
 
-\dontrun{
-# 4. effect of data proportion used to estimate GOF ---------------
+
+# Effect of data proportion used to estimate GOF -------------------------------
+\dontrun{ # removed from package testing due to computing time
 # Discharge estimated for 50 years return period
 Goodness <- function(gofProp)
 { # ExtremeStatistics
@@ -210,7 +179,25 @@ legend("bottomright", col=1:3, lty=1,
    legend=c("mean of 3 dists with lowest RMSE", "weighted average", "simple average"))
 title(main="The proportion of the data included\nfor calculating RMSE does matter!")
 
+
+
+# compare extremeStat with other packages: ---------------------------------------
+library(extRemes)
+plot(fevd(annMax))
+par(mfrow=c(1,1))
+return.level(fevd(annMax, type="GEV")) # "GP", "PP", "Gumbel", "Exponential"
+distLextreme(dlf=dle, RPs=c(2,20,100))$returnlev["gev",]
+# differences are small, but noticeable...
+# if you have time for a more thorough control, please pass me the results!
 }
+
+# yet another dataset for testing purposes:
+Dresden_AnnualMax <- c(403, 468, 497, 539, 542, 634, 662, 765, 834, 847, 851, 873,
+885, 983, 996, 1020, 1028, 1090, 1096, 1110, 1173, 1180, 1180,
+1220, 1270, 1285, 1329, 1360, 1360, 1387, 1401, 1410, 1410, 1456,
+1556, 1580, 1610, 1630, 1680, 1734, 1740, 1748, 1780, 1800, 1820,
+1896, 1962, 2000, 2010, 2238, 2270, 2860, 4500)
+distLextreme(Dresden_AnnualMax)
 
 }
 \keyword{hplot}
