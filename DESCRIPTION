@@ -1,9 +1,9 @@
 Package: extremeStat
 Type: Package
 Title: Extreme Value Statistics on a Linear Scale
-Version: 0.4.20
-Date: 2015-04-09
-Imports: lmomco (>= 2.1.3), berryFunctions, devtools
+Version: 0.4.21
+Date: 2015-06-24
+Imports: lmomco (>= 2.1.3), berryFunctions
 Suggests: pbapply, extRemes
 Author: Berry Boessenkool
 Maintainer: Berry Boessenkool <berry-b@gmx.de>

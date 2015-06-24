@@ -13,6 +13,7 @@ This Log of changes in my package extremeStat contains two sections:
 - all functions:
 # print messages on.exit()
 # catch and throw useful error if selection not in list (gpd, eg)
+# length of nbest and coldist if selection!=NULL
 
 - distLextreme: 
 # Include Bootstrapping with user-specified proportion left out
@@ -24,10 +25,6 @@ This Log of changes in my package extremeStat contains two sections:
 - distlquantile: 
 # add option to use weighted average of fitted distributions
 
-- installB:
-# move to separate package and remove devtools dependency here
-# put updatePackages stuff there as well
-# installB must first detach packages depending on the package to be updated.
 
 
 
@@ -48,8 +45,10 @@ highlights:
 - documentation was updated and enhanced
 - distLgof now returns weights calculated by 3 different methods
 - distLplot now uses supdist, package depends on lmomco >=2.1.3 (version that includes supdist)
+- installB: moved to https://github.com/brry/installB to remove devtools dependency here
 
-new functions: installB, distLextremePlot, distLprint, distLquantile
+
+new functions: distLextremePlot, distLprint, distLquantile
 renamed distLgofPlot for consistency in lowerCamel-derived case usage.
 
 
