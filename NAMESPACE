@@ -1,3 +1,7 @@
 exportPattern("^[[:alpha:]]+")
 import(lmomco)
 import(berryFunctions)
+import(graphics)
+import(stats)
+import(utils)
+import(grDevices)
