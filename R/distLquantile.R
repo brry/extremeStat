@@ -1,5 +1,5 @@
 # Quantile of distributions fitted to a sample
-# Berry Boessenkool, berry-b@gmx.de, March 2015
+# Berry Boessenkool, berry-b@gmx.de, March + July 2015
 
 distLquantile <- function(
 x=NULL,         # Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used.
@@ -97,7 +97,7 @@ if(order & length(miss)>0)
   }
 #
 # Empirical and weighted Quantiles:
-if(empirical) output <- cbind(output, quantileMean=quantileMean(dlf$dat, probs=probs))
+if(empirical) output <- cbind(output, quantileMean=quantileMean(dlf$dat_full, probs=probs, truncate=truncate))
 # Weighted quantile estimates
 if(weighted)
   {

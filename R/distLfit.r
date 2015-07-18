@@ -1,5 +1,5 @@
 # fit many different distributions via linear moments and return goodness of fit values
-# Berry Boessenkool, Sept 2014
+# Berry Boessenkool, Sept 2014, July 2015
 # Main function calling   distLgof   and   distLgofPlot or distLplot
 
 distLfit <- function(
@@ -32,7 +32,7 @@ if(!is.vector(dat) & !quiet) message("note in distLfit: dat was not a vector.")
 if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) )
   stop("gofProp must be a single value between 0 and 1.")
 # remove NAs, convert to vector:
-dat <- as.numeric( dat[!is.na(dat)]  )
+dat <- dat_full <- as.numeric( dat[!is.na(dat)]  )
 # truncate (fit values only to upper part of values):
 if(truncate!=0) dat <- sort(dat)[ -1:-(truncate*length(dat)) ]
 # Check remaining sample size
@@ -91,6 +91,7 @@ if(plot) output <- distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=hist
 if(!plot) output$coldist <- rainbow2(if(is.null(selection)) 5 else length(selection))
 # truncation value
 output$truncate <- truncate
+output$dat_full <- dat_full # non-truncated data
 if(time & !quiet) message("distLfit execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
 return(invisible(output))
 } # end of function
