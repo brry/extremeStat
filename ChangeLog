@@ -22,10 +22,6 @@ This Log of changes in my package extremeStat contains two sections:
 - distLprint:
 # possibly change to print method for dlf objects with personal class
 
-- distlquantile: 
-# add option to use weighted average of fitted distributions
-
-
 
 
 ----------------------------------------------------------------------

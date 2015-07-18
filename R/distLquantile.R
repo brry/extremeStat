@@ -5,109 +5,120 @@ distLquantile <- function(
 x=NULL,         # Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used.
 probs=0:4/4,    # Numeric vector of probabilities with values in [0,1].
 truncate=0,     # Number between 0 and 1. Censored quantile: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly.
-type=NULL,      # Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used.
-dlf=NULL,       # dlf object described in \code{\link{extremeStat}}. Ignored if x is given.
+selection=NULL, # Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used.
+type=NULL,      # Overrides selection. Kept for backwards compatibility. (Changed to selection for internal consistency).
+dlf=NULL,       # dlf object described in \code{\link{extremeStat}}. Ignored if x is given, or if truncate / selection do not match. Use this to save computing time for large datasets where you already have dlf.
 order=TRUE,     # Sort results by GOF? If TRUE (the default) and length(type)>1, the output is ordered by dlf$gof, else by order of appearance in dlf$parameter
 plot=FALSE,     # Should \code{\link{distLplot}} be called?
 cdf=FALSE,      # If TRUE, plot cumulated DF instead of probability density
 lines=TRUE,     # Should vertical lines marking the quantiles be added?
 linargs=NULL,   # Arguments passed to \code{\link{lines}}.
-empirical=TRUE, # Add vertical line for empirical \code{\link{quantileMean}}?
+empirical=TRUE, # Add vertical line for empirical \code{\link{quantileMean}} (and include the result in the output matrix)?
+weighted=TRUE,  # Include weighted averages across distribution functions to the output?
 quiet=FALSE,    # Suppress notes?
-...             # Arguments passed to \code{\link{distLfit}} if x or truncate is given. Passed to \code{\link{distLplot}} if plot=TRUE and x is not given and truncate is 0.
+trans=quiet,    # Suppress note about transposing? # Option and message will be removed around the end of 2015.
+...             # Arguments passed to \code{\link{distLfit}}.
 )
 {
-# input checks:
+# input checks: ----------------------------------------------------------------
+# temporary warning:
+if(!trans) message("Please note: distLquantile output has been transposed since Version 0.4.23 from 2015-07-18!")
 truncate <- truncate[1] # cannot be vectorized
 if(truncate<0 | truncate>=1) stop("truncate must be a number between 0 and 1.")
 if( is.null(x) & is.null(dlf)) stop("Either dlf or x must be given.")
-# if input sample size is too small:
-NAoutput <- matrix(NA, nrow=length(probs), ncol=if(is.null(type)) 17 else length(type) )
-if(empirical) NAoutput <- cbind(NAoutput, NA)
-rownames(NAoutput) <- paste0(probs*100,"%")
-if(!is.null(x)) x <- x[!is.na(x)]
-if(!is.null(x) & length(x)<5)
+if(!is.null(type))
   {
-  if(!quiet) message("note in distLquantile: dat sample size is too small to fit parameters.")
-  return(NAoutput)
+  selection <- type
+  if(!quiet) message("note in distLquantile: Argument 'type' overwrote 'selection'.")
   }
-if(!is.null(x) & truncate==0) dlf <- distLfit(dat=x, selection=type, plot=plot, cdf=cdf, quiet=quiet, ...)
+#
+# Fit distribution functions to (truncated) sample: ----------------------------
+if(!is.null(x) | any(dlf$truncate!=truncate) |  any(!selection %in% names(dlf$parameter)))
+  {
+  dlf <- distLfit(dat=x, selection=selection, truncate=truncate, plot=plot, cdf=cdf, quiet=quiet, ...)
+  }else
+  {
+  # reduce number of distfunctions analyzed if more were present in dlf argument:
+  dlf$parameter <- dlf$parameter[selection]
+  dlf$gof <- dlf$gof[rownames(dlf$gof) %in% selection,]
+  }
+#
+# Empty output matrix: ---------------------------------------------------------
+output <- matrix(NA, nrow=length(probs), ncol=length(dlf$parameter) )
+rownames(output) <- paste0(probs*100,"%")
+colnames(output) <- names(dlf$parameter)
+if(empirical) output <- cbind(output, quantileMean=quantileMean(dlf$dat, probs=probs))
+# if input sample size is too small, return NA matrix:
+if( length(dlf$dat)<5 )
+  {
+  if(!quiet) message("note in distLquantile: sample size is too small to fit parameters. Returning NAs")
+  return(output)
+  }
+#
+# control:
+if(any(!selection %in% rownames(dlf$gof))) stop("Specified selection (",pastec(selection),") is not available in dlf$gof.")
+#
+# truncation probs update: -----------------------------------------------------
 probs2 <- probs
-# truncation:
 if(truncate!=0)
   {
-  if(all(probs < truncate)) stop("probs must contain values that are bigger than truncate.")
-  if(is.null(x)) x <- dlf$dat
-  xtrunc <- sort(x)[ -1:-(truncate*length(x)) ]
-  if(length(xtrunc[!is.na(xtrunc)])<5)
-    {
-    if(!quiet) message("note in distLquantile: dat sample size is too small to fit parameters.")
-    return(NAoutput)
-    }
-  dlf <- distLfit(dat=xtrunc, selection=type, plot=plot, cdf=cdf, quiet=quiet, ...)
+  if(all(probs < truncate)) stop("'probs' must contain values that are larger than 'truncate'.")
   probs2 <- (probs-truncate)/(1-truncate)
   probs2[probs < truncate] <- 0   # avoid negative values
   }
-# distLplot preparation:
-select <- type
-# available distributions
-if(is.null(type)) type <- names(dlf$parameter)
-tinp <- type %in% names(dlf$parameter)
-if(any(!tinp) & !quiet) message("note in distLquantile: Specified type (",
-         paste(type[!tinp], collapse=", ") , ") is not available in dlf$parameter.")
-natypes <- type[!tinp]
-output2 <- matrix(NA, nrow=length(probs), ncol=length(natypes))
-colnames(output2) <- natypes
 #
-type <- type[tinp]
-available <- rownames(dlf$gof)
-available <- available[available %in% type]
-if(any(!type %in% available)) stop("Specified type is not available in dlf$gof.")
-# Parameter object from list
-param <- dlf$parameter[type]
-if(length(type)==0)
-  {
-  output <- matrix(NA, nrow=length(probs), ncol=length(param))
-  rownames(output) <- paste0(probs*100,"%")
-  colnames(output) <- names(param)
-  if(empirical) output <- cbind(output, quantileMean=NA)
-  return(cbind(output, output2)) # stop("No type left")
-  }
-# distribution quantiles:
-quan <- sapply(param, function(p) qlmomco(f=probs2, para=p))
-if(length(probs2)==1) quan <- t(quan)
-rownames(quan) <- paste0(probs*100,"%")
+# distribution quantiles: ------------------------------------------------------
+for(i in 1:pmax((ncol(output)-1),1) ) # pmax important if selection has 1 element
+   output[,i] <- qlmomco(f=probs2, para=dlf$parameter[[i]])
+#
+# Optional operations: ---------------------------------------------------------
+# Change results for probs below truncate to NA
+if(truncate!=0) output[probs < truncate,] <- NA
+#
 # order by goodness of fit:
-if(order & length(available)>1) quan <- quan[,available, drop=FALSE]
-if(truncate!=0) quan[probs < truncate,] <- NA
-# final output
-quan <- cbind(quan, output2) # always return all distributions asked for (with NA)
-# empirical at end:
-if(empirical) quan <- cbind(quan, quantileMean=quantileMean(dlf$dat, probs=probs2))
-# Quantile lines:
+if(order) output <- output[, c(rownames(dlf$gof), if(empirical) "quantileMean"), drop=FALSE]
+#
+# Weighted quantile estimates
+if(weighted)
+  {
+  Qweighted <- function(Weightnr)
+    {
+    sapply(1:nrow(output), function(row_n)
+      {
+      vals <- output[row_n,rownames(dlf$gof)]
+      weights <- dlf$gof[is.finite(vals),Weightnr]
+      weights <- weights/sum(weights) # rescale to 1
+      sum(vals[is.finite(vals)] * weights)
+      })
+    }
+  output <- cbind(output, weighted1=Qweighted("weight1"))
+  output <- cbind(output, weighted2=Qweighted("weight2"))
+  output <- cbind(output, weighted3=Qweighted("weight2"))
+  }
+#
+# Plotting: Quantile lines: ----------------------------------------------------
 if(plot & lines)
   {
-  # plot if distLfit is not called yet:
-  if(is.null(x) & truncate==0) dlf$coldist <- distLplot(dlf, cdf=cdf, selection=select, quiet=quiet, ...)$coldist
   lfun <- if(cdf) plmomco else dlmomco
-  use <- available[1:length(dlf$coldist)]
-  for(i in 1:length(use))
+  use <- rownames(dlf$gof)[1:length(dlf$coldist)]
+  for(i in length(use):1)
   {
-  qval <- quan[,use[i]]
+  qval <- output[,use[i]]
   qval <- qval[ is.finite(qval) ] # Inf ignored
-  if(length(qval)>0) do.call(graphics::lines, args=owa(list(x=qval, y=lfun(x=qval,
-                                                  para=dlf$parameter[[use[i]]]),
+  if(length(qval)>0) do.call(graphics::lines, args=owa(
+                      list(x=qval, y=lfun(x=qval, para=dlf$parameter[[use[i]]]),
                   col=dlf$coldist[i], type="h"), linargs, "x","y","col","type"))
   }
   # empirical quantile added:
   if(empirical)
     {
     dd <- density(dlf$dat)
-    qd <- quan[,"quantileMean"]
+    qd <- output[,"quantileMean"]
     do.call(graphics::lines, args=owa(list(x=qd, y=approx(dd$x, dd$y, xout=qd)$y,
                                            type="h"), linargs, "x","y","type"))
     }
   }
-# return output:
-quan
+# return output: ---------------------------------------------------------------
+t(output)
 }
+
