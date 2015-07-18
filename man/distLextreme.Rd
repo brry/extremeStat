@@ -6,10 +6,12 @@ Fits several distributions based on linear moments, calculate return levels for 
 Plots distributions and adds plotting positions by Weibull and Gringorton.
 }
 \usage{distLextreme(dat, datname, dlf, RPs=c(2,5,10,20,50), speed=TRUE, ks=FALSE,
-selection, order=FALSE, gofProp=1, progbars=length(dat)>200, time=TRUE, plot=TRUE, add=FALSE,
+selection, order=FALSE, gofProp=1, progbars=length(dat)>200, time=TRUE,
+plot=TRUE, add=FALSE,
 nbest=5, xlim, ylim, las=1, main=datname, xlab="Return Period RP  [a]",
 ylab="Discharge HQ  [m^3/s]", col="black", pch=c(16,3), cex=1,
-coldist=rainbow2(nbest), lwd=1, legend=TRUE, legargs=NULL, linargs=NULL, quiet=FALSE, ... )}
+coldist=rainbow2(nbest), lwd=1, legend=TRUE, legargs=NULL, linargs=NULL,
+quiet=FALSE, ... )}
 \arguments{
   \item{dat}{Vector with extreme values e.g. annual discharge maxima. Ignored if dlf is given.}
   \item{datname}{Character string for main and output list. DEFAULT: internal \code{substitute(dat)}}
@@ -71,7 +73,9 @@ annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81
 48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
 
 # Basic examples ---------------------------------------------------------------
-dle <- distLextreme(annMax)
+dle <- distLextreme(annMax, log="x")
+abline(h=1:10*20, col=8) ;  berryFunctions::logAxis(1)
+dle <- distLextreme(annMax, nbest=10, add=TRUE, legargs=list(bg="white", cex=0.9))
 # Why do I not get the following warning in interactive mode?
 ## calculating RMSE:
 ## Warning in rmse(tcdfs[[d]], ecdfs, quiet = q

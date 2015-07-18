@@ -61,7 +61,7 @@ if(plot) output <- distLextremePlot(dlf=dlf, selection=selection, order=order, a
     pch=pch, cex=cex, coldist=coldist, lwd=lwd, legend=legend, legargs=legargs, linargs=linargs, ...)
 # output (discharge) values at return periods ----------------------------------
 dn <- rownames(gof) # distribution names
-if( require(pbapply,quietly=TRUE) & progbars ) sapply <- pbapply::pbsapply
+if(progbars) sapply <- pbapply::pbsapply
 if(progbars) message("calculating return levels for return periods:")
 returnlev <- sapply(dn, function(d) qlmomco(1-1/RPs, parameter[[d]]))  # as.numeric(
 # if length(RPs)==1, returnlev is only a vector,

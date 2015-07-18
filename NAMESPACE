@@ -1,6 +1,7 @@
 exportPattern("^[[:alpha:]]+")
 import(lmomco)
 import(berryFunctions)
+import(pbapply)
 import(graphics)
 import(stats)
 import(utils)

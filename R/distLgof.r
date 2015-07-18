@@ -14,7 +14,7 @@ quiet=FALSE, # Suppress notes?
 {
 # Progress bars
 if(quiet) progbars <- FALSE
-if( require(pbapply,quietly=TRUE) & progbars ) lapply <- pbapply::pblapply
+if(progbars) lapply <- pbapply::pblapply
 # Objects from list:
 dat <- dlf$dat
 if(missing(gofProp)) gofProp <- dlf$gofProp
@@ -51,7 +51,7 @@ tcdfs <- lapply(dn, function(d) plmomco(dat2,parameter[[d]]))
 names(tcdfs) <- dn # Theoretical CumulatedDensityFunctions
 ecdfs <- ecdf(dat)(dat2) # Empirical CDF
 # Root Mean Square Error, R squared:
-if( require(pbapply) & progbars ) sapply <- pbapply::pbsapply
+if(progbars) sapply <- pbapply::pbsapply
 if(progbars) message("calculating RMSE:")
 RMSE <- sapply(dn, function(d)    rmse(tcdfs[[d]], ecdfs, quiet=TRUE))
 if(progbars) message("calculating R2:")
