@@ -13,7 +13,12 @@ quiet=FALSE, ...)}
   \item{quiet}{Suppress notes? DEFAULT: FALSE}
   \item{\dots}{Further arguments passed to \code{\link{distLgofPlot}}}
 }
-\value{List as explained in \code{\link{extremeStat}}. The added element is gof, a data.frame the root mean square error (RMSE) and R squared (R2) for the top \code{gofProp} of \code{dat}, as well as the p and D values from a simple \code{\link{ks.test}} for each distribution function.}
+\value{List as explained in \code{\link{extremeStat}}. The added element is gof,\cr
+a data.frame the root mean square error (RMSE) and R squared (R2) for the top \code{gofProp} of \code{dat},\cr
+if ks=TRUE, the p and D values from a simple ks.test,\cr
+as well as weights by three different approaches for each distribution function.\cr
+The weights are inverse to RMSE, weight1 for all dists, weight2 places zero weight on the worst function, weight3 on the worst half of functions.
+}
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014}
 \note{If you get a \code{note in distLgof: NAs removed in CDF ...}, this probably means that the support of some of the fitted distributions do not span the whole data range. Instead the outside support regions get NAs that are then detected by rmse and rsquare. I plan to fix this with WHA's new supdist.}
 \seealso{\code{\link{distLgofPlot}}, \code{\link{distLfit}}. More complex estimates of quality of fits: \url{http://chjs.soche.cl/papers/vol4n1_2013/ChJS-04-01-04.pdf} }
@@ -26,26 +31,30 @@ exdat <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81.
 # Goodness of Fit is measured by RMSE of cumulated distribution function and ?ecdf
 dlf <- distLfit(exdat, cdf=TRUE, nbest=17)
 distLplot(dlf, cdf=TRUE, sel=c("wak", "revgum"))
+dlf$gof
 x <- sort(exdat)
 segments(x0=x, y0=plmomco(x, dlf$parameter$revgum), y1=ecdf(exdat)(x), col=2)
 segments(x0=x, y0=plmomco(x, dlf$parameter$wak), y1=ecdf(exdat)(x), col=4, lwd=2)
 plot(ecdf(exdat), add=TRUE)
 # RMSE: root of average of ( errors squared )  ,   errors = line distances
 
-
+# weights by three different weighting schemes
+distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
+distLgof(dlf, ks=TRUE)$gof
 
 # Kolmogorov-Smirnov Tests return slightly different values:
 ks.test(exdat, "pnorm", mean(exdat), sd(exdat) )$p.value
 ks.test(exdat, "cdfnor", parnor(lmoms(exdat)))$p.value
 
+
 # GOF: how well do the distributions fit the original data?
 pairs(dlf$gof) # measures of goodness of fit are correlated quite well here.
-# apparently, it does not really matter which one is used.
+# In the next example, however, we see that it does matter which one is used.
 
-# compare Ranks by different GOFs
+# compare Ranks with different proportions used for GOF
 par(mfrow=c(1,2))
 distLgofPlot(dlf, weights=FALSE)
-d <- distLgof(dlf, gofProp=0.8, plot=TRUE, weights=FALSE) # see ?distLgof
+d <- distLgof(dlf, gofProp=0.8, plot=TRUE, weights=FALSE)
 par(mfrow=c(1,1))
 
 
@@ -74,7 +83,8 @@ x <- sort(exdat, decreasing=TRUE)[  1:(gofProp*length(exdat))  ]
 tcdfs <- plmomco(x,dlf50$parameter[[d]])
 ecdfs <- ecdf(exdat)(x) # Empirical CDF
 # Root Mean Square Error, R squared:
-linReg(tcdfs, ecdfs, lwd=1, pch=16, main=d, digits=5, xlim=c(0.5, 1), ylim=c(0.5, 1), pos1="topleft")
+linReg(tcdfs, ecdfs, lwd=1, pch=16, main=d, digits=5, xlim=c(0.5, 1),
+       ylim=c(0.5, 1), pos1="topleft")
 abline(a=0,b=1, lty=3)
 c(rmse(tcdfs, ecdfs), rsquare(tcdfs, ecdfs))
 }
