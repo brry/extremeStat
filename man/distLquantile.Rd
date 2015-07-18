@@ -97,6 +97,8 @@ par(op)
 distLquantile(annMax, plot=FALSE, selection="wak", empirical=FALSE)
 distLquantile(annMax, plot=TRUE, selection="wak", empirical=FALSE, breaks=10)
 
+distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9))
+# distLquantile(rexp(199), truncate=0.8, probs=0.7) # correctly throws an error
 distLquantile(rexp(199), selection=c("wak", "gpa"))
 distLquantile(rexp(199), selection="gpa")
 distLquantile(rexp(4))
