@@ -1,5 +1,5 @@
 # distributions via linear moments
-# Berry Boessenkool, Sept 2014
+# Berry Boessenkool, Sept 2014, July 2015
 # calculate 'Goodness of Fit' measures in distLfit
 
 distLgof <- function(
