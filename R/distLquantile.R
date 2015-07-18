@@ -47,7 +47,6 @@ if(!is.null(x) | any(dlf$truncate!=truncate) |  any(!selection %in% names(dlf$pa
 output <- matrix(NA, nrow=length(probs), ncol=length(dlf$parameter) )
 rownames(output) <- paste0(probs*100,"%")
 colnames(output) <- names(dlf$parameter)
-if(empirical) output <- cbind(output, quantileMean=quantileMean(dlf$dat, probs=probs))
 #
 # control for distributions that could not be fitted, e.g. kappa:
 miss <- selection[!selection %in% rownames(dlf$gof)]
@@ -55,14 +54,17 @@ miss <- miss[!miss %in% colnames(output)]
 if(length(miss)>0)
   {
   message("note in distLquantile: specified selection (", pastec(miss),") is not available in dlf$gof.")
-  output <- cbind(output, matrix(NA, ncol=length(miss), nrow=nrow(output)))
-  colnames(output) <- selection
+  m <- matrix(NA, ncol=length(miss), nrow=nrow(output))
+  output <- cbind(output, m)
+  colnames(output) <- selection # always keep the same order if selection is given
   }
 #
 # if input sample size is too small, return NA matrix:
 if( length(dlf$dat)<5 )
   {
   if(!quiet) message("note in distLquantile: sample size is too small to fit parameters. Returning NAs")
+  #if(empirical) output <- cbind(output, quantileMean=quantileMean(dlf$dat, probs=probs))
+  if(empirical) output <- cbind(output, quantileMean=NA)
   return(t(output))
   }
 #
@@ -71,13 +73,12 @@ probs2 <- probs
 if(truncate!=0)
   {
   if(all(probs < truncate)) stop("'probs' must contain values that are larger than 'truncate'.")
-  probs2 <- (probs-truncate)/(1-truncate)
+  probs2 <- (probs-truncate)/(1-truncate) # correct probabilities for smaller sample proportion
   probs2[probs < truncate] <- 0   # avoid negative values
   }
 #
 # distribution quantiles: ------------------------------------------------------
 dn <- colnames(output)
-if(empirical) dn <- dn[dn!="quantileMean"]
 for(d in dn) if(!is.null(dlf$parameter[[d]])) output[,d] <-
                                    qlmomco(f=probs2, para=dlf$parameter[[d]])
 #
@@ -86,7 +87,7 @@ for(d in dn) if(!is.null(dlf$parameter[[d]])) output[,d] <-
 if(truncate!=0) output[probs < truncate,] <- NA
 #
 # order by goodness of fit:
-if(order) output <- output[, c(rownames(dlf$gof), if(empirical) "quantileMean"), drop=FALSE]
+if(order) output <- output[,rownames(dlf$gof), drop=FALSE]
 # append missing distfuns at the end (which should be in correct place if order=F)
 if(order & length(miss)>0)
   {
@@ -95,6 +96,8 @@ if(order & length(miss)>0)
   output <- cbind(output, m)
   }
 #
+# Empirical and weighted Quantiles:
+if(empirical) output <- cbind(output, quantileMean=quantileMean(dlf$dat, probs=probs))
 # Weighted quantile estimates
 if(weighted)
   {
