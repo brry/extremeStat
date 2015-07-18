@@ -48,15 +48,23 @@ output <- matrix(NA, nrow=length(probs), ncol=length(dlf$parameter) )
 rownames(output) <- paste0(probs*100,"%")
 colnames(output) <- names(dlf$parameter)
 if(empirical) output <- cbind(output, quantileMean=quantileMean(dlf$dat, probs=probs))
+#
+# control for distributions that could not be fitted, e.g. kappa:
+miss <- selection[!selection %in% rownames(dlf$gof)]
+miss <- miss[!miss %in% colnames(output)]
+if(length(miss)>0)
+  {
+  message("note in distLquantile: specified selection (", pastec(miss),") is not available in dlf$gof.")
+  output <- cbind(output, matrix(NA, ncol=length(miss), nrow=nrow(output)))
+  colnames(output) <- selection
+  }
+#
 # if input sample size is too small, return NA matrix:
 if( length(dlf$dat)<5 )
   {
   if(!quiet) message("note in distLquantile: sample size is too small to fit parameters. Returning NAs")
-  return(output)
+  return(t(output))
   }
-#
-# control:
-if(any(!selection %in% rownames(dlf$gof))) stop("Specified selection (",pastec(selection),") is not available in dlf$gof.")
 #
 # truncation probs update: -----------------------------------------------------
 probs2 <- probs
@@ -68,8 +76,10 @@ if(truncate!=0)
   }
 #
 # distribution quantiles: ------------------------------------------------------
-for(i in 1:pmax((ncol(output)-1),1) ) # pmax important if selection has 1 element
-   output[,i] <- qlmomco(f=probs2, para=dlf$parameter[[i]])
+dn <- colnames(output)
+if(empirical) dn <- dn[dn!="quantileMean"]
+for(d in dn) if(!is.null(dlf$parameter[[d]])) output[,d] <-
+                                   qlmomco(f=probs2, para=dlf$parameter[[d]])
 #
 # Optional operations: ---------------------------------------------------------
 # Change results for probs below truncate to NA
@@ -77,6 +87,13 @@ if(truncate!=0) output[probs < truncate,] <- NA
 #
 # order by goodness of fit:
 if(order) output <- output[, c(rownames(dlf$gof), if(empirical) "quantileMean"), drop=FALSE]
+# append missing distfuns at the end (which should be in correct place if order=F)
+if(order & length(miss)>0)
+  {
+  m <- matrix(NA, ncol=length(miss), nrow=nrow(output))
+  colnames(m) <- miss
+  output <- cbind(output, m)
+  }
 #
 # Weighted quantile estimates
 if(weighted)
