@@ -4,13 +4,14 @@
 
 distLfit <- function(
 dat,          # Vector with values
-datname,      # Character string for main, xlab etc
+datname,      # Character string for main, xlab etc. DEFAULT: internal \code{substitute(dat)}
 speed=TRUE,   # If TRUE, several distributions are omitted, for the reasons shown in \code{\link[lmomco]{dist.list}()}
-ks=FALSE,     # Include ks.test results in dlf$gof? Computing is much faster when FALSE
+ks=FALSE,     # Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE
 selection=NULL, # Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}. Overrides speed.
-gofProp=1,    # Upper proportion of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
+gofProp=1,    # Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
+truncate=0,   # Number between 0 and 1. Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly.
 gofComp=FALSE,# If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE
-progbars=length(dat)>200,# Show progress bars for each loop?
+progbars=length(dat)>200,# Show progress bars for each loop? DEFAULT: TRUE if n > 200
 time=TRUE,    # \code{\link{message}} execution time?
 plot=TRUE,    # Should a histogram with densities be plotted?
 cdf=FALSE,    # If TRUE, plot cumulated DF instead of probability density
@@ -24,7 +25,7 @@ StartTime <- Sys.time()
 if(missing(datname)) datname <- deparse(substitute(dat))
 # Progress bars
 if(quiet) progbars <- FALSE
-if( require(pbapply,quietly=TRUE) & progbars ) lapply <- pbapply::pblapply
+if(progbars) lapply <- pbapply::pblapply
 # checks:
 if( ! is.numeric(dat) ) stop("dat must be numeric.")
 if(!is.vector(dat) & !quiet) message("note in distLfit: dat was not a vector.")
@@ -32,9 +33,15 @@ if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) )
   stop("gofProp must be a single value between 0 and 1.")
 # remove NAs, convert to vector:
 dat <- as.numeric( dat[!is.na(dat)]  )
-if(length(dat) < 5) {message("note in distLfit: dat sample size is too small to fit parameters.")
-                     return(list(dat=dat, parameter=NA, gof=NA))}
-# possible distributions:
+# truncate (fit values only to upper part of values):
+if(truncate!=0) dat <- sort(dat)[ -1:-(truncate*length(dat)) ]
+# Check remaining sample size
+if(length(dat) < 5) {message("note in distLfit: sample size (",length(dat),") is too small to fit parameters (<5).")
+                     error_out <- as.list(selection) # this is very useful for distLquantile
+                     names(error_out) <- selection  # since it keeps the columns if a selection is given
+                     return(list(dat=dat, parameter=error_out, gof=NA))}
+#
+# possible distributions: ------------------------------------------------------
 dn <- dist.list()
 # Selection:
 if( ! is.null(selection) )
@@ -70,6 +77,7 @@ if( length(parameter) != length(dn))
   names(parameter) <- sapply(parameter, "[[", "type")
   }
 else names(parameter) <- dn
+#
 # Goodness of Fit, output list, plot -------------------------------------------
 output <- distLgof(list(dat=dat, datname=datname, gofProp=gofProp, parameter=parameter),
                    plot=FALSE, progbars=progbars, ks=ks, quiet=quiet)
@@ -81,6 +89,8 @@ if(gofComp)
   }
 if(plot) output <- distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
 if(!plot) output$coldist <- rainbow2(if(is.null(selection)) 5 else length(selection))
+# truncation value
+output$truncate <- truncate
 if(time & !quiet) message("distLfit execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
 return(invisible(output))
 } # end of function

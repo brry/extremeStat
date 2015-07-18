@@ -2,16 +2,17 @@
 \alias{distLfit}
 \title{Fit distributions via linear moments}
 \description{Fit several distributions via linear moments, plot histogram and distribution densities \emph{or} ecdf with cumulated probability.}
-\usage{distLfit(dat, datname, speed=TRUE, ks=FALSE, selection, gofProp=1,
-gofComp=FALSE, progbars=length(dat)>200,
-time=TRUE, plot=TRUE, cdf=FALSE, legargs=NULL, histargs=NULL, quiet=FALSE, ... )}
+\usage{distLfit(dat, datname, speed=TRUE, ks=FALSE, selection=NULL,
+gofProp=1, truncate=0, gofComp=FALSE, progbars=length(dat)>200, time=TRUE,
+plot=TRUE, cdf=FALSE, legargs=NULL, histargs=NULL, quiet=FALSE, ... )}
 \arguments{
   \item{dat}{Vector with values}
   \item{datname}{Character string for main, xlab etc. DEFAULT: internal \code{substitute(dat)}}
   \item{speed}{If TRUE, several distributions are omitted, for the reasons shown in \code{\link[lmomco]{dist.list}()}. DEFAULT: TRUE}
   \item{ks}{Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. DEFAULT: FALSE}
-  \item{selection}{Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}. Overrides speed.}
+  \item{selection}{Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL}
   \item{gofProp}{Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1}
+  \item{truncate}{Number between 0 and 1. Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0}
   \item{gofComp}{If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE. DEFAULT: FALSE}
   \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n > 200}
   \item{time}{\code{\link{message}} execution time? DEFAULT: TRUE}
