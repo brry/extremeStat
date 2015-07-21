@@ -31,6 +31,7 @@ if(!is.null(type))
   selection <- type
   if(!quiet) message("note in distLquantile: Argument 'type' overwrote 'selection'.")
   }
+if(!is.null(x)) if(is.list(x)) stop("x must be a vector. Possibly, you want to use dlf =", deparse(substitute(x)))
 #
 # Fit distribution functions to (truncated) sample: ----------------------------
 if(!is.null(x) | any(dlf$truncate!=truncate) |  any(!selection %in% names(dlf$parameter)))
@@ -72,7 +73,7 @@ if( length(dlf$dat)<5 )
 probs2 <- probs
 if(truncate!=0)
   {
-  if(all(probs < truncate)) stop("'probs' must contain values that are larger than 'truncate'.")
+  if(all(probs < truncate)) message("Note in distLquantile: 'probs' must contain values that are larger than 'truncate'. Returning NAs")
   probs2 <- (probs-truncate)/(1-truncate) # correct probabilities for smaller sample proportion
   probs2[probs < truncate] <- 0   # avoid negative values
   }
