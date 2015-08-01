@@ -21,6 +21,7 @@ q_evir2 doesn't do that, but is a manual and slightly changed copy from the comp
 \seealso{\code{\link{distLquantile}}, \code{evir::\link[evir]{quant}} }
 \examples{
 library(lmomco)
+library(berryFunctions)
 library(evir)
 annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6,
 81.9, 60.1, 72.4, 61.6, 94.8, 82.6, 57.2,  63.1, 73.8, 51.3, 93.6, 56.9, 52.1,
@@ -33,7 +34,7 @@ probs2 <- c(0.8, 0.9, 0.95, 0.99, 0.999)
 q_evir (x=annMax, probs=probs2, truncate=0.5)
 q_evir2(x=annMax, probs=probs2, truncate=0.5)
 ###q_evir3(x=annMax, probs=probs2, truncate=0.5)
-distLquantile(annMax, sel="gpa", truncate=0.5, probs=probs2, weight=F, emp=F, quiet=T)
+distLquantile(annMax, sel="gpa", truncate=0.5, probs=probs2, emp=FALSE, quiet=TRUE)
 # higher estimates in this case
 max(annMax)
 
@@ -44,18 +45,18 @@ rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)
 #
 q_evir (x=rnum, probs=probs2, truncate=0.5)
 q_evir2(x=rnum, probs=probs2, truncate=0.5)
-distLquantile(rnum, sel="gpa", truncate=0.5, probs=probs2, weight=F, emp=F, quiet=T)
+distLquantile(rnum, sel="gpa", truncate=0.5, probs=probs2, emp=FALSE, quiet=TRUE)
 #
 q_evir (x=rnum, probs=probs2, truncate=0.8)
 q_evir2(x=rnum, probs=probs2, truncate=0.8)
-distLquantile(rnum, sel="gpa", truncate=0.8, probs=probs2, weight=F, emp=F, quiet=T)
+distLquantile(rnum, sel="gpa", truncate=0.8, probs=probs2, emp=FALSE, quiet=TRUE)
 #
 # True values:
 quagpa(f=probs2, para=dlf$parameter$gpa)
 mt <- seq(0, 0.99, length=30)
 mtq <- sapply(mt, function(t) distLquantile(rnum, sel="gpa", truncate=t,
-                                         probs=probs2, weight=F, emp=F, quiet=T))
-plot(mt, mtq[5,], type="l", ylim=range(mtq, finite=T), las=1)
+                                         probs=probs2, emp=FALSE, quiet=TRUE))
+plot(mt, mtq[5,], type="l", ylim=range(mtq, finite=TRUE), las=1)
 abline(h=quagpa(f=probs2, para=dlf$parameter$gpa), col=2)
 for(i in 1:5) lines(mt, mtq[i,])
 # in this particular sample, distLquantile overestimates
@@ -66,18 +67,18 @@ rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)
 #
 q_evir (x=rnum, probs=probs2, truncate=0.5)
 q_evir2(x=rnum, probs=probs2, truncate=0.5)
-distLquantile(rnum, sel="gpa", truncate=0.5, probs=probs2, weight=F, emp=F, quiet=T)
+distLquantile(rnum, sel="gpa", truncate=0.5, probs=probs2, emp=FALSE, quiet=TRUE)
 #
 q_evir (x=rnum, probs=probs2, truncate=0.8)
 q_evir2(x=rnum, probs=probs2, truncate=0.8)
-distLquantile(rnum, sel="gpa", truncate=0.8, probs=probs2, weight=F, emp=F, quiet=T)
+distLquantile(rnum, sel="gpa", truncate=0.8, probs=probs2, emp=FALSE, quiet=TRUE)
 #
 # True values:
 quagpa(f=probs2, para=dlf$parameter$gpa)
 mt <- seq(0, 0.99, length=30)
 mtq <- sapply(mt, function(t) distLquantile(rnum, sel="gpa", truncate=t,
-                                         probs=probs2, weight=F, emp=F, quiet=T))
-plot(mt, mtq[5,], type="l", ylim=range(mtq, finite=T), las=1)
+                                         probs=probs2, emp=FALSE, quiet=TRUE))
+plot(mt, mtq[5,], type="l", ylim=range(mtq, finite=TRUE), las=1)
 abline(h=quagpa(f=probs2, para=dlf$parameter$gpa), col=2)
 for(i in 1:5) lines(mt, mtq[i,])
 # in this particular sample, distLquantile underestimates
@@ -88,21 +89,21 @@ danish <- as.numeric(danish)
 #
 q_evir (x=danish, probs=probs2, truncate=0.5)
 q_evir2(x=danish, probs=probs2, truncate=0.5)
-distLquantile(danish, sel="gpa", truncate=0.5, probs=probs2, weight=F, emp=F, quiet=T)
+distLquantile(danish, sel="gpa", truncate=0.5, probs=probs2, emp=FALSE, quiet=TRUE)
 #
 q_evir (x=danish, probs=probs2, truncate=0.8)
 q_evir2(x=danish, probs=probs2, truncate=0.8)
-distLquantile(danish, sel="gpa", truncate=0.8, probs=probs2, weight=F, emp=F, quiet=T)
+distLquantile(danish, sel="gpa", truncate=0.8, probs=probs2, emp=FALSE, quiet=TRUE)
 #
 mt <- seq(0, 0.99, length=30)
 mtq <- sapply(mt, function(t) distLquantile(danish, sel="gpa", truncate=t,
-                                         probs=probs2, weight=F, emp=F, quiet=T))
+                                         probs=probs2, emp=FALSE, quiet=TRUE))
 plot(mt, mtq[5,], type="l", ylim=lim0(150), las=1)
 abline(h=quantileMean(danish, probs=probs2), col=2)
 for(i in 1:5) lines(mt, mtq[i,])
 # in this particular sample, distLquantile underestimates relative to empirical quantiles
 
-distLquantile(log10(danish), sel="gpa", plot=T, probs=probs2, weight=F, emp=F, quiet=T)
+distLquantile(log10(danish), sel="gpa", plot=TRUE, probs=probs2, emp=FALSE, quiet=TRUE)
 quantileMean(log10(danish), probs=probs2) # there's one extreme extreme
 }
 \keyword{distribution}
