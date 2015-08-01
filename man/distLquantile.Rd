@@ -4,7 +4,7 @@
 \description{Parametric quantiles of distributions fitted to a sample.}
 \usage{distLquantile(x=NULL, probs=0:4/4, truncate=0, selection=NULL, type=NULL,
 dlf=NULL, order=TRUE, plot=FALSE, cdf=FALSE, lines=TRUE, linargs=NULL,
-empirical=TRUE, weighted=TRUE, quiet=FALSE, trans=quiet, ... )}
+empirical=TRUE, weighted=empirical, quiet=FALSE, trans=quiet, ... )}
 \arguments{
   \item{x}{Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
   \item{probs}{Numeric vector of probabilities with values in [0,1]. DEFAULT: 0:4/4}
@@ -71,7 +71,7 @@ myprobs <- c(0.9, 0.95, 0.99, 0.999)
 mytrunc <- seq(0, 0.9, length.out=20)
 trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gev",
                              probs=myprobs, truncate=mt, plot=FALSE, trans=TRUE,
-                             progbars=FALSE, empirical=FALSE, weight=FALSE))
+                             progbars=FALSE, empirical=FALSE))
 # If more values are truncated, the function runs faster
 
 op <- par(mfrow=c(2,1), mar=c(2,4.5,2,0.5), cex.main=1)
@@ -105,7 +105,7 @@ title(xlab="Proportion truncated", line=-3)
 mytrunc <- seq(0, 0.9, length.out=20)
 trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gpa",
                              probs=0.99, truncate=mt, plot=FALSE, quiet=TRUE,
-                             progbars=FALSE, empirical=FALSE, weight=FALSE))
+                             progbars=FALSE, empirical=FALSE))
 
 
 # If you want the evir::quant estimate only for one single truncation, use

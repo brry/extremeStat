@@ -14,7 +14,7 @@ cdf=FALSE,      # If TRUE, plot cumulated DF instead of probability density
 lines=TRUE,     # Should vertical lines marking the quantiles be added?
 linargs=NULL,   # Arguments passed to \code{\link{lines}}.
 empirical=TRUE, # Add vertical line for empirical \code{\link{quantileMean}} (and include the result in the output matrix)?
-weighted=TRUE,  # Include weighted averages across distribution functions to the output?
+weighted=empirical, # Include weighted averages across distribution functions to the output?
 quiet=FALSE,    # Suppress notes?
 trans=quiet,    # Suppress note about transposing? # Option and message will be removed around the end of 2015.
 ...             # Arguments passed to \code{\link{distLfit}}.
