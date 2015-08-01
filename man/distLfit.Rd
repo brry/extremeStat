@@ -29,17 +29,17 @@ plot=TRUE, cdf=FALSE, legargs=NULL, histargs=NULL, quiet=FALSE, ... )}
 \seealso{\code{\link{distLgof}}, \code{\link{distLplot}}. \code{\link[extRemes]{fevd}} in the package \code{extRemes},
 \code{\link[MASS]{fitdistr}} in the package \code{MASS}.}
 \examples{
-testdat <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81.9,
+annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81.9,
 60.1, 72.4, 61.6, 94.8, 82.6, 57.2,  63.1, 73.8, 51.3, 93.6, 56.9, 52.1, 40.4,
 48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
 
 # basic usage on real data (annual discharge maxima in Austria)
-dlf <- distLfit(testdat)
+dlf <- distLfit(annMax)
 str(dlf, max.lev=2)
 distLprint(dlf)
 
 # arguments that can be passed:
-distLfit(testdat, lty=2, col=3, legargs=list(lwd=3), main="booh!")
+distLfit(annMax, lty=2, col=3, legargs=list(lwd=3), main="booh!")
 dlf_b <- distLfit(rbeta(1e3, 5, 2), nbest=10, legargs=c(x="left"))
 distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"))
 distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"), order=TRUE)
@@ -57,7 +57,7 @@ distLplot(dlf, breaks=50, log=TRUE)
 
 \dontrun{
 # this takes a while, as it tries to fit all 30 distributions:
-d_all <- distLfit(testdat, gofProp=1, speed=FALSE, plot=FALSE) # 35 sec
+d_all <- distLfit(annMax, gofProp=1, speed=FALSE, plot=FALSE) # 35 sec
 distLprint(d_all)
 distLplot(d_all, nbest=22, coldist=grey(1:22/29), xlim=c(20,140))
 distLplot(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))
