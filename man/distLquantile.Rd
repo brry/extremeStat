@@ -45,20 +45,20 @@ annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6,
 dlf <- distLfit(annMax)
 
 distLquantile(annMax)
-distLquantile(annMax, probs=0.95, plot=TRUE, linargs=c(lwd=2), nbest=5, breaks=10)
+distLquantile(annMax, probs=0.95, plot=TRUE, linargs=list(lwd=2), nbest=5, breaks=10)
 # Parametric 95% quantile estimates range from 92 to 111!
 # But the best fitting distributions all lie aroud 103.
 
 # weighted distribution quantiles are calculated by different weighting schemes:
 distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
 
-# The default is to fit parameters. If speed is important in big datasets
-# and parameters are already available, pass them via dlf:
+# The default is to fit distribution parameters to sample. If speed is important
+# in big datasets and parameters are already available, pass them via dlf:
 distLquantile(dlf=dlf, probs=0:10/10, selection=c("wak","gev","kap"), order=FALSE)
 
 
 
-# censored (truncated, trimmed) quantile:
+# censored (truncated, trimmed) quantile, Peak Over Treshold (POT) method:
 qwak <- distLquantile(annMax, sel="wak", prob=0.95, plot=TRUE, ylim=c(0,0.06), emp=FALSE)
 qwak2 <-distLquantile(annMax, sel="wak", prob=0.95, truncate=0.6, plot=TRUE,
                      add=TRUE, col=6, breaks=10, coldist="blue", empirical=FALSE)
@@ -91,6 +91,30 @@ for(i in 2:4) lines(mytrunc, trunceffect[i,])
 library("berryFunctions")
 textField(rep(0.5,4), trunceffect[,11], paste0("Q",myprobs*100,"\%") )
 par(op)
+
+
+
+# Theoretically, the tails of distributions converge to GPD (General Pareto)
+# Comparing the evir (extreme values in r) package with lmomco:
+set.seed(3) # for many seeds, quant:gpd:optim complains
+rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)
+library(evir)
+qd99 <- quant(rnum, p=0.99, start=15, end=1000, ci=0.5, models=30)
+axis(3, at=seq(-1000,0, length=6), labels=0:5/5, pos=par("usr")[3])
+title(xlab="Proportion truncated", line=-3)
+mytrunc <- seq(0, 0.9, length.out=20)
+trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gpa",
+                             probs=0.99, truncate=mt, plot=FALSE, quiet=TRUE,
+                             progbars=FALSE, empirical=FALSE, weight=FALSE))
+
+
+# If you want the evir::quant estimate only for one single truncation, use
+q_evir(rnum, probs=myprobs, truncate=0.5)
+?q_evir # example section for a comparison against distLquantile
+
+quant(annMax, p=0.9)
+quant(annMax, p=0.99)  # truncation percentage doesn't seem to be responsible
+quant(annMax, p=0.999) # but remember we're looking at one single, very small sample
 
 
 # Developmental testing:
