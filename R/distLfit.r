@@ -32,7 +32,8 @@ if(!is.vector(dat) & !quiet) message("note in distLfit: dat was not a vector.")
 if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) )
   stop("gofProp must be a single value between 0 and 1.")
 # remove NAs, convert to vector:
-dat <- dat_full <- as.numeric( dat[!is.na(dat)]  )
+dat_full <- dat
+dat <- as.numeric( dat[!is.na(dat)]  )
 # truncate (fit values only to upper part of values):
 if(truncate!=0) dat <- sort(dat)[ -1:-(truncate*length(dat)) ]
 # Check remaining sample size
