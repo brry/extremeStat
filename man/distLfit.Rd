@@ -43,6 +43,7 @@ distLfit(testdat, lty=2, col=3, legargs=list(lwd=3), main="booh!")
 dlf_b <- distLfit(rbeta(1e3, 5, 2), nbest=10, legargs=c(x="left"))
 distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"))
 distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"), order=TRUE)
+distLplot(dlf_b, coldist=c("orange",3:6), lty=1:3) # lty is recycled
 
 # Goodness of Fit is computed by RMSE, see first example of ?distLgof
 

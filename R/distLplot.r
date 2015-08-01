@@ -21,12 +21,13 @@ col="grey",             # \code{\link{hist}} bar color or \code{\link{ecdf}} poi
 main, xlab, ylab,       # \code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab
 las=1,                  # Label Axis Style for orientation of numbers along axes.
 coldist=rainbow2(nbest),# Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow2
+lty=1,                  # Line TYpe for plotted distributions. Recycled vector of length nbest.
 add=FALSE,              # If TRUE, hist is not called before adding lines. This lets you add lines highly customized one by one
 logargs=NULL,           # List of arguments passed to \code{\link{logAxis}} if \code{log=TRUE}
 legend=TRUE,            # Should \code{\link{legend}} be called?
 legargs=NULL,           # List of arguments passed to \code{\link{legend}} except for legend and col
 histargs=NULL,          # List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} except for x, freq
-... )                   # Further arguments passed to \code{\link{lines}}, like lty, type, pch, ...
+... )                   # Further arguments passed to \code{\link{lines}}, like type, pch, ...
 {
 # input checks:
 if(!is.list(dlf)) stop("dlf must be a list.")
@@ -93,6 +94,7 @@ if(!add)
 if(nbest < 1) return(invisible(NULL)) # and stop executing
 dn <- rownames(gof)[1:nbest]
 coldist <- rep(coldist, length=nbest)
+lty <- rep(lty, length=nbest)
 # add distributions:
 if(cdf) lfun <- plmomco else lfun <- dlmomco
 for(i in nbest:1)
@@ -106,7 +108,7 @@ for(i in nbest:1)
   lo <- if(xsup[1] > par("usr")[1])      xval[1] else NA
   hi <- if(xsup[2] < par("usr")[2]) tail(xval,1) else NA
   # only plot distribution line if there is some support:
-  if(length(xval)>0)            lines(xval, lfun(xval,paramd), col=coldist[i], ...)
+  if(length(xval)>0)            lines(xval, lfun(xval,paramd), col=coldist[i], lty=lty[i], ...)
   if(supportends & !is.na(lo) ) points(lo, lfun(lo,paramd), pch=16, col=coldist[i])
   if(supportends & !is.na(hi) ) points(hi, lfun(hi,paramd), pch=16, col=coldist[i])
   }
@@ -115,8 +117,8 @@ if(is.na(percentline)) percentline <- if(dlf$gofProp!=1) TRUE else FALSE
 if(percentline) do.call(abline, args=owa(list(v=quantile(dat, probs=1-dlf$gofProp),
                                                 lty=3, col="red"), percentargs))
 # legend - write the names of distributions:
-legdef <- list(legend=dn, lwd=1, col=coldist, x="right", cex=0.7)
-if(legend) do.call(graphics::legend, args=owa(legdef, legargs, c("legend","col")))
+legdef <- list(legend=dn, lwd=1, col=coldist, x="right", cex=0.7, lty=lty)
+if(legend) do.call(graphics::legend, args=owa(legdef, legargs, "legend","col","lty"))
 # add to output:
 dlf$coldist <- coldist
 return(invisible(dlf))

@@ -5,7 +5,7 @@
 \usage{distLplot(dlf, nbest=5, selection=NULL, order=FALSE, cdf=FALSE, log=FALSE,
 percentline=NA, percentargs=NULL, supportends=TRUE,
 breaks=20, xlim=extendrange(dat, f=0.15), ylim=NULL, xaxs="i", yaxs="i", xaxt, col="grey",
-main, xlab, ylab, las=1, coldist=rainbow2(nbest), add=FALSE,
+main, xlab, ylab, las=1, coldist=rainbow2(nbest), lty=1, add=FALSE,
 logargs=NULL, legend=TRUE, legargs=NULL, histargs=NULL, ... )}
 \arguments{
   \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, parameter, gof}}
@@ -26,12 +26,13 @@ logargs=NULL, legend=TRUE, legargs=NULL, histargs=NULL, ... )}
   \item{main, xlab, ylab}{\code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab. DEFAULT: internal abstraction fom \code{dlf$datname}}
   \item{las}{Label Axis Style for orientation of numbers along axes. DEFAULT: 1}
   \item{coldist}{Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow2(nbest)}
+  \item{lty}{Line TYpe for plotted distributions. Recycled vector of length nbest. DEFAULT: 1}
   \item{add}{If TRUE, hist is not called before adding lines. This lets you add lines highly customized one by one. DEFAULT: FALSE}
   \item{logargs}{List of arguments passed to \code{\link{logAxis}} if \code{log=TRUE}. DEFAULT: NULL}
   \item{legend}{Should \code{\link{legend}} be called? DEFAULT: TRUE}
   \item{legargs}{List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL}
   \item{histargs}{List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} except for x, freq. DEFAULT: NULL}
-  \item{\dots}{Further arguments passed to \code{\link{lines}}, like lty, type, pch, ...}
+  \item{\dots}{Further arguments passed to \code{\link{lines}}, like type, pch, ...}
 }
 \value{dlf with coldist added, returned invisibly.}
 \details{By default, this plots density instead of CDF, because the distributions

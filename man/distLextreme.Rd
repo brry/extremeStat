@@ -104,8 +104,8 @@ sort(1/(1-sapply(dle$parameter, plmomco, x=150) ))
 # Advanced options -------------------------------------------------------------
 distLextremePlot(dlf=dle)
 # Line colors / select distributions to be plotted:
-distLextremePlot(dle, nbest=17, coldist=heat.colors(17))
-distLextremePlot(dle, selection=c("gev", "gam", "gum"), coldist=3:5, col=3)
+distLextremePlot(dle, nbest=17, coldist=heat.colors(17), lty=1:5) # lty is recycled
+distLextremePlot(dle, selection=c("gev", "gam", "gum"), coldist=3:5, col=3, lty=3:2)
 # Why do I not get the following warning in interactive mode?
 ## Warning in if (is.na(dn)) stop("No distributions are left with selection ",  :
 ## the condition has length > 1 and only the first element will be used

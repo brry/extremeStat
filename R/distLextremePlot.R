@@ -13,11 +13,12 @@ las=1,        # LabelAxisStyle to orient labels, see \code{\link{par}}
 main=dlf$datname, # Title of plot
 xlab="Return Period RP  [a]", # X axis label
 ylab="Discharge HQ  [m^3/s]", # Y axis label
-col="black",  # Plotting point colors
+col="black",  # Plotting point colors, vector of length two for Weibull and Gringorton, recycled
 pch=c(16,3),  # point characters for plotting positions after Weibull and Grongorton, respectively
 cex=1,        # Character EXpansion of plotting points
 coldist=rainbow2(nbest), # Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow
-lwd=1,        # Line WiDth of distribution lines
+lty=1,        # Line TYpe for plotted distributions. Recycled vector of length nbest.  
+lwd=1,        # Line WiDth of distribution lines. Not recycled.
 legend=TRUE,  # Logical. Add a legend?
 legargs=NULL, # list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd
 linargs=NULL, # List of arguments passed to \code{\link{lines}} like lty, lwd, type, pch, ...
@@ -72,11 +73,12 @@ yval <- seq(from=par("usr")[3], to=par("usr")[4], length=300)
 # add nbest distributions as lines:
 if(nbest > length(dn)) {nbest <- length(dn)}
 coldist <- rep(coldist, length=nbest)
+lty <- rep(lty, length=nbest)
 for(i in nbest:1)
   {
   Pnonexceed <- plmomco(yval,parameter[[dn[i]]]) # print(Pnonexceed, digits=20)
   Pnonexceed[Pnonexceed>1] <- 1 # remove numerical errors
-  linargsdefault <- list(x=1/(1-Pnonexceed), y=yval, col=coldist[i], lwd=lwd)
+  linargsdefault <- list(x=1/(1-Pnonexceed), y=yval, col=coldist[i], lty=lty[i], lwd=lwd)
   do.call(lines, args=owa(linargsdefault, linargs))
   }
 # Add plotting positions of actual data:
@@ -90,10 +92,11 @@ legdef <- list(
   legend=c(if(!is.na(pch[1])) "Weibull plotting positions",
            if(!is.na(pch[2]))"Gringorten plotting positions",dn[1:nbest]),
   pch=c( pch, rep(NA, nbest)),
-  lwd=c(if(!is.na(pch[1])) NA, if(!is.na(pch[2])) NA, rep(lwd,nbest)),
+  lwd=c(if(!is.na(pch[1])) NA,     if(!is.na(pch[2])) NA,     rep(lwd,nbest)),
   col=c(if(!is.na(pch[1])) col[1], if(!is.na(pch[2])) col[2], coldist),
+  lty=c(if(!is.na(pch[1])) NA,     if(!is.na(pch[2])) NA,     lty),
   x="bottomright", cex=0.7, bty="o")
-do.call(graphics::legend, args=owa(legdef, legargs, "legend","pch","lwd","col"))
+do.call(graphics::legend, args=owa(legdef, legargs, "legend","pch","lwd","col","lty"))
 }
 # output dlf object
 output$RPweibull <- RPw

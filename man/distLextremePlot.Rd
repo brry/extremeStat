@@ -4,7 +4,7 @@
 \description{Plots distributions fitted by L-moments and adds plotting positions by Weibull and Gringorton.}
 \usage{distLextremePlot(dlf, selection, order=FALSE, add=FALSE, nbest=5, xlim=NULL, ylim=NULL,
 las=1, main=dlf$datname, xlab="Return Period RP  [a]", ylab="Discharge HQ  [m^3/s]",
-col="black", pch=c(16,3), cex=1, coldist=rainbow2(nbest), lwd=1,
+col="black", pch=c(16,3), cex=1, coldist=rainbow2(nbest), lty=1, lwd=1,
 legend=TRUE, legargs=NULL, linargs=NULL, quiet=FALSE, ... )}
 \arguments{
   \item{dlf}{List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, parameter, gof}. Overrides dat!}
@@ -18,10 +18,11 @@ legend=TRUE, legargs=NULL, linargs=NULL, quiet=FALSE, ... )}
   \item{main}{Title of plot. DEFAULT: dlf$datname}
   \item{xlab}{X axis label. DEFAULT: "Return Period RP  [a]"}
   \item{ylab}{Y axis label. DEFAULT: "Discharge HQ  [m^3/s]"}
-  \item{col}{Plotting point color. DEFAULT: "black"}
+  \item{col}{Plotting point color, vector of length two for Weibull and Gringorton, recycled. DEFAULT: "black"}
   \item{pch}{point characters for plotting positions after Weibull and Grongorton, respectively. NA to suppress in plot and legend. DEFAULT: c(16,3)}
   \item{cex}{Character EXpansion of plotting points. DEFAULT: 1}
   \item{coldist}{Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow}
+  \item{lty}{Line TYpe for plotted distributions. Recycled vector of length nbest. DEFAULT: 1}
   \item{lwd}{Line WiDth of distribution lines. DEFAULT: 1}
   \item{legend}{Logical. Add a legend? DEFAULT: TRUE}
   \item{legargs}{list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd. DEFAULT: NULL}
