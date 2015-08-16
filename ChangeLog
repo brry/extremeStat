@@ -22,6 +22,7 @@ This Log of changes in my package extremeStat contains two sections:
 - distLprint:
 # possibly change to print method for dlf objects with personal class
 
+- q_evir: save image to writeable tempdir
 
 
 ----------------------------------------------------------------------

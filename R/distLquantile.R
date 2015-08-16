@@ -14,6 +14,7 @@ cdf=FALSE,      # If TRUE, plot cumulated DF instead of probability density
 lines=TRUE,     # Should vertical lines marking the quantiles be added?
 linargs=NULL,   # Arguments passed to \code{\link{lines}}.
 empirical=TRUE, # Add vertical line for empirical \code{\link{quantileMean}} (and include the result in the output matrix)?
+evir=empirical, # Include \code{evir::\link[evir]{quant}} GPD quantile estimation? Note that this temporarily creates a png image at the \code{getwd}. DEFAULT: empirical, so additional options can all be excluded with emp=F.
 weighted=empirical, # Include weighted averages across distribution functions to the output?
 quiet=FALSE,    # Suppress notes?
 trans=quiet,    # Suppress note about transposing? # Option and message will be removed around the end of 2015.
@@ -73,7 +74,8 @@ if( length(dlf$dat)<5 )
 probs2 <- probs
 if(truncate!=0)
   {
-  if(all(probs < truncate)) message("Note in distLquantile: 'probs' must contain values that are larger than 'truncate'. Returning NAs")
+  if(all(probs < truncate)) message("Note in distLquantile: 'probs' (",pastec(probs),
+          ") must contain values that are larger than 'truncate'. Returning NAs")
   probs2 <- (probs-truncate)/(1-truncate) # correct probabilities for smaller sample proportion
   probs2[probs < truncate] <- 0   # avoid negative values
   }
@@ -97,8 +99,13 @@ if(order & length(miss)>0)
   output <- cbind(output, m)
   }
 #
-# Empirical and weighted Quantiles:
-if(empirical) output <- cbind(output, quantileMean=quantileMean(dlf$dat_full, probs=probs, truncate=truncate))
+# add further quantile estimates -----------------------------------------------
+# Empirical Quantiles:
+if(empirical) output <- cbind(output, quantileMean=quantileMean(
+                                  dlf$dat_full, probs=probs, truncate=truncate))
+# evir::quant GPD estimates:
+if(evir)   output <-cbind(output, q_evir=q_evir(
+                   x=dlf$dat_full, probs=probs, truncate=truncate, quiet=quiet))
 # Weighted quantile estimates
 if(weighted)
   {
