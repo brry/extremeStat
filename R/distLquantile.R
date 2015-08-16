@@ -121,7 +121,7 @@ if(weighted)
     }
   output <- cbind(output, weighted1=Qweighted("weight1"))
   output <- cbind(output, weighted2=Qweighted("weight2"))
-  output <- cbind(output, weighted3=Qweighted("weight2"))
+  output <- cbind(output, weighted3=Qweighted("weight3"))
   }
 #
 # Plotting: Quantile lines: ----------------------------------------------------
