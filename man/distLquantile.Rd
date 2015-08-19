@@ -96,38 +96,39 @@ par(op)
 
 
 # Theoretically, the tails of distributions converge to GPD (General Pareto)
-# Comparing the evir (extreme values in r) package with lmomco:
-set.seed(3) # for many seeds, quant:gpd:optim complains
-rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)
+# Comparing the evir (extreme values in r) package with lmomco is already
+# implemented in distLquantile with the argument evir=TRUE
+# First a look at the quant function:
 library(evir)
+quant(annMax, p=0.9)
+quant(annMax, p=0.99)  # truncation percentage doesn't seem to be important
+quant(annMax, p=0.999) # but remember we're looking at one single, very small sample
+
+# Now some bigger dataset:
+rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)
 qd99 <- quant(rnum, p=0.99, start=15, end=1000, ci=0.5, models=30)
 axis(3, at=seq(-1000,0, length=6), labels=0:5/5, pos=par("usr")[3])
 title(xlab="Proportion truncated", line=-3)
-mytrunc <- seq(0, 0.9, length.out=20)
+mytrunc <- seq(0, 0.9, length.out=30)
 trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gpa",
-                             probs=0.99, truncate=mt, plot=FALSE, quiet=TRUE,
-                             progbars=FALSE, empirical=FALSE))
-
+                      probs=0.99, truncate=mt, plot=FALSE, quiet=TRUE,
+                      progbars=FALSE, empirical=FALSE, evir=TRUE))
+lines(-1000*(1-mytrunc), trunceffect[1,], col=4)
+lines(-1000*(1-mytrunc), trunceffect[2,], col=3) # interesting...
 
 # If you want the evir::quant estimate only for one single truncation, use
 q_evir(rnum, probs=myprobs, truncate=0.5)
-?q_evir # example section for a comparison against distLquantile
-
-quant(annMax, p=0.9)
-quant(annMax, p=0.99)  # truncation percentage doesn't seem to be responsible
-quant(annMax, p=0.999) # but remember we're looking at one single, very small sample
-
+?q_evir # example section for a detailed comparison against distLquantile
 
 # Developmental testing:
 distLquantile(annMax, plot=FALSE, selection="wak", empirical=FALSE)
 distLquantile(annMax, plot=TRUE, selection="wak", empirical=FALSE, breaks=10)
-
 distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9))
-# distLquantile(rexp(199), truncate=0.8, probs=0.7) # correctly throws an error
+distLquantile(rexp(199), truncate=0.8, probs=0.7) 
 distLquantile(rexp(199), selection=c("wak", "gpa"))
 distLquantile(rexp(199), selection="gpa")
 distLquantile(rexp(4))
-distLquantile(rexp(4), selection="gpa") # should not be an Error anymore
+distLquantile(rexp(4), selection="gpa") 
 dist.list()
 # distLquantile(rexp(199), selection=1:5, emp=FALSE) # index is a bad idea anyways
 # distLquantile(rexp(199), selection=-3)

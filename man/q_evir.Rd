@@ -24,88 +24,72 @@ q_evir2 doesn't do that, but is a manual and slightly changed copy from the comp
 library(lmomco)
 library(berryFunctions)
 library(evir)
-annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6,
-81.9, 60.1, 72.4, 61.6, 94.8, 82.6, 57.2,  63.1, 73.8, 51.3, 93.6, 56.9, 52.1,
-40.4, 48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
-probs2 <- c(0.8, 0.9, 0.95, 0.99, 0.999)
 
-# Theoretically, the tails of distributions converge to GPD (General Pareto)
-# Comparing the evir (extreme values in r) package with lmomco:
-
-q_evir (x=annMax, probs=probs2, truncate=0.5)
-q_evir2(x=annMax, probs=probs2, truncate=0.5)
-###q_evir3(x=annMax, probs=probs2, truncate=0.5)
-distLquantile(annMax, sel="gpa", truncate=0.5, probs=probs2, emp=FALSE, quiet=TRUE)
-# higher estimates in this case
-max(annMax)
-
-# with bigger (random) datasets:
-dlf <- distLfit(annMax)
-set.seed(3) # for many seeds, quant:gpd:optim complains
-rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)
-#
-q_evir (x=rnum, probs=probs2, truncate=0.5)
-q_evir2(x=rnum, probs=probs2, truncate=0.5)
-distLquantile(rnum, sel="gpa", truncate=0.5, probs=probs2, emp=FALSE, quiet=TRUE)
-#
-q_evir (x=rnum, probs=probs2, truncate=0.8)
-q_evir2(x=rnum, probs=probs2, truncate=0.8)
-distLquantile(rnum, sel="gpa", truncate=0.8, probs=probs2, emp=FALSE, quiet=TRUE)
-#
-# True values:
-quagpa(f=probs2, para=dlf$parameter$gpa)
-mt <- seq(0, 0.99, length=30)
-mtq <- sapply(mt, function(t) distLquantile(rnum, sel="gpa", truncate=t,
-                                         probs=probs2, emp=FALSE, quiet=TRUE))
-plot(mt, mtq[5,], type="l", ylim=range(mtq, finite=TRUE), las=1)
-abline(h=quagpa(f=probs2, para=dlf$parameter$gpa), col=2)
-for(i in 1:5) lines(mt, mtq[i,])
-# in this particular sample, distLquantile overestimates
+# I. GPD is not necessarily applicable for full samples!
+set.seed(42); rnum <- rbeta(1000, 2, 7)*300
+d <- distLquantile(rnum, plot=TRUE, probs=0.99, nbest=18   )
+# gpa (=GPD) performs badly here, compared to the other distributions, because:
+distLgofPlot(distLfit(rnum, quiet=TRUE), ranks=FALSE) # GPA rmse is relatively high...
+d <- distLquantile(rnum, plot=TRUE, probs=0.99, selection=c("wei", "gpa"),
+              xlim=c(120, 270), ylim=c(0, 0.003), quiet=TRUE)
+# and GPA has limited distribution support!! (dot at end)
+# (computing quantiles or drawing random numbers will never exceed 184)
+# Remember: the dist. parameters are in distLfit(rnum, sel="gpa")$param$gpa
+par <- lmomco::pargpa(lmomco::lmoms(rnum))
+lmomco::quagpa(f=1, para=par)
 
 
-set.seed(4)
-rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)
-#
-q_evir (x=rnum, probs=probs2, truncate=0.5)
-q_evir2(x=rnum, probs=probs2, truncate=0.5)
-distLquantile(rnum, sel="gpa", truncate=0.5, probs=probs2, emp=FALSE, quiet=TRUE)
-#
-q_evir (x=rnum, probs=probs2, truncate=0.8)
-q_evir2(x=rnum, probs=probs2, truncate=0.8)
-distLquantile(rnum, sel="gpa", truncate=0.8, probs=probs2, emp=FALSE, quiet=TRUE)
-#
-# True values:
-quagpa(f=probs2, para=dlf$parameter$gpa)
-mt <- seq(0, 0.99, length=30)
-mtq <- sapply(mt, function(t) distLquantile(rnum, sel="gpa", truncate=t,
-                                         probs=probs2, emp=FALSE, quiet=TRUE))
-plot(mt, mtq[5,], type="l", ylim=range(mtq, finite=TRUE), las=1)
-abline(h=quagpa(f=probs2, para=dlf$parameter$gpa), col=2)
-for(i in 1:5) lines(mt, mtq[i,])
-# in this particular sample, distLquantile underestimates
+# II. GPA performs better for distribution tails: 2nd extreme value theorem
+browseURL("https://en.wikipedia.org/wiki/Pickands-Balkema-de_Haan_theorem")
+distLquantile(rnum, plot=TRUE, probs=0.99, progbars=FALSE)
+distLquantile(rnum, plot=TRUE, probs=0.99, truncate=0.8, progbars=FALSE)
+distLquantile(rnum, plot=TRUE, probs=0.99, selection=c("wak", "gpa"),
+              xlim=c(120, 270), ylim=c(0.6, 1), truncate=0.8, cdf=TRUE)
 
 
-data(danish)
-danish <- as.numeric(danish)
-#
-q_evir (x=danish, probs=probs2, truncate=0.5)
-q_evir2(x=danish, probs=probs2, truncate=0.5)
-distLquantile(danish, sel="gpa", truncate=0.5, probs=probs2, emp=FALSE, quiet=TRUE)
-#
-q_evir (x=danish, probs=probs2, truncate=0.8)
-q_evir2(x=danish, probs=probs2, truncate=0.8)
-distLquantile(danish, sel="gpa", truncate=0.8, probs=probs2, emp=FALSE, quiet=TRUE)
-#
-mt <- seq(0, 0.99, length=30)
-mtq <- sapply(mt, function(t) distLquantile(danish, sel="gpa", truncate=t,
-                                         probs=probs2, emp=FALSE, quiet=TRUE))
-plot(mt, mtq[5,], type="l", ylim=lim0(150), las=1)
-abline(h=quantileMean(danish, probs=probs2), col=2)
-for(i in 1:5) lines(mt, mtq[i,])
-# in this particular sample, distLquantile underestimates relative to empirical quantiles
+evir::quant(rnum, p=0.95, models=70, end=1000)
+abline(v=-c(100,200), lty=2) # stable quantile estimate at the tail, but not for very high truncation
+abline(h=q_evir(rnum, probs=0.95, truncate=0.8), lty=2)
 
-distLquantile(log10(danish), sel="gpa", plot=TRUE, probs=probs2, emp=FALSE, quiet=TRUE)
-quantileMean(log10(danish), probs=probs2) # there's one extreme extreme
+
+# III. evir::quant vs linear moments lmomco (implemented in extremeStat::distLquantile)
+# a) nontruncated full sample:
+comparequantiles <- function(trunc=0, xlim=c(0,210), ylim=c(trunc,1), ... )
+{
+probs <- seq(trunc,1, length=200)
+d <- distLquantile(rnum, probs=probs, truncate=trunc, ...)
+plot(ecdf(rnum), las=1, ylim=ylim, col=8, col.01line=NA, xlim=xlim, 
+     xlab="Quantile estimate", main=paste(trunc*100, "% truncated"))
+lines(d["quantileMean",], probs, col="orange")
+lines(d["weighted1",], probs, col=1)
+lines(d["gpa",],       probs, col=2)
+lines(d["q_evir",],    probs, col=4)
+legend("bottomright", c("ecdf","quantileMean","weighted","gpa","evir"), 
+       col=c(8,"orange",1,2,4), lty=1)
+invisible(d)
+}
+comparequantiles(ylim=lim0(1), xlim=c(0,210) )
+abline(h=c(0.3,0.9), lty=2)
+# evir GPD method underestimates 30% Quantile, overestimates at 90%
+# lmomco gpa does the same, but not so extremely.
+# Hardly surprising: GPD is not a beta distibution!
+
+# Here are the numbers
+dlq <- distLquantile(rnum, probs=c(0.3, 0.9), quiet=TRUE)
+quantileMean(rnum, probs=c(0.3, 0.9))       # empirical
+dlq["weighted1",]                           # fitted distributions
+dlq["gpa",]                                 # GPD fitted by linear moments
+q_evir(rnum, probs=c(0.3, 0.9), truncate=0) # GPD in package evir
+
+         
+# Now let's look at the tail of the beta-distributed random numbers:
+# b) truncated Peak Over Treshold (POT) EV
+comparequantiles(trunc=0.8, ylim=c(0.95, 1), xlim=c(140,210) )
+abline(h=0.99, lty=2) 
+# lmomco and evir yield the same result. Both slightly overestimate
+
+comparequantiles(trunc=0.9, ylim=c(0.95, 1), xlim=c(140,210), quiet=TRUE )
+d <- comparequantiles(trunc=0.98, xlim=c(155,255), quiet=TRUE )
 }
 \keyword{distribution}
 \keyword{robust}
