@@ -14,8 +14,9 @@ using the established evir (extreme values in r) package}
   \item{quiet}{Should messages be suppressed? DEFAULT: FALSE}
   \item{\dots}{Further arguments passed to \code{\link[evir]{quant}}}
 }
-\details{Opens and closes external device to suppress \code{evir::quant} plotting.\cr
-q_evir2 doesn't do that, but is a manual and slightly changed copy from the computing part of the code}
+\details{\code{q_evir} opens and closes external device to suppress \code{evir::quant} plotting.\cr
+\code{q_evir2} doesn't do that, but is a manual and slightly changed copy from the computing part of the code, thus would not change in case \code{evir} is updated.
+It is also computationally much faster, as probs are vectorized.}
 \value{Vector of quantile estimates for each value of probs}
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, July 2015}
 \references{\url{http://stats.stackexchange.com/questions/129438/different-quantiles-of-a-fitted-gpd-in-different-r-packages}}
@@ -57,9 +58,9 @@ abline(h=q_evir(rnum, probs=0.95, truncate=0.8), lty=2)
 comparequantiles <- function(trunc=0, xlim=c(0,210), ylim=c(trunc,1), ... )
 {
 probs <- seq(trunc,1, length=200)
-d <- distLquantile(rnum, probs=probs, truncate=trunc, ...)
+d <- distLquantile(rnum, probs=probs, truncate=trunc, efast=TRUE, ...)
 plot(ecdf(rnum), las=1, ylim=ylim, col=8, col.01line=NA, xlim=xlim, 
-     xlab="Quantile estimate", main=paste(trunc*100, "% truncated"))
+     xlab="Quantile estimate", main=paste(trunc*100, "\% truncated"))
 lines(d["quantileMean",], probs, col="orange")
 lines(d["weighted1",], probs, col=1)
 lines(d["gpa",],       probs, col=2)

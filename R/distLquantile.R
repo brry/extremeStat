@@ -15,6 +15,7 @@ lines=TRUE,     # Should vertical lines marking the quantiles be added?
 linargs=NULL,   # Arguments passed to \code{\link{lines}}.
 empirical=TRUE, # Add vertical line for empirical \code{\link{quantileMean}} (and include the result in the output matrix)?
 evir=empirical, # Include \code{evir::\link[evir]{quant}} GPD quantile estimation? Note that this temporarily creates a png image at the \code{getwd}. DEFAULT: empirical, so additional options can all be excluded with emp=F.
+efast=FALSE,    # compute evir::quant in a faster way (with  \code{\link{q_evir2})?
 weighted=empirical, # Include weighted averages across distribution functions to the output?
 quiet=FALSE,    # Suppress notes?
 trans=quiet,    # Suppress note about transposing? # Option and message will be removed around the end of 2015.
@@ -104,8 +105,12 @@ if(order & length(miss)>0)
 if(empirical) output <- cbind(output, quantileMean=quantileMean(
                                   dlf$dat_full, probs=probs, truncate=truncate))
 # evir::quant GPD estimates:
-if(evir)   output <-cbind(output, q_evir=q_evir(
+if(evir)  
+  {
+  q_evir_sel <- if(efast)  q_evir2  else  q_evir
+  output <-cbind(output, q_evir=q_evir_sel(
                    x=dlf$dat_full, probs=probs, truncate=truncate, quiet=quiet))
+  }
 # Weighted quantile estimates
 if(weighted)
   {

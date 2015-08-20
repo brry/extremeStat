@@ -31,7 +31,6 @@ distLplot(distLfit(rnum, truncate=0.01), cdf=TRUE)
 
 - distLquantile:
 # turn weight off internally if(missing(weighted) & !is.null(selection)) if(length(selection) < 4) weighted <- FALSE
-# add option to choose q_evir2 (default: FALSE) for speed
 # if trunc=0.98 and all dists for 100% Q at Inf, weighted returns 0!
 
 - q_evir: 
