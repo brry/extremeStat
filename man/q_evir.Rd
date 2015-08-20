@@ -19,15 +19,34 @@ using the established evir (extreme values in r) package}
 It is also computationally much faster, as probs are vectorized.}
 \value{Vector of quantile estimates for each value of probs}
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, July 2015}
-\references{\url{http://stats.stackexchange.com/questions/129438/different-quantiles-of-a-fitted-gpd-in-different-r-packages}}
+\references{\url{https://en.wikipedia.org/wiki/Pickands-Balkema-de_Haan_theorem} 
+second extreme value theorem: tails of distributions tend towards GPD\cr
+\url{http://stats.stackexchange.com/questions/129438/different-quantiles-of-a-fitted-gpd-in-different-r-packages}}
 \seealso{\code{\link{distLquantile}}, \code{evir::\link[evir]{quant}} }
 \examples{
 library(lmomco)
 library(berryFunctions)
 library(evir)
 
-# I. GPD is not necessarily applicable for full samples!
+# Data
 set.seed(42); rnum <- rbeta(1000, 2, 7)*300
+par(las=1)
+evir::quant(rnum, p=0.95, models=70, end=1000)
+axis(1, at=seq(-1000,0, length=6), labels=0:5/5, pos=par("usr")[4])
+mtext("Proportion truncated", side=3, line=-3)
+abline(v=-c(100,200), lty=2) 
+# stable quantile estimate at the tail, but not for very high truncation
+
+# To get one estimte, use q_evir or q_evir2 (faster, but code manually copypasted) 
+q_evir(rnum, probs=0.95, truncate=0.8)
+abline(h=q_evir(rnum, probs=0.95, truncate=0.8), lty=2)
+
+evir::quant(rnum, p=0.999, models=70, end=1000)
+# very high quantile estimates are much more uncertain, of course...
+
+
+
+# I. GPD is not necessarily applicable for full samples!
 d <- distLquantile(rnum, plot=TRUE, probs=0.99, nbest=18   )
 # gpa (=GPD) performs badly here, compared to the other distributions, because:
 distLgofPlot(distLfit(rnum, quiet=TRUE), ranks=FALSE) # GPA rmse is relatively high...
@@ -35,22 +54,19 @@ d <- distLquantile(rnum, plot=TRUE, probs=0.99, selection=c("wei", "gpa"),
               xlim=c(120, 270), ylim=c(0, 0.003), quiet=TRUE)
 # and GPA has limited distribution support!! (dot at end)
 # (computing quantiles or drawing random numbers will never exceed 184)
-# Remember: the dist. parameters are in distLfit(rnum, sel="gpa")$param$gpa
+# Remember: the dist. parameters are in distLfit(rnum, sel="gpa")$param$gpa  or:
 par <- lmomco::pargpa(lmomco::lmoms(rnum))
 lmomco::quagpa(f=1, para=par)
 
 
 # II. GPA performs better for distribution tails: 2nd extreme value theorem
-browseURL("https://en.wikipedia.org/wiki/Pickands-Balkema-de_Haan_theorem")
+# Theoretically, the tails of distributions converge to GPD
+# see reference section for a link
 distLquantile(rnum, plot=TRUE, probs=0.99, progbars=FALSE)
 distLquantile(rnum, plot=TRUE, probs=0.99, truncate=0.8, progbars=FALSE)
 distLquantile(rnum, plot=TRUE, probs=0.99, selection=c("wak", "gpa"),
               xlim=c(120, 270), ylim=c(0.6, 1), truncate=0.8, cdf=TRUE)
 
-
-evir::quant(rnum, p=0.95, models=70, end=1000)
-abline(v=-c(100,200), lty=2) # stable quantile estimate at the tail, but not for very high truncation
-abline(h=q_evir(rnum, probs=0.95, truncate=0.8), lty=2)
 
 
 # III. evir::quant vs linear moments lmomco (implemented in extremeStat::distLquantile)

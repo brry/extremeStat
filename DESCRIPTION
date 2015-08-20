@@ -1,7 +1,7 @@
 Package: extremeStat
 Type: Package
 Title: Extreme Value Statistics on a Linear Scale
-Version: 0.4.31
+Version: 0.4.32
 Date: 2015-08-20
 Imports: lmomco (>= 2.1.3), berryFunctions, pbapply, graphics, stats, utils, grDevices, evir
 Suggests: extRemes

@@ -98,17 +98,14 @@ par(op)
 
 
 # Theoretically, the tails of distributions converge to GPD (General Pareto)
-# Comparing the evir (extreme values in r) package with lmomco is already
+# The function from the evir (extreme values in r) package is already
 # implemented in distLquantile with the argument evir=TRUE
-# First a look at the quant function:
-library(evir)
-quant(annMax, p=0.9)
-quant(annMax, p=0.99)  # truncation percentage doesn't seem to be important
-quant(annMax, p=0.999) # but remember we're looking at one single, very small sample
+# For a detailed comparison against distLquantile see the example section in
+?q_evir
 
-# Now some bigger dataset:
+
 rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)
-qd99 <- quant(rnum, p=0.99, start=15, end=1000, ci=0.5, models=30)
+qd99 <- evir::quant(rnum, p=0.99, start=15, end=1000, ci=0.5, models=30)
 axis(3, at=seq(-1000,0, length=6), labels=0:5/5, pos=par("usr")[3])
 title(xlab="Proportion truncated", line=-3)
 mytrunc <- seq(0, 0.9, length.out=30)
@@ -120,9 +117,12 @@ lines(-1000*(1-mytrunc), trunceffect[2,], col=3) # interesting...
 
 # If you want the evir::quant estimate only for one single truncation, use
 q_evir(rnum, probs=myprobs, truncate=0.5)
-?q_evir # example section for a detailed comparison against distLquantile
 
-# Developmental testing:
+
+
+# Developmental testing to see if all options work properly.
+# Can be ignored by anyone else but me ;-)
+
 distLquantile(annMax, plot=FALSE, selection="wak", empirical=FALSE)
 distLquantile(annMax, plot=TRUE, selection="wak", empirical=FALSE, breaks=10)
 distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9))
