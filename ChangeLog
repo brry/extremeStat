@@ -29,13 +29,8 @@ distLplot(distLfit(rnum, truncate=0.01), cdf=TRUE)
 - distLprint:
 # possibly change to print method for dlf objects with personal class
 
-- distLquantile:
-# turn weight off internally if(missing(weighted) & !is.null(selection)) if(length(selection) < 4) weighted <- FALSE
-# if trunc=0.98 and all dists for 100% Q at Inf, weighted returns 0!
-
 - q_evir: 
 # save image to writeable tempdir
-# capture "Graph may look strange !!" cats
 
 
 ----------------------------------------------------------------------
