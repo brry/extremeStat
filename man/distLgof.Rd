@@ -24,18 +24,18 @@ The weights are inverse to RMSE, weight1 for all dists, weight2 places zero weig
 \seealso{\code{\link{distLgofPlot}}, \code{\link{distLfit}}. More complex estimates of quality of fits: \url{http://chjs.soche.cl/papers/vol4n1_2013/ChJS-04-01-04.pdf} }
 \examples{
 require(lmomco)
-exdat <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81.9,
+annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81.9,
 60.1, 72.4, 61.6, 94.8, 82.6, 57.2,  63.1, 73.8, 51.3, 93.6, 56.9, 52.1, 40.4,
 48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
 
 # Goodness of Fit is measured by RMSE of cumulated distribution function and ?ecdf
-dlf <- distLfit(exdat, cdf=TRUE, nbest=17)
+dlf <- distLfit(annMax, cdf=TRUE, nbest=17)
 distLplot(dlf, cdf=TRUE, sel=c("wak", "revgum"))
 dlf$gof
-x <- sort(exdat)
-segments(x0=x, y0=plmomco(x, dlf$parameter$revgum), y1=ecdf(exdat)(x), col=2)
-segments(x0=x, y0=plmomco(x, dlf$parameter$wak), y1=ecdf(exdat)(x), col=4, lwd=2)
-plot(ecdf(exdat), add=TRUE)
+x <- sort(annMax)
+segments(x0=x, y0=plmomco(x, dlf$parameter$revgum), y1=ecdf(annMax)(x), col=2)
+segments(x0=x, y0=plmomco(x, dlf$parameter$wak), y1=ecdf(annMax)(x), col=4, lwd=2)
+plot(ecdf(annMax), add=TRUE)
 # RMSE: root of average of ( errors squared )  ,   errors = line distances
 
 # weights by three different weighting schemes
@@ -43,8 +43,8 @@ distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
 distLgof(dlf, ks=TRUE)$gof
 
 # Kolmogorov-Smirnov Tests return slightly different values:
-ks.test(exdat, "pnorm", mean(exdat), sd(exdat) )$p.value
-ks.test(exdat, "cdfnor", parnor(lmoms(exdat)))$p.value
+ks.test(annMax, "pnorm", mean(annMax), sd(annMax) )$p.value
+ks.test(annMax, "cdfnor", parnor(lmoms(annMax)))$p.value
 
 
 # GOF: how well do the distributions fit the original data?
@@ -59,7 +59,7 @@ par(mfrow=c(1,1))
 
 
 # effect of Proportion of values used to calculate RMSE
-dlf100 <- distLfit(exdat, gofProp=1) # the default gofProp: 100%
+dlf100 <- distLfit(annMax, gofProp=1) # the default gofProp: 100%
 distLplot(dlf100, nbest=19, breaks=10, coldist=grey(1:19/19) )
 distLgofPlot(dlf100)
 
@@ -79,9 +79,9 @@ library(berryFunctions) # for linReg
 compranks <- function(d)
 {
 gofProp <- 0.5
-x <- sort(exdat, decreasing=TRUE)[  1:(gofProp*length(exdat))  ]
+x <- sort(annMax, decreasing=TRUE)[  1:(gofProp*length(annMax))  ]
 tcdfs <- plmomco(x,dlf50$parameter[[d]])
-ecdfs <- ecdf(exdat)(x) # Empirical CDF
+ecdfs <- ecdf(annMax)(x) # Empirical CDF
 # Root Mean Square Error, R squared:
 linReg(tcdfs, ecdfs, lwd=1, pch=16, main=d, digits=5, xlim=c(0.5, 1),
        ylim=c(0.5, 1), pos1="topleft")
@@ -101,9 +101,9 @@ par(op)
 \dontrun{
 dev.new()
 distLplot(dlf50, cdf=TRUE, sel=c("pe3", "rice", "revgum"), order=T)
-x <- sort(exdat, decreasing=TRUE)[  1:(0.5*length(exdat))  ]
+x <- sort(annMax, decreasing=TRUE)[  1:(0.5*length(annMax))  ]
 tcdfs <- plmomco(x,dlf50$parameter[["revgum"]])
-ecdfs <- ecdf(exdat)(x) # Empirical CDF
+ecdfs <- ecdf(annMax)(x) # Empirical CDF
 plot(x, tcdfs, type="o", col=2)
 points(x, ecdfs)
 dev.new()
