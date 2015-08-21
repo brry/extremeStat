@@ -9,6 +9,7 @@ probs,       # Probabilities of truncated (Peak over treshold) quantile
 truncate,    # Truncation percentage (proportion of sample discarded)
 undertruncNA=TRUE, # Return NAs for probs below truncate? Highly recommended to leave this at the DEFAULT: TRUE
 pngdev=TRUE, # sink \code{evir::quant} graph output to file (is removed later) instead of openening \code{\link{dev.new}}, which also is closed later. Using TRUE avoids the graphics device showing, but \code{getwd()} must be writable.
+quantcat=FALSE, # Show the cat messages of quant?
 quiet=FALSE, # Should messages be suppressed?
 ...)         # Further arguments passed to \code{\link[evir]{quant}}
 {
@@ -34,6 +35,8 @@ at_end <- function(...)
   }
 on.exit(at_end() )
 # actual computation with evir::quant
+# object for quant cat results and message already given
+allcats <- ""
 OptimFailMessageGiven <- FALSE
 if(pos<1)
   {
@@ -42,7 +45,10 @@ if(pos<1)
   } else
   output <- sapply(probs, function(p)
   {
-  res <- try(quant(x, p=p, start=pos, end=pos, models=1, ...), silent=TRUE)
+  cats <- capture.output(
+    res <- try(quant(x, p=p, start=pos, end=pos, models=1, ...), silent=TRUE)
+    )
+  assign("allcats", value=c(allcats, cats), envir=parent.env(environment()))
   if(class(res)=="try-error") 
   {
   if(!quiet & !OptimFailMessageGiven) 
@@ -54,13 +60,19 @@ if(pos<1)
   })
 # replace probs below truncation value with NA
 if(undertruncNA) output[probs < truncate] <- NA
+# Cat quantcats:
+if(!quiet & quantcat) cat(allcats, sep="\n")
 # Output result:
 output
 }
 
 
+
+
+
 # Copying only the computing part from evir::quant, Version: 1.7-3, Date: 2011-07-22
-q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE, quiet=FALSE, ...)
+q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE, 
+                    pngdev=TRUE, quantcat=FALSE, quiet=FALSE, ...)
   {
   if(all(probs < truncate) & !quiet & undertruncNA) message("Note in q_evir2: 'probs' (",
     pastec(probs), ") must contain values that are larger than 'truncate' (", 
