@@ -7,6 +7,7 @@ q_evir <- function(
 x,           # Vector with values
 probs,       # Probabilities of truncated (Peak over treshold) quantile
 truncate,    # Truncation percentage (proportion of sample discarded)
+undertruncNA=TRUE, # Return NAs for probs below truncate? Highly recommended to leave this at the DEFAULT: TRUE
 pngdev=TRUE, # sink \code{evir::quant} graph output to file (is removed later) instead of openening \code{\link{dev.new}}, which also is closed later. Using TRUE avoids the graphics device showing, but \code{getwd()} must be writable.
 quiet=FALSE, # Should messages be suppressed?
 ...)         # Further arguments passed to \code{\link[evir]{quant}}
@@ -18,6 +19,9 @@ if(length(truncate)>1)
   if(!quiet) message("Note in q_evir: only one value used for 'truncate'.")
   }
 if(truncate>1 | truncate<0) stop("truncate (proportion discarded) must be 0<t<1, not ", truncate)
+if(all(probs < truncate) & !quiet & undertruncNA) message("Note in q_evir: 'probs' (",
+    pastec(probs), ") must contain values that are larger than 'truncate' (", 
+    truncate, "). Returning NAs.")
 # position of truncation (treshold)
 pos <- length(x)*(1-truncate)
 # quant always plots a graph, but we don't want it
@@ -48,14 +52,20 @@ if(pos<1)
   } else
   as.numeric(res["qest",])
   })
+# replace probs below truncation value with NA
+if(undertruncNA) output[probs < truncate] <- NA
 # Output result:
 output
 }
 
 
 # Copying only the computing part from evir::quant, Version: 1.7-3, Date: 2011-07-22
-q_evir2 <- function(x, probs, truncate, quiet=FALSE, ...)
+q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE, quiet=FALSE, ...)
   {
+  if(all(probs < truncate) & !quiet & undertruncNA) message("Note in q_evir2: 'probs' (",
+    pastec(probs), ") must contain values that are larger than 'truncate' (", 
+    truncate, "). Returning NAs.")
+  
   pos <- length(x)*(1-truncate)
   if(pos<1)
   {
@@ -72,6 +82,8 @@ q_evir2 <- function(x, probs, truncate, quiet=FALSE, ...)
   a <- lambda * (1 - probs)
   gfunc <- function(a, xihat) (a^(-xihat) - 1)/xihat
   qest <- fit$threshold + fit$par.ests["beta"] * gfunc(a, fit$par.ests["xi"])
+  # replace probs below truncation value with NA
+  if(undertruncNA) qest[probs < truncate] <- NA
   qest
   }
 

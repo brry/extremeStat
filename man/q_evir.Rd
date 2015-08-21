@@ -5,12 +5,13 @@
 \description{Compute quantile of General Pareto Distribution fitted to sample
 by peak over treshold (POT) method declaring treshold from truncation proportion
 using the established evir (extreme values in r) package}
-\usage{q_evir(x, probs, truncate, pngdev=TRUE, quiet=FALSE, ...)}
+\usage{q_evir(x, probs, truncate, undertruncNA=TRUE, pngdev=TRUE, quiet=FALSE, ...)}
 \arguments{
   \item{x}{Vector with values}
   \item{probs}{Probabilities of truncated (Peak over treshold) quantile}
   \item{truncate}{Truncation percentage (proportion of sample discarded)}
-  \item{pngdev}{sink \code{evir::quant} graph output to file (is removed later) instead of openening \code{\link{dev.new}}, which also is closed later. Using TRUE avoids the graphics device showing, but \code{getwd()} must be writable. DEFAULT: TRUE}
+  \item{undertruncNA}{Return NAs for probs below truncate? Highly recommended to leave this at the DEFAULT: TRUE}
+  \item{pngdev}{sink \code{evir::quant} graph output to file (is removed later) instead of openening \code{\link{dev.new}}, which also is closed later. Using TRUE avoids the graphics device popping up and disappearing again, but \code{getwd()} must be writable. DEFAULT: TRUE}
   \item{quiet}{Should messages be suppressed? DEFAULT: FALSE}
   \item{\dots}{Further arguments passed to \code{\link[evir]{quant}}}
 }
