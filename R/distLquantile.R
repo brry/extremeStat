@@ -112,6 +112,8 @@ if(evir)
                    x=dlf$dat_full, probs=probs, truncate=truncate, quiet=quiet))
   }
 # Weighted quantile estimates
+if(missing(weighted) & !is.null(selection)) # false if not specified explicitely but
+  if(length(selection) < 4) weighted <- FALSE     # only few distfuns are chosen 
 if(weighted)
   {
   Qweighted <- function(Weightnr)

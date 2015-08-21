@@ -21,7 +21,7 @@ quiet=FALSE, trans=quiet, ... )}
   \item{empirical}{Add vertical line for empirical \code{\link{quantileMean}} (and include the result in the output matrix)? DEFAULT: TRUE}
   \item{evir}{Include \code{evir::\link[evir]{quant}} GPD quantile estimation? Note that this temporarily creates a png image at the \code{getwd}. DEFAULT: empirical, so additional options can all be excluded with emp=F.}
   \item{efast}{compute evir::quant in a faster way (with  \code{\link{q_evir2}})? DEFAULT: FALSE}
-  \item{weighted}{Include weighted averages across distribution functions to the output? DEFAULT: empirical}
+  \item{weighted}{Include weighted averages across distribution functions to the output? If not specified, internally set to FALSE for short selections. DEFAULT: empirical}
   \item{quiet}{Suppress notes? DEFAULT: FALSE}
   \item{trans}{Suppress note about transposing? DEFAULT: quiet}
   \item{\dots}{Arguments passed to \code{\link{distLfit}}.}
