@@ -119,6 +119,7 @@ if(weighted)
     sapply(1:nrow(output), function(row_n)
       {
       vals <- output[row_n,rownames(dlf$gof)]
+      if(!any(is.finite(vals))) return(NA)
       weights <- dlf$gof[is.finite(vals),Weightnr]
       weights <- weights/sum(weights) # rescale to 1
       sum(vals[is.finite(vals)] * weights)
