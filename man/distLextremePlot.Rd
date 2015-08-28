@@ -3,7 +3,7 @@
 \title{Plot extreme value statistics}
 \description{Plots distributions fitted by L-moments and adds plotting positions by Weibull and Gringorton.}
 \usage{distLextremePlot(dlf, selection, order=FALSE, add=FALSE, nbest=5, xlim=NULL, ylim=NULL,
-las=1, main=dlf$datname, xlab="Return Period RP  [a]", ylab="Discharge HQ  [m^3/s]",
+las=1, main=dlf$datname, xlab="Return Period RP  [a]", ylab="Discharge HQ  [m\\U00B3/s]",
 col="black", pch=c(16,3), cex=1, coldist=rainbow2(nbest), lty=1, lwd=1,
 legend=TRUE, legargs=NULL, linargs=NULL, quiet=FALSE, ... )}
 \arguments{
@@ -17,7 +17,7 @@ legend=TRUE, legargs=NULL, linargs=NULL, quiet=FALSE, ... )}
   \item{las}{LabelAxisStyle to orient labels, see \code{\link{par}}. DEFAULT: 1}
   \item{main}{Title of plot. DEFAULT: dlf$datname}
   \item{xlab}{X axis label. DEFAULT: "Return Period RP  [a]"}
-  \item{ylab}{Y axis label. DEFAULT: "Discharge HQ  [m^3/s]"}
+  \item{ylab}{Y axis label. Please note that the ubuntu pdf viewer might be unable to display unicode superscript. DEFAULT: "Discharge HQ  [m\\U00B3/s]"}
   \item{col}{Plotting point color, vector of length two for Weibull and Gringorton, recycled. DEFAULT: "black"}
   \item{pch}{point characters for plotting positions after Weibull and Grongorton, respectively. NA to suppress in plot and legend. DEFAULT: c(16,3)}
   \item{cex}{Character EXpansion of plotting points. DEFAULT: 1}
