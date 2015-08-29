@@ -8,7 +8,7 @@ x,           # Vector with values
 probs,       # Probabilities of truncated (Peak over treshold) quantile
 truncate,    # Truncation percentage (proportion of sample discarded)
 undertruncNA=TRUE, # Return NAs for probs below truncate? Highly recommended to leave this at the DEFAULT: TRUE
-pngdev=TRUE, # sink \code{evir::quant} graph output to file (is removed later) instead of openening \code{\link{dev.new}}, which also is closed later. Using TRUE avoids the graphics device showing, but \code{getwd()} must be writable.
+pngdev=TRUE, # sink \code{evir::quant} graph output to file (is removed later) instead of openening \code{\link{dev.new}}, which also is closed later. Using TRUE avoids the graphics device showing briefly.
 quantcat=FALSE, # Show the cat messages of quant?
 quiet=FALSE, # Should messages be suppressed?
 ...)         # Further arguments passed to \code{\link[evir]{quant}}
@@ -26,11 +26,12 @@ if(all(probs < truncate) & !quiet & undertruncNA) message("Note in q_evir: 'prob
 # position of truncation (treshold)
 pos <- length(x)*(1-truncate)
 # quant always plots a graph, but we don't want it
-if(pngdev) png("q_evir_dummy_plot.png") else dev.new()
+tfile <- tempfile(fileext=".png")
+if(pngdev) png(tfile) else dev.new()
 at_end <- function(...) 
   {
   dummy <- dev.off();
-  if(pngdev) unlink("q_evir_dummy_plot.png") else 
+  if(pngdev) unlink(tfile) else 
   if(dummy!=1) dev.set() # so active window is the one it used to be
   }
 on.exit(at_end() )

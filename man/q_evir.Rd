@@ -12,7 +12,7 @@ pngdev=TRUE, quantcat=FALSE, quiet=FALSE, ...)}
   \item{probs}{Probabilities of truncated (Peak over treshold) quantile}
   \item{truncate}{Truncation percentage (proportion of sample discarded)}
   \item{undertruncNA}{Return NAs for probs below truncate? Highly recommended to leave this at the DEFAULT: TRUE}
-  \item{pngdev}{sink \code{evir::quant} graph output to file (is removed later) instead of openening \code{\link{dev.new}}, which also is closed later. Using TRUE avoids the graphics device popping up and disappearing again, but \code{getwd()} must be writable. Argument ignored in \code{q_evir2}. DEFAULT: TRUE}
+  \item{pngdev}{sink \code{evir::quant} graph output to file (is removed later) instead of openening \code{\link{dev.new}}, which also is closed later. Using TRUE avoids the graphics device popping up and disappearing again. Argument ignored in \code{q_evir2}. DEFAULT: TRUE}
   \item{quantcat}{Show the cat messages of quant? Argument ignored in \code{q_evir2}. DEFAULT: FALSE}
   \item{quiet}{Should messages be suppressed? DEFAULT: FALSE}
   \item{\dots}{Further arguments passed to \code{\link[evir]{quant}}}
