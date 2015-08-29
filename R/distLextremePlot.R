@@ -29,9 +29,15 @@ quiet=FALSE,  # Suppress notes?
 output <- dlf
 if(length(pch)==1) pch[2] <- if(is.na(pch)) NA else if(pch[1]==3) 4 else 3
 col <- rep(col, length.out=2)
-if(!is.null(selection))  nbest <- length(selection)
+if(!is.null(selection))  
+  {
+  nbest <- length(selection)
+  # if colors are rainbow2 colors, shorten them, too:
+  if(all(coldist==rainbow2(length(coldist)))) coldist <- rainbow2(length(selection))
+  }
 if(length(coldist) != nbest & !quiet)
-   message("note in distLextremePlot: Length of coldist (",length(coldist),") was not equal to nbest (",nbest,"). Is now recycled.")
+   message("note in distLextremePlot: Length of coldist (",length(coldist),
+                  ") was not equal to nbest (",nbest,"). Is now recycled.")
 coldist <- rep(coldist, length=nbest)
 # Extract objects from dlf:
 dat <- dlf$dat
