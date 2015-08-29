@@ -39,13 +39,17 @@ if(!is.null(x)) if(is.list(x)) stop("x must be a vector. Possibly, you want to u
 # Fit distribution functions to (truncated) sample: ----------------------------
 if(!is.null(x) | any(dlf$truncate!=truncate) |  any(!selection %in% names(dlf$parameter)))
   {
+  if(is.null(x)) stop("distLfit must be called (selection or truncate issue), but x is NULL.")
   dlf <- distLfit(dat=x, datname=internaldatname, selection=selection, 
                   truncate=truncate, plot=plot, cdf=cdf, quiet=quiet, ...)
   }else
   {
   # reduce number of distfunctions analyzed if more were present in dlf argument:
-  dlf$parameter <- dlf$parameter[selection]
-  dlf$gof <- dlf$gof[rownames(dlf$gof) %in% selection,]
+  if(!is.null(selection))
+    {
+    dlf$parameter <- dlf$parameter[selection]
+    dlf$gof <- dlf$gof[rownames(dlf$gof) %in% selection,]
+    }
   }
 #
 # Empty output matrix: ---------------------------------------------------------

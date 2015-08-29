@@ -53,8 +53,8 @@ if( ! is.null(selection) )
   seldn <- !selection %in% dn
   if(any(seldn))
    {
-   if(!quiet) message("note in distLfit: selection '", paste(selection[seldn], collapse="', '"),
-   "' not available in lmomco::dist.list(), thus removed.")
+   if(!quiet) message("note in distLfit: selection (", pastec(selection[seldn]),
+   ") not available in lmomco::dist.list(), thus removed.")
    selection <- selection[!seldn]
    }
   dn <- dn[selection]

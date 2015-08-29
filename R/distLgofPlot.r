@@ -15,6 +15,9 @@ quiet=FALSE, # Suppress notes?
 main=NULL, # plot titles
 ...) # Further arguments passed to \code{\link{plot}}.
 {
+# Input control:
+if(nrow(dlf$gof)<1) stop("No fitted distributions in dlf.")
+if(nrow(dlf$gof)<2) stop("Only ", pastec(rownames(dlf$gof)), " was fitted, thus GOF can't be compared.")
 # recycling:
 col <- rep(col, length=3)
 pch <- rep(pch, length=3)

@@ -51,6 +51,9 @@ dn <- rownames(gof) # distribution names
 if(!is.null(selection))
   {
   names(dn) <- dn
+  if(!any(selection %in% dn)) stop("selection ", pastec(selection), " is not available in dlf$gof.")
+  if(any(!selection %in% dn)) message("Note in distLextremePlot: selection ", 
+          pastec(selection[!selection %in% dn]), " is not available in dlf$gof.")
   selection <- selection[selection %in% dn]
   dn <- dn[selection]
   if(order)
@@ -60,7 +63,7 @@ if(!is.null(selection))
     dn <- dn[dno]
     }
   names(dn) <- NULL
-  if(all(is.na(dn))) stop("No distributions are left with selection ", paste(selection, collapse=", "))
+  if(all(is.na(dn))) stop("No distributions are left with current selection.")
   }
 # Plotting ---------------------------------------------------------------------
 # Calculate plot limits if not given:
