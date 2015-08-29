@@ -40,7 +40,7 @@ mtext("Proportion truncated", side=3, line=-3)
 abline(v=-c(100,200), lty=2) 
 # stable quantile estimate at the tail, but not for very high truncation
 
-# To get one estimte, use q_evir or q_evir2 (faster, but code manually copypasted) 
+# To get one estimate, use q_evir or q_evir2 (faster, but code manually copypasted) 
 q_evir(rnum, probs=0.95, truncate=0.8)
 abline(h=q_evir(rnum, probs=0.95, truncate=0.8), lty=2)
 
