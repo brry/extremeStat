@@ -23,6 +23,7 @@ trans=quiet,    # Suppress note about transposing? # Option and message will be 
 )
 {
 # input checks: ----------------------------------------------------------------
+internaldatname <- deparse(substitute(x))
 # temporary warning:
 if(!trans) message("Please note: distLquantile output has been transposed since Version 0.4.23 from 2015-07-18!")
 truncate <- truncate[1] # cannot be vectorized
@@ -38,7 +39,8 @@ if(!is.null(x)) if(is.list(x)) stop("x must be a vector. Possibly, you want to u
 # Fit distribution functions to (truncated) sample: ----------------------------
 if(!is.null(x) | any(dlf$truncate!=truncate) |  any(!selection %in% names(dlf$parameter)))
   {
-  dlf <- distLfit(dat=x, selection=selection, truncate=truncate, plot=plot, cdf=cdf, quiet=quiet, ...)
+  dlf <- distLfit(dat=x, datname=internaldatname, selection=selection, 
+                  truncate=truncate, plot=plot, cdf=cdf, quiet=quiet, ...)
   }else
   {
   # reduce number of distfunctions analyzed if more were present in dlf argument:
