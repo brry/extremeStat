@@ -1,46 +1,32 @@
-
-This Log of changes in my package extremeStat contains two sections:
-1. future development - a list of things I want to change
-2. development over time - a log of the changes I already made
-
-
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+---------------------------------------
+---------------------------------------
 1. extremeStat - future development
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+---------------------------------------
+---------------------------------------
 
 - all functions:
-# print messages on.exit()
-# catch and throw useful error if selection not in list (gpd, eg)
-# length of nbest and coldist if selection!=NULL
+# print messages on.exit() except progbar places
 
 - distLextreme: 
 # Include Bootstrapping with user-specified proportion left out
-# add log argument
-
-- distLplot:
-# supportends wrong for first example in q_evir
-# Correct bug leading to missing cdf points
-set.seed(42); rnum <- rbeta(1000, 2, 7)*300
-distLplot(distLfit(rnum), cdf=TRUE)
-distLplot(distLfit(rnum, truncate=0.01), cdf=TRUE)
+# add log argument, update examples accordingly
 
 - distLprint:
 # possibly change to print method for dlf objects with personal class
 
 
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+---------------------------------------
+---------------------------------------
 2. extremeStat - development over time
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+---------------------------------------
+---------------------------------------
 
 
 Version 0.5 (2015--)
 various changes, see github commit log at
-https://github.com/BerryBoessenkool/extremeStat/commits/master
+https://github.com/brry/extremeStat/commits/master
 highlights:
+- quantile estimation now possible, function tested and expanded thoroughly
 - failed parameter fitting is handled much better, warning messages became useful
 - quiet argument added throughout the package
 - several defaults were improved 
@@ -50,12 +36,12 @@ highlights:
 - installB: moved to https://github.com/brry/installB to remove devtools dependency here
 
 
-new functions: distLextremePlot, distLprint, distLquantile
+new functions: distLextremePlot, distLprint, distLquantile, q_evir
 renamed distLgofPlot for consistency in lowerCamel-derived case usage.
 
 
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+---------------------------------------
+---------------------------------------
 
 
 Version 0.4 (2014-12-04)
@@ -66,8 +52,8 @@ depends on berryFunctions again (maintaning functions twice is nonsense)
 
 
 
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+---------------------------------------
+---------------------------------------
 
 
 Version 0.3 (2014-09-30)
@@ -76,8 +62,8 @@ Thus I included lim0, logAxis, logVals, owa, rainbow2, rmse, rsquare
 Thinking about how to progress. In my opinion, it would make more sense to depend on berryFunctions, but Ripley does not like to see a subpackage like this on CRAN.
 
 
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+---------------------------------------
+---------------------------------------
 
 
 Version 0.2 (2014-09-22)
@@ -106,8 +92,8 @@ added datname element in dlf, used for main and xlab in all suitable plots
 # 'order' and 'add' arguments added
 
 
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+---------------------------------------
+---------------------------------------
 
 
 Version 0.1 (2014-09-15)
