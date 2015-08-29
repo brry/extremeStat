@@ -66,7 +66,7 @@ if(!add)
   if(is.null(ylim)) ylim <- c(0,1)
   if(missing(ylab)) ylab <- "(Empirical) Cumulated Density (CDF)"
   if(missing(main)) main <- paste("Cumulated density distributions of", dlf$datname)
-  ecdfdef <- list(x=ecdf(dat), col=col, xlim=xlim, xaxt=xaxt, ylab=ylab,
+  ecdfdef <- list(x=ecdf(dat), do.points=TRUE, col=col, xlim=xlim, xaxt=xaxt, ylab=ylab,
              ylim=ylim, xaxs=xaxs, yaxs=yaxs, main=main, xlab=xlab, las=las)
   do.call(plot, args=owa(ecdfdef, histargs, "x", "y"))
   if(log)
