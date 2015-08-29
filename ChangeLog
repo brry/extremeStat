@@ -29,9 +29,6 @@ distLplot(distLfit(rnum, truncate=0.01), cdf=TRUE)
 - distLprint:
 # possibly change to print method for dlf objects with personal class
 
-- q_evir: 
-# save image to writeable tempdir
-
 
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------

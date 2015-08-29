@@ -60,6 +60,8 @@ if(pos<1)
   as.numeric(res["qest",])
   })
 # replace probs below truncation value with NA
+if(undertruncNA & any(probs < truncate) & !quiet) 
+  message("Note in q_evir: quantiles for probs below truncate replaced with NAs.")
 if(undertruncNA) output[probs < truncate] <- NA
 # Cat quantcats:
 if(!quiet & quantcat) cat(allcats, sep="\n")
@@ -96,6 +98,8 @@ q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE,
   gfunc <- function(a, xihat) (a^(-xihat) - 1)/xihat
   qest <- fit$threshold + fit$par.ests["beta"] * gfunc(a, fit$par.ests["xi"])
   # replace probs below truncation value with NA
+  if(undertruncNA & any(probs < truncate) & !quiet) 
+    message("Note in q_evir2: quantiles for probs below truncate replaced with NAs.")
   if(undertruncNA) qest[probs < truncate] <- NA
   qest
   }
