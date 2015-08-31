@@ -7,7 +7,7 @@ dat,          # Vector with values
 datname,      # Character string for main, xlab etc. DEFAULT: internal \code{substitute(dat)}
 speed=TRUE,   # If TRUE, several distributions are omitted, for the reasons shown in \code{\link[lmomco]{dist.list}()}
 ks=FALSE,     # Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE
-selection=NULL, # Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}. Overrides speed.
+selection=NULL, # Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed.
 gofProp=1,    # Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
 truncate=0,   # Number between 0 and 1. Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly.
 gofComp=FALSE,# If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE
@@ -28,7 +28,7 @@ if(quiet) progbars <- FALSE
 if(progbars) lapply <- pbapply::pblapply
 # checks:
 if( ! is.numeric(dat) ) stop("dat must be numeric.")
-if(!is.vector(dat) & !quiet) message("note in distLfit: dat was not a vector.")
+if(!is.vector(dat) & !quiet) message("Note in distLfit: dat was not a vector.")
 if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) )
   stop("gofProp must be a single value between 0 and 1.")
 # remove NAs, convert to vector:
@@ -44,12 +44,11 @@ if(length(dat) < 5) {message("note in distLfit: sample size (",length(dat),") is
 #
 # possible distributions: ------------------------------------------------------
 dn <- dist.list()
+names(dn) <- dn
 # Selection:
 if( ! is.null(selection) )
   {
-  if(is.numeric(selection)) if(any(abs(selection)>length(dn)))
-     stop("'selection' cannot be larger than", length(dn), ".")
-  names(dn) <- dn # so that selection can also be character string
+  if(!is.character(selection)) stop("Since 0.4.36 (2015-08-31), 'selection' _must_ be a character string vector.")
   seldn <- !selection %in% dn
   if(any(seldn))
    {
