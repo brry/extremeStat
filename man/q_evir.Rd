@@ -47,7 +47,8 @@ abline(h=q_evir(rnum, probs=0.95, truncate=0.8), lty=2)
 evir::quant(rnum, p=0.999, models=70, end=1000)
 # very high quantile estimates are much more uncertain, of course...
 
-
+\dontrun{
+## Taken out from CRAN package check because it's slow
 
 # I. GPD is not necessarily applicable for full samples!
 d <- distLquantile(rnum, plot=TRUE, probs=0.99, nbest=18   )
@@ -110,6 +111,7 @@ abline(h=0.99, lty=2)
 
 comparequantiles(trunc=0.9, ylim=c(0.95, 1), xlim=c(140,210), quiet=TRUE )
 d <- comparequantiles(trunc=0.98, xlim=c(155,255), quiet=TRUE )
+}
 }
 \keyword{distribution}
 \keyword{robust}

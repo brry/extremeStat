@@ -66,6 +66,7 @@ qwak <- distLquantile(annMax, sel="wak", prob=0.95, plot=TRUE, ylim=c(0,0.06), e
 qwak2 <-distLquantile(annMax, sel="wak", prob=0.95, truncate=0.6, plot=TRUE,
                      add=TRUE, col=6, breaks=10, coldist="blue", empirical=FALSE)
 
+
 # Simulation of truncation effect
 library(lmomco)
 #set.seed(42)
@@ -103,8 +104,10 @@ par(op)
 # For a detailed comparison against distLquantile see the example section in
 ?q_evir
 
+\dontrun{
+## Taken out from CRAN package check because it's slow
 
-rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)
+set.seed(3); rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)
 qd99 <- evir::quant(rnum, p=0.99, start=15, end=1000, ci=0.5, models=30)
 axis(3, at=seq(-1000,0, length=6), labels=0:5/5, pos=par("usr")[3])
 title(xlab="Proportion truncated", line=-3)
@@ -114,6 +117,8 @@ trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gpa",
                       progbars=FALSE, empirical=FALSE, evir=TRUE))
 lines(-1000*(1-mytrunc), trunceffect[1,], col=4)
 lines(-1000*(1-mytrunc), trunceffect[2,], col=3) # interesting...
+
+}
 
 # If you want the evir::quant estimate only for one single truncation, use
 q_evir(rnum, probs=myprobs, truncate=0.5)
