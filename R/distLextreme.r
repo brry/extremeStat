@@ -9,33 +9,13 @@ distLextreme <- function(
 dat,          # Vector with extreme values e.g. annual discharge maxima. Ignored if dlf is given.
 datname,      # Character string for main and output list.
 dlf,          # List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}. Overrides dat!
+selection=NULL, # Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed.
 RPs=c(2,5,10,20,50), # ReturnPeriods for which discharge is estimated
-speed=TRUE,   # If TRUE, several computationally intensive time consuming distributions are omitted, for the reasons shown in \code{\link[lmomco]{dist.list()}}
-ks=FALSE,     # Include ks.test results in dlf$gof? Computing is much faster when FALSE
-selection=NULL, # Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}
-order=FALSE,  # if selection is given, should legend and colors in \code{\link{distLextremePlot}} be ordered by gof anyways?
-gofProp=1,    # Upper proportion of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
-progbars=length(dat)>200, # Show progress bars for each loop?
+progbars=length(dat)>200, # Show progress bars for each loop? DEFAULT: TRUE if n>200
 time=TRUE,    # \code{\link{message}} execution time?
-plot=TRUE,    # Should the return periods and nbest fitted distributions be plotted?
-add=FALSE,    # If TRUE, plot is not called before adding lines. This lets you add lines highly customized one by one
-nbest=5,      # Number of distributions plotted, in order of goodness of fit
-xlim=NULL,    # X-axis limits. DEFAULT: xlim of plotting positions
-ylim=NULL,    # Y-lim. DEFAULT: from min to extended max
-las=1,        # LabelAxisStyle to orient labels, see \code{\link{par}}
-main=datname, # Title of plot
-xlab="Return Period RP  [a]", # X axis label
-ylab="Discharge HQ  [m\U00B3/s]", # Y axis label
-col="black",  # Plotting point color
-pch=c(16,3),  # point characters for plotting positions after Weibull and Grongorton, respectively
-cex=1,        # Character EXpansion of plotting points
-coldist=rainbow2(nbest), # Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow
-lwd=1,        # Line WiDth of distribution lines
-legend=TRUE,  # Logical. Add a legend?
-legargs=NULL, # list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd
-linargs=NULL, # List of arguments passed to \code{\link{lines}} like lty, lwd, type, pch, ...
+plot=TRUE,    # Should the return periods and nbest fitted distributions be plotted by a call to \code{\link{distLextremePlot}}?
 quiet=FALSE,  # Suppress notes?
-... )         # Further arguments passed to \code{\link{plot}} like log="x", xaxt="n", ...
+... )         # Further arguments passed to \code{\link{distLextremePlot}} like order, lty, lwd, ...
 {
 StartTime <- Sys.time()
 if(quiet) progbars <- FALSE
@@ -43,37 +23,28 @@ if(quiet) progbars <- FALSE
 if(missing(datname)) datname <- deparse(substitute(dat))
 if(!missing(dlf)) if(!missing(dat)) if(dlf$dat != dat & !quiet)
    message("note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored.")
-if(!missing(dlf)) datname <- dlf$datname
-###require(lmomco) # not necessary anymore. it is listed in 'Imports' now...
-###require(berryFunctions) # for rsquare, RMSE, logAxis,   ditto
 #
 # fit distributions and calculate goodness of fits -----------------------------
-if( missing(dlf) )  dlf <- distLfit(dat=dat, datname=datname, speed=speed, ks=ks,
-       selection=selection, gofProp=gofProp, progbars=progbars, quiet=quiet, plot=FALSE, time=FALSE)
-output <- dlf
-# objects from the list
-dat <- output$dat; parameter <- output$parameter;  gof <- output$gof
-# remove NAs, convert to vector:
-dat <- as.numeric( dat[!is.na(dat)]  )
+if( missing(dlf) )  dlf <- distLfit(dat=dat, datname=datname, plot=FALSE, 
+                selection=selection, time=FALSE, progbars=progbars, quiet=quiet)
+#
 # plot -------------------------------------------------------------------------
-if(plot) output <- distLextremePlot(dlf=dlf, selection=selection, order=order, add=add, nbest=nbest,
-    xlim=xlim, ylim=ylim, las=las, main=main, xlab=xlab, ylab=ylab, col=col, quiet=quiet,
-    pch=pch, cex=cex, coldist=coldist, lwd=lwd, legend=legend, legargs=legargs, linargs=linargs, ...)
+if(plot) dlf <- distLextremePlot(dlf=dlf, selection=selection, quiet=quiet, ...)
 # output (discharge) values at return periods ----------------------------------
-dn <- rownames(gof) # distribution names
+dn <- rownames(dlf$gof) # distribution names
 if(progbars) sapply <- pbapply::pbsapply
-if(progbars) message("calculating return levels for return periods:")
-returnlev <- sapply(dn, function(d) qlmomco(1-1/RPs, parameter[[d]]))  # as.numeric(
+if(progbars) message("Calculating return levels for return periods:")
+returnlev <- sapply(dn, function(d) qlmomco(1-1/RPs, dlf$parameter[[d]])) 
 # if length(RPs)==1, returnlev is only a vector,
 if(is.null(dim(returnlev)))
      returnlev <- as.matrix(returnlev)        # so convert it to a matrix,
 else returnlev <- t(returnlev)                # or else transpose it
 # column names:
 colnames(returnlev) <- paste0("RP.", RPs)
-# add goodness of fit
+# add weighted estimate (by goodness of fit):
+# todo...
 # Add to output:
-output$coldist <- coldist
-output$returnlev <- as.data.frame(returnlev)
+dlf$returnlev <- as.data.frame(returnlev)
 if(time & !quiet) message("distLextreme execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
-return(invisible(output))
+return(invisible(dlf))
 } # end of function

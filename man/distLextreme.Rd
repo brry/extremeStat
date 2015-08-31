@@ -5,47 +5,21 @@
 Fits several distributions based on linear moments, calculate return levels for given return periods.
 Plots distributions and adds plotting positions by Weibull and Gringorton.
 }
-\usage{distLextreme(dat, datname, dlf, RPs=c(2,5,10,20,50), speed=TRUE, ks=FALSE,
-selection, order=FALSE, gofProp=1, progbars=length(dat)>200, time=TRUE,
-plot=TRUE, add=FALSE,
-nbest=5, xlim, ylim, las=1, main=datname, xlab="Return Period RP  [a]",
-ylab="Discharge HQ  [m\\U00B3/s]", PPcol="black", PPpch=c(16,3), PPcex=1,
-coldist=rainbow2(nbest), lwd=1, legend=TRUE, legargs=NULL, linargs=NULL,
-quiet=FALSE, ... )}
+\usage{distLextreme(dat, datname, dlf, selection=NULL, RPs=c(2,5,10,20,50), progbars=length(dat)>200, time=TRUE, plot=TRUE, quiet=FALSE, ... )}
 \arguments{
   \item{dat}{Vector with extreme values e.g. annual discharge maxima. Ignored if dlf is given.}
-  \item{datname}{Character string for main and output list. DEFAULT: internal \code{substitute(dat)}}
+  \item{datname}{Character string for main and output list.}
   \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}. Overrides dat!}
+  \item{selection}{Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL}
   \item{RPs}{ReturnPeriods for which discharge is estimated. DEFAULT: c(2,5,10,20,50)}
-  \item{speed}{If TRUE, several computationally intensive time consuming distributions are omitted, for the reasons shown in \code{\link[lmomco]{dist.list}()}. DEFAULT: TRUE}
-  \item{ks}{Include ks.test results in \code{dlf$gof}? Computing is much faster on big datasets when FALSE. DEFAULT: TRUE}
-  \item{selection}{Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}. Overrides nbest}
-  \item{order}{If selection is given, should legend and colors in \code{\link{distLextremePlot}} be ordered by gof anyways?}
-\item{gofProp}{Upper proportion of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1}
-  \item{progbars}{Show progress bars for each loop and \code{\link{message}} execution time? DEFAULT: TRUE if n > 200}
+  \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n>200}
   \item{time}{\code{\link{message}} execution time? DEFAULT: TRUE}
-  \item{plot}{Should the return periods and nbest fitted distributions be plotted? DEFAULT: TRUE}
-  \item{add}{If TRUE, plot is not called before adding lines. This lets you add lines highly customized one by one. DEFAULT: FALSE}
-  \item{nbest}{Number of distributions plotted, in order of goodness of fit. DEFAULT: 5}
-  \item{xlim}{X-axis limits. DEFAULT: xlim of plotting positions}
-  \item{ylim}{Y-lim. DEFAULT: from min to extended max}
-  \item{las}{LabelAxisStyle to orient labels, see \code{\link{par}}. DEFAULT: 1}
-  \item{main}{Header of plot. DEFAULT: datname}
-  \item{xlab}{X axis label. DEFAULT: "Return Period RP  [a]"}
-  \item{ylab}{Y axis label. Please note that the ubuntu pdf viewer might be unable to display unicode superscript. DEFAULT: "Discharge HQ  [m\\U00B3/s]"}
-  \item{col}{Plotting point color. DEFAULT: "black"}
-  \item{pch}{point characters for plotting positions after Weibull and Grongorton, respectively. NA to suppress in plot and legend. DEFAULT: c(16,3)}
-  \item{cex}{Character EXpansion of plotting points. DEFAULT: 1}
-  \item{coldist}{Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow. DEFAULT: rainbow2(nbest)}
-  \item{lwd}{Line WiDth of distribution lines. DEFAULT: 1}
-  \item{legend}{Logical. Add a legend? DEFAULT: TRUE}
-  \item{legargs}{list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd. DEFAULT: NULL}
-  \item{linargs}{list of arguments passed to \code{\link{lines}} like lty, lwd, type, pch, ... DEFAULT: NULL}
+  \item{plot}{Should the return periods and nbest fitted distributions be plotted by a call to \code{\link{distLextremePlot}}? DEFAULT: TRUE}
   \item{quiet}{Suppress notes? DEFAULT: FALSE}
-  \item{\dots}{Further arguments passed to \code{\link{plot}}, like log="x", xaxt="n", ...}
+  \item{\dots}{Further arguments passed to \code{\link{distLextremePlot}} like order, lty, lwd, ...}
 }
 \details{
-this adds weibull and gringorton plotting positions to the distribution lines, which are estimated from the linear moments of the data itself.\cr
+\code{\link{distLextremePlot}} adds weibull and gringorton plotting positions to the distribution lines, which are estimated from the linear moments of the data itself.\cr
 I personally believe that if you have, say, 35 values in \code{dat}, the highest return period should be around 36 years (Weibull) and not 60 (Gringorton).\cr
 The plotting positions don't affect the distribution parameter estimation, so this dispute is not really important.
 But if you care, go ahead and google "weibull vs gringorton plotting positions".
@@ -74,7 +48,7 @@ annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81
 
 # Basic examples ---------------------------------------------------------------
 dle <- distLextreme(annMax, log=TRUE)
-dle <- distLextreme(annMax, nbest=10, add=TRUE, legargs=list(bg="white", cex=0.9))
+
 # Why do I not get the following warning in interactive mode?
 ## calculating RMSE:
 ## Warning in rmse(tcdfs[[d]], ecdfs, quiet = q
@@ -121,9 +95,7 @@ distLextremePlot(dle, PPpch=c(1,NA)) # only Weibull plotting positions
 distLextreme(Nile/15, add=TRUE, PPpch=NA, coldist=1, selection="wak", legend=FALSE)
 
 # Logarithmic axis
-distLextreme(Nile, log=TRUE, xaxt="n", PPpch=NA, coldist=NA, legend=FALSE)
-logAxis(1)
-distLextreme(Nile, add=TRUE, legargs=c(bg="white"), nbest=8)
+distLextreme(Nile, log=TRUE, nbest=8)
 
 
 
