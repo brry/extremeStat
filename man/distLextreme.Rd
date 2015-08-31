@@ -9,7 +9,7 @@ Plots distributions and adds plotting positions by Weibull and Gringorton.
 selection, order=FALSE, gofProp=1, progbars=length(dat)>200, time=TRUE,
 plot=TRUE, add=FALSE,
 nbest=5, xlim, ylim, las=1, main=datname, xlab="Return Period RP  [a]",
-ylab="Discharge HQ  [m\\U00B3/s]", col="black", pch=c(16,3), cex=1,
+ylab="Discharge HQ  [m\\U00B3/s]", PPcol="black", PPpch=c(16,3), PPcex=1,
 coldist=rainbow2(nbest), lwd=1, legend=TRUE, legargs=NULL, linargs=NULL,
 quiet=FALSE, ... )}
 \arguments{
@@ -73,8 +73,7 @@ annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81
 48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
 
 # Basic examples ---------------------------------------------------------------
-dle <- distLextreme(annMax, log="x")
-abline(h=1:10*20, col=8) ;  berryFunctions::logAxis(1)
+dle <- distLextreme(annMax, log=TRUE)
 dle <- distLextreme(annMax, nbest=10, add=TRUE, legargs=list(bg="white", cex=0.9))
 # Why do I not get the following warning in interactive mode?
 ## calculating RMSE:
@@ -105,7 +104,11 @@ sort(1/(1-sapply(dle$parameter, plmomco, x=150) ))
 distLextremePlot(dlf=dle)
 # Line colors / select distributions to be plotted:
 distLextremePlot(dle, nbest=17, coldist=heat.colors(17), lty=1:5) # lty is recycled
-distLextremePlot(dle, selection=c("gev", "gam", "gum"), coldist=3:5, col=3, lty=3:2)
+distLextremePlot(dle, selection=c("gev", "gam", "gum"), coldist=4:6, PPcol=3, lty=3:2)
+distLextremePlot(dle, selection=c("gpa","glo","wei","exp"), pch=c(NA,NA,6,8), 
+                 order=TRUE, cex=c(1,0.6, 1,1), log=T, PPpch=c(16,NA), n_pch=20)
+# use n_pch to say how many points are drawn per line (important for linear axis) 
+
 # Why do I not get the following warning in interactive mode?
 ## Warning in if (is.na(dn)) stop("No distributions are left with selection ",  :
 ## the condition has length > 1 and only the first element will be used
@@ -113,12 +116,12 @@ distLextremePlot(dle, selection=c("gev", "gam", "gum"), coldist=3:5, col=3, lty=
 
 distLextremePlot(dle, legarg=list(cex=0.5, x="bottom", box.col="red", col=3))
 # col in legarg list is (correctly) ignored
-distLextremePlot(dle, pch=c(1,NA)) # only Weibull plotting positions
+distLextremePlot(dle, PPpch=c(1,NA)) # only Weibull plotting positions
 # add different dataset to existing plot:
-distLextreme(Nile/15, add=TRUE, pch=NA, coldist=1, selection="wak", legend=FALSE)
+distLextreme(Nile/15, add=TRUE, PPpch=NA, coldist=1, selection="wak", legend=FALSE)
 
 # Logarithmic axis
-distLextreme(Nile, log="x", xaxt="n", pch=NA, coldist=NA, legend=FALSE)
+distLextreme(Nile, log=TRUE, xaxt="n", PPpch=NA, coldist=NA, legend=FALSE)
 logAxis(1)
 distLextreme(Nile, add=TRUE, legargs=c(bg="white"), nbest=8)
 

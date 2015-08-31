@@ -2,43 +2,38 @@
 # Berry Boessenkool, 2015
 
 distLextremePlot <- function(
-dlf,          # List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, parameter, gof}. Overrides dat!
-selection=NULL,# Selection of distributions, num or char. Can be negative to leave some out if numeric. char as in \code{\link[lmomco]{lmom2par}}
+dlf,          # List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, parameter, gof}.
+selection=NULL,# Selection of distributions. Character vector as in \code{\link[lmomco]{lmom2par}}
 order=FALSE,  # If selection is given, should legend and colors be ordered by gof anyways?
-add=FALSE,    # If TRUE, plot is not called before adding lines. This lets you add lines highly customized one by one
-nbest=5,      # Number of distributions plotted, in order of goodness of fit
-xlim=NULL,         # X-axis limits. DEFAULT: xlim of plotting positions
-ylim=NULL,         # Y-lim. DEFAULT: from min to extended max
+add=FALSE,    # If TRUE, plot is not called before adding lines. This lets you add lines to an existing plot.
+nbest=5,      # Number of distributions plotted, in order of goodness of fit. Overwritten internally if selection is given.
+log=FALSE,    # Logarithmic x-axis?
+xlim=NULL,    # X-axis limits. DEFAULT: xlim of plotting positions
+ylim=NULL,    # Y-lim. DEFAULT: from min to extended max
 las=1,        # LabelAxisStyle to orient labels, see \code{\link{par}}
 main=dlf$datname, # Title of plot
 xlab="Return Period RP  [a]", # X axis label
-ylab="Discharge HQ  [m\U00B3/s]", # Y axis label
-col="black",  # Plotting point colors, vector of length two for Weibull and Gringorton, recycled
-pch=c(16,3),  # point characters for plotting positions after Weibull and Grongorton, respectively
-cex=1,        # Character EXpansion of plotting points
-coldist=rainbow2(nbest), # Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow
-lty=1,        # Line TYpe for plotted distributions. Recycled vector of length nbest.  
-lwd=1,        # Line WiDth of distribution lines. Not recycled.
+ylab="Discharge HQ  [m\U00B3/s]", # Y axis label. Please note that the ubuntu pdf viewer might be unable to display unicode superscript
+PPcol="black",  # Plotting Position point colors, vector of length two for Weibull and Gringorton, recycled. PP are not used for fitting distributions, but for plotting only.
+PPpch=c(16,3),  # point characters for plotting positions after Weibull and Grongorton, respectively. NA to suppress in plot and legend
+PPcex=1,        # Character EXpansion of plotting points
+coldist=rainbow2(nbest), # Color for each distribution added with \code{\link{lines}}. Recycled, if necessary. DEFAULT: rainbow
+lty=1,        # Line TYpe for plotted distributions. Is recycled to from a vector of length nbest, i.e. a value for each distribution function drawn.
+lwd=1,        # Line WiDth of distribution lines. Recycled vector of length nbest.
+pch=NA,       # Point CHaracter of points added at regular intervals. NA to suppress. Recycled vector of length nbest.
+cex=1,        # if pch != NA, size of points. Recycled vector of length nbest.
+n_pch=15,     # Number of points spread evenly along the line. Recycled vector of length nbest.
 legend=TRUE,  # Logical. Add a legend?
-legargs=NULL, # list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd
-linargs=NULL, # List of arguments passed to \code{\link{lines}} like lty, lwd, type, pch, ...
+legargs=NULL, # list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd, lty
 quiet=FALSE,  # Suppress notes?
-... )         # Further arguments passed to \code{\link{plot}} like log="x", xaxt="n", ...
+... )         # Further arguments passed to \code{\link{plot}} like yaxt="n", ...
 {
 # Input operations:
 output <- dlf
-if(length(pch)==1) pch[2] <- if(is.na(pch)) NA else if(pch[1]==3) 4 else 3
-col <- rep(col, length.out=2)
-if(!is.null(selection))  
-  {
-  nbest <- length(selection)
-  # if colors are rainbow2 colors, shorten them, too:
-  if(all(coldist==rainbow2(length(coldist)))) coldist <- rainbow2(length(selection))
-  }
-if(length(coldist) != nbest & !quiet)
-   message("note in distLextremePlot: Length of coldist (",length(coldist),
-                  ") was not equal to nbest (",nbest,"). Is now recycled.")
-coldist <- rep(coldist, length=nbest)
+# PP (Plotting Position) points charactereistics recycled:
+if(length(PPpch)==1) PPpch[2] <- if(is.na(PPpch)) NA else if(PPpch[1]==3) 4 else 3
+PPcol <- rep(PPcol, length.out=2)
+PPcex <- rep(PPcex, length.out=2)
 # Extract objects from dlf:
 dat <- dlf$dat
 parameter <- dlf$parameter
@@ -59,52 +54,81 @@ if(!is.null(selection))
   names(dn) <- dn
   if(!any(selection %in% dn)) stop("selection ", pastec(selection), " is not available in dlf$gof.")
   if(any(!selection %in% dn)) message("Note in distLextremePlot: selection ", 
-          pastec(selection[!selection %in% dn]), " is not available in dlf$gof.")
+          pastec(selection[!selection %in% dn]), " is not available in dlf$gof, thus ignored.")
   selection <- selection[selection %in% dn]
   dn <- dn[selection]
   if(order)
     {
     dno <- rownames(gof)
     dno <- dno[dno %in% dn]
-    dn <- dn[dno]
+    dn <- dn[dno] # in descending order of goodness of fit
     }
   names(dn) <- NULL
   if(all(is.na(dn))) stop("No distributions are left with current selection.")
+  # nbest:
+  nbest <- length(dn) # shorten to selection
   }
+# control coldist length
+if(length(coldist) != nbest & !quiet)
+  {
+  # This happens of coldist is specified with wrong length.
+  # Can happen if selection is truncated (misspellings, dists not fitted)
+  message("note in distLextremePlot: Length of coldist (",length(coldist),
+          ") was not equal to nbest (",nbest,"). Is now recycled.")
+  ### if colors are rainbow2 colors, shorten/lengthen them:
+  ##if(all(coldist==rainbow2(length(coldist))  )) 
+  ##  coldist <- rainbow2(nbest)
+  ##else # else recycle them
+  coldist <- rep(coldist, length=nbest)
+  }
+#
 # Plotting ---------------------------------------------------------------------
 # Calculate plot limits if not given:
 if(is.null(ylim)) ylim <- c(min(dat), max(dat)+0.1*diff(range(dat)) )
 if(is.null(xlim)) xlim <- range(RPw, RPg)
 # draw discharges over return periods:
-if(!add) plot(1, type="n", las=las, ylim=ylim, xlim=xlim, main=main, ylab=ylab, xlab=xlab, ...) #RPw, m, cex=cex
+if(!add) plot(1, type="n", las=las, ylim=ylim, xlim=xlim, main=main, ylab=ylab, xlab=xlab, 
+              log=if(log) "x" else "", xaxt=if(log) "n" else "s", ...)
+if(log) logAxis(1)
 # range of discharges:
 yval <- seq(from=par("usr")[3], to=par("usr")[4], length=300)
-# add nbest distributions as lines:
-if(nbest > length(dn)) {nbest <- length(dn)}
-coldist <- rep(coldist, length=nbest)
+y_int <- approx(yval, n=n_pch)$y
+# Rycycle distfun lines arguments:
 lty <- rep(lty, length=nbest)
+lwd <- rep(lwd, length=nbest)
+pch <- rep(pch, length=nbest)
+cex <- rep(cex, length=nbest)
+# add nbest distributions as lines:
 for(i in nbest:1)
   {
   Pnonexceed <- plmomco(yval,parameter[[dn[i]]]) # print(Pnonexceed, digits=20)
   Pnonexceed[Pnonexceed>1] <- 1 # remove numerical errors
-  linargsdefault <- list(x=1/(1-Pnonexceed), y=yval, col=coldist[i], lty=lty[i], lwd=lwd)
-  do.call(lines, args=owa(linargsdefault, linargs))
+  xval <- 1/(1-Pnonexceed)
+  lines(x=xval, y=yval, col=coldist[i], lty=lty[i], lwd=lwd[i])
+  if(!is.na(pch[i]))
+    {
+    x_int <- approx(xval, n=n_pch)$y
+    points(x_int, y_int, pch=pch[i], col=coldist[i])
+    }
   }
 # Add plotting positions of actual data:
-points(RPw, m, pch=pch[1], cex=cex, col=col[1])
-points(RPg, m, pch=pch[2], cex=cex, col=col[2])
+points(RPw, m, pch=PPpch[1], cex=PPcex, col=PPcol[1])
+points(RPg, m, pch=PPpch[2], cex=PPcex, col=PPcol[2])
 box()
 # Legend -----------------------------------------------------------------------
 # write the names of distributions. - legargs: legend arguments
 if(legend){
+PP1 <- !is.na(PPpch[1])
+PP2 <- !is.na(PPpch[2])
 legdef <- list(
-  legend=c(if(!is.na(pch[1])) "Weibull plotting positions",
-           if(!is.na(pch[2]))"Gringorten plotting positions",dn[1:nbest]),
-  pch=c( pch, rep(NA, nbest)),
-  lwd=c(if(!is.na(pch[1])) NA,     if(!is.na(pch[2])) NA,     rep(lwd,nbest)),
-  col=c(if(!is.na(pch[1])) col[1], if(!is.na(pch[2])) col[2], coldist),
-  lty=c(if(!is.na(pch[1])) NA,     if(!is.na(pch[2])) NA,     lty),
-  x="bottomright", cex=0.7, bty="o")
+  legend=c(if(PP1) "Weibull PP",if(PP2)"Gringorten PP", dn[1:nbest]),
+  pch=   c(if(PP1) PPpch[1],    if(PP2) PPpch[2],       pch),
+  pt.cex=c(if(PP1) 1,           if(PP2) 1,              cex),
+  lwd=   c(if(PP1) NA,          if(PP2) NA,             lwd),
+  col=   c(if(PP1) PPcol[1],    if(PP2) PPcol[2],       coldist),
+  lty=   c(if(PP1) NA,          if(PP2) NA,             lty),
+  x="bottomright",  
+  cex=0.8)
 do.call(graphics::legend, args=owa(legdef, legargs, "legend","pch","lwd","col","lty"))
 }
 # output dlf object
