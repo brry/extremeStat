@@ -5,12 +5,12 @@
 Fits several distributions based on linear moments, calculate return levels for given return periods.
 Plots distributions and adds plotting positions by Weibull and Gringorton.
 }
-\usage{distLextreme(dat, datname, dlf, selection=NULL, RPs=c(2,5,10,20,50), progbars=length(dat)>200, time=TRUE, plot=TRUE, quiet=FALSE, ... )}
+\usage{distLextreme(dat, dlf, selection=NULL, RPs=c(2,5,10,20,50), 
+progbars=length(dlf$dat)>200, time=TRUE, plot=TRUE, quiet=FALSE, ... )}
 \arguments{
   \item{dat}{Vector with extreme values e.g. annual discharge maxima. Ignored if dlf is given.}
-  \item{datname}{Character string for main and output list.}
   \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}. Overrides dat!}
-  \item{selection}{Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL}
+  \item{selection}{Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. DEFAULT: NULL}
   \item{RPs}{ReturnPeriods for which discharge is estimated. DEFAULT: c(2,5,10,20,50)}
   \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n>200}
   \item{time}{\code{\link{message}} execution time? DEFAULT: TRUE}
@@ -53,6 +53,7 @@ dle <- distLextreme(annMax, log=TRUE)
 ## calculating RMSE:
 ## Warning in rmse(tcdfs[[d]], ecdfs, quiet = q
 ##   7 NAs were omitted from 35 data points.
+# maybe also because now rmse is called with quiet=TRUE...
 
 # Object structure:
 str(dle, max.lev=2)
@@ -80,7 +81,7 @@ distLextremePlot(dlf=dle)
 distLextremePlot(dle, nbest=17, coldist=heat.colors(17), lty=1:5) # lty is recycled
 distLextremePlot(dle, selection=c("gev", "gam", "gum"), coldist=4:6, PPcol=3, lty=3:2)
 distLextremePlot(dle, selection=c("gpa","glo","wei","exp"), pch=c(NA,NA,6,8), 
-                 order=TRUE, cex=c(1,0.6, 1,1), log=T, PPpch=c(16,NA), n_pch=20)
+                 order=TRUE, cex=c(1,0.6, 1,1), log=TRUE, PPpch=c(16,NA), n_pch=20)
 # use n_pch to say how many points are drawn per line (important for linear axis) 
 
 # Why do I not get the following warning in interactive mode?

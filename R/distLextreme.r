@@ -7,11 +7,10 @@
 
 distLextreme <- function(
 dat,          # Vector with extreme values e.g. annual discharge maxima. Ignored if dlf is given.
-datname,      # Character string for main and output list.
-dlf,          # List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}. Overrides dat!
-selection=NULL, # Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed.
+dlf=NULL,     # List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}. Overrides dat!
+selection=NULL, # Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}.
 RPs=c(2,5,10,20,50), # ReturnPeriods for which discharge is estimated
-progbars=length(dat)>200, # Show progress bars for each loop? DEFAULT: TRUE if n>200
+progbars=length(dlf$dat)>200, # Show progress bars for each loop? DEFAULT: TRUE if n>200
 time=TRUE,    # \code{\link{message}} execution time?
 plot=TRUE,    # Should the return periods and nbest fitted distributions be plotted by a call to \code{\link{distLextremePlot}}?
 quiet=FALSE,  # Suppress notes?
@@ -19,17 +18,16 @@ quiet=FALSE,  # Suppress notes?
 {
 StartTime <- Sys.time()
 if(quiet) progbars <- FALSE
-# input checks -----------------------------------------------------------------
-if(missing(datname)) datname <- deparse(substitute(dat))
-if(!missing(dlf)) if(!missing(dat)) if(dlf$dat != dat & !quiet)
-   message("note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored.")
-#
 # fit distributions and calculate goodness of fits -----------------------------
-if( missing(dlf) )  dlf <- distLfit(dat=dat, datname=datname, plot=FALSE, 
-                selection=selection, time=FALSE, progbars=progbars, quiet=quiet)
+if( is.null(dlf) )  dlf <- distLfit(dat=dat, datname=deparse(substitute(dat)), 
+      plot=FALSE, selection=selection, time=FALSE, progbars=progbars, quiet=quiet)
+# Equality check
+if(!missing(dat) & !is.null("dlf")) if(dlf$dat != dat & !quiet)
+  message("note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored.")
 #
 # plot -------------------------------------------------------------------------
 if(plot) dlf <- distLextremePlot(dlf=dlf, selection=selection, quiet=quiet, ...)
+#
 # output (discharge) values at return periods ----------------------------------
 dn <- rownames(dlf$gof) # distribution names
 if(progbars) sapply <- pbapply::pbsapply
