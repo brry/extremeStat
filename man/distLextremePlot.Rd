@@ -10,7 +10,7 @@ coldist=rainbow2(nbest), lty=1, lwd=1, pch=NA, cex=1, n_pch=15,
 legend=TRUE, legargs=NULL, quiet=FALSE, ... )}
 \arguments{
   \item{dlf}{List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, parameter, gof}.}
-  \item{selection}{Selection of distributions. Character vector as in \code{\link[lmomco]{lmom2par}}. DEFAULT: NULL}
+  \item{selection}{Selection of distributions. Character vector with type as in \code{\link[lmomco]{lmom2par}}. DEFAULT: NULL}
   \item{order}{If selection is given, should legend and colors be ordered by gof anyways? DEFAULT: FALSE}
   \item{add}{If TRUE, plot is not called before adding lines. This lets you add lines to an existing plot. DEFAULT: FALSE}
   \item{nbest}{Number of distributions plotted, in order of goodness of fit. Overwritten internally if selection is given. DEFAULT: 5}

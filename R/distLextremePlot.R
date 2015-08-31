@@ -3,7 +3,7 @@
 
 distLextremePlot <- function(
 dlf,          # List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, parameter, gof}.
-selection=NULL,# Selection of distributions. Character vector as in \code{\link[lmomco]{lmom2par}}
+selection=NULL,# Selection of distributions. Character vector with type as in \code{\link[lmomco]{lmom2par}}
 order=FALSE,  # If selection is given, should legend and colors be ordered by gof anyways?
 add=FALSE,    # If TRUE, plot is not called before adding lines. This lets you add lines to an existing plot.
 nbest=5,      # Number of distributions plotted, in order of goodness of fit. Overwritten internally if selection is given.
