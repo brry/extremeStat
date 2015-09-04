@@ -64,7 +64,7 @@ miss <- selection[!selection %in% rownames(dlf$gof)]
 miss <- miss[!miss %in% colnames(output)]
 if(length(miss)>0)
   {
-  on.exit(message("note in distLquantile: specified selection (", pastec(miss),
+  on.exit(message("Note in distLquantile: specified selection (", pastec(miss),
                   ") is not available in dlf$gof."))
   m <- matrix(NA, ncol=length(miss), nrow=nrow(output))
   output <- cbind(output, m)
