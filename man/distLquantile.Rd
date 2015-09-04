@@ -41,10 +41,7 @@ Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for left trunca
 \url{http://www3.stat.sinica.edu.tw/statistica/oldpdf/A10n411.pdf}\cr
 require("truncdist") }
 \examples{
-# Annual Discharge Maxima (streamflow)
-annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6,
-81.9, 60.1, 72.4, 61.6, 94.8, 82.6, 57.2,  63.1, 73.8, 51.3, 93.6, 56.9, 52.1,
-40.4, 48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
+data(annMax) # Annual Discharge Maxima (streamflow)
 dlf <- distLfit(annMax)
 
 distLquantile(annMax)

@@ -24,9 +24,7 @@ The weights are inverse to RMSE, weight1 for all dists, weight2 places zero weig
 \seealso{\code{\link{distLgofPlot}}, \code{\link{distLfit}}. More complex estimates of quality of fits: \url{http://chjs.soche.cl/papers/vol4n1_2013/ChJS-04-01-04.pdf} }
 \examples{
 require(lmomco)
-annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81.9,
-60.1, 72.4, 61.6, 94.8, 82.6, 57.2,  63.1, 73.8, 51.3, 93.6, 56.9, 52.1, 40.4,
-48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
+data(annMax)
 
 # Goodness of Fit is measured by RMSE of cumulated distribution function and ?ecdf
 dlf <- distLfit(annMax, cdf=TRUE, nbest=17)

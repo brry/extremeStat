@@ -31,7 +31,6 @@ But if you care, go ahead and google "weibull vs gringorton plotting positions".
 Christoph Mudersbach: Untersuchungen zur Ermittlung von hydrologischen Bemessungsgroessen mit Verfahren der instationaeren Extremwertstatistik }
 \seealso{\code{\link{distLfit}}. \code{\link[extRemes]{fevd}} in the package \code{extRemes}.}
 \examples{
-# Data from river in Austria
 # Basic examples
 # Advanced options
 # weighted mean based on Goodness of fit (GOF)
@@ -41,10 +40,7 @@ Christoph Mudersbach: Untersuchungen zur Ermittlung von hydrologischen Bemessung
 library(lmomco)
 library(berryFunctions)
 
-# Data from river in Austria
-annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81.9,
-60.1, 72.4, 61.6, 94.8, 82.6, 57.2,  63.1, 73.8, 51.3, 93.6, 56.9, 52.1, 40.4,
-48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
+data(annMax) # annual streamflow maxima in river in Austria
 
 # Basic examples ---------------------------------------------------------------
 dle <- distLextreme(annMax, log=TRUE)
