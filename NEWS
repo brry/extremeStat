@@ -4,10 +4,6 @@
 ---------------------------------------
 ---------------------------------------
 
-- all functions:
-# print messages on.exit() except progbar places
-# make annMax a dataset
-
 - distLextreme: 
 # Include Bootstrapping with user-specified proportion left out
 
