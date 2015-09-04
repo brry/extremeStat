@@ -63,15 +63,10 @@ R in Hydrology: \url{http://abouthydrology.blogspot.de/2012/08/r-resources-for-h
 }
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, 2014-2015}
 \examples{
-# annual discharge maxima from a stream in Austria
-annMax <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6,
-   81.9, 60.1, 72.4, 61.6, 94.8, 82.6, 57.2,  63.1, 73.8, 51.3, 93.6, 56.9, 52.1,
-   40.4, 48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
-# time plot:
+data(annMax) # annual discharge maxima from a stream in Austria
 plot(annMax, type="l")
-require("berryFunctions"); lines(movAv(annMax), lwd=2, col=2)
 dle <- distLextreme(annMax)
-cbind(dle$returnlev, dle$gof)
+dle$returnlev
 }
 \keyword{package}
 \keyword{documentation}
