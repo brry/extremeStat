@@ -1,5 +1,6 @@
 # Extreme value statistics for flood risk estimation
-# Berry Boessenkool, 2012 (first draft) - 2014 (main update)
+# Berry Boessenkool, 2012 (first draft) - 2014 & 2015 (main updates)
+# berry-b@gmx.de
 
 # Input: vector with annual discharge maxima
 # Ouput: discharge estimates for given return periods, parameter of distributions, quality of fits, plot with linear axis
@@ -22,25 +23,17 @@ if(quiet) progbars <- FALSE
 if( is.null(dlf) )  dlf <- distLfit(dat=dat, datname=deparse(substitute(dat)), 
       plot=FALSE, selection=selection, time=FALSE, progbars=progbars, quiet=quiet)
 # Equality check
-if(!missing(dat) & !is.null("dlf")) if(dlf$dat != dat & !quiet)
+if(!missing(dat) & !is.null("dlf")) if(any(dlf$dat != dat) & !quiet)
   on.exit(message("Note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored."))
 #
 # plot -------------------------------------------------------------------------
 if(plot) dlf <- distLextremePlot(dlf=dlf, selection=selection, quiet=quiet, ...)
 #
 # output (discharge) values at return periods ----------------------------------
-dn <- rownames(dlf$gof) # distribution names
-if(progbars) sapply <- pbapply::pbsapply
-if(progbars) message("Calculating return levels for return periods:")
-returnlev <- sapply(dn, function(d) qlmomco(1-1/RPs, dlf$parameter[[d]])) 
-# if length(RPs)==1, returnlev is only a vector,
-if(is.null(dim(returnlev)))
-     returnlev <- as.matrix(returnlev)        # so convert it to a matrix,
-else returnlev <- t(returnlev)                # or else transpose it
+returnlev <- distLquantile(dlf=dlf, selection=selection, probs=1-1/RPs, 
+                           empirical=FALSE, weighted=TRUE, trans=TRUE)
 # column names:
 colnames(returnlev) <- paste0("RP.", RPs)
-# add weighted estimate (by goodness of fit):
-# todo...
 # Add to output:
 dlf$returnlev <- as.data.frame(returnlev)
 if(time & !quiet) on.exit(message("distLextreme execution took ", 

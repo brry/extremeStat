@@ -62,12 +62,16 @@ dle$returnlev
 Q80 <- distLextreme(dlf=dle, RPs=80)$returnlev
 round(sort(Q80[,1], decr=TRUE),1)
 # 99 to 143 m^3/s can make a relevant difference in engineering!
+# That's why the rows weighted by GOF are helpful! Weights are given as in
+distLgofPlot(dle, ranks=FALSE)
+# See also below
 
-# Return period of a given discharge value:
-sort(1/(1-sapply(dle$parameter, plmomco, x=150) ))
-# exponential: 105 years, gev (general extreme value dist): 536,
-# Weibull: every 1305 years only
-# averages of distribution functions weighted by fit quality: see below
+
+# Return period of a given discharge value, say 150 m^3/s:
+sort(1/(1-sapply(dle$parameter, plmomco, x=150) )  )[1:13]
+# exponential:                 every 105 years
+# gev (general extreme value dist):  536,
+# Weibull:                    every 1305 years only
 
 
 
@@ -96,33 +100,21 @@ distLextreme(Nile, log=TRUE, nbest=8)
 
 
 
-# Weighted mean based on GOF ---------------------------------------------------
-# GOF: Goodness of fit, for details see
-?distLgof
-# weights:
-distLgofPlot(dle, ranks=FALSE)
+# weighted mean based on Goodness of fit (GOF) ---------------------------------
 
-# Discharge estimated for 50 years return period, with weighted average:
-sum(dle$gof$weight1 * dle$returnlev[,"RP.50"]) # 114.9
-sum(dle$gof$weight2 * dle$returnlev[,"RP.50"]) # 115.3
-sum(dle$gof$weight3 * dle$returnlev[,"RP.50"]) # 115.9
+# Add discharge weighted average estimate continuously:
 distLextremePlot(dle, nbest=17, legend=FALSE)
+abline(h=115.6, v=50)
+RP <- seq(1, 70, len=100)
+DischargeEstimate <- distLextreme(dlf=dle, RPs=RP, plot=FALSE)$returnlev
+lines(RP, DischargeEstimate["weighted2",], lwd=3, col="orange") 
+
+# Or, on log scale:
+distLextremePlot(dle, nbest=17, legend=FALSE, log=TRUE)
 abline(h=115.9, v=50)
-
-# discharge estimate continuously across all RPs:
-yval <- seq(from=par("usr")[3], to=par("usr")[4], length=200)  # range of discharges
-# add weighted average of distributions:
-CDFs <- sapply(rownames(dle$gof), function(d) plmomco(yval,dle$parameter[[d]]))
-weightedMean <- colSums( apply(CDFs, 1, function(x) x * dle$gof$weight3), na.rm=TRUE )
-lines(1/(1-weightedMean), yval, lwd=3)
-
-
-head(round(CDFs*100), 20) # gov has NAs out of support region
-# remove those completely from weights
-dle$gof$weight1[ apply(CDFs, 2, function(x) any(is.na(x)))  ]  <- 0
-dle$gof$weight1 <- dle$gof$weight1/sum(dle$gof$weight1)
-weightedMean <- colSums( apply(CDFs, 1, function(x) x * dle$gof$weight1), na.rm=TRUE )
-lines(1/(1-weightedMean), yval, lwd=3, col="orange") # not very different
+RP <- unique(round(logSpaced(min=1, max=70, n=200, plot=FALSE),2))
+DischargeEstimate <- distLextreme(dlf=dle, RPs=RP, plot=FALSE)$returnlev
+lines(RP, DischargeEstimate["weighted2",], lwd=5) 
 
 
 
