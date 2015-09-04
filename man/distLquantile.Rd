@@ -3,7 +3,7 @@
 \title{distribution quantiles}
 \description{Parametric quantiles of distributions fitted to a sample.}
 \usage{distLquantile(x=NULL, probs=0:4/4, truncate=0, selection=NULL, type=NULL,
-dlf=NULL, order=TRUE, plot=FALSE, cdf=FALSE, lines=TRUE, linargs=NULL,
+dlf=NULL, order=TRUE, returndlf=FALSE, plot=FALSE, cdf=FALSE, lines=TRUE, linargs=NULL,
 empirical=TRUE, evir=empirical, efast=FALSE, weighted=empirical, 
 quiet=FALSE, trans=quiet, ... )}
 \arguments{
@@ -13,7 +13,8 @@ quiet=FALSE, trans=quiet, ... )}
   \item{selection}{Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used. DEFAULT: NULL}
   \item{type}{Overrides selection. Kept for backwards compatibility. (Changed to selection for internal consistency). DEFAULT: NULL}
   \item{dlf}{dlf object described in \code{\link{extremeStat}}. Ignored if x is given, or if truncate / selection do not match. Use this to save computing time for large datasets where you already have dlf. DEFAULT: NULL}
-  \item{order}{Sort results by GOF? If TRUE (the default) and length(type)>1, the output is ordered by dlf$gof, else by order of appearance in dlf$parameter. DEFAULT: TRUE}
+  \item{order}{Sort results by GOF? If TRUE (the default) and length(selection)>1, the output is ordered by dlf$gof, else by order of appearance in dlf$parameter. DEFAULT: TRUE}
+  \item{returndlf}{Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned.DEFAULT: FALSE}
   \item{plot}{Should \code{\link{distLplot}} be called? DEFAULT: FALSE}
   \item{cdf}{If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE}
   \item{lines}{Should vertical lines marking the quantiles be added? DEFAULT: TRUE}

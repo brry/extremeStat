@@ -8,7 +8,8 @@ truncate=0,     # Number between 0 and 1. Censored quantile: fit to highest valu
 selection=NULL, # Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used.
 type=NULL,      # Overrides selection. Kept for backwards compatibility. (Changed to selection for internal consistency).
 dlf=NULL,       # dlf object described in \code{\link{extremeStat}}. Ignored if x is given, or if truncate / selection do not match. Use this to save computing time for large datasets where you already have dlf.
-order=TRUE,     # Sort results by GOF? If TRUE (the default) and length(type)>1, the output is ordered by dlf$gof, else by order of appearance in dlf$parameter
+order=TRUE,     # Sort results by GOF? If TRUE (the default) and length(selection)>1, the output is ordered by dlf$gof, else by order of appearance in dlf$parameter
+returndlf=FALSE,# Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned.
 plot=FALSE,     # Should \code{\link{distLplot}} be called?
 cdf=FALSE,      # If TRUE, plot cumulated DF instead of probability density
 lines=TRUE,     # Should vertical lines marking the quantiles be added?
@@ -77,7 +78,8 @@ if( length(dlf$dat)<5 )
     "note in distLquantile: sample size is too small to fit parameters (",length(dlf$dat),"). Returning NAs"))
   #if(empirical) output <- cbind(output, quantileMean=quantileMean(dlf$dat, probs=probs))
   if(empirical) output <- cbind(output, quantileMean=NA)
-  return(t(output))
+  if(returndlf) {dlf$quant <- t(output); return(dlf)} 
+    else return(t(output))
   }
 #
 # truncation probs update: -----------------------------------------------------
@@ -165,6 +167,7 @@ if(plot & lines)
     }
   }
 # return output: ---------------------------------------------------------------
-t(output)
+if(returndlf) {dlf$quant <- t(output); return(dlf)} 
+else return(t(output))
 }
 
