@@ -25,14 +25,15 @@ trans=quiet,    # Suppress note about transposing? # Option and message will be 
 # input checks: ----------------------------------------------------------------
 internaldatname <- deparse(substitute(x))
 # temporary warning:
-if(!trans) message("Please note: distLquantile output has been transposed since Version 0.4.23 from 2015-07-18!")
+if(!trans) on.exit(message(
+  "Please note: distLquantile output has been transposed since Version 0.4.23 from 2015-07-18!"))
 truncate <- truncate[1] # cannot be vectorized
 if(truncate<0 | truncate>=1) stop("truncate must be a number between 0 and 1.")
 if( is.null(x) & is.null(dlf)) stop("Either dlf or x must be given.")
 if(!is.null(type))
   {
   selection <- type
-  if(!quiet) message("note in distLquantile: Argument 'type' overwrote 'selection'.")
+  if(!quiet) on.exit(message("note in distLquantile: Argument 'type' overwrote 'selection'."))
   }
 if(!is.null(x)) if(is.list(x)) stop("x must be a vector. Possibly, you want to use dlf =", deparse(substitute(x)))
 #
@@ -62,7 +63,8 @@ miss <- selection[!selection %in% rownames(dlf$gof)]
 miss <- miss[!miss %in% colnames(output)]
 if(length(miss)>0)
   {
-  message("note in distLquantile: specified selection (", pastec(miss),") is not available in dlf$gof.")
+  on.exit(message("note in distLquantile: specified selection (", pastec(miss),
+                  ") is not available in dlf$gof."))
   m <- matrix(NA, ncol=length(miss), nrow=nrow(output))
   output <- cbind(output, m)
   colnames(output) <- selection # always keep the same order if selection is given
@@ -71,7 +73,8 @@ if(length(miss)>0)
 # if input sample size is too small, return NA matrix:
 if( length(dlf$dat)<5 )
   {
-  if(!quiet) message("note in distLquantile: sample size is too small to fit parameters. Returning NAs")
+  if(!quiet) on.exit(message(
+    "note in distLquantile: sample size is too small to fit parameters (",length(dlf$dat),"). Returning NAs"))
   #if(empirical) output <- cbind(output, quantileMean=quantileMean(dlf$dat, probs=probs))
   if(empirical) output <- cbind(output, quantileMean=NA)
   return(t(output))
@@ -81,9 +84,9 @@ if( length(dlf$dat)<5 )
 probs2 <- probs
 if(truncate!=0)
   {
-  if(all(probs < truncate) & !quiet) message("Note in distLquantile: 'probs' (",
+  if(all(probs < truncate) & !quiet) on.exit(message("Note in distLquantile: 'probs' (",
      pastec(probs),") must contain values that are larger than 'truncate (", 
-          truncate, "). Returning NAs.")
+          truncate, "). Returning NAs."))
   probs2 <- (probs-truncate)/(1-truncate) # correct probabilities for smaller sample proportion
   probs2[probs < truncate] <- 0   # avoid negative values
   }

@@ -30,17 +30,20 @@ exclude <- sapply(parameter, function(x)
   any(is.na(x$para))
   })                    #  *): CDF cannot be computed for kappa in Dresden example
 if(any(exclude))
-  {if(!quiet) message("note in distLgof: The following distributions were excluded since no parameters were estimated:\n",
-             paste(dn[exclude], collapse=", "))
+  {
+  curdnexclude <- dn[exclude]
+  if(!quiet) on.exit(message("Note in distLgof: The following distributions were excluded since no parameters were estimated:\n",
+             pastec(curdnexclude)))
   dn <- dn[!exclude]
   parameter <- parameter[!exclude] # not sure whether this is always good...
 }
 if(length(dn)<1) stop("No fitted distributions in dlf.")
-if(length(dn)<2&!quiet) message("Note in distLgof: Only ", pastec(dn), " was fitted, thus GOF can't be compared.")
+if(length(dn)<2&!quiet) on.exit(message("Note in distLgof: Only ", pastec(dn), 
+                                " was fitted, thus GOF can't be compared."))
 if(ks)
   {
   # Kolmogorov-Smirnov test:
-  if(progbars) message("performing ks.test:")
+  if(progbars) message("Performing ks.test:")
   ksA <- lapply(dn, function(d) ks.test(dat, paste0("cdf",d), parameter[[d]]) )
   ksP <- sapply(ksA, function(x) x$p.value   )
   ksD <- sapply(ksA, function(x) x$statistic )
@@ -48,15 +51,15 @@ if(ks)
   }
 # CDFS for R2 on upper gofProp of data:
 dat2 <- sort(dat, decreasing=TRUE)[  1:(gofProp*length(dat))  ]
-if(progbars) message("calculating CDFs:")
+if(progbars) message("Calculating CDFs:")
 tcdfs <- lapply(dn, function(d) plmomco(dat2,parameter[[d]]))
 names(tcdfs) <- dn # Theoretical CumulatedDensityFunctions
 ecdfs <- ecdf(dat)(dat2) # Empirical CDF
 # Root Mean Square Error, R squared:
 if(progbars) sapply <- pbapply::pbsapply
-if(progbars) message("calculating RMSE:")
+if(progbars) message("Calculating RMSE:")
 RMSE <- sapply(dn, function(d)    rmse(tcdfs[[d]], ecdfs, quiet=TRUE))
-if(progbars) message("calculating R2:")
+if(progbars) message("Calculating R2:")
 R2   <- sapply(dn, function(d) rsquare(tcdfs[[d]], ecdfs, quiet=TRUE))
 if(!quiet)
   {
@@ -64,7 +67,8 @@ if(!quiet)
   if(any(nNA>0)) 
     {
     dNA <- paste(paste0(dn[nNA>0], " (", nNA[nNA>0], ")"), collapse=", ")
-    message("note in distLgof: NAs removed in CDF (limited support region?): ", dNA, " of ", length(tcdfs[[1]]), " values.")
+    on.exit(message("Note in distLgof: NAs removed in CDF (limited support region?): ", 
+                    dNA, " of ", length(tcdfs[[1]]), " values."))
     }
   }
 # All into one data.frame:

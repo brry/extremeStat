@@ -49,7 +49,11 @@ if(!is.null(selection))
   selection <- selection[!is.na(selection)]
   sing <- selection %in% rownames(gof)
   if(!any(sing)) stop("selection (", pastec(selection[!sing]), ") is not available in dlf$gof.")
-  if(any(!sing)) message("Note in disLplot: selection (", pastec(selection[!sing]), ") is not available in dlf$gof.")
+  if(any(!sing)) 
+    {
+    curselsing <- pastec(selection[!sing])
+    on.exit(message("Note in disLplot: selection (", curselsing, ") is not available in dlf$gof."))
+    }
   selection <- selection[sing]
   gof <- gof[selection, ]
   nbest <- length(selection)

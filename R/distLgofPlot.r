@@ -27,7 +27,8 @@ gof <- dlf$gof
 gofProp <- dlf$gofProp
 # catch ks=FALSE results:
 ks <- "ksP" %in% colnames(gof)
-if(!ks & !quiet) message("note in distLgofPlot: This result from distLgof with ks=FALSE ignores ks ranks.")
+if(!ks & !quiet) on.exit(message(
+  "note in distLgofPlot: This result from distLgof with ks=FALSE ignores ks ranks."))
 if(ranks & weights) { op <- par(mfrow=c(1,2)) ;  on.exit(par(op)) }
 # Ranks: -----------------------------------------------------------------------
 Ranks <- cbind(rank(gof$RMSE), rank(-gof$R2))

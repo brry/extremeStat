@@ -23,7 +23,7 @@ if( is.null(dlf) )  dlf <- distLfit(dat=dat, datname=deparse(substitute(dat)),
       plot=FALSE, selection=selection, time=FALSE, progbars=progbars, quiet=quiet)
 # Equality check
 if(!missing(dat) & !is.null("dlf")) if(dlf$dat != dat & !quiet)
-  message("note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored.")
+  on.exit(message("Note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored."))
 #
 # plot -------------------------------------------------------------------------
 if(plot) dlf <- distLextremePlot(dlf=dlf, selection=selection, quiet=quiet, ...)
@@ -43,6 +43,7 @@ colnames(returnlev) <- paste0("RP.", RPs)
 # todo...
 # Add to output:
 dlf$returnlev <- as.data.frame(returnlev)
-if(time & !quiet) message("distLextreme execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
+if(time & !quiet) on.exit(message("distLextreme execution took ", 
+  signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds."))
 return(invisible(dlf))
 } # end of function

@@ -28,7 +28,7 @@ if(quiet) progbars <- FALSE
 if(progbars) lapply <- pbapply::pblapply
 # checks:
 if( ! is.numeric(dat) ) stop("dat must be numeric.")
-if(!is.vector(dat) & !quiet) message("Note in distLfit: dat was not a vector.")
+if(!is.vector(dat) & !quiet) on.exit(message("Note in distLfit: dat was not a vector."))
 if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) )
   stop("gofProp must be a single value between 0 and 1.")
 # remove NAs, convert to vector:
@@ -37,7 +37,8 @@ dat <- as.numeric( dat[!is.na(dat)]  )
 # truncate (fit values only to upper part of values):
 if(truncate!=0) dat <- sort(dat)[ -1:-(truncate*length(dat)) ]
 # Check remaining sample size
-if(length(dat) < 5) {message("note in distLfit: sample size (",length(dat),") is too small to fit parameters (<5).")
+if(length(dat) < 5) {on.exit(message("Note in distLfit: sample size (",length(dat),
+                                     ") is too small to fit parameters (<5)."))
                      error_out <- as.list(selection) # this is very useful for distLquantile
                      names(error_out) <- selection  # since it keeps the columns if a selection is given
                      return(list(dat=dat, parameter=error_out, gof=NA))}
@@ -48,12 +49,13 @@ names(dn) <- dn
 # Selection:
 if( ! is.null(selection) )
   {
-  if(!is.character(selection)) stop("Since 0.4.36 (2015-08-31), 'selection' _must_ be a character string vector.")
+  if(!is.character(selection)) stop("Since Version 0.4.36 (2015-08-31), 'selection' _must_ be a character string vector.")
   seldn <- !selection %in% dn
   if(any(seldn))
    {
-   if(!quiet) message("note in distLfit: selection (", pastec(selection[seldn]),
-   ") not available in lmomco::dist.list(), thus removed.")
+   curseldn <- selection[seldn]
+   if(!quiet) on.exit(message("Note in distLfit: selection (", pastec(curseldn),
+   ") not available in lmomco::dist.list(), thus removed."))
    selection <- selection[!seldn]
    }
   dn <- dn[selection]
@@ -73,7 +75,7 @@ parameter <- lapply(dn, function(d) lmom2par(mom, type=d) )
 # error catching:
 if( length(parameter) != length(dn))
   {
-  if(!quiet) on.exit(message("note in distLfit: Some distributions could not be fitted. Possibly cau."))
+  if(!quiet) on.exit(message("Note in distLfit: Some distributions could not be fitted. Possibly cau."))
   names(parameter) <- sapply(parameter, "[[", "type")
   }
 else names(parameter) <- dn
@@ -92,6 +94,7 @@ if(!plot) output$coldist <- rainbow2(if(is.null(selection)) 5 else length(select
 # truncation value
 output$truncate <- truncate
 output$dat_full <- dat_full # non-truncated data
-if(time & !quiet) message("distLfit execution took ", signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
+if(time & !quiet) on.exit(message("distLfit execution took ", 
+      signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds."))
 return(invisible(output))
 } # end of function
