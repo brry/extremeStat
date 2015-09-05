@@ -41,7 +41,13 @@ if(!is.null(x)) if(is.list(x)) stop("x must be a vector. Possibly, you want to u
 # Fit distribution functions to (truncated) sample: ----------------------------
 if(!is.null(x) | any(dlf$truncate!=truncate) |  any(!selection %in% names(dlf$parameter)))
   {
-  if(is.null(x)) stop("distLfit must be called (selection or truncate issue), but x is NULL.")
+  if(is.null(x)) 
+    {
+    x <- dlf$dat
+    internaldatname <- dlf$datname
+    if(!quiet)on.exit(message(
+      "Note in distLquantile: selection or truncate given; distLfit is called from dlf$dat, as x is NULL."))
+    }
   dlf <- distLfit(dat=x, datname=internaldatname, selection=selection, 
                   truncate=truncate, plot=plot, cdf=cdf, quiet=quiet, ...)
   }else
