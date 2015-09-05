@@ -1,22 +1,16 @@
----------------------------------------
----------------------------------------
-1. extremeStat - future development
----------------------------------------
----------------------------------------
 
-- distLextreme: 
-# Include Bootstrapping with user-specified proportion left out
-
-- distLprint:
-# possibly change to print method for dlf objects with personal class
+extremeStat ToDo-list / wishlist / issues
+- distLextreme: Include Bootstrapping with user-specified proportion left out
+- distLprint: possibly change to print method for dlf objects with personal class
 
 
 ---------------------------------------
----------------------------------------
-2. extremeStat - development over time
----------------------------------------
----------------------------------------
 
+extremeStat - past development
+Package by Berry Boessenkool, berry-b@gmx.de
+Any feedback is welcome, per email or on github.com/brry/extremeStat
+
+---------------------------------------
 
 Version 0.5 (2015--)
 various changes, see github commit log at
