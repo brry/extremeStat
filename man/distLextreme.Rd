@@ -5,12 +5,13 @@
 Fits several distributions based on linear moments, calculate return levels for given return periods.
 Plots distributions and adds plotting positions by Weibull and Gringorton.
 }
-\usage{distLextreme(dat, dlf, selection=NULL, RPs=c(2,5,10,20,50), 
+\usage{distLextreme(dat, dlf, selection=NULL, truncate=0, RPs=c(2,5,10,20,50), 
 progbars=length(dlf$dat)>200, time=TRUE, plot=TRUE, quiet=FALSE, ... )}
 \arguments{
   \item{dat}{Vector with extreme values e.g. annual discharge maxima. Ignored if dlf is given.}
   \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}. Overrides dat!}
   \item{selection}{Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. DEFAULT: NULL}
+  \item{truncate}{Proportion truncated for censored quantile, see \code{\link{distLquantile}}. DEFAULT: 0}
   \item{RPs}{ReturnPeriods for which discharge is estimated. DEFAULT: c(2,5,10,20,50)}
   \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n>200}
   \item{time}{\code{\link{message}} execution time? DEFAULT: TRUE}
@@ -29,7 +30,7 @@ But if you care, go ahead and google "weibull vs gringorton plotting positions".
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, 2012-2014}
 \references{\url{http://RclickHandbuch.wordpress.com} Chapter 15 (German)\cr
 Christoph Mudersbach: Untersuchungen zur Ermittlung von hydrologischen Bemessungsgroessen mit Verfahren der instationaeren Extremwertstatistik }
-\seealso{\code{\link{distLfit}}. \code{\link[extRemes]{fevd}} in the package \code{extRemes}.}
+\seealso{\code{\link{distLfit}}. \code{\link{distLexBoot}} for confidence interval from Bootstrapping. \code{\link[extRemes]{fevd}} in the package \code{extRemes}.}
 \examples{
 # Basic examples
 # Advanced options
@@ -63,8 +64,8 @@ Q80 <- distLextreme(dlf=dle, RPs=80)$returnlev
 round(sort(Q80[,1], decr=TRUE),1)
 # 99 to 143 m^3/s can make a relevant difference in engineering!
 # That's why the rows weighted by GOF are helpful! Weights are given as in
-distLgofPlot(dle, ranks=FALSE)
-# See also below
+distLgofPlot(dle, ranks=FALSE) # See also section weighted mean below
+# For confidence intervals see distLexBoot
 
 
 # Return period of a given discharge value, say 150 m^3/s:
@@ -101,7 +102,8 @@ distLextreme(Nile, log=TRUE, nbest=8)
 
 
 # weighted mean based on Goodness of fit (GOF) ---------------------------------
-
+\dontrun{
+## Excluded from package R CMD check because it's time consuming
 # Add discharge weighted average estimate continuously:
 distLextremePlot(dle, nbest=17, legend=FALSE)
 abline(h=115.6, v=50)
@@ -115,7 +117,7 @@ abline(h=115.9, v=50)
 RP <- unique(round(logSpaced(min=1, max=70, n=200, plot=FALSE),2))
 DischargeEstimate <- distLextreme(dlf=dle, RPs=RP, plot=FALSE)$returnlev
 lines(RP, DischargeEstimate["weighted2",], lwd=5) 
-
+}
 
 
 # Effect of data proportion used to estimate GOF -------------------------------
