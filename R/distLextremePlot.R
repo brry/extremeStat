@@ -2,7 +2,7 @@
 # Berry Boessenkool, 2015
 
 distLextremePlot <- function(
-dlf,          # List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, parameter, gof}.
+dlf,          # List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, dleB <- distLexBoot(dlf, nbest=4, conf.lev=0.5), gof}.
 selection=NULL,# Selection of distributions. Character vector with type as in \code{\link[lmomco]{lmom2par}}
 order=FALSE,  # If selection is given, should legend and colors be ordered by gof anyways?
 add=FALSE,    # If TRUE, plot is not called before adding lines. This lets you add lines to an existing plot.
@@ -28,27 +28,21 @@ legargs=NULL, # list of arguments passed to \code{\link{legend}} except for lege
 quiet=FALSE,  # Suppress notes?
 ... )         # Further arguments passed to \code{\link{plot}} like yaxt="n", ...
 {
-# Input operations:
-output <- dlf
 # PP (Plotting Position) points charactereistics recycled:
 if(length(PPpch)==1) PPpch[2] <- if(is.na(PPpch)) NA else if(PPpch[1]==3) 4 else 3
 PPcol <- rep(PPcol, length.out=2)
 PPcex <- rep(PPcex, length.out=2)
-# Extract objects from dlf:
-dat <- dlf$dat
-parameter <- dlf$parameter
-gof <- dlf$gof
 # Plotting Positions -----------------------------------------------------------
 # Calculate PP according to Weibull and Gringorton
 # See chapter 15.2 RclickHandbuch.wordpress.com for differences in PP methods
 # They're not used for fitting distributions, but for plotting only
-m <- sort(dat) # ascendingly sorted extreme values
+m <- sort(dlf$dat) # ascendingly sorted extreme values
 n <- length(m);  Rank <- 1:n
 # RP = Returnperiod = recurrence interval = 1/P_exceedence = 1/(1-P_nonexc.) :
 RPw <- 1/(1-  Rank      /(n+1)     )  # Weibull
 RPg <- 1/(1- (Rank-0.44)/(n+0.12)  )  # Gringorton (taken from lmom:::evplot.default)
 #  Selection -------------------------------------------------------------------
-dn <- rownames(gof) # distribution names
+dn <- rownames(dlf$gof) # distribution names
 if(!is.null(selection))
   {
   names(dn) <- dn
@@ -60,7 +54,7 @@ if(!is.null(selection))
   dn <- dn[selection]
   if(order)
     {
-    dno <- rownames(gof)
+    dno <- rownames(dlf$gof)
     dno <- dno[dno %in% dn]
     dn <- dn[dno] # in descending order of goodness of fit
     }
@@ -86,7 +80,7 @@ if(length(coldist) != nbest & !quiet)
 #
 # Plotting ---------------------------------------------------------------------
 # Calculate plot limits if not given:
-if(is.null(ylim)) ylim <- c(min(dat), max(dat)+0.1*diff(range(dat)) )
+if(is.null(ylim)) ylim <- c(min(dlf$dat), max(dlf$dat)+0.1*diff(range(dlf$dat)) )
 if(is.null(xlim)) xlim <- range(RPw, RPg)
 # draw discharges over return periods:
 if(!add) plot(1, type="n", las=las, ylim=ylim, xlim=xlim, main=main, ylab=ylab, xlab=xlab, 
@@ -103,7 +97,7 @@ cex <- rep(cex, length=nbest)
 # add nbest distributions as lines:
 for(i in nbest:1)
   {
-  Pnonexceed <- plmomco(yval,parameter[[dn[i]]]) # print(Pnonexceed, digits=20)
+  Pnonexceed <- plmomco(yval,dlf$parameter[[dn[i]]]) # print(Pnonexceed, digits=20)
   Pnonexceed[Pnonexceed>1] <- 1 # remove numerical errors
   xval <- 1/(1-Pnonexceed)
   lines(x=xval, y=yval, col=coldist[i], lty=lty[i], lwd=lwd[i])
@@ -134,7 +128,7 @@ legdef <- list(
 do.call(graphics::legend, args=owa(legdef, legargs, "legend","pch","lwd","col","lty"))
 }
 # output dlf object
-output$RPweibull <- RPw
-output$RPgringorton <- RPg
-return(invisible(output))
+dlf$RPweibull <- RPw
+dlf$RPgringorton <- RPg
+return(invisible(dlf))
 }
