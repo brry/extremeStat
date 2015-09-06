@@ -84,6 +84,10 @@ if( length(dlf$dat)<5 )
     "note in distLquantile: sample size is too small to fit parameters (",length(dlf$dat),"). Returning NAs"))
   #if(empirical) output <- cbind(output, quantileMean=quantileMean(dlf$dat, probs=probs))
   if(empirical) output <- cbind(output, quantileMean=NA)
+  if(evir)      output <- cbind(output, q_evir=NA)
+  if(weighted) {output <- cbind(output, weighted1=NA)
+                output <- cbind(output, weighted2=NA)
+                output <- cbind(output, weighted3=NA)}
   if(returndlf) {dlf$quant <- t(output); return(dlf)} 
     else return(t(output))
   }
@@ -130,8 +134,6 @@ if(evir)
                    x=dlf$dat_full, probs=probs, truncate=truncate, quiet=quiet))
   }
 # Weighted quantile estimates
-if(missing(weighted) & !is.null(selection)) # false if not specified explicitely but
-  if(length(selection) < 4) weighted <- FALSE     # only few distfuns are chosen 
 if(weighted)
   {
   Qweighted <- function(Weightnr)
