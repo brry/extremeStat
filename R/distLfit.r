@@ -36,12 +36,6 @@ dat_full <- dat
 dat <- as.numeric( dat[!is.na(dat)]  )
 # truncate (fit values only to upper part of values):
 if(truncate!=0) dat <- sort(dat)[ -1:-(truncate*length(dat)) ]
-# Check remaining sample size
-if(length(dat) < 5) {on.exit(message("Note in distLfit: sample size (",length(dat),
-                                     ") is too small to fit parameters (<5)."))
-                     error_out <- as.list(selection) # this is very useful for distLquantile
-                     names(error_out) <- selection  # since it keeps the columns if a selection is given
-                     return(list(dat=dat, parameter=error_out, gof=NA))}
 #
 # possible distributions: ------------------------------------------------------
 dn <- dist.list()
@@ -65,6 +59,13 @@ else
 # remove some to save time and errors, see ?dist.list # gld, gov and tri added
 if(speed) dn <- dn[ ! dn %in%
    c("aep4","cau","emu","gep","gld","gov","kmu","kur","lmrq","sla","st3","texp","tri")]
+#
+# Check remaining sample size
+if(length(dat) < 5) {on.exit(message("Note in distLfit: sample size (",length(dat),
+                                     ") is too small to fit parameters (<5)."))
+  error_out <- as.list(dn) # this is very useful for distLquantile
+  names(error_out) <- dn  # since it keeps the columns if a selection is given
+  return(list(dat=dat, parameter=error_out, gof=NA))}
 #
 # Fit distribution parameters --------------------------------------------------
 # L-Moments of sample  # package lmomco
