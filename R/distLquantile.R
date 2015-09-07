@@ -83,9 +83,11 @@ if( length(dlf$dat)<5 )
   {
   if(!quiet) on.exit(message(
     "note in distLquantile: sample size is too small to fit parameters (",length(dlf$dat),"). Returning NAs"))
-  #if(empirical) output <- cbind(output, quantileMean=quantileMean(dlf$dat, probs=probs))
-  if(empirical) output <- cbind(output, quantileMean=NA)
-  if(evir)      output <- cbind(output, q_evir=NA)
+  #if(empirical)  output <- cbind(output, quantileMean=quantileMean(dlf$dat, probs=probs))
+  if(empirical)   output <- cbind(output, quantileMean=NA)
+  if(evir&!efast) output <- cbind(output, q_evir=NA)
+  if(evir&efast&"ml"%in%method) output <- cbind(output, q_evir2_ml=NA)
+  if(evir&efast&"pwm"%in%method) output <- cbind(output, q_evir2_pwm=NA)
   if(weighted) {output <- cbind(output, weighted1=NA)
                 output <- cbind(output, weighted2=NA)
                 output <- cbind(output, weighted3=NA)}
