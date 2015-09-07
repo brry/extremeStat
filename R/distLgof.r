@@ -35,7 +35,7 @@ if(any(exclude))
   if(!quiet) on.exit(message("Note in distLgof: The following distributions were excluded since no parameters were estimated:\n",
              pastec(curdnexclude)))
   dn <- dn[!exclude]
-  parameter <- parameter[!exclude] # not sure whether this is always good...
+  # parameter <- parameter[!exclude] # not sure whether this is always good...
 }
 if(length(dn)<1) on.exit(message("No fitted distributions in dlf."))
 if(length(dn)<2&!quiet) on.exit(message("Note in distLgof: Only ", pastec(dn), 

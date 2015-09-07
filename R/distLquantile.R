@@ -106,8 +106,10 @@ if(truncate!=0)
 #
 # distribution quantiles: ------------------------------------------------------
 dn <- colnames(output)
-for(d in dn) if(!is.null(dlf$parameter[[d]])) output[,d] <-
-                                   qlmomco(f=probs2, para=dlf$parameter[[d]])
+for(d in dn) if(!is.null(dlf$parameter[[d]])) {
+               quantd <- qlmomco(f=probs2, para=dlf$parameter[[d]])
+               if(!is.null(quantd)) output[,d] <- quantd
+               }
 #
 # Optional operations: ---------------------------------------------------------
 # Change results for probs below truncate to NA
