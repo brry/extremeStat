@@ -6,7 +6,7 @@
 by peak over treshold (POT) method declaring treshold from truncation proportion
 using the established evir (extreme values in r) package}
 \usage{q_evir(x, probs, truncate, undertruncNA=TRUE, 
-pngdev=TRUE, quantcat=FALSE, quiet=FALSE, ...)}
+pngdev=TRUE, quantcat=FALSE, quiet=FALSE, method="ml", ...)}
 \arguments{
   \item{x}{Vector with values}
   \item{probs}{Probabilities of truncated (Peak over treshold) quantile}
@@ -15,7 +15,8 @@ pngdev=TRUE, quantcat=FALSE, quiet=FALSE, ...)}
   \item{pngdev}{sink \code{evir::quant} graph output to file (is removed later) instead of openening \code{\link{dev.new}}, which also is closed later. Using TRUE avoids the graphics device popping up and disappearing again. Argument ignored in \code{q_evir2}. DEFAULT: TRUE}
   \item{quantcat}{Show the cat messages of quant? Argument ignored in \code{q_evir2}. DEFAULT: FALSE}
   \item{quiet}{Should messages be suppressed? DEFAULT: FALSE}
-  \item{\dots}{Further arguments passed to \code{\link[evir]{quant}}}
+  \item{method}{method in \code{\link{gpd}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Only used in \code{q_evir2}, ignored in \code{q_evir}. pwm yields higher results, but ml more often fails (gpd -> optim, Error in optim(theta, negloglik, hessian = TRUE, ..., tmp = excess) : non-finite finite-difference value [1]). DEFAULT: "ml"}
+  \item{\dots}{Further arguments passed to \code{\link[evir]{quant}} or \code{\link[evir]{gpd}}}
 }
 \details{\code{q_evir} opens and closes external device to suppress \code{evir::quant} plotting.\cr
 \code{q_evir2} doesn't do that, but is a manual and slightly changed copy from the computing part of the code, thus would not change in case \code{evir} is updated.
@@ -111,6 +112,32 @@ abline(h=0.99, lty=2)
 
 comparequantiles(trunc=0.9, ylim=c(0.95, 1), xlim=c(140,210), quiet=TRUE )
 d <- comparequantiles(trunc=0.98, xlim=c(155,255), quiet=TRUE )
+
+
+# Comparison gpd methods:
+set.seed(42); rnum <- rexp(500, rate=1/4)
+samples <- lapply(1:100, function(n) sample(rnum,50)  )
+results <- sapply(samples, q_evir2, probs=0.999, truncate=0.8)
+sum(is.na(results))/100 # 19%
+results2 <- sapply(samples, q_evir2, probs=0.999, truncate=0.8, method="pwm")
+sum(is.na(results2))/100 # 0%
+op <- par(mfrow=c(1,2))
+plot(results, results2, las=1, xlab="ml", ylab="pwm", main="evir::gpd methods")
+abline(a=0,b=1)
+hist(results-results2, breaks=30, col="orange", main="hist differences")
+# often, pwm is higher (negative diff), but sometimes ml can be MUCH higher 
+
+# with different random numbers:
+set.seed(42); rnum <- rbeta(1000, 2, 7)*300
+samples <- lapply(1:100, function(n) sample(rnum,50)  )
+results <- sapply(samples, q_evir2, probs=0.999, truncate=0.8)
+sum(is.na(results))/100 # 45%
+results2 <- sapply(samples, q_evir2, probs=0.999, truncate=0.8, method="pwm")
+sum(is.na(results2))/100 # 0%
+plot(results, results2, las=1, xlab="ml", ylab="pwm", main="evir::gpd methods")
+abline(a=0,b=1)
+hist(results-results2, breaks=30, col="orange", main="hist differences")
+par(op)
 }
 }
 \keyword{distribution}

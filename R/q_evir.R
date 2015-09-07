@@ -11,7 +11,8 @@ undertruncNA=TRUE, # Return NAs for probs below truncate? Highly recommended to 
 pngdev=TRUE, # sink \code{evir::quant} graph output to file (is removed later) instead of openening \code{\link{dev.new}}, which also is closed later. Using TRUE avoids the graphics device showing briefly.
 quantcat=FALSE, # Show the cat messages of quant?
 quiet=FALSE, # Should messages be suppressed?
-...)         # Further arguments passed to \code{\link[evir]{quant}}
+method="ml", # method in \code{\link{gpd}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Only used in \code{q_evir2}, ignored in \code{q_evir}. pwm yields higher results, but ml more often fails (gpd -> optim, Error in optim(theta, negloglik, hessian = TRUE, ..., tmp = excess) : non-finite finite-difference value [1])
+...)         # Further arguments passed to \code{\link[evir]{quant}} or \code{\link[evir]{gpd}}
 {
 # Input control
 if(length(truncate)>1)
@@ -76,7 +77,7 @@ output
 
 # Copying only the computing part from evir::quant, Version: 1.7-3, Date: 2011-07-22
 q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE, 
-                    pngdev=TRUE, quantcat=FALSE, quiet=FALSE, ...)
+                    pngdev=TRUE, quantcat=FALSE, quiet=FALSE, method="ml", ...)
   {
   if(all(probs < truncate) & !quiet & undertruncNA) on.exit(message("Note in q_evir2: 'probs' (",
     pastec(probs), ") must contain values that are larger than 'truncate' (", 
@@ -89,7 +90,7 @@ q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE,
                              pos,"). Returning NAs."))
   return(rep(NA, length(probs)))
   } else
-  fit <- try(evir::gpd(x, nextremes=pos, ...), silent=TRUE)
+  fit <- try(evir::gpd(x, nextremes=pos, method=method, ...), silent=TRUE)
   if(class(fit)=="try-error") 
   {
   if(!quiet) on.exit(message("Note in q_evir2: evir::gpd-optim failed. Returning NAs."))
@@ -104,7 +105,8 @@ q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE,
     on.exit(message("Note in q_evir2: quantiles for probs below truncate(",
                     pastec(probs[probs<truncate]),") replaced with NAs."))
   if(undertruncNA) qest[probs < truncate] <- NA
-  qest
+  # Output
+  unname(qest)
   }
 
 
