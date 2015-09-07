@@ -99,6 +99,12 @@ if(!add)
 if(nbest < 1) return(invisible(NULL)) # and stop executing
 dn <- rownames(gof)[1:nbest]
 coldist <- rep(coldist, length=nbest)
+if(length(parameter)<1)
+  {
+  message("Note in distLplot: no distributions were available in dlf$parameter.")
+  dlf$coldist <- coldist
+  return(invisible(dlf))
+  }
 lty <- rep(lty, length=nbest)
 # add distributions:
 if(cdf) lfun <- plmomco else lfun <- dlmomco

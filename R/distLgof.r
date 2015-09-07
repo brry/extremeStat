@@ -37,7 +37,7 @@ if(any(exclude))
   dn <- dn[!exclude]
   parameter <- parameter[!exclude] # not sure whether this is always good...
 }
-if(length(dn)<1) stop("No fitted distributions in dlf.")
+if(length(dn)<1) on.exit(message("No fitted distributions in dlf."))
 if(length(dn)<2&!quiet) on.exit(message("Note in distLgof: Only ", pastec(dn), 
                                 " was fitted, thus GOF can't be compared."))
 if(ks)
