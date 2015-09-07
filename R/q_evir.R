@@ -4,9 +4,9 @@
 # berry-b@gmx.de
 
 q_evir <- function(
-x,           # Vector with values
-probs,       # Probabilities of truncated (Peak over treshold) quantile
-truncate,    # Truncation percentage (proportion of sample discarded)
+x,           # Vector with values. NAs are silently ignored.
+probs,       # Probabilities of truncated (Peak over treshold) quantile.
+truncate,    # Truncation percentage (proportion of sample discarded).
 undertruncNA=TRUE, # Return NAs for probs below truncate? Highly recommended to leave this at the DEFAULT: TRUE
 pngdev=TRUE, # sink \code{evir::quant} graph output to file (is removed later) instead of openening \code{\link{dev.new}}, which also is closed later. Using TRUE avoids the graphics device showing briefly.
 quantcat=FALSE, # Show the cat messages of quant?
@@ -15,6 +15,7 @@ method="ml", # method in \code{\link{gpd}}, "ml" (maximum likelihood) or "pwm" (
 ...)         # Further arguments passed to \code{\link[evir]{quant}} or \code{\link[evir]{gpd}}
 {
 # Input control
+x <- x[!is.na(x)]
 if(length(truncate)>1)
   {
   truncate <- truncate[1] #
@@ -79,6 +80,7 @@ output
 q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE, 
                     pngdev=TRUE, quantcat=FALSE, quiet=FALSE, method="ml", ...)
   {
+  x <- x[!is.na(x)]
   if(all(probs < truncate) & !quiet & undertruncNA) on.exit(message("Note in q_evir2: 'probs' (",
     pastec(probs), ") must contain values that are larger than 'truncate' (", 
     truncate, "). Returning NAs."))
