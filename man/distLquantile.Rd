@@ -4,7 +4,7 @@
 \description{Parametric quantiles of distributions fitted to a sample.}
 \usage{distLquantile(x=NULL, probs=0:4/4, truncate=0, selection=NULL, type=NULL,
 dlf=NULL, order=TRUE, returndlf=FALSE, plot=FALSE, cdf=FALSE, lines=TRUE, linargs=NULL,
-empirical=TRUE, evir=empirical, efast=FALSE, weighted=empirical, 
+empirical=TRUE, evir=empirical, efast=FALSE, method="ml", weighted=empirical, 
 quiet=FALSE, trans=quiet, ... )}
 \arguments{
   \item{x}{Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
@@ -22,6 +22,7 @@ quiet=FALSE, trans=quiet, ... )}
   \item{empirical}{Add vertical line for empirical \code{\link{quantileMean}} (and include the result in the output matrix)? DEFAULT: TRUE}
   \item{evir}{Include \code{evir::\link[evir]{quant}} GPD quantile estimation? Note that this temporarily creates a png image at the \code{getwd}. DEFAULT: empirical, so additional options can all be excluded with emp=F.}
   \item{efast}{compute evir::quant in a faster way (with  \code{\link{q_evir2}})? DEFAULT: FALSE}
+  \item{method}{method in \code{\link{q_evir2}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). DEFAULT: "ml"}
   \item{weighted}{Include weighted averages across distribution functions to the output? DEFAULT: empirical}
   \item{quiet}{Suppress notes? DEFAULT: FALSE}
   \item{trans}{Suppress note about transposing? DEFAULT: quiet}
