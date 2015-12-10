@@ -15,6 +15,10 @@ instgithub("brry/extremeStat")
 if(!require(devtools)) install.packages("devtools")
 devtools::install_github("brry/berryFunctions")
 devtools::install_github("brry/extremeStat")
+```
+
+Load the package and browse through the examples:
+```R
 library(extremeStat)
 ?extremeStat
 ```
