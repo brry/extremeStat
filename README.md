@@ -7,6 +7,11 @@ Can also compute (truncated) distribution quantile estimates and draw a plot wit
 Code to install:
 
 ```R
+# Avoid installing devtools with all its dependencies:
+source("https://raw.githubusercontent.com/brry/misc/master/instgit.R")
+instgithub("brry/extremeStat")
+
+# or use it:
 if(!require(devtools)) install.packages("devtools")
 devtools::install_github("brry/berryFunctions")
 devtools::install_github("brry/extremeStat")
