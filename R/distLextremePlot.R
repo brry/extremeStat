@@ -63,6 +63,8 @@ if(!is.null(selection))
   # nbest:
   nbest <- length(dn) # shorten to selection
   }
+# nbest must be shorter if dlf with fewer parameters is given as input:
+nbest <- pmin(length(dlf$parameter), nbest)
 # control coldist length
 if(length(coldist) != nbest & !quiet)
   {
@@ -124,7 +126,7 @@ legdef <- list(
   col=   c(if(PP1) PPcol[1],    if(PP2) PPcol[2],       coldist),
   lty=   c(if(PP1) NA,          if(PP2) NA,             lty),
   x="bottomright",  
-  cex=0.8)
+  cex=0.8, bg="white")
 do.call(graphics::legend, args=owa(legdef, legargs, "legend","pch","lwd","col","lty"))
 }
 # output dlf object
