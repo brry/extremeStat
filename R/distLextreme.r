@@ -15,11 +15,12 @@ RPs=c(2,5,10,20,50), # ReturnPeriods for which discharge is estimated
 progbars=length(dlf$dat)>200, # Show progress bars for each loop? DEFAULT: TRUE if n>200
 time=TRUE,    # \code{\link{message}} execution time?
 plot=TRUE,    # Should the return periods and nbest fitted distributions be plotted by a call to \code{\link{distLextremePlot}}?
-quiet=FALSE,  # Suppress notes?
+quiet=FALSE,  # Suppress notes and progbars?
 ... )         # Further arguments passed to \code{\link{distLextremePlot}} like order, lty, lwd, ...
 {
 StartTime <- Sys.time()
 if(quiet) progbars <- FALSE
+if(any(RPs<1.05) & !quiet) on.exit(message("Note in distLextreme: for RPs=1 rather use min(dat)."), add=TRUE)
 # fit distributions and calculate goodness of fits -----------------------------
 if( is.null(dlf) )  dlf <- distLfit(dat=dat, datname=deparse(substitute(dat)), 
       plot=FALSE, selection=selection, time=FALSE, progbars=progbars, quiet=quiet)
