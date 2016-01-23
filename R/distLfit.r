@@ -28,7 +28,7 @@ if(quiet) progbars <- FALSE
 if(progbars) lapply <- pbapply::pblapply
 # checks:
 if( ! is.numeric(dat) ) stop("dat must be numeric.")
-if(!is.vector(dat) & !quiet) on.exit(message("Note in distLfit: dat was not a vector."))
+if(!is.vector(dat) & !quiet) on.exit(message("Note in distLfit: dat was not a vector."), add=TRUE)
 if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) )
   stop("gofProp must be a single value between 0 and 1.")
 # remove NAs, convert to vector:
@@ -49,7 +49,7 @@ if( ! is.null(selection) )
    {
    curseldn <- selection[seldn]
    if(!quiet) on.exit(message("Note in distLfit: selection (", pastec(curseldn),
-   ") not available in lmomco::dist.list(), thus removed."))
+   ") not available in lmomco::dist.list(), thus removed."), add=TRUE)
    selection <- selection[!seldn]
    }
   dn <- dn[selection]
@@ -62,7 +62,7 @@ if(speed) dn <- dn[ ! dn %in%
 #
 # Check remaining sample size
 if(length(dat) < 5) {on.exit(message("Note in distLfit: sample size (",length(dat),
-                                     ") is too small to fit parameters (<5)."))
+                                     ") is too small to fit parameters (<5)."), add=TRUE)
   error_out <- as.list(dn) # this is very useful for distLquantile
   names(error_out) <- dn  # since it keeps the columns if a selection is given
   return(list(dat=dat, parameter=error_out, gof=NA))}
@@ -76,7 +76,7 @@ parameter <- lapply(dn, function(d) lmom2par(mom, type=d) )
 # error catching:
 if( length(parameter) != length(dn))
   {
-  if(!quiet) on.exit(message("Note in distLfit: Some distributions could not be fitted. Possibly cau."))
+  if(!quiet) on.exit(message("Note in distLfit: Some distributions could not be fitted. Possibly cau."), add=TRUE)
   names(parameter) <- sapply(parameter, "[[", "type")
   }
 else names(parameter) <- dn
@@ -96,6 +96,6 @@ if(!plot) output$coldist <- rainbow2(if(is.null(selection)) 5 else length(select
 output$truncate <- truncate
 output$dat_full <- dat_full # non-truncated data
 if(time & !quiet) on.exit(message("distLfit execution took ", 
-      signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds."))
+      signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds."), add=TRUE)
 return(invisible(output))
 } # end of function

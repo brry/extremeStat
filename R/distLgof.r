@@ -33,13 +33,13 @@ if(any(exclude))
   {
   curdnexclude <- dn[exclude]
   if(!quiet) on.exit(message("Note in distLgof: The following distributions were excluded since no parameters were estimated:\n",
-             pastec(curdnexclude)))
+             pastec(curdnexclude)), add=TRUE)
   dn <- dn[!exclude]
   # parameter <- parameter[!exclude] # not sure whether this is always good...
 }
-if(length(dn)<1) on.exit(message("No fitted distributions in dlf."))
+if(length(dn)<1) on.exit(message("No fitted distributions in dlf."), add=TRUE)
 if(length(dn)<2&!quiet) on.exit(message("Note in distLgof: Only ", pastec(dn), 
-                                " was fitted, thus GOF can't be compared."))
+                                " was fitted, thus GOF can't be compared."), add=TRUE)
 if(ks)
   {
   # Kolmogorov-Smirnov test:
@@ -68,7 +68,7 @@ if(!quiet)
     {
     dNA <- paste(paste0(dn[nNA>0], " (", nNA[nNA>0], ")"), collapse=", ")
     on.exit(message("Note in distLgof: NAs removed in CDF (limited support region?): ", 
-                    dNA, " of ", length(tcdfs[[1]]), " values."))
+                    dNA, " of ", length(tcdfs[[1]]), " values."), add=TRUE)
     }
   }
 # All into one data.frame:

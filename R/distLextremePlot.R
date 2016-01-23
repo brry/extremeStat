@@ -49,7 +49,7 @@ if(!is.null(selection))
   if(!any(selection %in% dn)) stop("selection ", pastec(selection), " is not available in dlf$gof.")
   selection_not_dn <- selection[!selection %in% dn]
   if(any(!selection %in% dn)) on.exit(message("Note in distLextremePlot: selection ", 
-          pastec(selection_not_dn), " is not available in dlf$gof, thus ignored."))
+          pastec(selection_not_dn), " is not available in dlf$gof, thus ignored."), add=TRUE)
   selection <- selection[selection %in% dn]
   dn <- dn[selection]
   if(order)
@@ -72,7 +72,7 @@ if(length(coldist) != nbest & !quiet)
   # Can happen if selection is truncated (misspellings, dists not fitted)
   curlengthcd <- length(coldist)
   on.exit(message("Note in distLextremePlot: Length of coldist (",curlengthcd,
-          ") was not equal to nbest (",nbest,"). Is now recycled."))
+          ") was not equal to nbest (",nbest,"). Is now recycled."), add=TRUE)
   ### if colors are rainbow2 colors, shorten/lengthen them:
   ##if(all(coldist==rainbow2(length(coldist))  )) 
   ##  coldist <- rainbow2(nbest)

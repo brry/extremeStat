@@ -52,7 +52,7 @@ if(!is.null(selection))
   if(any(!sing)) 
     {
     curselsing <- pastec(selection[!sing])
-    on.exit(message("Note in disLplot: selection (", curselsing, ") is not available in dlf$gof."))
+    on.exit(message("Note in disLplot: selection (", curselsing, ") is not available in dlf$gof."), add=TRUE)
     }
   selection <- selection[sing]
   gof <- gof[selection, ]

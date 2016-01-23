@@ -28,16 +28,17 @@ trans=quiet,    # Suppress note about transposing? # Option and message will be 
 internaldatname <- deparse(substitute(x))
 # temporary warning:
 if(!trans) on.exit(message(
-  "Please note: distLquantile output has been transposed since Version 0.4.23 from 2015-07-18!"))
+  "Please note: distLquantile output has been transposed since Version 0.4.23 from 2015-07-18!"), add=TRUE)
 truncate <- truncate[1] # cannot be vectorized
 if(truncate<0 | truncate>=1) stop("truncate must be a number between 0 and 1.")
 if( is.null(x) & is.null(dlf)) stop("Either dlf or x must be given.")
 if(!is.null(type))
   {
   selection <- type
-  if(!quiet) on.exit(message("note in distLquantile: Argument 'type' overwrote 'selection'."))
+  if(!quiet) on.exit(message("note in distLquantile: Argument 'type' overwrote 'selection'."), add=TRUE)
   }
-if(!is.null(x)) if(is.list(x)) stop("x must be a vector. Possibly, you want to use dlf =", deparse(substitute(x)))
+if(!is.null(x)) if(is.list(x)) stop("x must be a vector. Possibly, you want to use dlf =", 
+                                    deparse(substitute(x)))
 #
 # Fit distribution functions to (truncated) sample: ----------------------------
 if(!is.null(x) | any(dlf$truncate!=truncate) |  any(!selection %in% names(dlf$parameter)))
@@ -47,7 +48,7 @@ if(!is.null(x) | any(dlf$truncate!=truncate) |  any(!selection %in% names(dlf$pa
     x <- dlf$dat
     internaldatname <- dlf$datname
     if(!quiet)on.exit(message(
-      "Note in distLquantile: selection or truncate given; distLfit is called from dlf$dat, as x is NULL."))
+      "Note in distLquantile: selection or truncate given; distLfit is called from dlf$dat, as x is NULL."), add=TRUE)
     }
   dlf <- distLfit(dat=x, datname=internaldatname, selection=selection, 
                   truncate=truncate, plot=plot, cdf=cdf, quiet=quiet, ...)
@@ -72,7 +73,7 @@ miss <- miss[!miss %in% colnames(output)]
 if(length(miss)>0)
   {
   on.exit(message("Note in distLquantile: specified selection (", pastec(miss),
-                  ") is not available in dlf$gof."))
+                  ") is not available in dlf$gof."), add=TRUE)
   m <- matrix(NA, ncol=length(miss), nrow=nrow(output))
   output <- cbind(output, m)
   colnames(output) <- selection # always keep the same order if selection is given
@@ -82,7 +83,8 @@ if(length(miss)>0)
 if( length(dlf$dat)<5 )
   {
   if(!quiet) on.exit(message(
-    "note in distLquantile: sample size is too small to fit parameters (",length(dlf$dat),"). Returning NAs"))
+    "note in distLquantile: sample size is too small to fit parameters (",
+    length(dlf$dat),"). Returning NAs"), add=TRUE)
   #if(empirical)  output <- cbind(output, quantileMean=quantileMean(dlf$dat, probs=probs))
   if(empirical)   output <- cbind(output, quantileMean=NA)
   if(evir&!efast) output <- cbind(output, q_evir=NA)
@@ -101,7 +103,7 @@ if(truncate!=0)
   {
   if(all(probs < truncate) & !quiet) on.exit(message("Note in distLquantile: 'probs' (",
      pastec(probs),") must contain values that are larger than 'truncate (", 
-          truncate, "). Returning NAs."))
+          truncate, "). Returning NAs."), add=TRUE)
   probs2 <- (probs-truncate)/(1-truncate) # correct probabilities for smaller sample proportion
   probs2[probs < truncate] <- 0   # avoid negative values
   }
@@ -135,7 +137,8 @@ if(empirical) output <- cbind(output, quantileMean=quantileMean(
 if(evir)  
   {
   if(!efast)  
-    output <-cbind(output, q_evir=q_evir(x=dlf$dat_full, probs=probs, truncate=truncate, quiet=quiet))
+    output <-cbind(output, q_evir=q_evir(x=dlf$dat_full, probs=probs, 
+                                         truncate=truncate, quiet=quiet))
   else 
     {
     if("ml" %in% method) output <-cbind(output, q_evir2_ml=q_evir2(

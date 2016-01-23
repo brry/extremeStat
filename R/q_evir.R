@@ -19,12 +19,12 @@ x <- x[!is.na(x)]
 if(length(truncate)>1)
   {
   truncate <- truncate[1] #
-  if(!quiet) on.exit(message("Note in q_evir: only first value of 'truncate' is used."))
+  if(!quiet) on.exit(message("Note in q_evir: only first value of 'truncate' is used."), add=TRUE)
   }
 if(truncate>1 | truncate<0) stop("truncate (proportion discarded) must be 0<t<1, not ", truncate)
 if(all(probs < truncate) & !quiet & undertruncNA) on.exit(message("Note in q_evir: 'probs' (",
     pastec(probs), ") must contain values that are larger than 'truncate' (", 
-    truncate, "). Returning NAs."))
+    truncate, "). Returning NAs."), add=TRUE)
 # position of truncation (treshold)
 pos <- length(x)*(1-truncate)
 # quant always plots a graph, but we don't want it
@@ -36,14 +36,15 @@ at_end <- function(...)
   if(pngdev) unlink(tfile) else 
   if(dummy!=1) dev.set() # so active window is the one it used to be
   }
-on.exit(at_end() )
+on.exit(at_end(), add=TRUE )
 # actual computation with evir::quant
 # object for quant cat results and message already given
 allcats <- ""
 OptimFailMessageGiven <- FALSE
 if(pos<1)
   {
-  if(!quiet) on.exit(message("Note in q_evir: Not enough values after truncation (",pos,"). Returning NAs."))
+  if(!quiet) on.exit(message("Note in q_evir: Not enough values after truncation (",
+                             pos,"). Returning NAs."), add=TRUE)
   output <- rep(NA, length(probs))
   } else
   output <- sapply(probs, function(p)
@@ -55,7 +56,7 @@ if(pos<1)
   if(class(res)=="try-error") 
   {
   if(!quiet & !OptimFailMessageGiven) 
-    on.exit(message("Note in q_evir: evir::quant-gpd-optim failed. Returning NAs."))
+    on.exit(message("Note in q_evir: evir::quant-gpd-optim failed. Returning NAs."), add=TRUE)
   assign("OptimFailMessageGiven", value=TRUE, envir=parent.env(environment()))
   NA 
   } else
@@ -64,7 +65,7 @@ if(pos<1)
 # replace probs below truncation value with NA
 if(undertruncNA & any(probs < truncate) & !quiet) 
   on.exit(message("Note in q_evir: quantiles for probs below truncate (",
-                  pastec(probs[probs<truncate]),") replaced with NAs."))
+                  pastec(probs[probs<truncate]),") replaced with NAs."), add=TRUE)
 if(undertruncNA) output[probs < truncate] <- NA
 # Cat quantcats:
 if(!quiet & quantcat) cat(allcats, sep="\n")
@@ -83,19 +84,19 @@ q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE,
   x <- x[!is.na(x)]
   if(all(probs < truncate) & !quiet & undertruncNA) on.exit(message("Note in q_evir2: 'probs' (",
     pastec(probs), ") must contain values that are larger than 'truncate' (", 
-    truncate, "). Returning NAs."))
+    truncate, "). Returning NAs."), add=TRUE)
   
   pos <- length(x)*(1-truncate)
   if(pos<1)
   {
   if(!quiet) on.exit(message("Note in q_evir2: Not enough values after truncation (",
-                             pos,"). Returning NAs."))
+                             pos,"). Returning NAs."), add=TRUE)
   return(rep(NA, length(probs)))
   } else
   fit <- try(evir::gpd(x, nextremes=pos, method=method, ...), silent=TRUE)
   if(class(fit)=="try-error") 
   {
-  if(!quiet) on.exit(message("Note in q_evir2: evir::gpd-optim failed. Returning NAs."))
+  if(!quiet) on.exit(message("Note in q_evir2: evir::gpd-optim failed. Returning NAs."), add=TRUE)
   return(rep(NA, length(probs)))
   } else
   lambda <- length(x)/fit$n.exceed
@@ -105,7 +106,7 @@ q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE,
   # replace probs below truncation value with NA
   if(undertruncNA & any(probs < truncate) & !quiet) 
     on.exit(message("Note in q_evir2: quantiles for probs below truncate(",
-                    pastec(probs[probs<truncate]),") replaced with NAs."))
+                    pastec(probs[probs<truncate]),") replaced with NAs."), add=TRUE)
   if(undertruncNA) qest[probs < truncate] <- NA
   # Output
   unname(qest)
