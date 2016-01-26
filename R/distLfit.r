@@ -18,6 +18,7 @@ cdf=FALSE,    # If TRUE, plot cumulated DF instead of probability density
 legargs=NULL, # List of arguments passed to \code{\link{legend}} except for legend and col
 histargs=NULL,# List of arguments passed to \code{\link{hist}} except for x, breaks, col, xlim, freq
 quiet=FALSE,  # Suppress notes?
+quietss=quiet,# Suppress sample size notes?
 ... )         # Further arguments passed to \code{\link{distLplot}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...
 {
 # preparation ------------------------------------------------------------------
@@ -61,8 +62,8 @@ if(speed) dn <- dn[ ! dn %in%
    c("aep4","cau","emu","gep","gld","gov","kmu","kur","lmrq","sla","st3","texp","tri")]
 #
 # Check remaining sample size
-if(length(dat) < 5) {on.exit(message("Note in distLfit: sample size (",length(dat),
-                                     ") is too small to fit parameters (<5)."), add=TRUE)
+if(length(dat) < 5) {if(!quietss)on.exit(message("Note in distLfit: sample size (",
+                         length(dat), ") is too small to fit parameters (<5)."), add=TRUE)
   error_out <- as.list(dn) # this is very useful for distLquantile
   names(error_out) <- dn  # since it keeps the columns if a selection is given
   return(list(dat=dat, parameter=error_out, gof=NA))}

@@ -5,7 +5,7 @@
 \usage{distLquantile(x=NULL, probs=0:4/4, truncate=0, selection=NULL, type=NULL,
 dlf=NULL, order=TRUE, returndlf=FALSE, plot=FALSE, cdf=FALSE, lines=TRUE, linargs=NULL,
 empirical=TRUE, evir=empirical, efast=FALSE, method=c("ml","pwm"), weighted=empirical, 
-quiet=FALSE, trans=quiet, ... )}
+quiet=FALSE, quietss=quiet, quietgp=quiet, ... )}
 \arguments{
   \item{x}{Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
   \item{probs}{Numeric vector of probabilities with values in [0,1]. DEFAULT: 0:4/4}
@@ -25,7 +25,8 @@ quiet=FALSE, trans=quiet, ... )}
   \item{method}{method in \code{\link{q_evir2}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Can also be both. DEFAULT: c("ml","pwm")}
   \item{weighted}{Include weighted averages across distribution functions to the output? DEFAULT: empirical}
   \item{quiet}{Suppress notes? DEFAULT: FALSE}
-  \item{trans}{Suppress note about transposing? DEFAULT: quiet}
+  \item{quietss}{Suppress sample size notes? DEFAULT: quiet}
+  \item{quietgp}{Suppress q_evir gpd-optim failed notes? DEFAULT: quiet}
   \item{\dots}{Arguments passed to \code{\link{distLfit}}.}
 }
 \details{

@@ -4,7 +4,7 @@
 \description{Fit several distributions via linear moments, plot histogram and distribution densities \emph{or} ecdf with cumulated probability.}
 \usage{distLfit(dat, datname, speed=TRUE, ks=FALSE, selection=NULL,
 gofProp=1, truncate=0, gofComp=FALSE, progbars=length(dat)>200, time=TRUE,
-plot=TRUE, cdf=FALSE, legargs=NULL, histargs=NULL, quiet=FALSE, ... )}
+plot=TRUE, cdf=FALSE, legargs=NULL, histargs=NULL, quiet=FALSE, quietss=quiet, ... )}
 \arguments{
   \item{dat}{Vector with values}
   \item{datname}{Character string for main, xlab etc. DEFAULT: internal \code{substitute(dat)}}
@@ -21,6 +21,7 @@ plot=TRUE, cdf=FALSE, legargs=NULL, histargs=NULL, quiet=FALSE, ... )}
   \item{legargs}{List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL}
   \item{histargs}{List of arguments passed to \code{\link{hist}} except for x, breaks, col, xlim, freq. DEFAULT: NULL}
   \item{quiet}{Suppress notes? DEFAULT: FALSE}
+  \item{quietss}{Suppress sample size notes? DEFAULT: quiet}
   \item{\dots}{Further arguments passed to \code{\link{distLplot}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...}
 }
 \details{fits parameters via \code{\link[lmomco]{lmom2par}} in the package \code{lmomco}}

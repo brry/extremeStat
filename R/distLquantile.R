@@ -20,22 +20,20 @@ efast=FALSE,    # compute evir::quant in a faster way (with  \code{\link{q_evir2
 method=c("ml","pwm"), # Method in \code{\link{q_evir2}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Can also be both
 weighted=empirical, # Include weighted averages across distribution functions to the output?
 quiet=FALSE,    # Suppress notes?
-trans=quiet,    # Suppress note about transposing? # Option and message will be removed around the end of 2015.
+quietss=quiet,  # Suppress sample size notes?
+quietgp=quiet,  # Suppress q_evir gpd-optim failed notes?
 ...             # Arguments passed to \code{\link{distLfit}}.
 )
 {
 # input checks: ----------------------------------------------------------------
 internaldatname <- deparse(substitute(x))
-# temporary warning:
-if(!trans) on.exit(message(
-  "Please note: distLquantile output has been transposed since Version 0.4.23 from 2015-07-18!"), add=TRUE)
 truncate <- truncate[1] # cannot be vectorized
 if(truncate<0 | truncate>=1) stop("truncate must be a number between 0 and 1.")
 if( is.null(x) & is.null(dlf)) stop("Either dlf or x must be given.")
 if(!is.null(type))
   {
   selection <- type
-  if(!quiet) on.exit(message("note in distLquantile: Argument 'type' overwrote 'selection'."), add=TRUE)
+  if(!quiet) on.exit(message("Note in distLquantile: Argument 'type' overwrote 'selection'."), add=TRUE)
   }
 if(!is.null(x)) if(is.list(x)) stop("x must be a vector. Possibly, you want to use dlf =", 
                                     deparse(substitute(x)))
@@ -51,7 +49,7 @@ if(!is.null(x) | any(dlf$truncate!=truncate) |  any(!selection %in% names(dlf$pa
       "Note in distLquantile: selection or truncate given; distLfit is called from dlf$dat, as x is NULL."), add=TRUE)
     }
   dlf <- distLfit(dat=x, datname=internaldatname, selection=selection, 
-                  truncate=truncate, plot=plot, cdf=cdf, quiet=quiet, ...)
+                  truncate=truncate, plot=plot, cdf=cdf, quiet=quiet, quietss=quietss, ...)
   }else
   {
   # reduce number of distfunctions analyzed if more were present in dlf argument:
@@ -82,8 +80,8 @@ if(length(miss)>0)
 # if input sample size is too small, return NA matrix:
 if( length(dlf$dat)<5 )
   {
-  if(!quiet) on.exit(message(
-    "note in distLquantile: sample size is too small to fit parameters (",
+  if(!quietss) on.exit(message(
+    "Note in distLquantile: sample size is too small to fit parameters (",
     length(dlf$dat),"). Returning NAs"), add=TRUE)
   #if(empirical)  output <- cbind(output, quantileMean=quantileMean(dlf$dat, probs=probs))
   if(empirical)   output <- cbind(output, quantileMean=NA)
@@ -138,13 +136,13 @@ if(evir)
   {
   if(!efast)  
     output <-cbind(output, q_evir=q_evir(x=dlf$dat_full, probs=probs, 
-                                         truncate=truncate, quiet=quiet))
+                                         truncate=truncate, quiet=quiet, quietgp=quietgp))
   else 
     {
     if("ml" %in% method) output <-cbind(output, q_evir2_ml=q_evir2(
-      x=dlf$dat_full, probs=probs, truncate=truncate, method="ml", quiet=quiet))
+      x=dlf$dat_full, probs=probs, truncate=truncate, method="ml", quiet=quiet, quietgp=quietgp))
     if("pwm" %in% method) output <-cbind(output, q_evir2_pwm=q_evir2(
-      x=dlf$dat_full, probs=probs, truncate=truncate, method="pwm", quiet=quiet))
+      x=dlf$dat_full, probs=probs, truncate=truncate, method="pwm", quiet=quiet, quietgp=quietgp))
     }
   }
 # Weighted quantile estimates

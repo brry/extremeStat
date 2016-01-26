@@ -11,6 +11,7 @@ undertruncNA=TRUE, # Return NAs for probs below truncate? Highly recommended to 
 pngdev=TRUE, # sink \code{evir::quant} graph output to file (is removed later) instead of openening \code{\link{dev.new}}, which also is closed later. Using TRUE avoids the graphics device showing briefly.
 quantcat=FALSE, # Show the cat messages of quant?
 quiet=FALSE, # Should messages be suppressed?
+quietgp=quiet,  # Suppress q_evir gpd-optim failed notes?
 method="ml", # method in \code{\link{gpd}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Only used in \code{q_evir2}, ignored in \code{q_evir}. pwm yields higher results, but ml more often fails (gpd -> optim, Error in optim(theta, negloglik, hessian = TRUE, ..., tmp = excess) : non-finite finite-difference value [1])
 ...)         # Further arguments passed to \code{\link[evir]{quant}} or \code{\link[evir]{gpd}}
 {
@@ -55,7 +56,7 @@ if(pos<1)
   assign("allcats", value=c(allcats, cats), envir=parent.env(environment()))
   if(class(res)=="try-error") 
   {
-  if(!quiet & !OptimFailMessageGiven) 
+  if(!quietgp & !OptimFailMessageGiven)
     on.exit(message("Note in q_evir: evir::quant-gpd-optim failed. Returning NAs."), add=TRUE)
   assign("OptimFailMessageGiven", value=TRUE, envir=parent.env(environment()))
   NA 
@@ -79,7 +80,7 @@ output
 
 # Copying only the computing part from evir::quant, Version: 1.7-3, Date: 2011-07-22
 q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE, 
-                    pngdev=TRUE, quantcat=FALSE, quiet=FALSE, method="ml", ...)
+                    pngdev=TRUE, quantcat=FALSE, quiet=FALSE, quietgp=quiet, method="ml", ...)
   {
   x <- x[!is.na(x)]
   if(all(probs < truncate) & !quiet & undertruncNA) on.exit(message("Note in q_evir2: 'probs' (",
@@ -96,7 +97,7 @@ q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE,
   fit <- try(evir::gpd(x, nextremes=pos, method=method, ...), silent=TRUE)
   if(class(fit)=="try-error") 
   {
-  if(!quiet) on.exit(message("Note in q_evir2: evir::gpd-optim failed. Returning NAs."), add=TRUE)
+  if(!quietgp) on.exit(message("Note in q_evir2: evir::gpd-optim failed. Returning NAs."), add=TRUE)
   return(rep(NA, length(probs)))
   } else
   lambda <- length(x)/fit$n.exceed
