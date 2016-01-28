@@ -37,8 +37,9 @@ if(any(exclude))
   dn <- dn[!exclude]
   # parameter <- parameter[!exclude] # not sure whether this is always good...
 }
-if(length(dn)<1) on.exit(message("No fitted distributions in dlf."), add=TRUE)
-if(length(dn)<2&!quiet) on.exit(message("Note in distLgof: Only ", pastec(dn), 
+if(length(dn)<1&!quiet) on.exit(message("Note in distLgof: No fitted distributions",
+                               " in dlf, thus GOF can't be compared."), add=TRUE) else
+if(length(dn)<2&!quiet) on.exit(message("Note in distLgof: Only ", pastec(dn),
                                 " was fitted, thus GOF can't be compared."), add=TRUE)
 if(ks)
   {
@@ -92,6 +93,11 @@ gof$weight3 <- gof[,"RMSE"]
 gof$weight3 <- max(gof$weight3)-gof$weight3
 gof$weight3[(nrow(gof)/2):nrow(gof)] <- 0
 gof$weight3 <- gof$weight3/sum(gof$weight3)
+# add nonfitted distributions:
+dnonfitted <- data.frame(matrix(NA, nrow=length(curdnexclude), ncol=ncol(gof)))
+rownames(dnonfitted) <- curdnexclude
+colnames(dnonfitted) <- colnames(gof)
+gof <- rbind(gof, dnonfitted)
 } else
 {
 gof <- data.frame(matrix(NA, ncol=5, nrow=length(dlf$parameter) ))
