@@ -9,7 +9,8 @@ speed=TRUE,   # If TRUE, several distributions are omitted, for the reasons show
 ks=FALSE,     # Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE
 selection=NULL, # Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed.
 gofProp=1,    # Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
-truncate=0,   # Number between 0 and 1. Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly.
+weightc=NA,   # Named custom weights for each distribution, see \code{\link{distLgof}}.
+truncate=0,   # Number between 0 and 1. POT Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly.
 gofComp=FALSE,# If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE
 progbars=length(dat)>200,# Show progress bars for each loop? DEFAULT: TRUE if n > 200
 time=TRUE,    # \code{\link{message}} execution time?
@@ -84,7 +85,7 @@ else names(parameter) <- dn
 #
 # Goodness of Fit, output list, plot -------------------------------------------
 output <- distLgof(list(dat=dat, datname=datname, gofProp=gofProp, parameter=parameter),
-                   plot=FALSE, progbars=progbars, ks=ks, quiet=quiet)
+                   weightc=weightc, plot=FALSE, progbars=progbars, ks=ks, quiet=quiet)
 # compare GOF
 if(gofComp)
   {

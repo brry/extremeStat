@@ -16,7 +16,7 @@ lines=TRUE,     # Should vertical lines marking the quantiles be added?
 linargs=NULL,   # Arguments passed to \code{\link{lines}}.
 empirical=TRUE, # Add vertical line for empirical \code{\link{quantileMean}} (and include the result in the output matrix)?
 evir=empirical, # Include \code{evir::\link[evir]{quant}} GPD quantile estimation? Note that this temporarily creates a png image at the \code{getwd}. DEFAULT: empirical, so additional options can all be excluded with emp=F.
-efast=FALSE,    # compute evir::quant in a faster way (with  \code{\link{q_evir2})?
+efast=TRUE,    # compute evir::quant in a faster way (with  \code{\link{q_evir2})?
 method=c("ml","pwm"), # Method in \code{\link{q_evir2}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Can also be both
 weighted=empirical, # Include weighted averages across distribution functions to the output?
 quiet=FALSE,    # Suppress notes?
@@ -90,7 +90,8 @@ if( length(dlf$dat)<5 )
   if(evir&efast&"pwm"%in%method) output <- cbind(output, q_evir2_pwm=NA)
   if(weighted) {output <- cbind(output, weighted1=NA)
                 output <- cbind(output, weighted2=NA)
-                output <- cbind(output, weighted3=NA)}
+                output <- cbind(output, weighted3=NA)
+                output <- cbind(output, weightedc=NA)}
   if(returndlf) {dlf$quant <- t(output); return(dlf)} 
     else return(t(output))
   }
@@ -162,6 +163,7 @@ if(weighted)
   output <- cbind(output, weighted1=Qweighted("weight1"))
   output <- cbind(output, weighted2=Qweighted("weight2"))
   output <- cbind(output, weighted3=Qweighted("weight3"))
+  output <- cbind(output, weightedc=Qweighted("weightc"))
   }
 #
 # Plotting: Quantile lines: ----------------------------------------------------

@@ -88,14 +88,19 @@ c(rmse(tcdfs, ecdfs), rsquare(tcdfs, ecdfs))
 }
 dn <- rownames(dlf50$gof)
 
-\dontrun{
-dev.new(width=13, height=8)
-}
 op <- par(mfrow=c(5,4), mar=rep(1,4), xaxt="n", yaxt="n")
 for(i in dn) compranks(i)
 par(op)
 # so revgum, nor and rice systematically deviate from ECDF.
-# RMSE is indeed better to sort by than R2
+# RMSE is better to sort by than R2
+
+# custom weights
+cw <- c("gpa"=7, "gev"=3, "wak"=6, "wei"=4, "kap"=3.5, "gum"=3, "ray"=2.1,
+        "ln3"=2, "pe3"=2.5, "gno"=4, "gam"=5)
+dlf <- distLfit(annMax, plot=F, weightc=cw)
+distLgofPlot(dlf, ranks=T)
+
+
 \dontrun{
 dev.new()
 distLplot(dlf50, cdf=TRUE, sel=c("pe3", "rice", "revgum"), order=T)

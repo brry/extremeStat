@@ -8,10 +8,12 @@ gofProp, # Overrides value in list. Proportion of highest values in \code{dat} t
 plot=TRUE, # Call \code{\link{distLgofPlot}}?
 progbars=length(dlf$dat)>200, # Show progress bars for each loop?
 ks=TRUE, # Include ks.test results in dlf$gof? Computing is much faster when FALSE
+weightc=NA, # Optional: a named vector with custom weights for each distribution. Are internally normalized to sum=1 after removing nonfitted dists. Names must match the parameter names from \code{\link{distLfit}}.
 quiet=FALSE, # Suppress notes?
 ... # Further arguments passed to \code{\link{distLgofPlot}}
 )
 {
+if(any(!is.na(weightc))) if(is.null(names(weightc))) stop("weightc must have names.")
 # Progress bars
 if(quiet) progbars <- FALSE
 if(progbars) lapply <- pbapply::pblapply
@@ -74,11 +76,16 @@ if(!quiet)
   }
 # All into one data.frame:
 gof <- data.frame(RMSE=RMSE, R2=R2)
-if(!all(dim(gof) == 0)) # dim = 0,0 if all distributions are excluded
+if(all(dim(gof) == 0)) # dim = 0,0 if all distributions are excluded
+{
+gof <- data.frame(matrix(NA, ncol=5, nrow=length(dlf$parameter) ))
+colnames(gof) <- c("RMSE","R2","weight1","weight2","weight3")
+rownames(gof) <-  names(dlf$parameter)
+} else
 {
 if(ks) {gof$ksP=ksP; gof$ksD=ksD}
 # order by GOF:
-gof <- gof[ order(gof$RMSE), ]  # -gof$R2 # which measure should I sort by?
+gof <- gof[ order(gof$RMSE), ]  # sorting by gof$R2 does not work, see examples compranks
 # Weights for weighted average of return values:
 # Weight including all distributions
 gof$weight1 <- gof[,"RMSE"] # the lower, the better, the more weight
@@ -93,16 +100,18 @@ gof$weight3 <- gof[,"RMSE"]
 gof$weight3 <- max(gof$weight3)-gof$weight3
 gof$weight3[(nrow(gof)/2):nrow(gof)] <- 0
 gof$weight3 <- gof$weight3/sum(gof$weight3)
+# custom weight
+gof$weightc <- 0
+if(any(!is.na(weightc))) gof[names(weightc), "weightc"] <- weightc
+gof$weightc <- gof$weightc/sum(gof$weightc)
 # add nonfitted distributions:
-dnonfitted <- data.frame(matrix(NA, nrow=length(curdnexclude), ncol=ncol(gof)))
-rownames(dnonfitted) <- curdnexclude
-colnames(dnonfitted) <- colnames(gof)
-gof <- rbind(gof, dnonfitted)
-} else
-{
-gof <- data.frame(matrix(NA, ncol=5, nrow=length(dlf$parameter) ))
-colnames(gof) <- c("RMSE","R2","weight1","weight2","weight3")
-rownames(gof) <-  names(dlf$parameter)
+if(any(exclude))
+  {
+  dnonfitted <- data.frame(matrix(NA, nrow=length(curdnexclude), ncol=ncol(gof)))
+  rownames(dnonfitted) <- curdnexclude
+  colnames(dnonfitted) <- colnames(gof)
+  gof <- rbind(gof, dnonfitted)
+  }
 }
 # output:
 output <- list(dat=dat, datname=dlf$datname, gofProp=gofProp, parameter=parameter, gof=gof)
