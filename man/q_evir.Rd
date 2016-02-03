@@ -6,7 +6,7 @@
 by peak over treshold (POT) method declaring treshold from truncation proportion
 using the established evir (extreme values in r) package}
 \usage{q_evir(x, probs, truncate, undertruncNA=TRUE, 
-pngdev=TRUE, quantcat=FALSE, quiet=FALSE, quietgp=quiet, method="pmw", ...)}
+pngdev=TRUE, quantcat=FALSE, quiet=FALSE, quietgp=quiet, method="pwm", ...)}
 \arguments{
   \item{x}{Vector with values. NAs are silently ignored.}
   \item{probs}{Probabilities of truncated (Peak over treshold) quantile.}
@@ -16,7 +16,7 @@ pngdev=TRUE, quantcat=FALSE, quiet=FALSE, quietgp=quiet, method="pmw", ...)}
   \item{quantcat}{Show the cat messages of quant? Argument ignored in \code{q_evir2}. DEFAULT: FALSE}
   \item{quiet}{Should messages be suppressed? DEFAULT: FALSE}
   \item{quietgp}{Suppress q_evir gpd-optim failed notes? DEFAULT: quiet}
-  \item{method}{method in \code{\link{gpd}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Only used in \code{q_evir2}, ignored in \code{q_evir}. pwm yields higher results, but ml more often fails (gpd -> optim, Error in optim(theta, negloglik, hessian = TRUE, ..., tmp = excess) : non-finite finite-difference value [1]). DEFAULT: "pmw"}
+  \item{method}{method in \code{\link{gpd}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Only used in \code{q_evir2}, ignored in \code{q_evir}. pwm yields higher results, but ml more often fails (gpd -> optim, Error in optim(theta, negloglik, hessian = TRUE, ..., tmp = excess) : non-finite finite-difference value [1]). DEFAULT: "pwm"}
   \item{\dots}{Further arguments passed to \code{\link[evir]{quant}} or \code{\link[evir]{gpd}}}
 }
 \details{\code{q_evir} opens and closes external device to suppress \code{evir::quant} plotting.\cr
@@ -27,7 +27,7 @@ It is also computationally much faster, as probs are vectorized.}
 \references{\url{https://en.wikipedia.org/wiki/Pickands-Balkema-de_Haan_theorem} 
 second extreme value theorem: tails of distributions tend towards GPD\cr
 \url{http://stats.stackexchange.com/questions/129438/different-quantiles-of-a-fitted-gpd-in-different-r-packages}}
-\seealso{\code{\link{distLquantile}}, \code{evir::\link[evir]{quant}} }
+\seealso{\code{\link{distLquantile}}, \code{\link{q_ismev}}, \code{evir::\link[evir]{quant}} }
 \examples{
 library(lmomco)
 library(berryFunctions)
@@ -48,6 +48,26 @@ abline(h=q_evir(rnum, probs=0.95, truncate=0.8), lty=2)
 
 evir::quant(rnum, p=0.999, models=70, end=1000)
 # very high quantile estimates are much more uncertain, of course...
+
+
+p <- c(0.5, 0.8, 0.9, 0.99, 0.999)
+data(annMax)
+q_evir(annMax, truncate=0,   pr=p)
+q_evir(annMax, truncate=0.6, pr=p)
+q_evir(annMax, truncate=0.6, pr=p, under=FALSE)
+q_evir(annMax, truncate=1,   pr=p)
+q_evir(annMax, truncate=1,   pr=p, under=FALSE)
+
+library("ismev")
+data(rain)
+q_evir(rain, truncate=0,   pr=p)
+q_evir(rain, truncate=0.6, pr=p)
+q_evir(rain, truncate=0.6, pr=p, under=FALSE)
+q_evir(rain, truncate=1,   pr=p)
+q_evir(rain, truncate=1,   pr=p, under=FALSE)
+
+q_evir(rain, truncate=0.2, pr=c(0.1,0.2,p))
+q_evir2(rain, truncate=0.2, pr=c(0.1,0.2,p))
 
 \dontrun{
 ## Taken out from CRAN package check because it's slow

@@ -23,9 +23,16 @@ if(length(truncate)>1)
   if(!quiet) on.exit(message("Note in q_evir: only first value of 'truncate' is used."), add=TRUE)
   }
 if(truncate>1 | truncate<0) stop("truncate (proportion discarded) must be 0<t<1, not ", truncate)
-if(all(probs < truncate) & !quiet & undertruncNA) on.exit(message("Note in q_evir: 'probs' (",
+# failure output:
+failout <- rep(NA, length(probs))
+names(failout) <- paste0(probs*100,"%")
+if(all(probs < truncate))
+    {
+    if(quiet) on.exit(message("Note in q_evir: 'probs' (",
     pastec(probs), ") must contain values that are larger than 'truncate' (", 
     truncate, "). Returning NAs."), add=TRUE)
+    return(failout)
+    }
 # position of truncation (treshold)
 pos <- length(x)*(1-truncate)
 # quant always plots a graph, but we don't want it
@@ -46,7 +53,7 @@ if(pos<1)
   {
   if(!quiet) on.exit(message("Note in q_evir: Not enough values after truncation (",
                              pos,"). Returning NAs."), add=TRUE)
-  output <- rep(NA, length(probs))
+  return(failout)
   } else
   output <- sapply(probs, function(p)
   {
@@ -56,8 +63,8 @@ if(pos<1)
   assign("allcats", value=c(allcats, cats), envir=parent.env(environment()))
   if(class(res)=="try-error") 
   {
-  if(!quietgp & !OptimFailMessageGiven)
-    on.exit(message("Note in q_evir: evir::quant-gpd-optim failed. Returning NAs."), add=TRUE)
+  if(!quietgp & !OptimFailMessageGiven)on.exit(message(
+  "Note in q_evir: evir::quant-gpd-optim failed. Returning NAs.\n  Reason: ", res), add=TRUE)
   assign("OptimFailMessageGiven", value=TRUE, envir=parent.env(environment()))
   NA 
   } else
