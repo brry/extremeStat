@@ -3,13 +3,14 @@
 \title{quality of distribution fits}
 \description{calculate goodness of fit for several distributions, plot rank comparison.}
 \usage{distLgof(dlf, gofProp, plot=TRUE, progbars=length(dlf$dat)>200, ks=TRUE,
-quiet=FALSE, ...)}
+weightc=NA, quiet=FALSE, ...)}
 \arguments{
   \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, gofProp, parameter}}
   \item{gofProp}{Overrides value in list. Proportion (0:1) of highest values in \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail}
   \item{plot}{Call \code{\link{distLgofPlot}}? DEFAULT: TRUE}
   \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n > 200)}
   \item{ks}{Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. distLgofPlot does not run on the result. DEFAULT: TRUE}
+  \item{weightc}{Optional: a named vector with custom weights for each distribution. Are internally normalized to sum=1 after removing nonfitted dists. Names must match the parameter names from \code{\link{distLfit}}. DEFAULT:NA}
   \item{quiet}{Suppress notes? DEFAULT: FALSE}
   \item{\dots}{Further arguments passed to \code{\link{distLgofPlot}}}
 }
@@ -46,7 +47,7 @@ ks.test(annMax, "cdfnor", parnor(lmoms(annMax)))$p.value
 
 
 # GOF: how well do the distributions fit the original data?
-pairs(dlf$gof) # measures of goodness of fit are correlated quite well here.
+pairs(dlf$gof[,1:3]) # measures of goodness of fit are correlated quite well here.
 # In the next example, however, we see that it does matter which one is used.
 
 # compare Ranks with different proportions used for GOF
@@ -97,8 +98,8 @@ par(op)
 # custom weights
 cw <- c("gpa"=7, "gev"=3, "wak"=6, "wei"=4, "kap"=3.5, "gum"=3, "ray"=2.1,
         "ln3"=2, "pe3"=2.5, "gno"=4, "gam"=5)
-dlf <- distLfit(annMax, plot=F, weightc=cw)
-distLgofPlot(dlf, ranks=T)
+dlf <- distLfit(annMax, plot=FALSE, weightc=cw)
+distLgofPlot(dlf, ranks=TRUE)
 
 
 \dontrun{
