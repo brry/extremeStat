@@ -4,8 +4,8 @@
 \description{Parametric quantiles of distributions fitted to a sample.}
 \usage{distLquantile(x=NULL, probs=0:4/4, truncate=0, selection=NULL, type=NULL,
 dlf=NULL, order=TRUE, returndlf=FALSE, plot=FALSE, cdf=FALSE, lines=TRUE, linargs=NULL,
-empirical=TRUE, evir=empirical, efast=TRUE, method=c("ml","pwm"), weighted=empirical,
-quiet=FALSE, quietss=quiet, quietgp=quiet, ... )}
+empirical=TRUE, ismev=empirical, evir=empirical, efast=TRUE, method=c("ml","pwm"),
+weighted=empirical, quiet=FALSE, quietss=quiet, quietgp=quiet, ... )}
 \arguments{
   \item{x}{Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
   \item{probs}{Numeric vector of probabilities with values in [0,1]. DEFAULT: 0:4/4}
@@ -20,6 +20,7 @@ quiet=FALSE, quietss=quiet, quietgp=quiet, ... )}
   \item{lines}{Should vertical lines marking the quantiles be added? DEFAULT: TRUE}
   \item{linargs}{Arguments passed to \code{\link{lines}}. DEFAULT: NULL}
   \item{empirical}{Add vertical line for empirical \code{\link{quantileMean}} (and include the result in the output matrix)? DEFAULT: TRUE}
+  \item{ismev}{Include \code{ismev::\link[ismev]{gpd.fit}} GPD quantile estimation? DEFAULT: empirical, so additional options can all be excluded with emp=F.}
   \item{evir}{Include \code{evir::\link[evir]{quant}} GPD quantile estimation? Note that this temporarily creates a png image at the \code{getwd}. DEFAULT: empirical, so additional options can all be excluded with emp=F.}
   \item{efast}{compute evir::quant in a faster way (with  \code{\link{q_evir2}})? DEFAULT: TRUE}
   \item{method}{method in \code{\link{q_evir2}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Can also be both. DEFAULT: c("ml","pwm")}
@@ -74,8 +75,8 @@ rnum <- rlmomco(n=1e3, para=dlf$parameter$gev)
 myprobs <- c(0.9, 0.95, 0.99, 0.999)
 mytrunc <- seq(0, 0.9, length.out=20)
 trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gev",
-                             probs=myprobs, truncate=mt, plot=FALSE, trans=TRUE,
-                             progbars=FALSE, empirical=FALSE))
+                             probs=myprobs, truncate=mt, plot=FALSE,
+                             progbars=FALSE, empirical=FALSE)["gev",])
 # If more values are truncated, the function runs faster
 
 op <- par(mfrow=c(2,1), mar=c(2,4.5,2,0.5), cex.main=1)
