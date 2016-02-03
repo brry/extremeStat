@@ -1,0 +1,49 @@
+\name{q_ismev}
+\alias{q_ismev}
+\title{GPD quantile of sample}
+\description{Compute quantile of General Pareto Distribution fitted to sample
+by peak over treshold (POT) method declaring treshold from truncation proportion
+using the ismev package (Introduction to Statistical Modeling of Extreme Values)}
+\usage{q_ismev(x, probs, truncate, returnlist=FALSE, undertruncNA=TRUE,
+quiet=FALSE, ...)}
+\arguments{
+  \item{x}{Vector with values. NAs are silently ignored}
+  \item{probs}{Probabilities of truncated (Peak over treshold) quantile}
+  \item{truncate}{Truncation percentage (proportion of sample discarded)}
+  \item{returnlist}{Return result from \code{\link[ismev]{gpd.fit}} with the quantiles added to the list as element \code{quant}. DEFAULT: FALSE}
+  \item{undertruncNA}{Return NAs for probs below truncate? Highly recommended to leave this at the DEFAULT: TRUE}
+  \item{quiet}{Should messages be suppressed? DEFAULT: FALSE}
+  \item{\dots}{Further arguments passed to \code{\link[ismev]{gpd.fit}}}
+}
+\value{if(returnlist): gpd.fit list with element \code{quant} added \cr
+else: Vector of quantile estimates for each value of probs}
+\note{gpdq is not exported by ismev, so this is an ugly hack}
+\author{Berry Boessenkool, \email{berry-b@gmx.de}, Feb 2016}
+\seealso{\code{\link{distLquantile}}, \code{\link{q_evir}}, \code{\link[ismev]{gpd.fit}}}
+\examples{
+library(ismev)
+data(rain)
+data(annMax)
+p <- c(0.5, 0.8, 0.9, 0.99, 0.999)
+d <- q_ismev(annMax, truncate=0,   p=p); d
+d <- q_ismev(annMax, truncate=0,   p=p, returnlist=TRUE); d
+d <- q_ismev(annMax, truncate=0.6, p=p); d
+d <- q_ismev(annMax, truncate=0.6, p=p, under=FALSE); d
+d <- q_ismev(annMax, truncate=0.6, p=p, returnlist=TRUE); d
+d <- q_ismev(annMax, truncate=1,   p=p); d
+d <- q_ismev(annMax, truncate=1,   p=p, returnlist=TRUE); d
+d <- q_ismev(annMax, truncate=1,   p=p, under=FALSE); d
+
+
+d <- q_ismev(rain, truncate=0,   p=p); d
+d <- q_ismev(rain, truncate=0,   p=p, returnlist=TRUE); tail(d,1)
+d <- q_ismev(rain, truncate=0.6, p=p); d
+d <- q_ismev(rain, truncate=0.6, p=p, under=FALSE); d
+d <- q_ismev(rain, truncate=0.6, p=p, returnlist=TRUE); tail(d,1)
+d <- q_ismev(rain, truncate=1,   p=p); d
+d <- q_ismev(rain, truncate=1,   p=p, returnlist=TRUE); tail(d,1)
+d <- q_ismev(rain, truncate=1,   p=p, under=FALSE); d
+}
+\keyword{distribution}
+\keyword{robust}
+\keyword{univar}
