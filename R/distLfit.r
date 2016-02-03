@@ -67,7 +67,10 @@ if(length(dat) < 5) {if(!quietss)on.exit(message("Note in distLfit: sample size 
                          length(dat), ") is too small to fit parameters (<5)."), add=TRUE)
   error_out <- as.list(dn) # this is very useful for distLquantile
   names(error_out) <- dn  # since it keeps the columns if a selection is given
-  return(list(dat=dat, parameter=error_out, gof=NA))}
+  error_gof <- matrix(NA, nrow=length(dn), ncol=6)
+  colnames(error_gof) <- c("RMSE", "R2", paste0("weight",1:3), "weightc")
+  rownames(error_gof) <- dn
+  return(list(dat=dat, parameter=error_out, gof=error_gof, error="dat size too small."))}
 #
 # Fit distribution parameters --------------------------------------------------
 # L-Moments of sample  # package lmomco
