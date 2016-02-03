@@ -57,16 +57,16 @@ legend("bottomleft", c("RMSE","R2",if(ks)"ks.test"), lty=lty, col=col, pch=pch)
 if(weights)
 {
 if(is.null(main)) main <- "Weights of distributions\nfor weighted average"
-Xlim <- range(gof[, grep("weight", colnames(gof))])
+Xlim <- range(gof[, grep("weight", colnames(gof))], na.rm=T)
 plot(gof$weightc, nrow(gof):1, xlim=Xlim, type="o", yaxt="n", xlab="Weight",
      las=1, ylab="Dist", main=main, pch=4, col=8)
 lines(gof$weight1, nrow(gof):1, pch=1, col=1, type="o")
 lines(gof$weight2, nrow(gof):1, pch=2, col=2, type="o")
 lines(gof$weight3, nrow(gof):1, pch=3, col=3, type="o")
 lines(gof$RMSE,    nrow(gof):1, col=4)
-text(tail(gof$RMSE,1), 1, "RMSE", col=4, adj=-0.01)
+text(head(gof$RMSE,1), nrow(gof), "RMSE", col=4, adj=-0.2)
 axis(2, nrow(gof):1, rownames(gof), las=2)
 legend("bottomright", c("1: max(r)-r + min(r)", "2: max(r)-r", "3: first half", "c: custom"),
-       title="Weighted by RMSE =r", col=c(1:3,8), pch=1:4, lty=1)
+       title="Weighted by RMSE = r", col=c(1:3,8), pch=1:4, lty=1)
 }
 } # end of function
