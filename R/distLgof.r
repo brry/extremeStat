@@ -102,7 +102,11 @@ gof$weight3[(nrow(gof)/2):nrow(gof)] <- 0
 gof$weight3 <- gof$weight3/sum(gof$weight3)
 # custom weight
 gof$weightc <- 0
-if(any(!is.na(weightc))) gof[names(weightc), "weightc"] <- weightc
+if(any(!is.na(weightc)))
+  {
+  weightc <- weightc[names(weightc)%in%rownames(gof)]
+  gof[names(weightc), "weightc"] <- weightc
+  }
 gof$weightc <- gof$weightc/sum(gof$weightc)
 # add nonfitted distributions:
 if(any(exclude))
