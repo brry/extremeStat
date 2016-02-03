@@ -6,7 +6,7 @@
 by peak over treshold (POT) method declaring treshold from truncation proportion
 using the established evir (extreme values in r) package}
 \usage{q_evir(x, probs, truncate, undertruncNA=TRUE, 
-pngdev=TRUE, quantcat=FALSE, quiet=FALSE, quietgp=quiet, method="ml", ...)}
+pngdev=TRUE, quantcat=FALSE, quiet=FALSE, quietgp=quiet, method="pmw", ...)}
 \arguments{
   \item{x}{Vector with values. NAs are silently ignored.}
   \item{probs}{Probabilities of truncated (Peak over treshold) quantile.}
@@ -16,7 +16,7 @@ pngdev=TRUE, quantcat=FALSE, quiet=FALSE, quietgp=quiet, method="ml", ...)}
   \item{quantcat}{Show the cat messages of quant? Argument ignored in \code{q_evir2}. DEFAULT: FALSE}
   \item{quiet}{Should messages be suppressed? DEFAULT: FALSE}
   \item{quietgp}{Suppress q_evir gpd-optim failed notes? DEFAULT: quiet}
-  \item{method}{method in \code{\link{gpd}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Only used in \code{q_evir2}, ignored in \code{q_evir}. pwm yields higher results, but ml more often fails (gpd -> optim, Error in optim(theta, negloglik, hessian = TRUE, ..., tmp = excess) : non-finite finite-difference value [1]). DEFAULT: "ml"}
+  \item{method}{method in \code{\link{gpd}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Only used in \code{q_evir2}, ignored in \code{q_evir}. pwm yields higher results, but ml more often fails (gpd -> optim, Error in optim(theta, negloglik, hessian = TRUE, ..., tmp = excess) : non-finite finite-difference value [1]). DEFAULT: "pmw"}
   \item{\dots}{Further arguments passed to \code{\link[evir]{quant}} or \code{\link[evir]{gpd}}}
 }
 \details{\code{q_evir} opens and closes external device to suppress \code{evir::quant} plotting.\cr

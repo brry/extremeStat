@@ -12,7 +12,7 @@ pngdev=TRUE, # sink \code{evir::quant} graph output to file (is removed later) i
 quantcat=FALSE, # Show the cat messages of quant?
 quiet=FALSE, # Should messages be suppressed?
 quietgp=quiet,  # Suppress q_evir gpd-optim failed notes?
-method="ml", # method in \code{\link{gpd}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Only used in \code{q_evir2}, ignored in \code{q_evir}. pwm yields higher results, but ml more often fails (gpd -> optim, Error in optim(theta, negloglik, hessian = TRUE, ..., tmp = excess) : non-finite finite-difference value [1])
+method="pwm", # method in \code{\link{gpd}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Only used in \code{q_evir2}, ignored in \code{q_evir}. pwm yields higher results, but ml more often fails (gpd -> optim, Error in optim(theta, negloglik, hessian = TRUE, ..., tmp = excess) : non-finite finite-difference value [1])
 ...)         # Further arguments passed to \code{\link[evir]{quant}} or \code{\link[evir]{gpd}}
 {
 # Input control
@@ -80,7 +80,7 @@ output
 
 # Copying only the computing part from evir::quant, Version: 1.7-3, Date: 2011-07-22
 q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE, 
-                    pngdev=TRUE, quantcat=FALSE, quiet=FALSE, quietgp=quiet, method="ml", ...)
+                    pngdev=TRUE, quantcat=FALSE, quiet=FALSE, quietgp=quiet, method="pwm", ...)
   {
   x <- x[!is.na(x)]
   if(all(probs < truncate) & !quiet & undertruncNA) on.exit(message("Note in q_evir2: 'probs' (",
