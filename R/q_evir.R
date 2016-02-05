@@ -104,7 +104,7 @@ q_evir2 <- function(x, probs, truncate, undertruncNA=TRUE,
   fit <- try(evir::gpd(x, nextremes=pos, method=method, ...), silent=TRUE)
   if(class(fit)=="try-error") 
   {
-  if(!quietgp) on.exit(message("Note in q_evir2: evir::gpd-optim failed. Returning NAs."), add=TRUE)
+  if(!quietgp) on.exit(message("Note in q_evir2: evir::gpd-optim failed. Returning NAs.\n  Reason: ", fit), add=TRUE)
   return(rep(NA, length(probs)))
   } else
   lambda <- length(x)/fit$n.exceed
