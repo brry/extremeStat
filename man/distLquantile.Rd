@@ -4,7 +4,8 @@
 \description{Parametric quantiles of distributions fitted to a sample.}
 \usage{distLquantile(x=NULL, probs=0:4/4, truncate=0, selection=NULL, type=NULL,
 dlf=NULL, order=TRUE, returndlf=FALSE, plot=FALSE, cdf=FALSE, lines=TRUE, linargs=NULL,
-empirical=TRUE, ismev=empirical, evir=empirical, efast=TRUE, method=c("ml","pwm"),
+empirical=TRUE, ismev=empirical, fExtremes=empirical,
+evir=empirical, efast=TRUE, method=c("ml","pwm"),
 weighted=empirical, quiet=FALSE, quietss=quiet, quietgp=quiet, ... )}
 \arguments{
   \item{x}{Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
@@ -21,6 +22,7 @@ weighted=empirical, quiet=FALSE, quietss=quiet, quietgp=quiet, ... )}
   \item{linargs}{Arguments passed to \code{\link{lines}}. DEFAULT: NULL}
   \item{empirical}{Add vertical line for empirical \code{\link{quantileMean}} (and include the result in the output matrix)? DEFAULT: TRUE}
   \item{ismev}{Include \code{ismev::\link[ismev]{gpd.fit}} GPD quantile estimation? DEFAULT: empirical, so additional options can all be excluded with emp=F.}
+  \item{fExtremes}{Include \code{fExtremes::\link[fExtremes]{gpfFit}} GPD quantile estimation? DEFAULT: empirical}
   \item{evir}{Include \code{evir::\link[evir]{quant}} GPD quantile estimation? Note that this temporarily creates a png image at the \code{getwd}. DEFAULT: empirical, so additional options can all be excluded with emp=F.}
   \item{efast}{compute evir::quant in a faster way (with  \code{\link{q_evir2}})? DEFAULT: TRUE}
   \item{method}{method in \code{\link{q_evir2}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Can also be both. DEFAULT: c("ml","pwm")}
@@ -39,7 +41,8 @@ Parametric quantiles need only small sample sizes. They don't have a systematica
 \value{Matrix with distribution quantile values. Returns NAs for probs below truncate.}
 \note{NAs are always removed from x in \code{\link{distLfit}}}
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, March 2015}
-\references{My master thesis paper, to be submitted soon.}
+\references{On GPD: \url{http://stats.stackexchange.com/questions/69438}\cr
+}
 \seealso{\code{\link{distLfit}},
 Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for left truncated and right censored data, Statistica Sinica 10
 \url{http://www3.stat.sinica.edu.tw/statistica/oldpdf/A10n411.pdf}\cr
@@ -49,6 +52,7 @@ data(annMax) # Annual Discharge Maxima (streamflow)
 dlf <- distLfit(annMax)
 
 distLquantile(annMax)
+distLquantile(annMax, truncate=0.8, probs=0.95) # POT
 distLquantile(annMax, probs=0.95, plot=TRUE, linargs=list(lwd=2), nbest=5, breaks=10)
 # Parametric 95% quantile estimates range from 92 to 111!
 # But the best fitting distributions all lie aroud 103.

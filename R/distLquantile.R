@@ -15,7 +15,8 @@ cdf=FALSE,      # If TRUE, plot cumulated DF instead of probability density
 lines=TRUE,     # Should vertical lines marking the quantiles be added?
 linargs=NULL,   # Arguments passed to \code{\link{lines}}.
 empirical=TRUE, # Add vertical line for empirical \code{\link{quantileMean}} (and include the result in the output matrix)?
-ismev=empirical,# Include \code{evir::\link[ismev]{gpf.fit}} GPD quantile estimation? DEFAULT: empirical, so additional options can all be excluded with emp=F.
+ismev=empirical,# Include \code{ismev::\link[ismev]{gpf.fit}} GPD quantile estimation? DEFAULT: empirical, so additional options can all be excluded with emp=F.
+fExtremes=empirical,# Include \code{fExtremes::\link[fExtremes]{gpfFit}} GPD quantile estimation?
 evir=empirical, # Include \code{evir::\link[evir]{quant}} GPD quantile estimation? Note that this temporarily creates a png image at the \code{getwd} if efast=FALSE. DEFAULT: empirical, so additional options can all be excluded with emp=F.
 efast=TRUE,     # compute evir::quant only in the faster way (with  \code{\link{q_evir2})?
 method=c("ml","pwm"), # Method in \code{\link{q_evir2}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Can also be both
@@ -88,7 +89,8 @@ if(length(miss)>0)
 # add rows for weighted averages of distribution functions
 # and for GPD comparison methods
 output <- rbind(output, quantileMean=NA, weighted1=NA, weighted2=NA, weighted3=NA,
-            weightedc=NA, q_evir=NA, q_evir2_ml=NA, q_evir2_pwm=NA, q_ismev=NA)
+            weightedc=NA, q_evir=NA, q_evir2_ml=NA, q_evir2_pwm=NA, q_ismev=NA,
+            q_fExtremes_mle=NA, q_fExtremes_pwm=NA)
 #
 # if input sample size is too small, return NA matrix:
 if( length(dlf$dat)<5 )
@@ -135,6 +137,13 @@ if(evir)
   }
 # ismev::fit.gpf estimates:
 if(ismev) output["q_ismev",] <- q_ismev(x=dlf$dat_full, probs=probs, truncate=truncate, quiet=quiet)
+if(fExtremes)
+  {
+  output["q_fExtremes_pwm",] <- q_fExtremes(x=dlf$dat_full, probs=probs,
+                                   truncate=truncate, method="pwm", quiet=quiet)
+  output["q_fExtremes_mle",] <- q_fExtremes(x=dlf$dat_full, probs=probs,
+                                   truncate=truncate, method="mle", quiet=quiet)
+  }
 # Weighted quantile estimates:
 if(weighted)
   {
