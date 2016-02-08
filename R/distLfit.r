@@ -2,25 +2,99 @@
 # Berry Boessenkool, Sept 2014, July 2015
 # Main function calling   distLgof   and   distLgofPlot or distLplot
 
+
+
+#' Fit distributions via linear moments
+#' 
+#' Fit several distributions via linear moments, plot histogram and
+#' distribution densities \emph{or} ecdf with cumulated probability.
+#'
+#' @details Fits parameters via \code{\link[lmomco]{lmom2par}} in the package \code{lmomco}
+#' 
+#' @param dat Vector with values
+#' @param datname Character string for main, xlab etc. DEFAULT: internal \code{substitute(dat)}
+#' @param speed If TRUE, several distributions are omitted, for the reasons shown in \code{lmomco::\link[lmomco]{dist.list}()}. DEFAULT: TRUE
+#' @param ks Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. DEFAULT: FALSE
+#' @param selection Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL
+#' @param gofProp Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1
+#' @param weightc Named custom weights for each distribution, see \code{\link{distLgof}}. DEFAULT: NA
+#' @param truncate Number between 0 and 1. POT Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0
+#' @param gofComp If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE. DEFAULT: FALSE
+#' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n > 200
+#' @param time \code{\link{message}} execution time? DEFAULT: TRUE
+#' @param plot Should a histogram with densities be plotted? DEFAULT: TRUE
+#' @param cdf If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE
+#' @param legargs List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL
+#' @param histargs List of arguments passed to \code{\link{hist}} except for x, breaks, col, xlim, freq. DEFAULT: NULL
+#' @param quiet Suppress notes? DEFAULT: FALSE
+#' @param quietss Suppress sample size notes? DEFAULT: quiet
+#' @param \dots Further arguments passed to \code{\link{distLplot}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...
+
+#' @return List as explained in \code{\link{extremeStat}}.
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
+#' @seealso \code{\link{distLgof}}, \code{\link{distLplot}}.
+#'          \code{\link[extRemes]{fevd}} in the package \code{extRemes},
+#'          \code{\link[MASS]{fitdistr}} in the package \code{MASS}.
+#' @keywords hplot dplot distribution
+#' @export
+#' @importFrom lmomco dist.list lmoms lmom2par
+#' @importFrom berryFunctions rainbow2
+#' @examples
+#' 
+#' data(annMax)
+#' # basic usage on real data (annual discharge maxima in Austria)
+#' dlf <- distLfit(annMax)
+#' str(dlf, max.lev=2)
+#' distLprint(dlf)
+#' 
+#' # arguments that can be passed:
+#' distLfit(annMax, lty=2, col=3, legargs=list(lwd=3), main="booh!")
+#' dlf_b <- distLfit(rbeta(1e3, 5, 2), nbest=10, legargs=c(x="left"))
+#' distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"))
+#' distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"), order=TRUE)
+#' distLplot(dlf_b, coldist=c("orange",3:6), lty=1:3) # lty is recycled
+#' distLplot(dlf_b, cdf=TRUE)
+#' distLplot(dlf_b, cdf=TRUE, histargs=list(do.points=FALSE), sel="nor")
+#' 
+#' 
+#' # Goodness of Fit is computed by RMSE, see first example of ?distLgof
+#' 
+#' # logarithmic axes:
+#' set.seed(1)
+#' y <- 10^rnorm(1e3, mean=2, sd=0.3) # if you use 1e4, distLgof will be much slower
+#' hist(y, breaks=20)
+#' hist(log10(y))
+#' dlf <- distLfit(log10(y), breaks=50)
+#' distLplot(dlf, breaks=50, log=TRUE)
+#' 
+#' \dontrun{
+#' # this takes a while, as it tries to fit all 30 distributions:
+#' d_all <- distLfit(annMax, gofProp=1, speed=FALSE, plot=FALSE) # 35 sec
+#' distLprint(d_all)
+#' distLplot(d_all, nbest=22, coldist=grey(1:22/29), xlim=c(20,140))
+#' distLplot(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))
+#' d_all$gof
+#' }
+#' 
 distLfit <- function(
-dat,          # Vector with values
-datname,      # Character string for main, xlab etc. DEFAULT: internal \code{substitute(dat)}
-speed=TRUE,   # If TRUE, several distributions are omitted, for the reasons shown in \code{\link[lmomco]{dist.list}()}
-ks=FALSE,     # Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE
-selection=NULL, # Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed.
-gofProp=1,    # Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
-weightc=NA,   # Named custom weights for each distribution, see \code{\link{distLgof}}.
-truncate=0,   # Number between 0 and 1. POT Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly.
-gofComp=FALSE,# If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE
-progbars=length(dat)>200,# Show progress bars for each loop? DEFAULT: TRUE if n > 200
-time=TRUE,    # \code{\link{message}} execution time?
-plot=TRUE,    # Should a histogram with densities be plotted?
-cdf=FALSE,    # If TRUE, plot cumulated DF instead of probability density
-legargs=NULL, # List of arguments passed to \code{\link{legend}} except for legend and col
-histargs=NULL,# List of arguments passed to \code{\link{hist}} except for x, breaks, col, xlim, freq
-quiet=FALSE,  # Suppress notes?
-quietss=quiet,# Suppress sample size notes?
-... )         # Further arguments passed to \code{\link{distLplot}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...
+dat,
+datname,
+speed=TRUE,
+ks=FALSE,
+selection=NULL,
+gofProp=1,
+weightc=NA,
+truncate=0,
+gofComp=FALSE,
+progbars=length(dat)>200,
+time=TRUE,
+plot=TRUE,
+cdf=FALSE,
+legargs=NULL,
+histargs=NULL,
+quiet=FALSE,
+quietss=quiet,
+... )
 {
 # preparation ------------------------------------------------------------------
 StartTime <- Sys.time()
@@ -40,7 +114,7 @@ dat <- as.numeric( dat[!is.na(dat)]  )
 if(truncate!=0) dat <- sort(dat)[ -1:-(truncate*length(dat)) ]
 #
 # possible distributions: ------------------------------------------------------
-dn <- dist.list()
+dn <- lmomco::dist.list()
 names(dn) <- dn
 # Selection:
 if( ! is.null(selection) )
@@ -74,10 +148,10 @@ if(length(dat) < 5) {if(!quietss)on.exit(message("Note in distLfit: sample size 
 #
 # Fit distribution parameters --------------------------------------------------
 # L-Moments of sample  # package lmomco
-mom <- lmoms(dat, nmom=5)
+mom <- lmomco::lmoms(dat, nmom=5)
 # estimate parameters for each distribution:    # this takes time!
 if(progbars) message("Parameter estimation from linear moments:")
-parameter <- lapply(dn, function(d) lmom2par(mom, type=d) )
+parameter <- lapply(dn, function(d) lmomco::lmom2par(mom, type=d) )
 # error catching:
 if( length(parameter) != length(dn))
   {
@@ -96,7 +170,7 @@ if(gofComp)
   plot <- FALSE
   }
 if(plot) output <- distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
-if(!plot) output$coldist <- rainbow2(if(is.null(selection)) 5 else length(selection))
+if(!plot) output$coldist <- berryFunctions::rainbow2(if(is.null(selection)) 5 else length(selection))
 # truncation value
 output$truncate <- truncate
 output$dat_full <- dat_full # non-truncated data

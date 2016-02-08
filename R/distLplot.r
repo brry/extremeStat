@@ -2,32 +2,76 @@
 # Berry Boessenkool, Sept 2014
 # Plot density distributions fitted by distLfit
 
+#' Plot distributions fitted with linear moments
+#' 
+#' Plot histogram and distribution densities \emph{or} ecdf with cumulated probability
+#' 
+#' @details By default, this plots density instead of CDF, because the distributions are
+#' easier to discern and tail behaviour is easier to judge visually. See also
+#' urlhttp://www.vosesoftware.com/vosesoftware/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_\%28histogram\%29_plots.htm
+#' 
+#' @param dlf List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname, gofProp}
+#' @param nbest Number of distributions plotted, in order of goodness of fit. DEFAULT: 5
+#' @param selection Names of distributions in \code{dlf$parameter} that will be drawn. Overrides nbest. DEFAULT: NULL
+#' @param order If selection is given, should legend and colors be ordered by gof anyways? DEFAULT: FALSE
+#' @param cdf If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE
+#' @param log If TRUE, logAxis is called. DEFAULT: FALSE
+#' @param percentline If TRUE, draw vertical line at 1-dlf$gofProp of dlf$dat. If NA, only do so if gofProp!=1. DEFAULT: NA
+#' @param percentargs List of arguments passed to \code{\link{abline}}. DEFAULT: NULL
+#' @param supportends If TRUE, dots are placed at the support bounds. DEFAULT: TRUE
+#' @param breaks \code{\link{hist}} breaks. DEFAULT: 20
+#' @param xlim \code{\link{hist}} or \code{\link{ecdf}} xlim. DEFAULT: extendrange(dat, f=0.15)
+#' @param ylim \code{\link{hist}} or \code{\link{ecdf}} ylim. DEFAULT: NULL
+#' @param xaxs,yaxs \code{\link{hist}} or \code{\link{ecdf}} xaxs and yaxs. DEFAULT: both "i"
+#' @param xaxt \code{\link{par}} xaxt. "n" suppresses axis and numbers, which is used if log
+#' @param col \code{\link{hist}} bar color or \code{\link{ecdf}} point color. DEFAULT: "grey"
+#' @param main,xlab,ylab \code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab. DEFAULT: internal abstraction fom \code{dlf$datname}
+#' @param las Label Axis Style for orientation of numbers along axes. DEFAULT: 1
+#' @param coldist Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow2
+#' @param lty Line TYpe for plotted distributions. Recycled vector of length nbest. DEFAULT: 1
+#' @param add If TRUE, hist is not called before adding lines. This lets you add lines highly customized one by one. DEFAULT: FALSE
+#' @param logargs List of arguments passed to \code{\link{logAxis}} if \code{log=TRUE}. DEFAULT: NULL
+#' @param legend Should \code{\link{legend}} be called? DEFAULT: TRUE
+#' @param legargs List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL
+#' @param histargs List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} except for x, freq. DEFAULT: NULL
+#' @param \dots Further arguments passed to \code{\link{lines}}, like type, pch, ...
+
+#' @return dlf with coldist added, returned invisibly.
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
+#' @seealso \code{\link{distLfit}}, \code{\link{distLextreme}}
+#' @keywords hplot distribution
+#' @export
+#' @importFrom berryFunctions lim0 owa rainbow2
+#' @importFrom lmomco plmomco dlmomco supdist
+#' @examples
+#'  # See distLfit
+#' 
 distLplot <- function(
-dlf,                    # List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname, gofProp}
-nbest=5,                # Number of distributions plotted, in order of goodness of fit
-selection=NULL,         # Names of distributions in \code{dlf$parameter} that will be drawn. Overrides nbest.
-order=FALSE,            # If selection is given, should legend and colors be ordered by gof anyways?
-cdf=FALSE,              # If TRUE, plot cumulated DF instead of probability density
-log=FALSE,              # If TRUE, logAxis is called.
-percentline=NA,         # If TRUE, draw vertical line at 1-dlf$gofProp of dlf$dat. If NA, only do so if gofProp!=1
-percentargs=NULL,       # List of arguments passed to \code{\link{abline}}.
-supportends=TRUE,       # If TRUE, dots are placed at the support bounds.
-breaks=20,              # \code{\link{hist}} breaks
-xlim=extendrange(dat, f=0.15), # \code{\link{hist}} or \code{\link{ecdf}} xlim
-ylim=NULL,              # \code{\link{hist}} or \code{\link{ecdf}} ylim
-xaxs="i", yaxs="i",     # \code{\link{hist}} or \code{\link{ecdf}} xaxs and yaxs. DEFAULT: both "i"
-xaxt,                   # \code{\link{par}} xaxt. "n" suppresses axis and numbers, which is used if log
-col="grey",             # \code{\link{hist}} bar color or \code{\link{ecdf}} point color
-main, xlab, ylab,       # \code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab
-las=1,                  # Label Axis Style for orientation of numbers along axes.
-coldist=rainbow2(nbest),# Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow2
-lty=1,                  # Line TYpe for plotted distributions. Recycled vector of length nbest.
-add=FALSE,              # If TRUE, hist is not called before adding lines. This lets you add lines highly customized one by one
-logargs=NULL,           # List of arguments passed to \code{\link{logAxis}} if \code{log=TRUE}
-legend=TRUE,            # Should \code{\link{legend}} be called?
-legargs=NULL,           # List of arguments passed to \code{\link{legend}} except for legend and col
-histargs=NULL,          # List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} except for x, freq
-... )                   # Further arguments passed to \code{\link{lines}}, like type, pch, ...
+dlf,
+nbest=5,
+selection=NULL,
+order=FALSE,
+cdf=FALSE,
+log=FALSE,
+percentline=NA,
+percentargs=NULL,
+supportends=TRUE,
+breaks=20,
+xlim=extendrange(dat, f=0.15),
+ylim=NULL,
+xaxs="i", yaxs="i",
+xaxt,
+col="grey",
+main, xlab, ylab,
+las=1,
+coldist=berryFunctions::rainbow2(nbest),
+lty=1,
+add=FALSE,
+logargs=NULL,
+legend=TRUE,
+legargs=NULL,
+histargs=NULL,
+... )
 {
 # input checks:
 if(!is.list(dlf)) stop("dlf must be a list.")
@@ -73,25 +117,25 @@ if(!add)
   if(missing(main)) main <- paste("Cumulated density distributions of", dlf$datname)
   ecdfdef <- list(x=ecdf(dat), do.points=TRUE, col=col, xlim=xlim, xaxt=xaxt, ylab=ylab,
              ylim=ylim, xaxs=xaxs, yaxs=yaxs, main=main, xlab=xlab, las=las)
-  do.call(plot, args=owa(ecdfdef, histargs, "x", "y"))
+  do.call(plot, args=berryFunctions::owa(ecdfdef, histargs, "x", "y"))
   if(log)
-    {do.call(logAxis, args=owa(list(xaxt="s"), logargs))
-     do.call(lines,   args=owa(ecdfdef,       histargs, "x", "y"))
+    {do.call(logAxis, args=berryFunctions::owa(list(xaxt="s"), logargs))
+     do.call(lines,   args=berryFunctions::owa(ecdfdef,       histargs, "x", "y"))
     }
   }
   else # if not cdf, then density
   {
-  if(is.null(ylim)) ylim <- lim0(hist(dat, breaks=breaks, plot=FALSE)$density,
+  if(is.null(ylim)) ylim <- berryFunctions::lim0(hist(dat, breaks=breaks, plot=FALSE)$density,
                                   curtail=if(yaxs=="i") FALSE else TRUE)
   if(missing(ylab)) ylab <- "Probability Density Function (PDF)"
   if(missing(main)) main <- paste("Density distributions of", dlf$datname)
   op <- par(xaxs=xaxs, yaxs=yaxs, xaxt=xaxt)
   histdef <- list(x=dat, breaks=breaks, col=col, xlim=xlim, ylim=ylim, ylab=ylab,
                   freq=FALSE, main=main, xlab=xlab, las=las)
-  do.call(hist, args=owa(histdef, histargs, "x", "freq"))
+  do.call(hist, args=berryFunctions::owa(histdef, histargs, "x", "freq"))
   if(log)
-    {do.call(logAxis, args=owa(list(xaxt="s"), logargs))
-     do.call(hist,    args=owa(c(histdef, add=TRUE), histargs, "x", "freq", "add"))
+    {do.call(logAxis, args=berryFunctions::owa(list(xaxt="s"), logargs))
+     do.call(hist,    args=berryFunctions::owa(c(histdef, add=TRUE), histargs, "x", "freq", "add"))
     }
   par(op)
   }
@@ -107,13 +151,13 @@ if(length(parameter)<1)
   }
 lty <- rep(lty, length=nbest)
 # add distributions:
-if(cdf) lfun <- plmomco else lfun <- dlmomco
+if(cdf) lfun <- lmomco::plmomco else lfun <- lmomco::dlmomco
 for(i in nbest:1)
   {
   xval <- seq(from=par("usr")[1], to=par("usr")[2], length=300)
   # cut xval to support region
   paramd <- parameter[[dn[i]]]
-  xsup <- supdist(paramd)$support
+  xsup <- lmomco::supdist(paramd)$support
   xval <- xval[ xval>xsup[1] & xval<xsup[2] ]
   # last point within support range, if support ends in graphing region:
   lo <- if(xsup[1] > par("usr")[1])      xval[1] else NA
@@ -125,11 +169,11 @@ for(i in nbest:1)
   }
 # draw vertical gofProp line:
 if(is.na(percentline)) percentline <- if(dlf$gofProp!=1) TRUE else FALSE
-if(percentline) do.call(abline, args=owa(list(v=quantile(dat, probs=1-dlf$gofProp),
+if(percentline) do.call(abline, args=berryFunctions::owa(list(v=quantile(dat, probs=1-dlf$gofProp),
                                                 lty=3, col="red"), percentargs))
 # legend - write the names of distributions:
 legdef <- list(legend=dn, lwd=1, col=coldist, x="right", cex=0.7, lty=lty)
-if(legend) do.call(graphics::legend, args=owa(legdef, legargs, "legend","col","lty"))
+if(legend) do.call(graphics::legend, args=berryFunctions::owa(legdef, legargs, "legend","col","lty"))
 # add to output:
 dlf$coldist <- coldist
 return(invisible(dlf))

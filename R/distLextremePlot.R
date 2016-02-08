@@ -1,32 +1,75 @@
 # Extreme value statistics for flood risk estimation
 # Berry Boessenkool, 2015
 
+#' Plot extreme value statistics
+#' 
+#' Plots distributions fitted by L-moments and adds plotting positions by Weibull and Gringorton.
+#'
+#' @details This is an auxiliary graphing function to \code{\link{distLextreme}}
+#' 
+#' @param dlf List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, dleB <- distLexBoot(dlf, nbest=4, conf.lev=0.5), gof}.
+#' @param selection Selection of distributions. Character vector with type as in \code{\link[lmomco]{lmom2par}}. DEFAULT: NULL
+#' @param order If selection is given, should legend and colors be ordered by gof anyways? DEFAULT: FALSE
+#' @param add If TRUE, plot is not called before adding lines. This lets you add lines to an existing plot. DEFAULT: FALSE
+#' @param nbest Number of distributions plotted, in order of goodness of fit. Overwritten internally if selection is given. DEFAULT: 5
+#' @param log Logarithmic x-axis? DEFAULT: FALSE
+#' @param xlim X-axis limits. DEFAULT: xlim of plotting positions
+#' @param ylim Y-lim. DEFAULT: from min to extended max
+#' @param las LabelAxisStyle to orient labels, see \code{\link{par}}. DEFAULT: 1
+#' @param main Title of plot. DEFAULT: dlf$datname
+#' @param xlab X axis label. DEFAULT: "Return Period RP  [a]"
+#' @param ylab Y axis label. Please note that the ubuntu pdf viewer might be unable to display unicode superscript. DEFAULT: "Discharge HQ  [m\\U00B3/s]"
+#' @param PPcol Plotting Position point colors, vector of length two for Weibull and Gringorton, recycled. PP are not used for fitting distributions, but for plotting only. DEFAULT: "black"
+#' @param PPpch point characters for plotting positions after Weibull and Grongorton, respectively. NA to suppress in plot and legend. DEFAULT: c(16,3)
+#' @param PPcex Character EXpansion of plotting points. DEFAULT: 1
+#' @param coldist Color for each distribution added with \code{\link{lines}}. Recycled, if necessary. DEFAULT: rainbow
+#' @param lty Line TYpe for plotted distributions. Is recycled to from a vector of length nbest, i.e. a value for each distribution function drawn. DEFAULT: 1
+#' @param lwd Line WiDth of distribution lines. Recycled vector of length nbest. DEFAULT: 1
+#' @param pch Point CHaracter of points added at regular intervals. NA to suppress. Recycled vector of length nbest. DEFAULT: NA
+#' @param cex if pch != NA, size of points. Recycled vector of length nbest. DEFAULT: 1
+#' @param n_pch Number of points spread evenly along the line. Recycled vector of length nbest. DEFAULT: 15
+#' @param legend Logical. Add a legend? DEFAULT: TRUE
+#' @param legargs list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd, lty. DEFAULT: NULL
+#' @param quiet Suppress notes? DEFAULT: FALSE
+#' @param \dots Further arguments passed to \code{\link{plot}} like yaxt="n", ...
+
+#' @return none, plots things.
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March 2015, updated heavily Aug 2015
+#' @seealso \code{\link{distLextreme}}, \code{\link{distLplot}}
+#' @keywords hplot dplot distribution
+#' @export
+#' @importFrom berryFunctions rainbow2 owa logAxis
+#' @importFrom lmomco plmomco
+#' @examples
+#' #see
+#' ?distLextreme
+#' 
 distLextremePlot <- function(
-dlf,          # List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, dleB <- distLexBoot(dlf, nbest=4, conf.lev=0.5), gof}.
-selection=NULL,# Selection of distributions. Character vector with type as in \code{\link[lmomco]{lmom2par}}
-order=FALSE,  # If selection is given, should legend and colors be ordered by gof anyways?
-add=FALSE,    # If TRUE, plot is not called before adding lines. This lets you add lines to an existing plot.
-nbest=5,      # Number of distributions plotted, in order of goodness of fit. Overwritten internally if selection is given.
-log=FALSE,    # Logarithmic x-axis?
-xlim=NULL,    # X-axis limits. DEFAULT: xlim of plotting positions
-ylim=NULL,    # Y-lim. DEFAULT: from min to extended max
-las=1,        # LabelAxisStyle to orient labels, see \code{\link{par}}
-main=dlf$datname, # Title of plot
-xlab="Return Period RP  [a]", # X axis label
-ylab="Discharge HQ  [m\U00B3/s]", # Y axis label. Please note that the ubuntu pdf viewer might be unable to display unicode superscript
-PPcol="black",  # Plotting Position point colors, vector of length two for Weibull and Gringorton, recycled. PP are not used for fitting distributions, but for plotting only.
-PPpch=c(16,3),  # point characters for plotting positions after Weibull and Grongorton, respectively. NA to suppress in plot and legend
-PPcex=1,        # Character EXpansion of plotting points
-coldist=rainbow2(nbest), # Color for each distribution added with \code{\link{lines}}. Recycled, if necessary. DEFAULT: rainbow
-lty=1,        # Line TYpe for plotted distributions. Is recycled to from a vector of length nbest, i.e. a value for each distribution function drawn.
-lwd=1,        # Line WiDth of distribution lines. Recycled vector of length nbest.
-pch=NA,       # Point CHaracter of points added at regular intervals. NA to suppress. Recycled vector of length nbest.
-cex=1,        # if pch != NA, size of points. Recycled vector of length nbest.
-n_pch=15,     # Number of points spread evenly along the line. Recycled vector of length nbest.
-legend=TRUE,  # Logical. Add a legend?
-legargs=NULL, # list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd, lty
-quiet=FALSE,  # Suppress notes?
-... )         # Further arguments passed to \code{\link{plot}} like yaxt="n", ...
+dlf,
+selection=NULL,
+order=FALSE,
+add=FALSE,
+nbest=5,
+log=FALSE,
+xlim=NULL,
+ylim=NULL,
+las=1,
+main=dlf$datname,
+xlab="Return Period RP  [a]",
+ylab="Discharge HQ  [m\U00B3/s]",
+PPcol="black",
+PPpch=c(16,3),
+PPcex=1,
+coldist=berryFunctions::rainbow2(nbest),
+lty=1,
+lwd=1,
+pch=NA,
+cex=1,
+n_pch=15,
+legend=TRUE,
+legargs=NULL,
+quiet=FALSE,
+... )
 {
 # PP (Plotting Position) points charactereistics recycled:
 if(length(PPpch)==1) PPpch[2] <- if(is.na(PPpch)) NA else if(PPpch[1]==3) 4 else 3
@@ -87,7 +130,7 @@ if(is.null(xlim)) xlim <- range(RPw, RPg)
 # draw discharges over return periods:
 if(!add) plot(1, type="n", las=las, ylim=ylim, xlim=xlim, main=main, ylab=ylab, xlab=xlab, 
               log=if(log) "x" else "", xaxt=if(log) "n" else "s", ...)
-if(log) logAxis(1)
+if(log) berryFunctions::logAxis(1)
 # range of discharges:
 yval <- seq(from=par("usr")[3], to=par("usr")[4], length=300)
 y_int <- approx(yval, n=n_pch)$y
@@ -99,7 +142,7 @@ cex <- rep(cex, length=nbest)
 # add nbest distributions as lines:
 for(i in nbest:1)
   {
-  Pnonexceed <- plmomco(yval,dlf$parameter[[dn[i]]]) # print(Pnonexceed, digits=20)
+  Pnonexceed <- lmomco::plmomco(yval,dlf$parameter[[dn[i]]]) # print(Pnonexceed, digits=20)
   Pnonexceed[Pnonexceed>1] <- 1 # remove numerical errors
   xval <- 1/(1-Pnonexceed)
   lines(x=xval, y=yval, col=coldist[i], lty=lty[i], lwd=lwd[i])
@@ -127,7 +170,7 @@ legdef <- list(
   lty=   c(if(PP1) NA,          if(PP2) NA,             lty),
   x="bottomright",  
   cex=0.8, bg="white")
-do.call(graphics::legend, args=owa(legdef, legargs, "legend","pch","lwd","col","lty"))
+do.call(graphics::legend, args=berryFunctions::owa(legdef, legargs, "legend","pch","lwd","col","lty"))
 }
 # output dlf object
 dlf$RPweibull <- RPw

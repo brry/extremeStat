@@ -1,30 +1,178 @@
 # Quantile of distributions fitted to a sample
 # Berry Boessenkool, berry-b@gmx.de, March + July 2015
 
+
+#' distribution quantiles
+#' 
+#' Parametric quantiles of distributions fitted to a sample.
+#' 
+#' @details Very high quantiles (99\% and higher) need large sample sizes for
+#' \code{\link{quantile}} to yield a robust estimate. Theoretically, at least
+#' 1/(1-probs) values must be present, e.g. 10'000 for Q99.99\%. With smaller
+#' sample sizes (eg n=35), they underestimate the actual (but unknown)
+#' quantile. Parametric quantiles need only small sample sizes. They don't have
+#' a systematical underestimation bias, but have higher variability.
+#' 
+#' @param x Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL
+#' @param probs Numeric vector of probabilities with values in [0,1]. DEFAULT: 0:4/4
+#' @param truncate Number between 0 and 1. Censored quantile: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0
+#' @param selection Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used. DEFAULT: NULL
+#' @param type Overrides selection. Kept for backwards compatibility. (Changed to selection for internal consistency). DEFAULT: NULL
+#' @param dlf dlf object described in \code{\link{extremeStat}}. Ignored if x is given, or if truncate / selection do not match. Use this to save computing time for large datasets where you already have dlf. DEFAULT: NULL
+#' @param order Sort results by GOF? If TRUE (the default) and length(selection)>1, the output is ordered by dlf$gof, else by order of appearance in selection (or dlf$parameter). DEFAULT: TRUE
+#' @param returndlf Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned. DEFAULT: FALSE
+#' @param plot Should \code{\link{distLplot}} be called? DEFAULT: FALSE
+#' @param cdf If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE
+#' @param lines Should vertical lines marking the quantiles be added? DEFAULT: TRUE
+#' @param linargs Arguments passed to \code{\link{lines}}. DEFAULT: NULL
+#' @param empirical Add vertical line for empirical \code{\link{quantileMean}} (and include the result in the output matrix)? DEFAULT: TRUE
+#' @param ismev Include \code{ismev::\link[ismev]{gpd.fit}} GPD quantile estimation via \code{\link{q_ismev}}? DEFAULT: empirical, so additional options can all be excluded with emp=F.
+#' @param fExtremes Include \code{fExtremes::\link[fExtremes]{gpdFit}} GPD quantile estimation via \code{\link{q_fExtremes}}? DEFAULT: empirical
+#' @param evir Include \code{evir::\link[evir]{quant}} GPD quantile estimation via \code{\link{q_evir}}? Note that this temporarily creates a png image at the \code{getwd} if efast=FALSE. DEFAULT: empirical, so additional options can all be excluded with emp=F.
+#' @param efast compute evir::quant only in the faster way (with  \code{\link{q_evir2}})? DEFAULT: TRUE
+#' @param method Method in \code{\link{q_evir2}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Can also be both. DEFAULT: c("ml","pwm")
+#' @param weighted Include weighted averages across distribution functions to the output? DEFAULT: empirical
+#' @param quiet Suppress notes? DEFAULT: FALSE
+#' @param quietss Suppress sample size notes? DEFAULT: quiet
+#' @param quietgp Suppress q_evir gpd-optim failed notes? DEFAULT: quiet
+#' @param \dots Arguments passed to \code{\link{distLfit}}.
+
+
+#' @return Matrix with distribution quantile values. Returns NAs for probs below truncate.
+#' @note NAs are always removed from x in \code{\link{distLfit}}
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March 2015
+#' @seealso \code{\link{distLfit}}, Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for left truncated and right censored data, Statistica Sinica 10
+#'          \url{http://www3.stat.sinica.edu.tw/statistica/oldpdf/A10n411.pdf}\cr
+#'          require("truncdist")
+#' @references On GPD: \url{http://stats.stackexchange.com/questions/69438}
+#' @keywords distribution robust univar
+#' @export
+#' @importFrom berryFunctions quantileMean
+#' @importFrom lmomco plmomco dlmomco qlmomco
+#' @examples
+#' 
+#' data(annMax) # Annual Discharge Maxima (streamflow)
+#' dlf <- distLfit(annMax)
+#' 
+#' distLquantile(annMax)
+#' distLquantile(annMax, truncate=0.8, probs=0.95) # POT
+#' distLquantile(annMax, probs=0.95, plot=TRUE, linargs=list(lwd=2), nbest=5, breaks=10)
+#' # Parametric 95% quantile estimates range from 92 to 111!
+#' # But the best fitting distributions all lie aroud 103.
+#' 
+#' # weighted distribution quantiles are calculated by different weighting schemes:
+#' distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
+#' 
+#' # The default is to fit distribution parameters to sample. If speed is important
+#' # in big datasets and parameters are already available, pass them via dlf:
+#' distLquantile(dlf=dlf, probs=0:10/10, selection=c("wak","gev","kap"), order=FALSE)
+#' 
+#' 
+#' 
+#' # censored (truncated, trimmed) quantile, Peak Over Treshold (POT) method:
+#' qwak <- distLquantile(annMax, sel="wak", prob=0.95, plot=TRUE, ylim=c(0,0.06), emp=FALSE)
+#' qwak2 <-distLquantile(annMax, sel="wak", prob=0.95, truncate=0.6, plot=TRUE,
+#'                      add=TRUE, col=6, breaks=10, coldist="blue", empirical=FALSE)
+#' 
+#' 
+#' # Simulation of truncation effect
+#' library(lmomco)
+#' #set.seed(42)
+#' rnum <- rlmomco(n=1e3, para=dlf$parameter$gev)
+#' myprobs <- c(0.9, 0.95, 0.99, 0.999)
+#' mytrunc <- seq(0, 0.9, length.out=20)
+#' trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gev",
+#'                              probs=myprobs, truncate=mt, plot=FALSE,
+#'                              progbars=FALSE, empirical=FALSE)["gev",])
+#' # If more values are truncated, the function runs faster
+#' 
+#' op <- par(mfrow=c(2,1), mar=c(2,4.5,2,0.5), cex.main=1)
+#' distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, progbars=FALSE,
+#'               ylab="", xlab="", plot=TRUE)
+#' distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, progbars=FALSE,
+#'               truncate=0.3, add=TRUE, coldist=4, plot=TRUE)
+#' legend("right", c("fitted GEV", "fitted with truncate=0.3"), lty=1, col=c(2,4),
+#'        bg="white")
+#' par(mar=c(3,4.5,3,0.5))
+#' plot(mytrunc, trunceffect[1,], ylim=range(trunceffect), las=1, type="l",
+#'      main=c("High quantiles of 1000 random numbers from gev distribution",
+#'            "Estimation based on proportion of lower values truncated"),
+#'      xlab="", ylab="parametrical quantile")
+#' title(xlab="Proportion censored", mgp=c(1.8,1,0))
+#' for(i in 2:4) lines(mytrunc, trunceffect[i,])
+#' library("berryFunctions")
+#' textField(rep(0.5,4), trunceffect[,11], paste0("Q",myprobs*100,"%") )
+#' par(op)
+#' 
+#' 
+#' 
+#' # Theoretically, the tails of distributions converge to GPD (General Pareto)
+#' # The function from the evir (extreme values in r) package is already
+#' # implemented in distLquantile with the argument evir=TRUE
+#' # For a detailed comparison against distLquantile see the example section in
+#' ?q_evir
+#' 
+#' \dontrun{
+#' ## Taken out from CRAN package check because it's slow
+#' 
+#' set.seed(3); rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)
+#' qd99 <- evir::quant(rnum, p=0.99, start=15, end=1000, ci=0.5, models=30)
+#' axis(3, at=seq(-1000,0, length=6), labels=0:5/5, pos=par("usr")[3])
+#' title(xlab="Proportion truncated", line=-3)
+#' mytrunc <- seq(0, 0.9, length.out=30)
+#' trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gpa",
+#'                       probs=0.99, truncate=mt, plot=FALSE, quiet=TRUE,
+#'                       progbars=FALSE, empirical=FALSE, evir=TRUE))
+#' lines(-1000*(1-mytrunc), trunceffect[1,], col=4)
+#' lines(-1000*(1-mytrunc), trunceffect[2,], col=3) # interesting...
+#' 
+#' }
+#' 
+#' # If you want the evir::quant estimate only for one single truncation, use
+#' q_evir(rnum, probs=myprobs, truncate=0.5)
+#' 
+#' 
+#' 
+#' # Developmental testing to see if all options work properly.
+#' # Can be ignored by anyone else but me ;-)
+#' 
+#' distLquantile(annMax, plot=FALSE, selection="wak", empirical=FALSE)
+#' distLquantile(annMax, plot=TRUE, selection="wak", empirical=FALSE, breaks=10)
+#' distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9))
+#' distLquantile(rexp(199), truncate=0.8, probs=0.7) 
+#' distLquantile(rexp(199), selection=c("wak", "gpa"))
+#' distLquantile(rexp(199), selection="gpa")
+#' distLquantile(rexp(4))
+#' distLquantile(rexp(4), selection="gpa") 
+#' dist.list()
+#' # distLquantile(rexp(199), selection=1:5, emp=FALSE) # index is a bad idea anyways
+#' # distLquantile(rexp(199), selection=-3)
+#' 
+#' 
 distLquantile <- function(
-x=NULL,         # Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used.
-probs=0:4/4,    # Numeric vector of probabilities with values in [0,1].
-truncate=0,     # Number between 0 and 1. Censored quantile: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly.
-selection=NULL, # Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used.
-type=NULL,      # Overrides selection. Kept for backwards compatibility. (Changed to selection for internal consistency).
-dlf=NULL,       # dlf object described in \code{\link{extremeStat}}. Ignored if x is given, or if truncate / selection do not match. Use this to save computing time for large datasets where you already have dlf.
-order=TRUE,     # Sort results by GOF? If TRUE (the default) and length(selection)>1, the output is ordered by dlf$gof, else by order of appearance in selection (or dlf$parameter)
-returndlf=FALSE,# Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned.
-plot=FALSE,     # Should \code{\link{distLplot}} be called?
-cdf=FALSE,      # If TRUE, plot cumulated DF instead of probability density
-lines=TRUE,     # Should vertical lines marking the quantiles be added?
-linargs=NULL,   # Arguments passed to \code{\link{lines}}.
-empirical=TRUE, # Add vertical line for empirical \code{\link{quantileMean}} (and include the result in the output matrix)?
-ismev=empirical,# Include \code{ismev::\link[ismev]{gpf.fit}} GPD quantile estimation? DEFAULT: empirical, so additional options can all be excluded with emp=F.
-fExtremes=empirical,# Include \code{fExtremes::\link[fExtremes]{gpfFit}} GPD quantile estimation?
-evir=empirical, # Include \code{evir::\link[evir]{quant}} GPD quantile estimation? Note that this temporarily creates a png image at the \code{getwd} if efast=FALSE. DEFAULT: empirical, so additional options can all be excluded with emp=F.
-efast=TRUE,     # compute evir::quant only in the faster way (with  \code{\link{q_evir2})?
-method=c("ml","pwm"), # Method in \code{\link{q_evir2}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Can also be both
-weighted=empirical, # Include weighted averages across distribution functions to the output?
-quiet=FALSE,    # Suppress notes?
-quietss=quiet,  # Suppress sample size notes?
-quietgp=quiet,  # Suppress q_evir gpd-optim failed notes?
-...             # Arguments passed to \code{\link{distLfit}}.
+x=NULL,
+probs=0:4/4,
+truncate=0,
+selection=NULL,
+type=NULL,
+dlf=NULL,
+order=TRUE,
+returndlf=FALSE,
+plot=FALSE,
+cdf=FALSE,
+lines=TRUE,
+linargs=NULL,
+empirical=TRUE,
+ismev=empirical,
+fExtremes=empirical,
+evir=empirical,
+efast=TRUE,
+method=c("ml","pwm"),
+weighted=empirical,
+quiet=FALSE,
+quietss=quiet,
+quietgp=quiet,
+...
 )
 {
 # input checks: ----------------------------------------------------------------
@@ -124,7 +272,7 @@ if(truncate!=0) output[ , probs < truncate] <- NA
 #
 # add further quantile estimates -----------------------------------------------
 # Empirical Quantiles:
-if(empirical) output["quantileMean",] <- quantileMean(dlf$dat_full, probs=probs, truncate=truncate)
+if(empirical) output["quantileMean",] <- berryFunctions::quantileMean(dlf$dat_full, probs=probs, truncate=truncate)
 # evir::quant GPD estimates:
 if(evir)  
   {
@@ -167,7 +315,7 @@ if(weighted)
 # Plotting: Quantile lines: ----------------------------------------------------
 if(plot & lines)
   {
-  lfun <- if(cdf) plmomco else dlmomco
+  lfun <- if(cdf) lmomco::plmomco else lmomco::dlmomco
   use <- rownames(dlf$gof)[1:length(dlf$coldist)]
   for(i in length(use):1)
   {
