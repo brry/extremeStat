@@ -18,11 +18,11 @@ q_gpd(x, probs = c(0.8, 0.9, 0.99), truncate = 0,
 
 \item{threshold}{POT cutoff value. If you want correct percentiles, set this only via truncate, see Details. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
 
-\item{package}{Character string naming package to be used. One of c("evir","extRemes","fExtremes","ismev"). DEFAULT: "extRemes"}
+\item{package}{Character string naming package to be used. One of c("evir","evd","extRemes","fExtremes","ismev"). DEFAULT: "extRemes"}
 
-\item{method}{\code{method} passed to the fitting function, if applicable. Defaults are internally specified, depending on \code{package}, if left to the DEFAULT: NULL.}
+\item{method}{\code{method} passed to the fitting function, if applicable. Defaults are internally specified (See Details), depending on \code{package}, if left to the DEFAULT: NULL.}
 
-\item{returnlist}{Return result from the fitting funtion (if provided) with the quantiles added to the list as element \code{quant}. DEFAULT: FALSE}
+\item{returnlist}{Return result from the fitting funtion with the quantiles added to the list as element \code{quant} and some information in elements starting with \code{q_gpd_}. DEFAULT: FALSE}
 
 \item{undertruncNA}{Return NAs for probs below truncate? Highly recommended to leave this at the DEFAULT: TRUE}
 
@@ -33,8 +33,9 @@ q_gpd(x, probs = c(0.8, 0.9, 0.99), truncate = 0,
 \item{\dots}{Further arguments passed to the fitting funtion listed in section Details.}
 }
 \value{
-if(returnlist): list with element \code{quant} added \cr
-else: Named vector of quantile estimates for each value of \code{probs}
+Named vector of quantile estimates for each value of \code{probs},\cr
+   or if(returnlist): list with element \code{q_gpd_quant} and info-elements added.
+   q_gpd_n_geq is number of values greater than or equal to q_gpd_threshold. gt is only greater than.
 }
 \description{
 Compute quantile of General Pareto Distribution fitted to sample by peak over treshold (POT) method
@@ -44,14 +45,20 @@ comparing several R packages doing this
 \details{
 Depending on the value of "package", this fits the GPD using \cr
 \code{evir::\link[evir]{gpd}}\cr
+\code{evd::\link[evd]{fpot}}\cr
 \code{extRemes::\link[extRemes]{fevd}}\cr
 \code{fExtremes::\link[fExtremes]{gpdFit}}\cr
 \code{ismev::\link[ismev]{gpd.fit}}\cr
-The \code{method} defaults (and other possibilities) are \cr
+\code{Renext::\link[Renext]{fGPD}} or \code{Renext::\link[Renext]{Renouv}}\cr\cr
+
+The \bold{\code{method}} defaults (and other possibilities) are \cr
 evir: "pwm" (probability-weighted moments), or "ml" (maximum likelihood) \cr
+evd: none, only Maximum-likelihood fitting implemented \cr
 extRemes: "MLE", or "GMLE", "Bayesian", "Lmoments" \cr
 fExtremes: "pwm", or "mle"\cr
 ismev: none, only Maximum-likelihood fitting implemented \cr
+Renext: "r" for \code{\link[Renext]{Renouv}}, or 'f' (no truncation!) for \code{\link[Renext]{fGPD}}\cr\cr
+
 The Quantiles are always given with \code{probs} in regard to the full (uncensored) sample.
 If e.g. truncate is 0.90, the distribution function is fitted to the top 10\% of the sample.
 The 95th percentile of the full sample is equivalent to the 50\% quantile of the subsample acutally used for fitting.
@@ -62,15 +69,110 @@ thus \code{undertruncNA} should be left to TRUE. \cr
 If not exported by the packages, the quantile functions are extracted from their current (Feb 2016) source code.
 }
 \examples{
- # q_gpd examples are currently in external file!
- stop("Berry, put the q_gpd examples back here!")
+data(annMax)
+q_gpd(annMax)
+q_gpd(annMax, truncate=0.6)
+q_gpd(annMax, truncate=0.85)
+q_gpd(annMax, truncate=0.91) # error in seq.default from try(initialize),
+                             # can be ignored with suppresswarnings=TRUE
+
+q_gpd(annMax, package="evir")
+q_gpd(annMax, package="evir", method="ml")
+q_gpd(annMax, package="evd")
+q_gpd(annMax, package="extRemes")
+q_gpd(annMax, package="extRemes", method="GMLE")
+q_gpd(annMax, package="extRemes", method="Bayesian") # computes a while
+q_gpd(annMax, package="extRemes", method="Lmoments")
+q_gpd(annMax, package="extRemes", method="nonsense") # NAs
+q_gpd(annMax, package="fExtremes")                   # log warnings
+q_gpd(annMax, package="fExtremes", suppress=TRUE)    # silenced warnings
+q_gpd(annMax, package="fExtremes", method= "mle")
+q_gpd(annMax, package="ismev")
+q_gpd(annMax, package="Renext")
+q_gpd(annMax, package="Renext", method="f")
+dummy <- try(q_gpd(annMax, package="nonsense"), silent=TRUE) # error
+stopifnot(class(dummy)=="try-error")
+
+q_gpd(annMax, truncate=0.85, package="evd")          # Note about quantiles
+q_gpd(annMax, truncate=0.85, package="evir")
+q_gpd(annMax, truncate=0.85, package="evir", quiet=TRUE) # No note
+q_gpd(annMax, truncate=0.85, package="evir", undertruncNA=FALSE)
+
+q_gpd(annMax, truncate=0.85, package="evir", returnlist=TRUE)
+q_gpd(annMax, truncate=0.85, probs=0.6, package="evir", returnlist=TRUE) # NAs
+q_gpd(annMax, package="evir", returnlist=TRUE)
+q_gpd(annMax, package="evd", returnlist=TRUE)
+q_gpd(annMax, package="extRemes", returnlist=TRUE)
+q_gpd(annMax, package="fExtremes", returnlist=TRUE)
+q_gpd(annMax, package="ismev", returnlist=TRUE)
+q_gpd(annMax, package="Renext", returnlist=TRUE)
+
+q_gpd(annMax, package="evir", truncate=0.9, method="ml") # NAs (MLE fails often)
+
+
+\dontrun{
+## Not run in checks because simulation takes too long
+# truncation effect
+mytruncs <- seq(0, 0.9, len=150)
+oo <- options(show.error.messages=FALSE, warn=-1)
+myquants <- sapply(mytruncs, function(t) q_gpd(annMax, truncate=t, quiet=TRUE))
+options(oo)
+plot(1, type="n", ylim=range(myquants, na.rm=TRUE), xlim=c(0,0.9), las=1,
+     xlab="truncated proportion", ylab="estimated quantiles")
+abline(h=quantileMean(annMax, probs=c(0.8,0.9,0.99)))
+for(i in 1:3) lines(mytruncs, myquants[i,], col=i)
+text(0.3, c(87,97,116), rownames(myquants), col=1:3)
+
+
+# Underestimation in small samples
+# create known population:
+dat <- extRemes::revd(1e5, scale=50, shape=-0.02, threshold=30, type="GP")
+op <- par(mfrow=c(1,2), mar=c(2,2,1,1))
+hist(dat, breaks=50, col="tan")
+berryFunctions::logHist(dat, breaks=50, col="tan")
+par(op)
+
+# function to estimate empirical and GPD quantiles from subsamples
+samsizeeffect <- function(n, nrep=30, probs=0.999, trunc=0.5, Q=c(0.4,0.5,0.6))
+{
+res <- replicate(nrep, {
+subsample <- sample(dat, n)
+qGPD <- q_gpd(subsample, probs=probs, truncate=trunc)
+qEMP <- berryFunctions::quantileMean(subsample, probs=probs, truncate=trunc)
+c(qGPD=qGPD, qEMP=qEMP)})
+apply(res, MARGIN=1, berryFunctions::quantileMean, probs=Q)
+}
+
+# Run and plot simulations
+samplesize <- c(seq(20, 150, 10), seq(200,800, 100))
+results <- pbapply::pblapply(samplesize, samsizeeffect)
+res <- function(row, col) sapply(results, function(x) x[row,col])
+berryFunctions::ciBand(yu=res(3,1),yl=res(1,1),ym=res(2,1),x=samplesize,
+  main="99.9\% Quantile underestimation", xlab="subsample size", ylim=c(200,400), colm=4)
+berryFunctions::ciBand(yu=res(3,2),yl=res(1,2),ym=res(2,2),x=samplesize, add=TRUE)
+abline(h=berryFunctions::quantileMean(dat, probs=0.999))
+text(300, 360, "empirical quantile of full sample")
+text(300, 340, "GPD parametric estimate", col=4)
+text(300, 300, "empirical quantile estimate", col="green3")
+
+} # end of dontrun
+
 
 }
 \author{
 Berry Boessenkool, \email{berry-b@gmx.de}, Feb 2016
 }
+\references{
+\url{http://stackoverflow.com/questions/27524131/calculation-of-return-levels-based-on-a-gpd-in-different-r-packages}
+            \url{http://stats.stackexchange.com/questions/129438/different-quantiles-of-a-fitted-gpd-in-different-r-packages}
+}
 \seealso{
-\code{\link{distLquantile}} which compares results for all packages
+\code{\link{distLquantile}} which compares results for all packages\cr
+         Other related packages (not implemented):
+               \url{https://cran.r-project.org/package=gPdtest}
+               \url{https://cran.r-project.org/package=actuar}
+               \url{https://cran.r-project.org/package=fitdistrplus}
+               \url{https://cran.r-project.org/package=lmom}
 }
 \keyword{distribution}
 \keyword{robust}
