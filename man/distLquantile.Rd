@@ -4,30 +4,37 @@
 \alias{distLquantile}
 \title{distribution quantiles}
 \usage{
-distLquantile(x = NULL, probs = 0:4/4, truncate = 0, selection = NULL,
-  type = NULL, dlf = NULL, order = TRUE, returndlf = FALSE,
-  plot = FALSE, cdf = FALSE, lines = TRUE, linargs = NULL,
-  empirical = TRUE, ismev = empirical, fExtremes = empirical,
-  evir = empirical, efast = TRUE, method = c("ml", "pwm"),
-  weighted = empirical, quiet = FALSE, quietss = quiet, quietgp = quiet,
-  ...)
+distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
+  threshold = berryFunctions::quantileMean(x, truncate), selection = NULL,
+  dlf = NULL, order = TRUE, returndlf = FALSE, empirical = TRUE,
+  weighted = empirical, gpd = empirical, speed = TRUE, plot = FALSE,
+  cdf = FALSE, lines = TRUE, linargs = NULL, quiet = FALSE,
+  quietss = quiet, ...)
 }
 \arguments{
 \item{x}{Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
 
-\item{probs}{Numeric vector of probabilities with values in [0,1]. DEFAULT: 0:4/4}
+\item{probs}{Numeric vector of probabilities with values in [0,1]. DEFAULT: c(0.8,0.9,0.99)}
 
-\item{truncate}{Number between 0 and 1. Censored quantile: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0}
+\item{truncate}{Number between 0 and 1 (proportion of sample discarded). Censored quantile: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0}
+
+\item{threshold}{POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
 
 \item{selection}{Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used. DEFAULT: NULL}
-
-\item{type}{Overrides selection. Kept for backwards compatibility. (Changed to selection for internal consistency). DEFAULT: NULL}
 
 \item{dlf}{dlf object described in \code{\link{extremeStat}}. Ignored if x is given, or if truncate / selection do not match. Use this to save computing time for large datasets where you already have dlf. DEFAULT: NULL}
 
 \item{order}{Sort results by GOF? If TRUE (the default) and length(selection)>1, the output is ordered by dlf$gof, else by order of appearance in selection (or dlf$parameter). DEFAULT: TRUE}
 
 \item{returndlf}{Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned. DEFAULT: FALSE}
+
+\item{empirical}{Add empirical \code{\link{quantileMean}} in the output matrix and vertical lines? DEFAULT: TRUE}
+
+\item{weighted}{Include weighted averages across distribution functions to the output? DEFAULT: empirical, so additional options can all be excluded with emp=F.}
+
+\item{gpd}{Include GPD quantile estimation via \code{\link{q_gpd}}? DEFAULT: empirical}
+
+\item{speed}{compute \code{\link{q_gpd}} only for fast methods? Don't accidentally set this to \code{FALSE} in simulations or with large datasets! DEFAULT: TRUE}
 
 \item{plot}{Should \code{\link{distLplot}} be called? DEFAULT: FALSE}
 
@@ -37,25 +44,9 @@ distLquantile(x = NULL, probs = 0:4/4, truncate = 0, selection = NULL,
 
 \item{linargs}{Arguments passed to \code{\link{lines}}. DEFAULT: NULL}
 
-\item{empirical}{Add vertical line for empirical \code{\link{quantileMean}} (and include the result in the output matrix)? DEFAULT: TRUE}
-
-\item{ismev}{Include \code{ismev::\link[ismev]{gpd.fit}} GPD quantile estimation via \code{\link{q_ismev}}? DEFAULT: empirical, so additional options can all be excluded with emp=F.}
-
-\item{fExtremes}{Include \code{fExtremes::\link[fExtremes]{gpdFit}} GPD quantile estimation via \code{\link{q_fExtremes}}? DEFAULT: empirical}
-
-\item{evir}{Include \code{evir::\link[evir]{quant}} GPD quantile estimation via \code{\link{q_evir}}? Note that this temporarily creates a png image at the \code{getwd} if efast=FALSE. DEFAULT: empirical, so additional options can all be excluded with emp=F.}
-
-\item{efast}{compute evir::quant only in the faster way (with  \code{\link{q_evir2}})? DEFAULT: TRUE}
-
-\item{method}{Method in \code{\link{q_evir2}}, "ml" (maximum likelihood) or "pwm" (probability-weighted moments). Can also be both. DEFAULT: c("ml","pwm")}
-
-\item{weighted}{Include weighted averages across distribution functions to the output? DEFAULT: empirical}
-
 \item{quiet}{Suppress notes? DEFAULT: FALSE}
 
 \item{quietss}{Suppress sample size notes? DEFAULT: quiet}
-
-\item{quietgp}{Suppress q_evir gpd-optim failed notes? DEFAULT: quiet}
 
 \item{\dots}{Arguments passed to \code{\link{distLfit}}.}
 }
@@ -166,11 +157,11 @@ q_evir(rnum, probs=myprobs, truncate=0.5)
 distLquantile(annMax, plot=FALSE, selection="wak", empirical=FALSE)
 distLquantile(annMax, plot=TRUE, selection="wak", empirical=FALSE, breaks=10)
 distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9))
-distLquantile(rexp(199), truncate=0.8, probs=0.7) 
+distLquantile(rexp(199), truncate=0.8, probs=0.7)
 distLquantile(rexp(199), selection=c("wak", "gpa"))
 distLquantile(rexp(199), selection="gpa")
 distLquantile(rexp(4))
-distLquantile(rexp(4), selection="gpa") 
+distLquantile(rexp(4), selection="gpa")
 dist.list()
 # distLquantile(rexp(199), selection=1:5, emp=FALSE) # index is a bad idea anyways
 # distLquantile(rexp(199), selection=-3)
