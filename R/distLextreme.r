@@ -207,7 +207,7 @@ if(plot) dlf <- distLextremePlot(dlf=dlf, selection=selection, quiet=quiet, ...)
 #
 # output (discharge) values at return periods ----------------------------------
 returnlev <- distLquantile(dlf=dlf, selection=selection, truncate=truncate, 
-                           probs=1-1/RPs, empirical=FALSE, weighted=TRUE, trans=TRUE)
+                           probs=1-1/RPs, empirical=TRUE)
 # column names:
 colnames(returnlev) <- paste0("RP.", RPs)
 # Add to output:
