@@ -280,7 +280,7 @@ if(package=="Renext") ##################
   if(method=="r")
   {
   outlist$q_gpd_creator <- "Renext::Renouv"
-  z <- try(Renext::Renouv(x, threshold=threshold, effDuration=length(annMax),
+  z <- try(Renext::Renouv(x, threshold=threshold, effDuration=length(x),
                     distname.y="gpd", plot=FALSE, ...), silent=TRUE)
   if(inherits(z, "try-error")) return(failfun(z, "Renext::Renouv"))
   } else
