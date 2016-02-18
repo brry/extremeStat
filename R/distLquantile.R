@@ -222,6 +222,7 @@ if(gpd) output <- rbind(output, q_gpd_evir_pwm=NA, q_gpd_evir_ml=NA,
     q_gpd_extRemes_Bayesian=NA, q_gpd_extRemes_Lmoments=NA,
     q_gpd_fExtremes_pwm=NA, q_gpd_fExtremes_mle=NA, q_gpd_ismev=NA,
     q_gpd_Renext_r=NA, q_gpd_Renext_f=NA)
+if(addinfo) output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$dat), threshold=dlf$threshold)
 #
 # if input sample size is too small, return NA matrix:
 if( length(dlf$dat)<5 )
@@ -329,7 +330,6 @@ if(plot & lines)
     }
   }
 # return output: ---------------------------------------------------------------
-if(addinfo) output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$dat), threshold=dlf$threshold)
 if(returndlf) {dlf$quant <- output; return(dlf)}
 else return(output)
 }

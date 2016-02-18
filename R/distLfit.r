@@ -146,7 +146,9 @@ if(length(dat) < 5) {if(!quietss)on.exit(message("Note in distLfit: sample size 
   error_gof <- matrix(NA, nrow=length(dn), ncol=6)
   colnames(error_gof) <- c("RMSE", "R2", paste0("weight",1:3), "weightc")
   rownames(error_gof) <- dn
-  return(list(dat=dat, parameter=error_out, gof=error_gof, error="dat size too small."))}
+  return(list(dat=dat, datname=datname, gofProp=gofProp, parameter=error_out,
+        gof=error_gof, error="dat size too small.",
+        truncate=truncate, threshold=threshold, dat_full=dat_full))}
 #
 # Fit distribution parameters --------------------------------------------------
 # L-Moments of sample  # package lmomco
