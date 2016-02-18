@@ -1,38 +1,13 @@
-# fit many different distributions via linear moments and return goodness of fit values
-# Berry Boessenkool, Sept 2014, July 2015
-# Main function calling   distLgof   and   distLgofPlot or distLplot
-
-
-
 #' Fit distributions via linear moments
 #' 
 #' Fit several distributions via linear moments, plot histogram and
 #' distribution densities \emph{or} ecdf with cumulated probability.
+#' Also returns goodness of fit values.
+#' This is the main fitting function calling   distLgof   and   distLgofPlot or distLplot
 #'
 #' @details Fits parameters via \code{\link[lmomco]{lmom2par}} in the package \code{lmomco}
-#' 
-#' @param dat Vector with values
-#' @param datname Character string for main, xlab etc. DEFAULT: internal \code{substitute(dat)}
-#' @param speed If TRUE, several distributions are omitted, for the reasons shown in \code{lmomco::\link[lmomco]{dist.list}()}. DEFAULT: TRUE
-#' @param ks Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. DEFAULT: FALSE
-#' @param selection Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL
-#' @param gofProp Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1
-#' @param weightc Named custom weights for each distribution, see \code{\link{distLgof}}. DEFAULT: NA
-#' @param truncate Number between 0 and 1. POT Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0
-#' @param threshold POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
-#' @param gofComp If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE. DEFAULT: FALSE
-#' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n > 200
-#' @param time \code{\link{message}} execution time? DEFAULT: TRUE
-#' @param plot Should a histogram with densities be plotted? DEFAULT: TRUE
-#' @param cdf If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE
-#' @param legargs List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL
-#' @param histargs List of arguments passed to \code{\link{hist}} except for x, breaks, col, xlim, freq. DEFAULT: NULL
-#' @param quiet Suppress notes? DEFAULT: FALSE
-#' @param quietss Suppress sample size notes? DEFAULT: quiet
-#' @param \dots Further arguments passed to \code{\link{distLplot}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...
-
 #' @return List as explained in \code{\link{extremeStat}}.
-#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014 + July 2015
 #' @seealso \code{\link{distLgof}}, \code{\link{distLplot}}.
 #'          \code{\link[extRemes]{fevd}} in the package \code{extRemes},
 #'          \code{\link[MASS]{fitdistr}} in the package \code{MASS}.
@@ -40,6 +15,7 @@
 #' @export
 #' @importFrom lmomco dist.list lmoms lmom2par
 #' @importFrom berryFunctions seqPal
+#' 
 #' @examples
 #' 
 #' data(annMax)
@@ -76,6 +52,26 @@
 #' distLplot(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))
 #' d_all$gof
 #' }
+#' 
+#' @param dat Vector with values
+#' @param datname Character string for main, xlab etc. DEFAULT: internal \code{substitute(dat)}
+#' @param speed If TRUE, several distributions are omitted, for the reasons shown in \code{lmomco::\link[lmomco]{dist.list}()}. DEFAULT: TRUE
+#' @param ks Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. DEFAULT: FALSE
+#' @param selection Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL
+#' @param gofProp Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1
+#' @param weightc Named custom weights for each distribution, see \code{\link{distLgof}}. DEFAULT: NA
+#' @param truncate Number between 0 and 1. POT Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0
+#' @param threshold POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
+#' @param gofComp If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE. DEFAULT: FALSE
+#' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n > 200
+#' @param time \code{\link{message}} execution time? DEFAULT: TRUE
+#' @param plot Should a histogram with densities be plotted? DEFAULT: TRUE
+#' @param cdf If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE
+#' @param legargs List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL
+#' @param histargs List of arguments passed to \code{\link{hist}} except for x, breaks, col, xlim, freq. DEFAULT: NULL
+#' @param quiet Suppress notes? DEFAULT: FALSE
+#' @param quietss Suppress sample size notes? DEFAULT: quiet
+#' @param \dots Further arguments passed to \code{\link{distLplot}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...
 #' 
 distLfit <- function(
 dat,
