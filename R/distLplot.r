@@ -27,7 +27,7 @@
 #' @param col \code{\link{hist}} bar color or \code{\link{ecdf}} point color. DEFAULT: "grey"
 #' @param main,xlab,ylab \code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab. DEFAULT: internal abstraction fom \code{dlf$datname}
 #' @param las Label Axis Style for orientation of numbers along axes. DEFAULT: 1
-#' @param coldist Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow2
+#' @param coldist Color for each distribution added with \code{\link{lines}}. DEFAULT: \code{\link[berryFunctions]{seqPal}}
 #' @param lty Line TYpe for plotted distributions. Recycled vector of length nbest. DEFAULT: 1
 #' @param add If TRUE, hist is not called before adding lines. This lets you add lines highly customized one by one. DEFAULT: FALSE
 #' @param logargs List of arguments passed to \code{\link{logAxis}} if \code{log=TRUE}. DEFAULT: NULL
@@ -41,7 +41,7 @@
 #' @seealso \code{\link{distLfit}}, \code{\link{distLextreme}}
 #' @keywords hplot distribution
 #' @export
-#' @importFrom berryFunctions lim0 owa rainbow2
+#' @importFrom berryFunctions lim0 owa seqPal
 #' @importFrom lmomco plmomco dlmomco supdist
 #' @examples
 #'  # See distLfit
@@ -64,7 +64,7 @@ xaxt,
 col="grey",
 main, xlab, ylab,
 las=1,
-coldist=berryFunctions::rainbow2(nbest),
+coldist=berryFunctions::seqPal(nbest),
 lty=1,
 add=FALSE,
 logargs=NULL,

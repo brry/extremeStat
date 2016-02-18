@@ -18,11 +18,11 @@
 #' @param las LabelAxisStyle to orient labels, see \code{\link{par}}. DEFAULT: 1
 #' @param main Title of plot. DEFAULT: dlf$datname
 #' @param xlab X axis label. DEFAULT: "Return Period RP  [a]"
-#' @param ylab Y axis label. Please note that the ubuntu pdf viewer might be unable to display unicode superscript. DEFAULT: "Discharge HQ  [m\\U00B3/s]"
+#' @param ylab Y axis label. Please note that the ubuntu pdf viewer might be unable to display unicode superscript. DEFAULT: "Discharge HQ  [m3/s]"
 #' @param PPcol Plotting Position point colors, vector of length two for Weibull and Gringorton, recycled. PP are not used for fitting distributions, but for plotting only. DEFAULT: "black"
 #' @param PPpch point characters for plotting positions after Weibull and Grongorton, respectively. NA to suppress in plot and legend. DEFAULT: c(16,3)
 #' @param PPcex Character EXpansion of plotting points. DEFAULT: 1
-#' @param coldist Color for each distribution added with \code{\link{lines}}. Recycled, if necessary. DEFAULT: rainbow
+#' @param coldist Color for each distribution added with \code{\link{lines}}. Recycled, if necessary. DEFAULT: \code{\link[berryFunctions]{seqPal}}
 #' @param lty Line TYpe for plotted distributions. Is recycled to from a vector of length nbest, i.e. a value for each distribution function drawn. DEFAULT: 1
 #' @param lwd Line WiDth of distribution lines. Recycled vector of length nbest. DEFAULT: 1
 #' @param pch Point CHaracter of points added at regular intervals. NA to suppress. Recycled vector of length nbest. DEFAULT: NA
@@ -38,7 +38,7 @@
 #' @seealso \code{\link{distLextreme}}, \code{\link{distLplot}}
 #' @keywords hplot dplot distribution
 #' @export
-#' @importFrom berryFunctions rainbow2 owa logAxis
+#' @importFrom berryFunctions seqPal owa logAxis
 #' @importFrom lmomco plmomco
 #' @examples
 #' #see
@@ -60,7 +60,7 @@ ylab="Discharge HQ  [m\U00B3/s]",
 PPcol="black",
 PPpch=c(16,3),
 PPcex=1,
-coldist=berryFunctions::rainbow2(nbest),
+coldist=berryFunctions::seqPal(nbest),
 lty=1,
 lwd=1,
 pch=NA,
@@ -116,10 +116,6 @@ if(length(coldist) != nbest & !quiet)
   curlengthcd <- length(coldist)
   on.exit(message("Note in distLextremePlot: Length of coldist (",curlengthcd,
           ") was not equal to nbest (",nbest,"). Is now recycled."), add=TRUE)
-  ### if colors are rainbow2 colors, shorten/lengthen them:
-  ##if(all(coldist==rainbow2(length(coldist))  )) 
-  ##  coldist <- rainbow2(nbest)
-  ##else # else recycle them
   coldist <- rep(coldist, length=nbest)
   }
 #

@@ -8,7 +8,7 @@ distLplot(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
   log = FALSE, percentline = NA, percentargs = NULL, supportends = TRUE,
   breaks = 20, xlim = extendrange(dat, f = 0.15), ylim = NULL,
   xaxs = "i", yaxs = "i", xaxt, col = "grey", main, xlab, ylab, las = 1,
-  coldist = berryFunctions::rainbow2(nbest), lty = 1, add = FALSE,
+  coldist = berryFunctions::seqPal(nbest), lty = 1, add = FALSE,
   logargs = NULL, legend = TRUE, legargs = NULL, histargs = NULL, ...)
 }
 \arguments{
@@ -46,7 +46,7 @@ distLplot(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
 
 \item{las}{Label Axis Style for orientation of numbers along axes. DEFAULT: 1}
 
-\item{coldist}{Color for each distribution added with \code{\link{lines}}. DEFAULT: rainbow2}
+\item{coldist}{Color for each distribution added with \code{\link{lines}}. DEFAULT: \code{\link[berryFunctions]{seqPal}}}
 
 \item{lty}{Line TYpe for plotted distributions. Recycled vector of length nbest. DEFAULT: 1}
 

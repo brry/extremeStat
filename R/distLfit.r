@@ -19,6 +19,7 @@
 #' @param gofProp Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1
 #' @param weightc Named custom weights for each distribution, see \code{\link{distLgof}}. DEFAULT: NA
 #' @param truncate Number between 0 and 1. POT Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0
+#' @param threshold POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
 #' @param gofComp If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE. DEFAULT: FALSE
 #' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n > 200
 #' @param time \code{\link{message}} execution time? DEFAULT: TRUE
@@ -38,7 +39,7 @@
 #' @keywords hplot dplot distribution
 #' @export
 #' @importFrom lmomco dist.list lmoms lmom2par
-#' @importFrom berryFunctions rainbow2
+#' @importFrom berryFunctions seqPal
 #' @examples
 #' 
 #' data(annMax)
@@ -85,6 +86,7 @@ selection=NULL,
 gofProp=1,
 weightc=NA,
 truncate=0,
+threshold=berryFunctions::quantileMean(dat, truncate),
 gofComp=FALSE,
 progbars=length(dat)>200,
 time=TRUE,
@@ -111,7 +113,7 @@ if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) )
 dat_full <- dat
 dat <- as.numeric( dat[!is.na(dat)]  )
 # truncate (fit values only to upper part of values):
-if(truncate!=0) dat <- sort(dat)[ -1:-(truncate*length(dat)) ]
+dat <- dat[dat>=threshold]
 #
 # possible distributions: ------------------------------------------------------
 dn <- lmomco::dist.list()
@@ -170,9 +172,10 @@ if(gofComp)
   plot <- FALSE
   }
 if(plot) output <- distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
-if(!plot) output$coldist <- berryFunctions::rainbow2(if(is.null(selection)) 5 else length(selection))
+if(!plot) output$coldist <- berryFunctions::seqPal(if(is.null(selection)) 5 else length(selection))
 # truncation value
 output$truncate <- truncate
+output$threshold <- threshold
 output$dat_full <- dat_full # non-truncated data
 if(time & !quiet) on.exit(message("distLfit execution took ", 
       signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds."), add=TRUE)
