@@ -148,7 +148,7 @@ q_gpd(rnum, probs=myprobs, truncate=0.5)
 
 }
 \author{
-Berry Boessenkool, \email{berry-b@gmx.de}, March 2015
+Berry Boessenkool, \email{berry-b@gmx.de}, March + July 2015, Feb 2016
 }
 \references{
 On GPD: \url{http://stats.stackexchange.com/questions/69438}

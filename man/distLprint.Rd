@@ -24,7 +24,7 @@ print list objects created in this package
 
 }
 \author{
-Berry Boessenkool, \email{berry-b@gmx.de}, March 2015
+Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014, March + July 2015
 }
 \seealso{
 \code{\link{extremeStat}}

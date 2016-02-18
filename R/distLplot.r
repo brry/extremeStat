@@ -1,7 +1,3 @@
-# distributions via linear moments
-# Berry Boessenkool, Sept 2014
-# Plot density distributions fitted by distLfit
-
 #' Plot distributions fitted with linear moments
 #' 
 #' Plot histogram and distribution densities \emph{or} ecdf with cumulated probability
@@ -9,6 +5,16 @@
 #' @details By default, this plots density instead of CDF, because the distributions are
 #' easier to discern and tail behaviour is easier to judge visually. See also
 #' urlhttp://www.vosesoftware.com/vosesoftware/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_\%28histogram\%29_plots.htm
+#' 
+#' @return dlf with coldist added, returned invisibly.
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
+#' @seealso \code{\link{distLfit}}, \code{\link{distLextreme}}
+#' @keywords hplot distribution
+#' @export
+#' @importFrom berryFunctions lim0 owa seqPal
+#' @importFrom lmomco plmomco dlmomco supdist
+#' @examples
+#'  # See distLfit
 #' 
 #' @param dlf List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname, gofProp}
 #' @param nbest Number of distributions plotted, in order of goodness of fit. DEFAULT: 5
@@ -35,16 +41,6 @@
 #' @param legargs List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL
 #' @param histargs List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} except for x, freq. DEFAULT: NULL
 #' @param \dots Further arguments passed to \code{\link{lines}}, like type, pch, ...
-
-#' @return dlf with coldist added, returned invisibly.
-#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
-#' @seealso \code{\link{distLfit}}, \code{\link{distLextreme}}
-#' @keywords hplot distribution
-#' @export
-#' @importFrom berryFunctions lim0 owa seqPal
-#' @importFrom lmomco plmomco dlmomco supdist
-#' @examples
-#'  # See distLfit
 #' 
 distLplot <- function(
 dlf,

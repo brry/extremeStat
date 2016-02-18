@@ -157,7 +157,6 @@ text(300, 300, "empirical quantile estimate", col="green3")
 
 } # end of dontrun
 
-
 }
 \author{
 Berry Boessenkool, \email{berry-b@gmx.de}, Feb 2016

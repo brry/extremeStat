@@ -1,8 +1,3 @@
-# Compute quantile of General Pareto Distribution fitted to sample
-# Using one of several possible packages
-# Berry Boessenkool, Feb 2016, berry-b@gmx.de
-
-
 #' GPD quantile of sample
 #' 
 #' Compute quantile of General Pareto Distribution fitted to sample by peak over treshold (POT) method
@@ -34,18 +29,6 @@
 #' thus \code{undertruncNA} should be left to TRUE. \cr
 #' If not exported by the packages, the quantile functions are extracted from their current (Feb 2016) source code.
 #' 
-#' @param x Vector with numeric values. NAs are silently ignored.
-#' @param probs Probabilities of truncated (Peak over treshold) quantile. DEFAULT: c(0.8,0.9,0.99)
-#' @param truncate Truncation percentage (proportion of sample discarded). DEFAULT: 0
-#' @param threshold POT cutoff value. If you want correct percentiles, set this only via truncate, see Details. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
-#' @param package Character string naming package to be used. One of c("evir","evd","extRemes","fExtremes","ismev"). DEFAULT: "extRemes"
-#' @param method \code{method} passed to the fitting function, if applicable. Defaults are internally specified (See Details), depending on \code{package}, if left to the DEFAULT: NULL.
-#' @param returnlist Return result from the fitting funtion with the quantiles added to the list as element \code{quant} and some information in elements starting with \code{q_gpd_}. DEFAULT: FALSE
-#' @param undertruncNA Return NAs for probs below truncate? Highly recommended to leave this at the DEFAULT: TRUE
-#' @param quiet Should messages from this function be suppressed? DEFAULT: FALSE
-#' @param suppresswarnings Should warnings be suppressed via \code{\link{options}(warn=-1)}? The usual type of warning is: NAs produced in log(...). DEFAULT: quiet
-#' @param \dots Further arguments passed to the fitting funtion listed in section Details.
-
 #' @return Named vector of quantile estimates for each value of \code{probs},\cr
 #'    or if(returnlist): list with element \code{q_gpd_quant} and info-elements added.
 #'    q_gpd_n_geq is number of values greater than or equal to q_gpd_threshold. gt is only greater than.
@@ -157,6 +140,17 @@
 #'
 #' } # end of dontrun
 #'
+#' @param x Vector with numeric values. NAs are silently ignored.
+#' @param probs Probabilities of truncated (Peak over treshold) quantile. DEFAULT: c(0.8,0.9,0.99)
+#' @param truncate Truncation percentage (proportion of sample discarded). DEFAULT: 0
+#' @param threshold POT cutoff value. If you want correct percentiles, set this only via truncate, see Details. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
+#' @param package Character string naming package to be used. One of c("evir","evd","extRemes","fExtremes","ismev"). DEFAULT: "extRemes"
+#' @param method \code{method} passed to the fitting function, if applicable. Defaults are internally specified (See Details), depending on \code{package}, if left to the DEFAULT: NULL.
+#' @param returnlist Return result from the fitting funtion with the quantiles added to the list as element \code{quant} and some information in elements starting with \code{q_gpd_}. DEFAULT: FALSE
+#' @param undertruncNA Return NAs for probs below truncate? Highly recommended to leave this at the DEFAULT: TRUE
+#' @param quiet Should messages from this function be suppressed? DEFAULT: FALSE
+#' @param suppresswarnings Should warnings be suppressed via \code{\link{options}(warn=-1)}? The usual type of warning is: NAs produced in log(...). DEFAULT: quiet
+#' @param \dots Further arguments passed to the fitting funtion listed in section Details.
 #'
 q_gpd <- function(
 x,

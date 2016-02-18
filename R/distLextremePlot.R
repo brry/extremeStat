@@ -1,11 +1,20 @@
-# Extreme value statistics for flood risk estimation
-# Berry Boessenkool, 2015
-
 #' Plot extreme value statistics
 #' 
 #' Plots distributions fitted by L-moments and adds plotting positions by Weibull and Gringorton.
 #'
 #' @details This is an auxiliary graphing function to \code{\link{distLextreme}}
+#' 
+#' @return none, plots things.
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March 2015, updated heavily Aug 2015
+#' @seealso \code{\link{distLextreme}}, \code{\link{distLplot}}
+#' @keywords hplot dplot distribution
+#' @export
+#' @importFrom berryFunctions seqPal owa logAxis
+#' @importFrom lmomco plmomco
+#' 
+#' @examples
+#' #see
+#' ?distLextreme
 #' 
 #' @param dlf List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, dleB <- distLexBoot(dlf, nbest=4, conf.lev=0.5), gof}.
 #' @param selection Selection of distributions. Character vector with type as in \code{\link[lmomco]{lmom2par}}. DEFAULT: NULL
@@ -32,17 +41,6 @@
 #' @param legargs list of arguments passed to \code{\link{legend}} except for legend, col, pch, lwd, lty. DEFAULT: NULL
 #' @param quiet Suppress notes? DEFAULT: FALSE
 #' @param \dots Further arguments passed to \code{\link{plot}} like yaxt="n", ...
-
-#' @return none, plots things.
-#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March 2015, updated heavily Aug 2015
-#' @seealso \code{\link{distLextreme}}, \code{\link{distLplot}}
-#' @keywords hplot dplot distribution
-#' @export
-#' @importFrom berryFunctions seqPal owa logAxis
-#' @importFrom lmomco plmomco
-#' @examples
-#' #see
-#' ?distLextreme
 #' 
 distLextremePlot <- function(
 dlf,

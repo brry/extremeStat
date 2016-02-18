@@ -1,10 +1,15 @@
-# distributions via linear moments
-# Berry Boessenkool, Sept 2014
-# compare ranks of 'Goodness of Fit' measures in distLfit
-
-#' rank comparison
+#' Distribution rank comparison
 #' 
-#' plot rank comparison of fitted distributions calculated by \code{\link{distLgof}}.
+#' Plot rank comparison of fitted distributions calculated by \code{\link{distLgof}}.
+#' 
+#' @return None.
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
+#' @seealso \code{\link{distLgof}}, \code{\link{distLfit}}
+#' @keywords hplot distribution
+#' @export
+#' @importFrom berryFunctions pastec
+#' @examples
+#' # see distLgof
 #' 
 #' @param dlf List as returned by \code{\link{distLfit}}, containing the elements \code{gof, gofProp}
 #' @param ranks plot ranks by different measures of goodness of fit? DEFAULT: TRUE
@@ -19,15 +24,6 @@
 #' @param quiet Suppress notes? DEFAULT: FALSE
 #' @param main plot titles. DEFAULT: NULL
 #' @param \dots Further arguments passed to \code{\link{plot}}.
-
-#' @return None.
-#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
-#' @seealso \code{\link{distLgof}}, \code{\link{distLfit}}
-#' @keywords hplot distribution
-#' @export
-#' @importFrom berryFunctions pastec
-#' @examples
-#' # see distLgof
 #' 
 distLgofPlot <- function(
 dlf, # List as returned by \code{\link{distLfit}}, containing the elements \code{gof, gofProp}

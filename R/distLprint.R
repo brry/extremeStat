@@ -1,15 +1,9 @@
-# print dlf objects
-# Berry Boessenkool, Sept 2014, Jul 2015
-
 #' print dlf objects
 #' 
 #' print list objects created in this package
 #' 
-#' @param dlf List as explained in \code{\link{extremeStat}}
-#' @param digits number of digits \code{\link{round}}ed to. DEFAULT: 1
-
 #' @return none, prints via \code{\link{message}}.
-#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March 2015
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014, March + July 2015
 #' @seealso \code{\link{extremeStat}}
 #' @keywords list methods print
 #' @export
@@ -19,6 +13,9 @@
 #' 
 #' # see 
 #' ?distLextreme
+#' 
+#' @param dlf List as explained in \code{\link{extremeStat}}
+#' @param digits number of digits \code{\link{round}}ed to. DEFAULT: 1
 #' 
 distLprint <- function(
 dlf,

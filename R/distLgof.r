@@ -1,21 +1,7 @@
-# distributions via linear moments
-# Berry Boessenkool, Sept 2014, July 2015
-# calculate 'Goodness of Fit' measures in distLfit
-
-
 #' Quality of distribution fits
 #' 
 #' Calculate goodness of fit for several distributions, plot rank comparison.
 #' 
-#' @param dlf List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, parameter, gofProp}
-#' @param gofProp Overrides value in list. Proportion (0:1) of highest values in \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
-#' @param plot Call \code{\link{distLgofPlot}}? DEFAULT: TRUE
-#' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n > 200
-#' @param ks Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. DEFAULT: TRUE
-#' @param weightc Optional: a named vector with custom weights for each distribution. Are internally normalized to sum=1 after removing nonfitted dists. Names must match the parameter names from \code{\link{distLfit}}. DEFAULT: NA
-#' @param quiet Suppress notes? DEFAULT: FALSE
-#' @param \dots Further arguments passed to \code{\link{distLgofPlot}}
-
 #' @return List as explained in \code{\link{extremeStat}}. The added element is gof,\cr
 #' a data.frame the root mean square error (RMSE) and R squared (R2) for the top \code{gofProp} of \code{dat},\cr
 #' if ks=TRUE, the p and D values from a simple ks.test,\cr
@@ -25,13 +11,14 @@
 #'       probably means that the support of some of the fitted distributions do not
 #'       span the whole data range. Instead the outside support regions get NAs that
 #'       are then detected by rmse and rsquare. I plan to fix this with WHA's new supdist.
-#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014 + July 2015
 #' @seealso \code{\link{distLgofPlot}}, \code{\link{distLfit}}. More complex estimates of quality of fits:
 #'          \url{http://chjs.soche.cl/papers/vol4n1_2013/ChJS-04-01-04.pdf}
 #' @keywords univar hplot distribution
 #' @export
 #' @importFrom lmomco plmomco
 #' @importFrom berryFunctions rmse rsquare
+#' 
 #' @examples
 #' 
 #' require(lmomco)
@@ -131,6 +118,15 @@
 #' # distributions are selected to be the 5 best.
 #' dev.off()
 #' }
+#' 
+#' @param dlf List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, parameter, gofProp}
+#' @param gofProp Overrides value in list. Proportion (0:1) of highest values in \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
+#' @param plot Call \code{\link{distLgofPlot}}? DEFAULT: TRUE
+#' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n > 200
+#' @param ks Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. DEFAULT: TRUE
+#' @param weightc Optional: a named vector with custom weights for each distribution. Are internally normalized to sum=1 after removing nonfitted dists. Names must match the parameter names from \code{\link{distLfit}}. DEFAULT: NA
+#' @param quiet Suppress notes? DEFAULT: FALSE
+#' @param \dots Further arguments passed to \code{\link{distLgofPlot}}
 #' 
 distLgof <- function(
 dlf,

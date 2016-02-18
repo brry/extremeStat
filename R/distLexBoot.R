@@ -1,12 +1,21 @@
-# Extreme value statistics for flood risk estimation
-# Bootstrapping for confidence Interval
-# Berry Boessenkool, 2015, berry-b@gmx.de
-
-#' Uncertainty intervals for return periods
+#' Bootstrapping uncertainty intervals for return periods
 #' 
-#' calculates and plots bootstrap uncertainty intervals for \code{\link{distLextremePlot}}.
+#' Calculates and plots bootstrap uncertainty intervals for \code{\link{distLextremePlot}}.
 #'
 #' @details Has not been thoroughly tested yet. Bootstrapping defaults can probably be improved.
+#' 
+#' @return A list with (for each selection) a matrix with confidence intervals for RPs, or if returnall=TRUE, all the simulation results
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2015
+#' @seealso \code{\link{distLextreme}}
+#' @keywords bootstrap montecarlo hplot dplot distribution ts
+#' @export
+#' @importFrom berryFunctions logSpaced quantileMean ciBand
+#' 
+#' @examples
+#' 
+#' data(annMax)
+#' dlf <- distLextreme(annMax, log=TRUE, selection=c("wak","gum","gev","nor"))
+#' dleB <- distLexBoot(dlf, nbest=4, conf.lev=0.5)
 #' 
 #' @param dlf \code{dlf} object, as returned by \code{\link{distLextreme}}, is passed to \code{\link{distLextremePlot}}.
 #' @param nbest Number of best fitted distribution functions in dlf for which bootstrapping is to be done. Overriden by \code{selection}. DEFAULT: 3
@@ -22,18 +31,6 @@
 #' @param log Plot on a logarithmic axis. DEFAULT: TRUE
 #' @param progbars Show progress bar for Monte Carlo simulation? DEFAULT: TRUE
 #' @param \dots Further arguments passed to \code{\link{distLextremePlot}}
-
-#' @return A list with (for each selection) a matrix with confidence intervals for RPs, or if returnall=TRUE, all the simulation results
-#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2015
-#' @seealso \code{\link{distLextreme}}
-#' @keywords bootstrap montecarlo hplot dplot distribution ts
-#' @export
-#' @importFrom berryFunctions logSpaced quantileMean ciBand
-#' @examples
-#' 
-#' data(annMax)
-#' dlf <- distLextreme(annMax, log=TRUE, selection=c("wak","gum","gev","nor"))
-#' dleB <- distLexBoot(dlf, nbest=4, conf.lev=0.5)
 #' 
 distLexBoot <- function(
 dlf,

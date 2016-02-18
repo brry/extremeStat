@@ -2,7 +2,7 @@
 % Please edit documentation in R/distLexBoot.R
 \name{distLexBoot}
 \alias{distLexBoot}
-\title{Uncertainty intervals for return periods}
+\title{Bootstrapping uncertainty intervals for return periods}
 \usage{
 distLexBoot(dlf, nbest = 3, selection = NULL, truncate = 0, n = 100,
   prop = 0.8, returnall = FALSE, conf.lev = 0.95, RPs = NULL,
@@ -41,7 +41,7 @@ distLexBoot(dlf, nbest = 3, selection = NULL, truncate = 0, n = 100,
 A list with (for each selection) a matrix with confidence intervals for RPs, or if returnall=TRUE, all the simulation results
 }
 \description{
-calculates and plots bootstrap uncertainty intervals for \code{\link{distLextremePlot}}.
+Calculates and plots bootstrap uncertainty intervals for \code{\link{distLextremePlot}}.
 }
 \details{
 Has not been thoroughly tested yet. Bootstrapping defaults can probably be improved.

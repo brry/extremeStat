@@ -1,15 +1,10 @@
-# Extreme value statistics for flood risk estimation
-# Berry Boessenkool, 2012 (first draft) - 2014 & 2015 (main updates)
-# berry-b@gmx.de
-
-# Input: vector with annual discharge maxima
-# Output: discharge estimates for given return periods, parameter of distributions, quality of fits, plot with linear axis
-# See German RclickHandbuch.wordpress.com Kapitel 15
-
-#' Extreme value distributions
+#' Extreme value stats
 #' 
-#' Extreme value statistics for flood risk estimation. Fits several distributions based on linear moments,
-#' calculate return levels for given return periods. Plots distributions and adds plotting positions by Weibull and Gringorton.
+#' Extreme value statistics for flood risk estimation.
+#' Input: vector with annual discharge maxima.
+#' Output: discharge estimates for given return periods, 
+#' parameters of several distributions (fit based on linear moments), 
+#' quality of fits, plot with linear axis (dists + plotting positions by Weibull and Gringorton).
 #'
 #' @details \code{\link{distLextremePlot}} adds weibull and gringorton plotting positions
 #' to the distribution lines, which are estimated from the linear moments of the data itself.\cr
@@ -18,21 +13,10 @@
 #' The plotting positions don't affect the distribution parameter estimation, so this dispute is not really important.
 #' But if you care, go ahead and google "weibull vs gringorton plotting positions".
 #'
-#' @param dat Vector with extreme values e.g. annual discharge maxima. Ignored if dlf is given.
-#' @param dlf List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}. Overrides dat! DEFAULT: NULL
-#' @param selection Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. DEFAULT: NULL
-#' @param truncate Proportion truncated for censored quantile, see \code{\link{distLquantile}}. DEFAULT: 0
-#' @param RPs ReturnPeriods for which discharge is estimated. DEFAULT: c(2,5,10,20,50)
-#' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n>200
-#' @param time \code{\link{message}} execution time? DEFAULT: TRUE
-#' @param plot Should the return periods and nbest fitted distributions be plotted by a call to \code{\link{distLextremePlot}}? DEFAULT: TRUE
-#' @param quiet Suppress notes and progbars? DEFAULT: FALSE
-#' @param \dots Further arguments passed to \code{\link{distLextremePlot}} like order, lty, lwd, ...
-
 #' @return List as explained in \code{\link{extremeStat}}. The added element is
 #'         \code{returnlev}, a data.frame with the return level (discharge) for all given RPs and for each distribution.
 #' @note This function replaces \code{berryFunctions::extremeStatLmom}
-#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, 2012-2014
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, 2012 (first draft) - 2014 & 2015 (main updates)
 #' @seealso \code{\link{distLfit}}. \code{\link{distLexBoot}} for confidence
 #'          interval from Bootstrapping. \code{\link[extRemes]{fevd}} in the package \code{extRemes}.
 #' @references \url{http://RclickHandbuch.wordpress.com} Chapter 15 (German)\cr
@@ -40,6 +24,7 @@
 #'             Bemessungsgroessen mit Verfahren der instationaeren Extremwertstatistik
 #' @keywords hplot dplot distribution ts
 #' @export
+#' 
 #' @examples
 #' 
 #' # Basic examples
@@ -179,6 +164,16 @@
 #' 1896, 1962, 2000, 2010, 2238, 2270, 2860, 4500)
 #' distLextreme(Dresden_AnnualMax)
 #' 
+#' @param dat Vector with extreme values e.g. annual discharge maxima. Ignored if dlf is given.
+#' @param dlf List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}. Overrides dat! DEFAULT: NULL
+#' @param selection Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. DEFAULT: NULL
+#' @param truncate Proportion truncated for censored quantile, see \code{\link{distLquantile}}. DEFAULT: 0
+#' @param RPs ReturnPeriods for which discharge is estimated. DEFAULT: c(2,5,10,20,50)
+#' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n>200
+#' @param time \code{\link{message}} execution time? DEFAULT: TRUE
+#' @param plot Should the return periods and nbest fitted distributions be plotted by a call to \code{\link{distLextremePlot}}? DEFAULT: TRUE
+#' @param quiet Suppress notes and progbars? DEFAULT: FALSE
+#' @param \dots Further arguments passed to \code{\link{distLextremePlot}} like order, lty, lwd, ...
 #' 
 distLextreme <- function(
 dat,

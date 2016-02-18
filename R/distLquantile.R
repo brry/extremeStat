@@ -1,7 +1,3 @@
-# Quantile of distributions fitted to a sample
-# Berry Boessenkool, berry-b@gmx.de, March + July 2015
-
-
 #' distribution quantiles
 #' 
 #' Parametric quantiles of distributions fitted to a sample.
@@ -13,31 +9,10 @@
 #' quantile. Parametric quantiles need only small sample sizes. They don't have
 #' a systematical underestimation bias, but have higher variability.
 #' 
-#' @param x Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL
-#' @param probs Numeric vector of probabilities with values in [0,1]. DEFAULT: c(0.8,0.9,0.99)
-#' @param truncate Number between 0 and 1 (proportion of sample discarded). Censored quantile: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0
-#' @param threshold POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
-#' @param selection Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used. DEFAULT: NULL
-#' @param dlf dlf object described in \code{\link{extremeStat}}. Use this to save computing time for large datasets where you already have dlf. DEFAULT: NULL
-#' @param order Sort results by GOF? If TRUE (the default) and length(selection)>1, the output is ordered by dlf$gof, else by order of appearance in selection (or dlf$parameter). DEFAULT: TRUE
-#' @param returndlf Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned. DEFAULT: FALSE
-#' @param empirical Add empirical \code{\link{quantileMean}} in the output matrix and vertical lines? DEFAULT: TRUE
-#' @param weighted Include weighted averages across distribution functions to the output? DEFAULT: empirical, so additional options can all be excluded with emp=F.
-#' @param gpd Include GPD quantile estimation via \code{\link{q_gpd}}? DEFAULT: empirical
-#' @param addinfo Should information like sample size be \code{\link{rbind}ed} to the output? DEFAULT: FALSE
-#' @param speed Compute \code{\link{q_gpd}} only for fast methods? Don't accidentally set this to \code{FALSE} in simulations or with large datasets! DEFAULT: TRUE
-#' @param plot Should \code{\link{distLplot}} be called? DEFAULT: FALSE
-#' @param cdf If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE
-#' @param lines Should vertical lines marking the quantiles be added? DEFAULT: TRUE
-#' @param linargs Arguments passed to \code{\link{lines}}. DEFAULT: NULL
-#' @param quiet Suppress notes? DEFAULT: FALSE
-#' @param quietss Suppress sample size notes? DEFAULT: quiet
-#' @param \dots Arguments passed to \code{\link{distLfit}}.
-
 #' @return Matrix with distribution quantile values (with NAs for probs below truncate), \cr
 #' or, if returndlf=TRUE, a \code{dlf} list as described in \code{\link{extremeStat}}.
 #' @note NAs are always removed from x in \code{\link{distLfit}}
-#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March 2015
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March + July 2015, Feb 2016
 #' @seealso \code{\link{q_gpd}}, \code{\link{distLfit}}, Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for left truncated and right censored data, Statistica Sinica 10
 #'          \url{http://www3.stat.sinica.edu.tw/statistica/oldpdf/A10n411.pdf}\cr
 #'          require("truncdist")
@@ -46,6 +21,7 @@
 #' @export
 #' @importFrom berryFunctions quantileMean
 #' @importFrom lmomco plmomco dlmomco qlmomco
+#' 
 #' @examples
 #'
 #' data(annMax) # Annual Discharge Maxima (streamflow)
@@ -122,6 +98,27 @@
 #'
 #' # If you want the estimates only for one single truncation, use
 #' q_gpd(rnum, probs=myprobs, truncate=0.5)
+#' 
+#' @param x Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL
+#' @param probs Numeric vector of probabilities with values in [0,1]. DEFAULT: c(0.8,0.9,0.99)
+#' @param truncate Number between 0 and 1 (proportion of sample discarded). Censored quantile: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0
+#' @param threshold POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
+#' @param selection Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used. DEFAULT: NULL
+#' @param dlf dlf object described in \code{\link{extremeStat}}. Use this to save computing time for large datasets where you already have dlf. DEFAULT: NULL
+#' @param order Sort results by GOF? If TRUE (the default) and length(selection)>1, the output is ordered by dlf$gof, else by order of appearance in selection (or dlf$parameter). DEFAULT: TRUE
+#' @param returndlf Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned. DEFAULT: FALSE
+#' @param empirical Add empirical \code{\link{quantileMean}} in the output matrix and vertical lines? DEFAULT: TRUE
+#' @param weighted Include weighted averages across distribution functions to the output? DEFAULT: empirical, so additional options can all be excluded with emp=F.
+#' @param gpd Include GPD quantile estimation via \code{\link{q_gpd}}? DEFAULT: empirical
+#' @param addinfo Should information like sample size be \code{\link{rbind}ed} to the output? DEFAULT: FALSE
+#' @param speed Compute \code{\link{q_gpd}} only for fast methods? Don't accidentally set this to \code{FALSE} in simulations or with large datasets! DEFAULT: TRUE
+#' @param plot Should \code{\link{distLplot}} be called? DEFAULT: FALSE
+#' @param cdf If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE
+#' @param lines Should vertical lines marking the quantiles be added? DEFAULT: TRUE
+#' @param linargs Arguments passed to \code{\link{lines}}. DEFAULT: NULL
+#' @param quiet Suppress notes? DEFAULT: FALSE
+#' @param quietss Suppress sample size notes? DEFAULT: quiet
+#' @param \dots Arguments passed to \code{\link{distLfit}}.
 #'
 distLquantile <- function(
 x=NULL,
