@@ -5,6 +5,7 @@ data(annMax, package="extremeStat") # Annual Discharge Maxima (streamflow)
 
 test_that("distLquantile generally runs fine",{
 distLquantile(annMax)
+expect_equal(nrow(distLquantile(annMax, addinfo=TRUE)), 37)
 expect_silent(distLquantile(annMax, truncate=0.6, gpd=FALSE, quiet=TRUE))
 expect_message(distLquantile(annMax, plot=FALSE, selection="wak", empirical=FALSE), 
   "Note in distLgof: Only wak was fitted, thus GOF can't be compared.")

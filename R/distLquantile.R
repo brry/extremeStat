@@ -24,6 +24,7 @@
 #' @param empirical Add empirical \code{\link{quantileMean}} in the output matrix and vertical lines? DEFAULT: TRUE
 #' @param weighted Include weighted averages across distribution functions to the output? DEFAULT: empirical, so additional options can all be excluded with emp=F.
 #' @param gpd Include GPD quantile estimation via \code{\link{q_gpd}}? DEFAULT: empirical
+#' @param addinfo Should information like sample size be \code{\link{rbind}ed} to the output? DEFAULT: FALSE
 #' @param speed Compute \code{\link{q_gpd}} only for fast methods? Don't accidentally set this to \code{FALSE} in simulations or with large datasets! DEFAULT: TRUE
 #' @param plot Should \code{\link{distLplot}} be called? DEFAULT: FALSE
 #' @param cdf If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE
@@ -134,6 +135,7 @@ returndlf=FALSE,
 empirical=TRUE,
 weighted=empirical,
 gpd=empirical,
+addinfo=FALSE,
 speed=TRUE,
 plot=FALSE,
 cdf=FALSE,
@@ -327,6 +329,7 @@ if(plot & lines)
     }
   }
 # return output: ---------------------------------------------------------------
+if(addinfo) output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$dat), threshold=dlf$threshold)
 if(returndlf) {dlf$quant <- output; return(dlf)}
 else return(output)
 }

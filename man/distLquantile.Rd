@@ -7,9 +7,9 @@
 distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
   threshold = berryFunctions::quantileMean(dlf$dat_full, truncate),
   selection = NULL, dlf = NULL, order = TRUE, returndlf = FALSE,
-  empirical = TRUE, weighted = empirical, gpd = empirical, speed = TRUE,
-  plot = FALSE, cdf = FALSE, lines = TRUE, linargs = NULL,
-  quiet = FALSE, quietss = quiet, ...)
+  empirical = TRUE, weighted = empirical, gpd = empirical,
+  addinfo = FALSE, speed = TRUE, plot = FALSE, cdf = FALSE,
+  lines = TRUE, linargs = NULL, quiet = FALSE, quietss = quiet, ...)
 }
 \arguments{
 \item{x}{Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
@@ -33,6 +33,8 @@ distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
 \item{weighted}{Include weighted averages across distribution functions to the output? DEFAULT: empirical, so additional options can all be excluded with emp=F.}
 
 \item{gpd}{Include GPD quantile estimation via \code{\link{q_gpd}}? DEFAULT: empirical}
+
+\item{addinfo}{Should information like sample size be \code{\link{rbind}ed} to the output? DEFAULT: FALSE}
 
 \item{speed}{Compute \code{\link{q_gpd}} only for fast methods? Don't accidentally set this to \code{FALSE} in simulations or with large datasets! DEFAULT: TRUE}
 
