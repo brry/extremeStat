@@ -22,6 +22,7 @@ The common object to share between functions is a list (\code{dlf}) with:\cr
 \code{RP___}     \tab Return periods according to plotting positions, see below. \cr
 \code{coldist}   \tab Colors for plotting, added in \code{\link{distLplot}}\cr
 \code{truncate}  \tab Truncation percentage, only relevant for \code{\link{distLquantile}}\cr
+\code{quant}     \tab Quantile estimation from \code{\link{distLquantile}}\cr
 }
 It can be printed with \code{\link{distLprint}}, which may be transformed to a class with printing method.\cr
 PP:\cr
