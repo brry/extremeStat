@@ -18,13 +18,13 @@
 #' @param truncate Number between 0 and 1 (proportion of sample discarded). Censored quantile: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0
 #' @param threshold POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
 #' @param selection Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used. DEFAULT: NULL
-#' @param dlf dlf object described in \code{\link{extremeStat}}. Ignored if x is given, or if truncate / selection do not match. Use this to save computing time for large datasets where you already have dlf. DEFAULT: NULL
+#' @param dlf dlf object described in \code{\link{extremeStat}}. Use this to save computing time for large datasets where you already have dlf. DEFAULT: NULL
 #' @param order Sort results by GOF? If TRUE (the default) and length(selection)>1, the output is ordered by dlf$gof, else by order of appearance in selection (or dlf$parameter). DEFAULT: TRUE
 #' @param returndlf Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned. DEFAULT: FALSE
 #' @param empirical Add empirical \code{\link{quantileMean}} in the output matrix and vertical lines? DEFAULT: TRUE
 #' @param weighted Include weighted averages across distribution functions to the output? DEFAULT: empirical, so additional options can all be excluded with emp=F.
 #' @param gpd Include GPD quantile estimation via \code{\link{q_gpd}}? DEFAULT: empirical
-#' @param speed compute \code{\link{q_gpd}} only for fast methods? Don't accidentally set this to \code{FALSE} in simulations or with large datasets! DEFAULT: TRUE
+#' @param speed Compute \code{\link{q_gpd}} only for fast methods? Don't accidentally set this to \code{FALSE} in simulations or with large datasets! DEFAULT: TRUE
 #' @param plot Should \code{\link{distLplot}} be called? DEFAULT: FALSE
 #' @param cdf If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE
 #' @param lines Should vertical lines marking the quantiles be added? DEFAULT: TRUE
@@ -33,10 +33,11 @@
 #' @param quietss Suppress sample size notes? DEFAULT: quiet
 #' @param \dots Arguments passed to \code{\link{distLfit}}.
 
-#' @return Matrix with distribution quantile values. Returns NAs for probs below truncate.
+#' @return Matrix with distribution quantile values (with NAs for probs below truncate), \cr
+#' or, if returndlf=TRUE, a \code{dlf} list as described in \code{\link{extremeStat}}.
 #' @note NAs are always removed from x in \code{\link{distLfit}}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March 2015
-#' @seealso \code{\link{distLfit}}, Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for left truncated and right censored data, Statistica Sinica 10
+#' @seealso \code{\link{q_gpd}}, \code{\link{distLfit}}, Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for left truncated and right censored data, Statistica Sinica 10
 #'          \url{http://www3.stat.sinica.edu.tw/statistica/oldpdf/A10n411.pdf}\cr
 #'          require("truncdist")
 #' @references On GPD: \url{http://stats.stackexchange.com/questions/69438}
@@ -49,7 +50,7 @@
 #' data(annMax) # Annual Discharge Maxima (streamflow)
 #' dlf <- distLfit(annMax)
 #'
-#' distLquantile(annMax)
+#' distLquantile(annMax, emp=FALSE) # several distribution functions in lmomco
 #' distLquantile(annMax, truncate=0.8, probs=0.95) # POT
 #' distLquantile(annMax, probs=0.95, plot=TRUE, linargs=list(lwd=2), nbest=5, breaks=10)
 #' # Parametric 95% quantile estimates range from 92 to 111!
@@ -58,11 +59,12 @@
 #' # weighted distribution quantiles are calculated by different weighting schemes:
 #' distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
 #'
-#' # The default is to fit distribution parameters to sample. If speed is important
-#' # in big datasets and parameters are already available, pass them via dlf:
+#' # If speed is important and parameters are already available, pass them via dlf:
 #' distLquantile(dlf=dlf, probs=0:10/10, selection=c("wak","gev","kap"), order=FALSE)
 #'
-#'
+#' # Theoretically, the tails of distributions converge to GPD (General Pareto)
+#' # q_gpd compares several R packages for fitting and quantile estimation:
+#' distLquantile(annMax, weight=FALSE, sel="gpa", quiet=TRUE)
 #'
 #' # censored (truncated, trimmed) quantile, Peak Over Treshold (POT) method:
 #' qwak <- distLquantile(annMax, sel="wak", prob=0.95, plot=TRUE, ylim=c(0,0.06), emp=FALSE)
@@ -77,7 +79,7 @@
 #' myprobs <- c(0.9, 0.95, 0.99, 0.999)
 #' mytrunc <- seq(0, 0.9, length.out=20)
 #' trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gev",
-#'                              probs=myprobs, truncate=mt, plot=FALSE,
+#'                              probs=myprobs, truncate=mt, plot=FALSE, quiet=TRUE,
 #'                              progbars=FALSE, empirical=FALSE)["gev",])
 #' # If more values are truncated, the function runs faster
 #'
@@ -99,14 +101,6 @@
 #' textField(rep(0.5,4), trunceffect[,11], paste0("Q",myprobs*100,"%") )
 #' par(op)
 #'
-#'
-#'
-#' # Theoretically, the tails of distributions converge to GPD (General Pareto)
-#' # The function from the evir (extreme values in r) package is already
-#' # implemented in distLquantile with the argument evir=TRUE
-#' # For a detailed comparison against distLquantile see the example section in
-#' ?q_evir
-#'
 #' \dontrun{
 #' ## Taken out from CRAN package check because it's slow
 #'
@@ -117,38 +111,22 @@
 #' mytrunc <- seq(0, 0.9, length.out=30)
 #' trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gpa",
 #'                       probs=0.99, truncate=mt, plot=FALSE, quiet=TRUE,
-#'                       progbars=FALSE, empirical=FALSE, evir=TRUE))
+#'                       progbars=FALSE, empirical=FALSE, gpd=TRUE))
 #' lines(-1000*(1-mytrunc), trunceffect[1,], col=4)
 #' lines(-1000*(1-mytrunc), trunceffect[2,], col=3) # interesting...
+#' for(i in 3:13) lines(-1000*(1-mytrunc), trunceffect[i,], col=3) # interesting...
+
 #'
 #' }
 #'
-#' # If you want the evir::quant estimate only for one single truncation, use
-#' q_evir(rnum, probs=myprobs, truncate=0.5)
-#'
-#'
-#'
-#' # Developmental testing to see if all options work properly.
-#' # Can be ignored by anyone else but me ;-)
-#'
-#' distLquantile(annMax, plot=FALSE, selection="wak", empirical=FALSE)
-#' distLquantile(annMax, plot=TRUE, selection="wak", empirical=FALSE, breaks=10)
-#' distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9))
-#' distLquantile(rexp(199), truncate=0.8, probs=0.7)
-#' distLquantile(rexp(199), selection=c("wak", "gpa"))
-#' distLquantile(rexp(199), selection="gpa")
-#' distLquantile(rexp(4))
-#' distLquantile(rexp(4), selection="gpa")
-#' dist.list()
-#' # distLquantile(rexp(199), selection=1:5, emp=FALSE) # index is a bad idea anyways
-#' # distLquantile(rexp(199), selection=-3)
-#'
+#' # If you want the estimates only for one single truncation, use
+#' q_gpd(rnum, probs=myprobs, truncate=0.5)
 #'
 distLquantile <- function(
 x=NULL,
 probs=c(0.8,0.9,0.99),
 truncate=0,
-threshold=berryFunctions::quantileMean(x, truncate),
+threshold=berryFunctions::quantileMean(dlf$dat_full, truncate),
 selection=NULL,
 dlf=NULL,
 order=TRUE,
@@ -170,39 +148,52 @@ quietss=quiet,
 internaldatname <- deparse(substitute(x))
 truncate <- truncate[1] # cannot be vectorized
 if(truncate<0 | truncate>=1) stop("truncate (proportion discarded) must be 0<t<1, not ", truncate)
-if( is.null(x) & is.null(dlf)) stop("Either dlf or x must be given.")
+if( is.null(x) &  is.null(dlf)) stop("Either dlf or x must be given.")
+if(!is.null(x) & !is.null(dlf)) stop("Either dlf or x must be given, but not both.")
 if(!is.null(x)) if(is.list(x)) stop("x must be a vector. Possibly, you want to use dlf=",
                                     deparse(substitute(x)))
 #
 # Fit distribution functions to (truncated) sample: ----------------------------
-if(!is.null(x) | any(dlf$truncate!=truncate) |  any(!selection %in% names(dlf$parameter)))
+# check truncate
+if(!is.null(dlf)) if(any(dlf$truncate!=truncate)|any(any(dlf$threshold!=threshold)))
   {
-  if(is.null(x)) 
-    {
-    x <- dlf$dat
-    internaldatname <- dlf$datname
-    if(!quiet)on.exit(message(
-      "Note in distLquantile: selection or truncate given; distLfit is called from dlf$dat, as x is NULL."), add=TRUE)
-    }
-  # actual fitting:
-  dlf <- distLfit(dat=x, datname=internaldatname, selection=selection, 
-                  truncate=truncate, plot=plot, cdf=cdf, quiet=quiet, quietss=quietss, ...)
-  }else
+  currentdlftruncate  <- dlf$truncate
+  currentdlfthreshold <- dlf$threshold
+  if(!quiet) on.exit(message("Note in distLquantile: truncate (",truncate,
+       ") did not match dlf$truncate (",currentdlftruncate,
+       ") Thresholds: ",pastec(c(threshold, currentdlfthreshold)),
+       ". distLfit is called with the original dlf$dat."), add=TRUE)
+  x <- dlf$dat
+  internaldatname <- dlf$datname
+  dlf <- NULL
+  }
+# actual fitting:
+if(is.null(dlf))
   {
-  # reduce number of distfunctions analyzed if more were present in dlf argument:
-  if(!is.null(selection))
-    {
-    dlf$parameter <- dlf$parameter[selection]
-    dlf$gof <- dlf$gof[rownames(dlf$gof) %in% selection,]
-    }
+  # threshold initialization impossible if dlf = NULL
+  if(is.na(threshold)) threshold <- berryFunctions::quantileMean(x, truncate)
+  dlf <- distLfit(dat=x, datname=internaldatname, selection=selection,
+                  truncate=truncate, threshold=threshold,
+                  plot=plot, cdf=cdf, quiet=quiet, quietss=quietss, ...)
+  }
+# check selection
+if(any(!selection %in% names(dlf$parameter))) if(!quiet) on.exit(message(
+   "Note in distLquantile: 'selection' (",selection[!selection %in% names(dlf$parameter)],
+   ") is not in dlf$parameter. NAs will be returned for these distributions."), add=TRUE)
+
+# reduce number of distfunctions analyzed if more were present in dlf argument:
+if(!is.null(selection))
+  {
+  dlf$parameter <- dlf$parameter[selection]
+  dlf$gof <- dlf$gof[rownames(dlf$gof) %in% selection,]
   }
 #
 # Empty output matrix: ---------------------------------------------------------
 dn <- names(dlf$parameter)  # dn = distribution names
 dn2 <- rownames(dlf$gof)
-if(any(!dn2 %in% dn)) stop(pastec(dn2[!dn2 %in% dn]),
+if(any(!dn2 %in% dn)) warning(pastec(dn2[!dn2 %in% dn]),
                              " available in dlf$gof, but not in dlf$parameter.")
-if(any(!dn %in% dn2)) stop(pastec( dn[!dn %in% dn2]),
+if(any(!dn %in% dn2)) warning(pastec( dn[!dn %in% dn2]),
                              " available in dlf$parameter, but not in dlf$gof.")
 if(order) dn <- dn2
 output <- matrix(NA, ncol=length(probs), nrow=length(dn) )
@@ -217,7 +208,7 @@ if(length(miss)>0)
                   ") is not available in dlf$gof."), add=TRUE)
   m <- matrix(NA, nrow=length(miss), ncol=ncol(output))
   rownames(m) <- miss # always keep the same order if selection is given
-  output <- cbind(output, m) # append missing distfuns at the end (which should be in correct place if order=F)
+  output <- rbind(output, m) # append missing distfuns at the end (which should be in correct place if order=F)
   }
 #
 # add rows for weighted averages of distribution functions
@@ -245,13 +236,24 @@ probs2 <- probs
 if(truncate!=0)
   {
   if(all(probs < truncate) & !quiet) on.exit(message("Note in distLquantile: 'probs' (",
-     pastec(probs),") must contain values that are larger than 'truncate (", 
+     pastec(probs),") must contain values that are larger than 'truncate' (", 
           truncate, "). Returning NAs."), add=TRUE)
   probs2 <- (probs-truncate)/(1-truncate) # correct probabilities for smaller sample proportion
   probs2[probs < truncate] <- 0   # avoid negative values
   }
 #
-# distribution quantiles: ------------------------------------------------------      ### threshold!!!
+# Threshold check:
+normalthr <- berryFunctions::quantileMean(dlf$dat_full, truncate)
+if(threshold != normalthr)
+    {
+    probs2 <- probs
+    if(!quiet) on.exit(message("Note in distLquantile: threshold (",threshold,
+    ") is not equal to threshold computed from truncate (",normalthr,
+    ").\n  Probabilities are not corrected for truncation!"), add=TRUE)
+    }
+#
+# distribution quantiles: ------------------------------------------------------
+# This is the actual work...
 for(d in dn) if(!is.null(dlf$parameter[[d]])) {
                quantd <- lmomco::qlmomco(f=probs2, para=dlf$parameter[[d]])
                if(!is.null(quantd)) output[d,] <- quantd

@@ -5,11 +5,11 @@
 \title{distribution quantiles}
 \usage{
 distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
-  threshold = berryFunctions::quantileMean(x, truncate), selection = NULL,
-  dlf = NULL, order = TRUE, returndlf = FALSE, empirical = TRUE,
-  weighted = empirical, gpd = empirical, speed = TRUE, plot = FALSE,
-  cdf = FALSE, lines = TRUE, linargs = NULL, quiet = FALSE,
-  quietss = quiet, ...)
+  threshold = berryFunctions::quantileMean(dlf$dat_full, truncate),
+  selection = NULL, dlf = NULL, order = TRUE, returndlf = FALSE,
+  empirical = TRUE, weighted = empirical, gpd = empirical, speed = TRUE,
+  plot = FALSE, cdf = FALSE, lines = TRUE, linargs = NULL,
+  quiet = FALSE, quietss = quiet, ...)
 }
 \arguments{
 \item{x}{Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
@@ -22,7 +22,7 @@ distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
 
 \item{selection}{Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used. DEFAULT: NULL}
 
-\item{dlf}{dlf object described in \code{\link{extremeStat}}. Ignored if x is given, or if truncate / selection do not match. Use this to save computing time for large datasets where you already have dlf. DEFAULT: NULL}
+\item{dlf}{dlf object described in \code{\link{extremeStat}}. Use this to save computing time for large datasets where you already have dlf. DEFAULT: NULL}
 
 \item{order}{Sort results by GOF? If TRUE (the default) and length(selection)>1, the output is ordered by dlf$gof, else by order of appearance in selection (or dlf$parameter). DEFAULT: TRUE}
 
@@ -34,7 +34,7 @@ distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
 
 \item{gpd}{Include GPD quantile estimation via \code{\link{q_gpd}}? DEFAULT: empirical}
 
-\item{speed}{compute \code{\link{q_gpd}} only for fast methods? Don't accidentally set this to \code{FALSE} in simulations or with large datasets! DEFAULT: TRUE}
+\item{speed}{Compute \code{\link{q_gpd}} only for fast methods? Don't accidentally set this to \code{FALSE} in simulations or with large datasets! DEFAULT: TRUE}
 
 \item{plot}{Should \code{\link{distLplot}} be called? DEFAULT: FALSE}
 
@@ -51,7 +51,8 @@ distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
 \item{\dots}{Arguments passed to \code{\link{distLfit}}.}
 }
 \value{
-Matrix with distribution quantile values. Returns NAs for probs below truncate.
+Matrix with distribution quantile values (with NAs for probs below truncate), \cr
+or, if returndlf=TRUE, a \code{dlf} list as described in \code{\link{extremeStat}}.
 }
 \description{
 Parametric quantiles of distributions fitted to a sample.
@@ -72,7 +73,7 @@ NAs are always removed from x in \code{\link{distLfit}}
 data(annMax) # Annual Discharge Maxima (streamflow)
 dlf <- distLfit(annMax)
 
-distLquantile(annMax)
+distLquantile(annMax, emp=FALSE) # several distribution functions in lmomco
 distLquantile(annMax, truncate=0.8, probs=0.95) # POT
 distLquantile(annMax, probs=0.95, plot=TRUE, linargs=list(lwd=2), nbest=5, breaks=10)
 # Parametric 95\% quantile estimates range from 92 to 111!
@@ -81,11 +82,12 @@ distLquantile(annMax, probs=0.95, plot=TRUE, linargs=list(lwd=2), nbest=5, break
 # weighted distribution quantiles are calculated by different weighting schemes:
 distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
 
-# The default is to fit distribution parameters to sample. If speed is important
-# in big datasets and parameters are already available, pass them via dlf:
+# If speed is important and parameters are already available, pass them via dlf:
 distLquantile(dlf=dlf, probs=0:10/10, selection=c("wak","gev","kap"), order=FALSE)
 
-
+# Theoretically, the tails of distributions converge to GPD (General Pareto)
+# q_gpd compares several R packages for fitting and quantile estimation:
+distLquantile(annMax, weight=FALSE, sel="gpa", quiet=TRUE)
 
 # censored (truncated, trimmed) quantile, Peak Over Treshold (POT) method:
 qwak <- distLquantile(annMax, sel="wak", prob=0.95, plot=TRUE, ylim=c(0,0.06), emp=FALSE)
@@ -100,7 +102,7 @@ rnum <- rlmomco(n=1e3, para=dlf$parameter$gev)
 myprobs <- c(0.9, 0.95, 0.99, 0.999)
 mytrunc <- seq(0, 0.9, length.out=20)
 trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gev",
-                             probs=myprobs, truncate=mt, plot=FALSE,
+                             probs=myprobs, truncate=mt, plot=FALSE, quiet=TRUE,
                              progbars=FALSE, empirical=FALSE)["gev",])
 # If more values are truncated, the function runs faster
 
@@ -122,14 +124,6 @@ library("berryFunctions")
 textField(rep(0.5,4), trunceffect[,11], paste0("Q",myprobs*100,"\%") )
 par(op)
 
-
-
-# Theoretically, the tails of distributions converge to GPD (General Pareto)
-# The function from the evir (extreme values in r) package is already
-# implemented in distLquantile with the argument evir=TRUE
-# For a detailed comparison against distLquantile see the example section in
-?q_evir
-
 \dontrun{
 ## Taken out from CRAN package check because it's slow
 
@@ -140,32 +134,15 @@ title(xlab="Proportion truncated", line=-3)
 mytrunc <- seq(0, 0.9, length.out=30)
 trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gpa",
                       probs=0.99, truncate=mt, plot=FALSE, quiet=TRUE,
-                      progbars=FALSE, empirical=FALSE, evir=TRUE))
+                      progbars=FALSE, empirical=FALSE, gpd=TRUE))
 lines(-1000*(1-mytrunc), trunceffect[1,], col=4)
 lines(-1000*(1-mytrunc), trunceffect[2,], col=3) # interesting...
+for(i in 3:13) lines(-1000*(1-mytrunc), trunceffect[i,], col=3) # interesting...
 
 }
 
-# If you want the evir::quant estimate only for one single truncation, use
-q_evir(rnum, probs=myprobs, truncate=0.5)
-
-
-
-# Developmental testing to see if all options work properly.
-# Can be ignored by anyone else but me ;-)
-
-distLquantile(annMax, plot=FALSE, selection="wak", empirical=FALSE)
-distLquantile(annMax, plot=TRUE, selection="wak", empirical=FALSE, breaks=10)
-distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9))
-distLquantile(rexp(199), truncate=0.8, probs=0.7)
-distLquantile(rexp(199), selection=c("wak", "gpa"))
-distLquantile(rexp(199), selection="gpa")
-distLquantile(rexp(4))
-distLquantile(rexp(4), selection="gpa")
-dist.list()
-# distLquantile(rexp(199), selection=1:5, emp=FALSE) # index is a bad idea anyways
-# distLquantile(rexp(199), selection=-3)
-
+# If you want the estimates only for one single truncation, use
+q_gpd(rnum, probs=myprobs, truncate=0.5)
 
 }
 \author{
@@ -175,7 +152,7 @@ Berry Boessenkool, \email{berry-b@gmx.de}, March 2015
 On GPD: \url{http://stats.stackexchange.com/questions/69438}
 }
 \seealso{
-\code{\link{distLfit}}, Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for left truncated and right censored data, Statistica Sinica 10
+\code{\link{q_gpd}}, \code{\link{distLfit}}, Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for left truncated and right censored data, Statistica Sinica 10
          \url{http://www3.stat.sinica.edu.tw/statistica/oldpdf/A10n411.pdf}\cr
          require("truncdist")
 }

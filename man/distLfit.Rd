@@ -5,7 +5,8 @@
 \title{Fit distributions via linear moments}
 \usage{
 distLfit(dat, datname, speed = TRUE, ks = FALSE, selection = NULL,
-  gofProp = 1, weightc = NA, truncate = 0, gofComp = FALSE,
+  gofProp = 1, weightc = NA, truncate = 0,
+  threshold = berryFunctions::quantileMean(dat, truncate), gofComp = FALSE,
   progbars = length(dat) > 200, time = TRUE, plot = TRUE, cdf = FALSE,
   legargs = NULL, histargs = NULL, quiet = FALSE, quietss = quiet, ...)
 }
@@ -25,6 +26,8 @@ distLfit(dat, datname, speed = TRUE, ks = FALSE, selection = NULL,
 \item{weightc}{Named custom weights for each distribution, see \code{\link{distLgof}}. DEFAULT: NA}
 
 \item{truncate}{Number between 0 and 1. POT Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0}
+
+\item{threshold}{POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
 
 \item{gofComp}{If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE. DEFAULT: FALSE}
 

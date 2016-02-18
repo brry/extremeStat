@@ -28,8 +28,8 @@ digits=1
 # input checks:
 obj <- deparse(substitute(dlf))
 if(!is.list(dlf)) stop("dlf is not a list")
-must <- c("dat", "dat_full", "datname",  "gofProp", "parameter", "gof", "truncate")
-for(i in 1:length(must)) if(!must[i] %in% names(dlf)) stop("dlf must include the element '", must[i], "'.")
+must <- c("dat", "dat_full", "datname",  "gofProp", "parameter", "gof", "truncate", "threshold")
+for(i in 1:length(must)) if(!must[i] %in% names(dlf)) warning("dlf must include the element '", must[i], "'.")
 # functions:
 vals <- function(x, signi=FALSE)
   {
@@ -52,9 +52,9 @@ if(PP) PPs <- vals(c(dlf$RPweibull, dlf$RPgringorton))
 if(RP) RPs <- substr(colnames(dlf$returnlev), start=4, stop=8)
 
 # message output:
-message("Dataset '", dlf$datname, "' with ", n, " values. min/median/max: ", vals(dlf$dat),
+message("----------\nDataset '", dlf$datname, "' with ", n, " values. min/median/max: ", vals(dlf$dat),
 if( ! is.vector(dlf$dat)) "\n--> dat is not a vector!",
-"\ntruncate: ", dlf$truncate, ". dat_full with ", length(dlf$dat_full), " values. min/median/max: ", vals(dlf$dat_full),
+"\ntruncate: ", dlf$truncate, " threshold: ",dlf$threshold,". dat_full with ", length(dlf$dat_full), " values. min/median/max: ", vals(dlf$dat_full),
 "\ndlf with ", nrow(dlf$gof), " distributions. In descending order of fit quality:\n", 
    berryFunctions::pastec(rownames(dlf$gof)),
 if(any(inparnotgof)) "\n--> dists in parameter but not in gof: ",
