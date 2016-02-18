@@ -49,7 +49,7 @@ Depending on the value of "package", this fits the GPD using \cr
 \code{extRemes::\link[extRemes]{fevd}}\cr
 \code{fExtremes::\link[fExtremes]{gpdFit}}\cr
 \code{ismev::\link[ismev]{gpd.fit}}\cr
-\code{Renext::\link[Renext]{fGPD}} or \code{Renext::\link[Renext]{Renouv}}\cr\cr
+\code{Renext::\link[Renext]{Renouv}} or \code{Renext::\link[Renext]{fGPD}}\cr\cr
 
 The \bold{\code{method}} defaults (and other possibilities) are \cr
 evir: "pwm" (probability-weighted moments), or "ml" (maximum likelihood) \cr
@@ -57,7 +57,7 @@ evd: none, only Maximum-likelihood fitting implemented \cr
 extRemes: "MLE", or "GMLE", "Bayesian", "Lmoments" \cr
 fExtremes: "pwm", or "mle"\cr
 ismev: none, only Maximum-likelihood fitting implemented \cr
-Renext: "r" for \code{\link[Renext]{Renouv}}, or 'f' (no truncation!) for \code{\link[Renext]{fGPD}}\cr\cr
+Renext: "r" for \code{\link[Renext]{Renouv}}, or 'f' (no truncation, all negative values ignored!) for \code{\link[Renext]{fGPD}}\cr\cr
 
 The Quantiles are always given with \code{probs} in regard to the full (uncensored) sample.
 If e.g. truncate is 0.90, the distribution function is fitted to the top 10\% of the sample.
