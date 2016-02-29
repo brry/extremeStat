@@ -143,18 +143,16 @@ if(any(!is.na(weightc))) if(is.null(names(weightc))) stop("weightc must have nam
 # Progress bars
 if(quiet) progbars <- FALSE
 if(progbars) lapply <- pbapply::pblapply
-# Objects from list:
-dat <- dlf$dat
-if(missing(gofProp)) gofProp <- dlf$gofProp
-else if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) ) stop("gofProp must be a single value between 0 and 1.")
-parameter <- dlf$parameter
-dn <- names(parameter)
+# gofProp overwrite and check:
+if(!missing(gofProp)) dlf$gofProp <- gofProp
+if(length(dlf$gofProp)>1 | any(dlf$gofProp<0) | any(dlf$gofProp>1) ) stop("gofProp must be a single value between 0 and 1.")
+dn <- names(dlf$parameter)
 # Error check:
-exclude <- sapply(parameter, function(x) 
+exclude <- sapply(dlf$parameter, function(x) 
   {
   if(is.null(x)) return(TRUE)
   # if("ifail" %in% names(x)) if(x$ifail != 0) return(TRUE) ## restriction too tight
-  if(is.null(lmomco::plmomco(mean(dat),x))) return(TRUE)  # *)
+  if(is.null(lmomco::plmomco(mean(dlf$dat),x))) return(TRUE)  # *)
   any(is.na(x$para))
   })                    #  *): CDF cannot be computed for kappa in Dresden example
 if(any(exclude))
@@ -163,7 +161,7 @@ if(any(exclude))
   if(!quiet) on.exit(message("Note in distLgof: The following distributions were excluded since no parameters were estimated:\n",
              pastec(curdnexclude)), add=TRUE)
   dn <- dn[!exclude]
-  # parameter <- parameter[!exclude] # not sure whether this is always good...
+  # dlf$parameter <- dlf$parameter[!exclude] # not sure whether this is always good...
 }
 if(length(dn)<1&!quiet) on.exit(message("Note in distLgof: No fitted distributions",
                                " in dlf, thus GOF can't be compared."), add=TRUE) else
@@ -173,17 +171,17 @@ if(ks)
   {
   # Kolmogorov-Smirnov test:
   if(progbars) message("Performing ks.test:")
-  ksA <- lapply(dn, function(d) ks.test(dat, paste0("cdf",d), parameter[[d]]) )
+  ksA <- lapply(dn, function(d) ks.test(dlf$dat, paste0("cdf",d), dlf$parameter[[d]]) )
   ksP <- sapply(ksA, function(x) x$p.value   )
   ksD <- sapply(ksA, function(x) x$statistic )
   names(ksD) <- dn
   }
 # CDFS for R2 on upper gofProp of data:
-dat2 <- sort(dat, decreasing=TRUE)[  1:(gofProp*length(dat))  ]
+dat2 <- sort(dlf$dat, decreasing=TRUE)[  1:(dlf$gofProp*length(dlf$dat))  ]
 if(progbars) message("Calculating CDFs:")
-tcdfs <- lapply(dn, function(d) lmomco::plmomco(dat2,parameter[[d]]))
+tcdfs <- lapply(dn, function(d) lmomco::plmomco(dat2,dlf$parameter[[d]]))
 names(tcdfs) <- dn # Theoretical CumulatedDensityFunctions
-ecdfs <- ecdf(dat)(dat2) # Empirical CDF
+ecdfs <- ecdf(dlf$dat)(dat2) # Empirical CDF
 # Root Mean Square Error, R squared:
 if(progbars) sapply <- pbapply::pbsapply
 if(progbars) message("Calculating RMSE:")
@@ -244,8 +242,8 @@ if(any(exclude))
   }
 }
 # output:
-output <- list(dat=dat, datname=dlf$datname, gofProp=gofProp, parameter=parameter, gof=gof)
-if(plot) distLgofPlot(output, quiet=quiet, ...)
-output
+dlf$gof <- gof
+if(plot) distLgofPlot(dlf, quiet=quiet, ...)
+dlf
 } # end of function
 

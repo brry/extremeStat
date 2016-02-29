@@ -14,7 +14,7 @@
 #' @keywords hplot dplot distribution
 #' @export
 #' @importFrom lmomco dist.list lmoms lmom2par
-#' @importFrom berryFunctions seqPal
+#' @importFrom berryFunctions rainbow2
 #' 
 #' @examples
 #' 
@@ -26,6 +26,7 @@
 #' 
 #' # arguments that can be passed:
 #' distLfit(annMax, lty=2, col=3, legargs=list(lwd=3), main="booh!")
+#' set.seed(42)
 #' dlf_b <- distLfit(rbeta(1e3, 5, 2), nbest=10, legargs=c(x="left"))
 #' distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"))
 #' distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"), order=TRUE)
@@ -40,7 +41,7 @@
 #' set.seed(1)
 #' y <- 10^rnorm(1e3, mean=2, sd=0.3) # if you use 1e4, distLgof will be much slower
 #' hist(y, breaks=20)
-#' hist(log10(y))
+#' berryFunctions::logHist(y, col=8)
 #' dlf <- distLfit(log10(y), breaks=50)
 #' distLplot(dlf, breaks=50, log=TRUE)
 #' 
@@ -70,7 +71,7 @@
 #' @param legargs List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL
 #' @param histargs List of arguments passed to \code{\link{hist}} except for x, breaks, col, xlim, freq. DEFAULT: NULL
 #' @param quiet Suppress notes? DEFAULT: FALSE
-#' @param quietss Suppress sample size notes? DEFAULT: quiet
+#' @param ssquiet Suppress sample size notes? DEFAULT: quiet
 #' @param \dots Further arguments passed to \code{\link{distLplot}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...
 #' 
 distLfit <- function(
@@ -91,7 +92,7 @@ cdf=FALSE,
 legargs=NULL,
 histargs=NULL,
 quiet=FALSE,
-quietss=quiet,
+ssquiet=quiet,
 ... )
 {
 # preparation ------------------------------------------------------------------
@@ -135,7 +136,7 @@ if(speed) dn <- dn[ ! dn %in%
    c("aep4","cau","emu","gep","gld","gov","kmu","kur","lmrq","sla","st3","texp","tri")]
 #
 # Check remaining sample size
-if(length(dat) < 5) {if(!quietss)on.exit(message("Note in distLfit: sample size (",
+if(length(dat) < 5) {if(!ssquiet)on.exit(message("Note in distLfit: sample size (",
                          length(dat), ") is too small to fit parameters (<5)."), add=TRUE)
   error_out <- as.list(dn) # this is very useful for distLquantile
   names(error_out) <- dn  # since it keeps the columns if a selection is given
@@ -161,7 +162,8 @@ if( length(parameter) != length(dn))
 else names(parameter) <- dn
 #
 # Goodness of Fit, output list, plot -------------------------------------------
-output <- distLgof(list(dat=dat, datname=datname, gofProp=gofProp, parameter=parameter),
+output <- distLgof(list(dat=dat, datname=datname, gofProp=gofProp, parameter=parameter,
+                        truncate=truncate, threshold=threshold, dat_full=dat_full),
                    weightc=weightc, plot=FALSE, progbars=progbars, ks=ks, quiet=quiet)
 # compare GOF
 if(gofComp)
@@ -170,11 +172,8 @@ if(gofComp)
   plot <- FALSE
   }
 if(plot) output <- distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
-if(!plot) output$coldist <- berryFunctions::seqPal(if(is.null(selection)) 5 else length(selection))
-# truncation value
-output$truncate <- truncate
-output$threshold <- threshold
-output$dat_full <- dat_full # non-truncated data
+if(!plot) output$coldist <- berryFunctions::rainbow2(if(is.null(selection)) 5 else length(selection))
+
 if(time & !quiet) on.exit(message("distLfit execution took ", 
       signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds."), add=TRUE)
 return(invisible(output))

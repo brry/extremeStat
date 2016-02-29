@@ -43,7 +43,8 @@ ingofnotpar <- ! rownames(dlf$gof) %in% names(dlf$parameter)
 PP <- "RPweibull" %in% names(dlf) | "RPgringorton" %in% names(dlf)
 RP <- "returnlev" %in% names(dlf)
 CD <- "coldist" %in% names(dlf)
-other <- ! names(dlf) %in% c(must, "RPweibull", "RPgringorton" , "returnlev", "coldist")
+qq <- "quant" %in% names(dlf)
+other <- ! names(dlf) %in% c(must, "RPweibull", "RPgringorton" , "returnlev", "coldist", "quant")
 # Further elements:
 if(PP) PPs <- vals(c(dlf$RPweibull, dlf$RPgringorton))
 if(RP) RPs <- substr(colnames(dlf$returnlev), start=4, stop=8)
@@ -51,7 +52,8 @@ if(RP) RPs <- substr(colnames(dlf$returnlev), start=4, stop=8)
 # message output:
 message("----------\nDataset '", dlf$datname, "' with ", n, " values. min/median/max: ", vals(dlf$dat),
 if( ! is.vector(dlf$dat)) "\n--> dat is not a vector!",
-"\ntruncate: ", dlf$truncate, " threshold: ",dlf$threshold,". dat_full with ", length(dlf$dat_full), " values. min/median/max: ", vals(dlf$dat_full),
+"\ntruncate: ", dlf$truncate, " threshold: ",round(dlf$threshold,digits+1),
+    ". dat_full with ", length(dlf$dat_full), " values. min/median/max: ", vals(dlf$dat_full),
 "\ndlf with ", nrow(dlf$gof), " distributions. In descending order of fit quality:\n", 
    berryFunctions::pastec(rownames(dlf$gof)),
 if(any(inparnotgof)) "\n--> dists in parameter but not in gof: ",
@@ -59,6 +61,8 @@ if(any(inparnotgof)) paste(names(dlf$parameter)[inparnotgof], collapse=", "),
 if(any(ingofnotpar)) "\n--> dists in gof but not in parameter: ",
 if(any(ingofnotpar)) paste(rownames(dlf$gof)[ingofnotpar], collapse=", "),
 "\ngofProp: ", dlf$gofProp, ", RMSE min/median/max: ", vals(dlf$gof$RMSE, TRUE),
+if(qq) paste("\nquant:",nrow(dlf$quant),"rows,",ncol(dlf$quant),"columns,",
+            prod(dim(dlf$quant)),"values, of which",sum(is.na(dlf$quant)),"NA."),
 if(CD) paste("\n", length(dlf$coldist),"distribution colors:", berryFunctions::pastec(dlf$coldist)),
 if(PP | RP) "\ndistLextreme elements:",
 if(PP) "\nPlotting positions min/median/max: ",
