@@ -47,11 +47,11 @@ expect_equal(mean(aq, na.rm=TRUE), 102.055973)
 expect_equal(sum(is.na(distLquantile(annMax, selection="gpa", weight=FALSE))), 3)
 })
 
-test_that("distLquantile can handle returndlf",{
+test_that("distLquantile can handle returnlist",{
 # Compare several GPD Fitting functions:
-distLquantile(annMax, threshold=70, selection="gpa", weight=FALSE, returndlf=TRUE)
-expect_is(distLquantile(annMax, truncate=0.62, returndlf=TRUE), "list")
-expect_is(distLquantile(annMax, threshold=70,  returndlf=TRUE), "list")
+distLquantile(annMax, threshold=70, selection="gpa", weight=FALSE, returnlist=TRUE)
+expect_is(distLquantile(annMax, truncate=0.62, returnlist=TRUE), "list")
+expect_is(distLquantile(annMax, threshold=70,  returnlist=TRUE), "list")
 })
 
 
