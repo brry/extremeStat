@@ -7,7 +7,8 @@
 q_gpd(x, probs = c(0.8, 0.9, 0.99), truncate = 0,
   threshold = berryFunctions::quantileMean(x, truncate),
   package = "extRemes", method = NULL, returnlist = FALSE,
-  undertruncNA = TRUE, quiet = FALSE, suppresswarnings = quiet, ...)
+  undertruncNA = TRUE, quiet = FALSE, ttquiet = quiet, efquiet = quiet,
+  ...)
 }
 \arguments{
 \item{x}{Vector with numeric values. NAs are silently ignored.}
@@ -28,7 +29,9 @@ q_gpd(x, probs = c(0.8, 0.9, 0.99), truncate = 0,
 
 \item{quiet}{Should messages from this function be suppressed? DEFAULT: FALSE}
 
-\item{suppresswarnings}{Should warnings be suppressed via \code{\link{options}(warn=-1)}? The usual type of warning is: NAs produced in log(...). DEFAULT: quiet}
+\item{ttquiet}{Should truncation!=threshold messages from this function be suppressed? DEFAULT: quiet}
+
+\item{efquiet}{Should warnings in function calls to the external packages be suppressed via \code{\link{options}(warn=-1)}? The usual type of warning is: NAs produced in log(...). DEFAULT: quiet}
 
 \item{\dots}{Further arguments passed to the fitting funtion listed in section Details.}
 }

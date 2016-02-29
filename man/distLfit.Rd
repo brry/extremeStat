@@ -8,7 +8,7 @@ distLfit(dat, datname, speed = TRUE, ks = FALSE, selection = NULL,
   gofProp = 1, weightc = NA, truncate = 0,
   threshold = berryFunctions::quantileMean(dat, truncate), gofComp = FALSE,
   progbars = length(dat) > 200, time = TRUE, plot = TRUE, cdf = FALSE,
-  legargs = NULL, histargs = NULL, quiet = FALSE, quietss = quiet, ...)
+  legargs = NULL, histargs = NULL, quiet = FALSE, ssquiet = quiet, ...)
 }
 \arguments{
 \item{dat}{Vector with values}
@@ -45,7 +45,7 @@ distLfit(dat, datname, speed = TRUE, ks = FALSE, selection = NULL,
 
 \item{quiet}{Suppress notes? DEFAULT: FALSE}
 
-\item{quietss}{Suppress sample size notes? DEFAULT: quiet}
+\item{ssquiet}{Suppress sample size notes? DEFAULT: quiet}
 
 \item{\dots}{Further arguments passed to \code{\link{distLplot}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...}
 }
@@ -71,6 +71,7 @@ distLprint(dlf)
 
 # arguments that can be passed:
 distLfit(annMax, lty=2, col=3, legargs=list(lwd=3), main="booh!")
+set.seed(42)
 dlf_b <- distLfit(rbeta(1e3, 5, 2), nbest=10, legargs=c(x="left"))
 distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"))
 distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"), order=TRUE)
@@ -85,7 +86,7 @@ distLplot(dlf_b, cdf=TRUE, histargs=list(do.points=FALSE), sel="nor")
 set.seed(1)
 y <- 10^rnorm(1e3, mean=2, sd=0.3) # if you use 1e4, distLgof will be much slower
 hist(y, breaks=20)
-hist(log10(y))
+berryFunctions::logHist(y, col=8)
 dlf <- distLfit(log10(y), breaks=50)
 distLplot(dlf, breaks=50, log=TRUE)
 

@@ -149,7 +149,8 @@
 #' @param returnlist Return result from the fitting funtion with the quantiles added to the list as element \code{quant} and some information in elements starting with \code{q_gpd_}. DEFAULT: FALSE
 #' @param undertruncNA Return NAs for probs below truncate? Highly recommended to leave this at the DEFAULT: TRUE
 #' @param quiet Should messages from this function be suppressed? DEFAULT: FALSE
-#' @param suppresswarnings Should warnings be suppressed via \code{\link{options}(warn=-1)}? The usual type of warning is: NAs produced in log(...). DEFAULT: quiet
+#' @param ttquiet Should truncation!=threshold messages from this function be suppressed? DEFAULT: quiet
+#' @param efquiet Should warnings in function calls to the external packages be suppressed via \code{\link{options}(warn=-1)}? The usual type of warning is: NAs produced in log(...). DEFAULT: quiet
 #' @param \dots Further arguments passed to the fitting funtion listed in section Details.
 #'
 q_gpd <- function(
@@ -162,7 +163,8 @@ method=NULL,
 returnlist=FALSE,
 undertruncNA=TRUE,
 quiet=FALSE,
-suppresswarnings=quiet,
+ttquiet=quiet,
+efquiet=quiet,
 ...)
 {
 # Input control: ---------------------------------------------------------------
@@ -193,7 +195,7 @@ if(!missing(threshold))
   if(threshold != normalthr)
     {
     probs2 <- probs
-    if(!quiet) on.exit(message("Note in q_gpd: threshold (",threshold,
+    if(!ttquiet) on.exit(message("Note in q_gpd: threshold (",threshold,
     ") is not equal to threshold computed from truncate (",normalthr,
     ").\n  Probabilities are not corrected for truncation!"), add=TRUE)
     }
@@ -220,7 +222,7 @@ if(all(probs < truncate) & undertruncNA)
 #
 #
 # fitting: ---------------------------------------------------------------------
-if(suppresswarnings) {oo <- options(warn=-1); on.exit(options(oo), add=TRUE)}
+if(efquiet) {oo <- options(warn=-1); on.exit(options(oo), add=TRUE)}
 # function to perform in case of failure. Yields useful error message and returns NAs:
 failfun <- function(z, fitfun) {
   if(!quiet) on.exit(message(
