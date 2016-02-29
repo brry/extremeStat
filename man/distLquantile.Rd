@@ -6,10 +6,10 @@
 \usage{
 distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
   threshold = berryFunctions::quantileMean(dlf$dat_full, truncate),
-  selection = NULL, dlf = NULL, order = TRUE, returndlf = FALSE,
+  selection = NULL, dlf = NULL, order = TRUE, returnlist = FALSE,
   empirical = TRUE, weighted = empirical, gpd = empirical,
-  addinfo = FALSE, speed = TRUE, plot = FALSE, cdf = FALSE,
-  lines = TRUE, linargs = NULL, quiet = FALSE, quietss = quiet, ...)
+  addinfo = FALSE, speed = TRUE, plot = FALSE, plotargs = NULL,
+  quiet = FALSE, ssquiet = quiet, ttquiet = quiet, ...)
 }
 \arguments{
 \item{x}{Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
@@ -26,7 +26,7 @@ distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
 
 \item{order}{Sort results by GOF? If TRUE (the default) and length(selection)>1, the output is ordered by dlf$gof, else by order of appearance in selection (or dlf$parameter). DEFAULT: TRUE}
 
-\item{returndlf}{Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned. DEFAULT: FALSE}
+\item{returnlist}{Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned. DEFAULT: FALSE}
 
 \item{empirical}{Add empirical \code{\link{quantileMean}} in the output matrix and vertical lines? DEFAULT: TRUE}
 
@@ -40,21 +40,19 @@ distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
 
 \item{plot}{Should \code{\link{distLplot}} be called? DEFAULT: FALSE}
 
-\item{cdf}{If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE}
-
-\item{lines}{Should vertical lines marking the quantiles be added? DEFAULT: TRUE}
-
-\item{linargs}{Arguments passed to \code{\link{lines}}. DEFAULT: NULL}
+\item{plotargs}{List of arguments to be passed to \code{\link{distLplot}} like qlines, qheights, qrow, qlinargs, nbest, cdf, ...}
 
 \item{quiet}{Suppress notes? DEFAULT: FALSE}
 
-\item{quietss}{Suppress sample size notes? DEFAULT: quiet}
+\item{ssquiet}{Suppress sample size notes? DEFAULT: quiet}
 
-\item{\dots}{Arguments passed to \code{\link{distLfit}}.}
+\item{ttquiet}{Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} is called with ttquiet=TRUE. DEFAULT: quiet}
+
+\item{\dots}{Arguments passed to \code{\link{distLfit}} (and \code{\link{distLplot}} if plot=TRUE).}
 }
 \value{
 Matrix with distribution quantile values (with NAs for probs below truncate), \cr
-or, if returndlf=TRUE, a \code{dlf} list as described in \code{\link{extremeStat}}.
+or, if returnlist=TRUE, a \code{dlf} list as described in \code{\link{extremeStat}}.
 }
 \description{
 Parametric quantiles of distributions fitted to a sample.
@@ -76,8 +74,8 @@ data(annMax) # Annual Discharge Maxima (streamflow)
 dlf <- distLfit(annMax)
 
 distLquantile(annMax, emp=FALSE) # several distribution functions in lmomco
-distLquantile(annMax, truncate=0.8, probs=0.95) # POT
-distLquantile(annMax, probs=0.95, plot=TRUE, linargs=list(lwd=2), nbest=5, breaks=10)
+distLquantile(annMax, truncate=0.8, probs=0.95) # POT (annMax already block maxima)
+distLquantile(annMax, probs=0.95, plot=TRUE, qlinargs=list(lwd=3), nbest=5, breaks=10)
 # Parametric 95\% quantile estimates range from 92 to 111!
 # But the best fitting distributions all lie aroud 103.
 
@@ -85,7 +83,8 @@ distLquantile(annMax, probs=0.95, plot=TRUE, linargs=list(lwd=2), nbest=5, break
 distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
 
 # If speed is important and parameters are already available, pass them via dlf:
-distLquantile(dlf=dlf, probs=0:10/10, selection=c("wak","gev","kap"), order=FALSE)
+distLquantile(dlf=dlf, probs=0:5/5, selection=c("wak","gev","kap"), order=FALSE)
+distLquantile(dlf=dlf, truncate=0.3, returnlist=TRUE)$truncate
 
 # Theoretically, the tails of distributions converge to GPD (General Pareto)
 # q_gpd compares several R packages for fitting and quantile estimation:
@@ -94,7 +93,7 @@ distLquantile(annMax, weight=FALSE, sel="gpa", quiet=TRUE)
 # censored (truncated, trimmed) quantile, Peak Over Treshold (POT) method:
 qwak <- distLquantile(annMax, sel="wak", prob=0.95, plot=TRUE, ylim=c(0,0.06), emp=FALSE)
 qwak2 <-distLquantile(annMax, sel="wak", prob=0.95, truncate=0.6, plot=TRUE,
-                     add=TRUE, col=6, breaks=10, coldist="blue", empirical=FALSE)
+                     addinfo=FALSE, add=TRUE, coldist="blue", empirical=FALSE)
 
 
 # Simulation of truncation effect
@@ -109,9 +108,8 @@ trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gev",
 # If more values are truncated, the function runs faster
 
 op <- par(mfrow=c(2,1), mar=c(2,4.5,2,0.5), cex.main=1)
-distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, progbars=FALSE,
-              ylab="", xlab="", plot=TRUE)
-distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, progbars=FALSE,
+distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, ylab="", xlab="", plot=TRUE)
+distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, addinfo=FALSE,
               truncate=0.3, add=TRUE, coldist=4, plot=TRUE)
 legend("right", c("fitted GEV", "fitted with truncate=0.3"), lty=1, col=c(2,4),
        bg="white")
@@ -136,7 +134,7 @@ title(xlab="Proportion truncated", line=-3)
 mytrunc <- seq(0, 0.9, length.out=30)
 trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gpa",
                       probs=0.99, truncate=mt, plot=FALSE, quiet=TRUE,
-                      progbars=FALSE, empirical=FALSE, gpd=TRUE))
+                      empirical=FALSE, gpd=TRUE))
 lines(-1000*(1-mytrunc), trunceffect[1,], col=4)
 lines(-1000*(1-mytrunc), trunceffect[2,], col=3) # interesting...
 for(i in 3:13) lines(-1000*(1-mytrunc), trunceffect[i,], col=3) # interesting...

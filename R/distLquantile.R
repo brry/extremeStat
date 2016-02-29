@@ -10,7 +10,7 @@
 #' a systematical underestimation bias, but have higher variability.
 #' 
 #' @return Matrix with distribution quantile values (with NAs for probs below truncate), \cr
-#' or, if returndlf=TRUE, a \code{dlf} list as described in \code{\link{extremeStat}}.
+#' or, if returnlist=TRUE, a \code{dlf} list as described in \code{\link{extremeStat}}.
 #' @note NAs are always removed from x in \code{\link{distLfit}}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March + July 2015, Feb 2016
 #' @seealso \code{\link{q_gpd}}, \code{\link{distLfit}}, Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for left truncated and right censored data, Statistica Sinica 10
@@ -19,7 +19,7 @@
 #' @references On GPD: \url{http://stats.stackexchange.com/questions/69438}
 #' @keywords distribution robust univar
 #' @export
-#' @importFrom berryFunctions quantileMean
+#' @importFrom berryFunctions quantileMean owa
 #' @importFrom lmomco plmomco dlmomco qlmomco
 #' 
 #' @examples
@@ -28,8 +28,8 @@
 #' dlf <- distLfit(annMax)
 #'
 #' distLquantile(annMax, emp=FALSE) # several distribution functions in lmomco
-#' distLquantile(annMax, truncate=0.8, probs=0.95) # POT
-#' distLquantile(annMax, probs=0.95, plot=TRUE, linargs=list(lwd=2), nbest=5, breaks=10)
+#' distLquantile(annMax, truncate=0.8, probs=0.95) # POT (annMax already block maxima)
+#' distLquantile(annMax, probs=0.95, plot=TRUE, qlinargs=list(lwd=3), nbest=5, breaks=10)
 #' # Parametric 95% quantile estimates range from 92 to 111!
 #' # But the best fitting distributions all lie aroud 103.
 #'
@@ -37,7 +37,8 @@
 #' distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
 #'
 #' # If speed is important and parameters are already available, pass them via dlf:
-#' distLquantile(dlf=dlf, probs=0:10/10, selection=c("wak","gev","kap"), order=FALSE)
+#' distLquantile(dlf=dlf, probs=0:5/5, selection=c("wak","gev","kap"), order=FALSE)
+#' distLquantile(dlf=dlf, truncate=0.3, returnlist=TRUE)$truncate
 #'
 #' # Theoretically, the tails of distributions converge to GPD (General Pareto)
 #' # q_gpd compares several R packages for fitting and quantile estimation:
@@ -46,7 +47,7 @@
 #' # censored (truncated, trimmed) quantile, Peak Over Treshold (POT) method:
 #' qwak <- distLquantile(annMax, sel="wak", prob=0.95, plot=TRUE, ylim=c(0,0.06), emp=FALSE)
 #' qwak2 <-distLquantile(annMax, sel="wak", prob=0.95, truncate=0.6, plot=TRUE,
-#'                      add=TRUE, col=6, breaks=10, coldist="blue", empirical=FALSE)
+#'                      addinfo=FALSE, add=TRUE, coldist="blue", empirical=FALSE)
 #'
 #'
 #' # Simulation of truncation effect
@@ -61,9 +62,8 @@
 #' # If more values are truncated, the function runs faster
 #'
 #' op <- par(mfrow=c(2,1), mar=c(2,4.5,2,0.5), cex.main=1)
-#' distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, progbars=FALSE,
-#'               ylab="", xlab="", plot=TRUE)
-#' distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, progbars=FALSE,
+#' distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, ylab="", xlab="", plot=TRUE)
+#' distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, addinfo=FALSE,
 #'               truncate=0.3, add=TRUE, coldist=4, plot=TRUE)
 #' legend("right", c("fitted GEV", "fitted with truncate=0.3"), lty=1, col=c(2,4),
 #'        bg="white")
@@ -88,7 +88,7 @@
 #' mytrunc <- seq(0, 0.9, length.out=30)
 #' trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gpa",
 #'                       probs=0.99, truncate=mt, plot=FALSE, quiet=TRUE,
-#'                       progbars=FALSE, empirical=FALSE, gpd=TRUE))
+#'                       empirical=FALSE, gpd=TRUE))
 #' lines(-1000*(1-mytrunc), trunceffect[1,], col=4)
 #' lines(-1000*(1-mytrunc), trunceffect[2,], col=3) # interesting...
 #' for(i in 3:13) lines(-1000*(1-mytrunc), trunceffect[i,], col=3) # interesting...
@@ -106,19 +106,18 @@
 #' @param selection Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used. DEFAULT: NULL
 #' @param dlf dlf object described in \code{\link{extremeStat}}. Use this to save computing time for large datasets where you already have dlf. DEFAULT: NULL
 #' @param order Sort results by GOF? If TRUE (the default) and length(selection)>1, the output is ordered by dlf$gof, else by order of appearance in selection (or dlf$parameter). DEFAULT: TRUE
-#' @param returndlf Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned. DEFAULT: FALSE
+#' @param returnlist Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned. DEFAULT: FALSE
 #' @param empirical Add empirical \code{\link{quantileMean}} in the output matrix and vertical lines? DEFAULT: TRUE
 #' @param weighted Include weighted averages across distribution functions to the output? DEFAULT: empirical, so additional options can all be excluded with emp=F.
 #' @param gpd Include GPD quantile estimation via \code{\link{q_gpd}}? DEFAULT: empirical
 #' @param addinfo Should information like sample size be \code{\link{rbind}ed} to the output? DEFAULT: FALSE
 #' @param speed Compute \code{\link{q_gpd}} only for fast methods? Don't accidentally set this to \code{FALSE} in simulations or with large datasets! DEFAULT: TRUE
 #' @param plot Should \code{\link{distLplot}} be called? DEFAULT: FALSE
-#' @param cdf If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE
-#' @param lines Should vertical lines marking the quantiles be added? DEFAULT: TRUE
-#' @param linargs Arguments passed to \code{\link{lines}}. DEFAULT: NULL
+#' @param plotargs List of arguments to be passed to \code{\link{distLplot}} like qlines, qheights, qrow, qlinargs, nbest, cdf, ...
 #' @param quiet Suppress notes? DEFAULT: FALSE
-#' @param quietss Suppress sample size notes? DEFAULT: quiet
-#' @param \dots Arguments passed to \code{\link{distLfit}}.
+#' @param ssquiet Suppress sample size notes? DEFAULT: quiet
+#' @param ttquiet Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} is called with ttquiet=TRUE. DEFAULT: quiet
+#' @param \dots Arguments passed to \code{\link{distLfit}} (and \code{\link{distLplot}} if plot=TRUE).
 #'
 distLquantile <- function(
 x=NULL,
@@ -128,18 +127,17 @@ threshold=berryFunctions::quantileMean(dlf$dat_full, truncate),
 selection=NULL,
 dlf=NULL,
 order=TRUE,
-returndlf=FALSE,
+returnlist=FALSE,
 empirical=TRUE,
 weighted=empirical,
 gpd=empirical,
 addinfo=FALSE,
 speed=TRUE,
 plot=FALSE,
-cdf=FALSE,
-lines=TRUE,
-linargs=NULL,
+plotargs=NULL,
 quiet=FALSE,
-quietss=quiet,
+ssquiet=quiet,
+ttquiet=quiet,
 ...
 )
 {
@@ -160,8 +158,8 @@ if(!is.null(dlf)) if(any(dlf$truncate!=truncate)|any(any(dlf$threshold!=threshol
   currentdlfthreshold <- dlf$threshold
   if(!quiet) on.exit(message("Note in distLquantile: truncate (",truncate,
        ") did not match dlf$truncate (",currentdlftruncate,
-       ") Thresholds: ",pastec(c(threshold, currentdlfthreshold)),
-       ". distLfit is called with the original dlf$dat."), add=TRUE)
+       "). Thresholds: ",pastec(signif(c(threshold, currentdlfthreshold),7)),
+       ".\n   distLfit is called with the original dlf$dat."), add=TRUE)
   x <- dlf$dat
   internaldatname <- dlf$datname
   dlf <- NULL
@@ -173,7 +171,7 @@ if(is.null(dlf))
   if(is.na(threshold)) threshold <- berryFunctions::quantileMean(x, truncate)
   dlf <- distLfit(dat=x, datname=internaldatname, selection=selection,
                   truncate=truncate, threshold=threshold,
-                  plot=plot, cdf=cdf, quiet=quiet, quietss=quietss, ...)
+                  plot=FALSE, quiet=quiet, ssquiet=ssquiet, ...)
   }
 # check selection
 if(any(!selection %in% names(dlf$parameter))) if(!quiet) on.exit(message(
@@ -224,10 +222,10 @@ if(addinfo) output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$da
 # if input sample size is too small, return NA matrix:
 if( length(dlf$dat)<5 )
   {
-  if(!quietss) on.exit(message(
+  if(!ssquiet) on.exit(message(
     "Note in distLquantile: sample size is too small to fit parameters (",
     length(dlf$dat),"). Returning NAs"), add=TRUE)
-  if(returndlf) {dlf$quant <- output; return(dlf)}
+  if(returnlist) {dlf$quant <- output; return(dlf)}
   else return(output)
   }
 #
@@ -247,7 +245,7 @@ normalthr <- berryFunctions::quantileMean(dlf$dat_full, truncate)
 if(threshold != normalthr)
     {
     probs2 <- probs
-    if(!quiet) on.exit(message("Note in distLquantile: threshold (",threshold,
+    if(!ttquiet) on.exit(message("Note in distLquantile: threshold (",threshold,
     ") is not equal to threshold computed from truncate (",normalthr,
     ").\n  Probabilities are not corrected for truncation!"), add=TRUE)
     }
@@ -288,45 +286,29 @@ if(weighted)
 # q_gpd estimates:
 if(gpd)
   {
-  q_gpd_int <- function(pack, meth=NULL) q_gpd(x=dlf$dat_full, probs=probs,
-  truncate=truncate, threshold=threshold, package=pack, method=meth, quiet=quiet)
-  output["q_gpd_evir_pwm",]      <- q_gpd_int("evir")
+  # inernal helper function:
+  q_gpd_int <- function(pack, meth=NULL) q_gpd(package=pack, method=meth,
+                        x=dlf$dat_full, probs=probs,
+                        truncate=truncate, threshold=threshold, 
+                        quiet=quiet, ttquiet=TRUE)
+  #
+  output["q_gpd_evir_pwm",]      <- q_gpd_int("evir", meth="pwm")
   output["q_gpd_evir_ml",]       <- q_gpd_int("evir", meth="ml")
   output["q_gpd_evd",]           <- q_gpd_int("evd")
-  output["q_gpd_extRemes_MLE",]  <- q_gpd_int("extRemes")
+  output["q_gpd_extRemes_MLE",]  <- q_gpd_int("extRemes", meth="MLE")
   output["q_gpd_extRemes_GMLE",] <- q_gpd_int("extRemes", meth="GMLE")
 if(!speed) output["q_gpd_extRemes_Bayesian",] <- q_gpd_int("extRemes", meth="Bayesian") # computes a while
   output["q_gpd_extRemes_Lmoments",] <- q_gpd_int("extRemes", meth="Lmoments")
-  output["q_gpd_fExtremes_pwm",] <- q_gpd_int("fExtremes")
+  output["q_gpd_fExtremes_pwm",] <- q_gpd_int("fExtremes", meth="pwm")
   output["q_gpd_fExtremes_mle",] <- q_gpd_int("fExtremes", meth="mle")
   output["q_gpd_ismev",]         <- q_gpd_int("ismev")
-  output["q_gpd_Renext_r",]      <- q_gpd_int("Renext")
+  output["q_gpd_Renext_r",]      <- q_gpd_int("Renext", meth="r")
   output["q_gpd_Renext_f",]      <- q_gpd_int("Renext", meth="f")
   }
 #
+dlf$quant <- output
 # Plotting: Quantile lines: ----------------------------------------------------
-if(plot & lines)
-  {
-  lfun <- if(cdf) lmomco::plmomco else lmomco::dlmomco
-  use <- rownames(dlf$gof)[1:length(dlf$coldist)]
-  for(i in length(use):1)
-  {
-  qval <- output[use[i],]
-  qval <- qval[ is.finite(qval) ] # Inf ignored
-  if(length(qval)>0) do.call(graphics::lines, args=owa(
-                      list(x=qval, y=lfun(x=qval, para=dlf$parameter[[use[i]]]),
-                  col=dlf$coldist[i], type="h"), linargs, "x","col","type"))
-  }
-  # empirical quantile added:
-  if(empirical)
-    {
-    dd <- density(dlf$dat)
-    qd <- output["quantileMean",]
-    do.call(graphics::lines, args=owa(list(x=qd, y=approx(dd$x, dd$y, xout=qd)$y,
-                                           type="h"), linargs, "x","y","type"))
-    }
-  }
+if(plot) do.call(distLplot, berryFunctions::owa(c(list(dlf=dlf, qlines=TRUE), list(...)), plotargs))
 # return output: ---------------------------------------------------------------
-if(returndlf) {dlf$quant <- output; return(dlf)}
-else return(output)
+if(returnlist) return(dlf) else return(output)
 }
