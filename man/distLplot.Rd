@@ -6,10 +6,12 @@
 \usage{
 distLplot(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
   log = FALSE, percentline = NA, percentargs = NULL, supportends = TRUE,
-  breaks = 20, xlim = extendrange(dat, f = 0.15), ylim = NULL,
+  breaks = 20, xlim = extendrange(dlf$dat, f = 0.15), ylim = NULL,
   xaxs = "i", yaxs = "i", xaxt, col = "grey", main, xlab, ylab, las = 1,
-  coldist = berryFunctions::seqPal(nbest), lty = 1, add = FALSE,
-  logargs = NULL, legend = TRUE, legargs = NULL, histargs = NULL, ...)
+  coldist = berryFunctions::rainbow2(nbest), lty = 1, add = FALSE,
+  logargs = NULL, legend = TRUE, legargs = NULL, histargs = NULL,
+  qlines = FALSE, qheights = stats::quantile(par("usr")[3:4], 0.2),
+  qrow = NULL, qlinargs = NULL, ...)
 }
 \arguments{
 \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname, gofProp}}
@@ -46,7 +48,7 @@ distLplot(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
 
 \item{las}{Label Axis Style for orientation of numbers along axes. DEFAULT: 1}
 
-\item{coldist}{Color for each distribution added with \code{\link{lines}}. DEFAULT: \code{\link[berryFunctions]{seqPal}}}
+\item{coldist}{Color for each distribution added with \code{\link{lines}}. DEFAULT: \code{\link[berryFunctions]{rainbow2}}}
 
 \item{lty}{Line TYpe for plotted distributions. Recycled vector of length nbest. DEFAULT: 1}
 
@@ -59,6 +61,17 @@ distLplot(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
 \item{legargs}{List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL}
 
 \item{histargs}{List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} except for x, freq. DEFAULT: NULL}
+
+\item{qlines}{Should vertical lines marking the quantiles be added?
+Ignored if \code{dlf} does not contain the element \code{quant}. DEFAULT: FALSE}
+
+\item{qheights}{Coordinates of quantile line ends, recycled if necessary. DEFAULT: 20\% of plot height.}
+
+\item{qrow}{Rowname(s) of \code{dlf$quant} that should be drawn instead of the nbest highest ranking distribution functions.
+'q_gpd*' will select all the gpd fits, including gpa.
+qheights and coldist must then accordingly have at least 13 elements (or will be recycled). DEFAULT: NULL}
+
+\item{qlinargs}{Arguments passed to \code{\link{lines}} for qlines. DEFAULT: NULL}
 
 \item{\dots}{Further arguments passed to \code{\link{lines}}, like type, pch, ...}
 }
