@@ -8,9 +8,9 @@ distLextremePlot(dlf, selection = NULL, order = FALSE, add = FALSE,
   nbest = 5, log = FALSE, xlim = NULL, ylim = NULL, las = 1,
   main = dlf$datname, xlab = "Return Period RP  [a]",
   ylab = "Discharge HQ  [m<U+00B3>/s]", PPcol = "black", PPpch = c(16, 3),
-  PPcex = 1, coldist = berryFunctions::seqPal(nbest), lty = 1, lwd = 1,
-  pch = NA, cex = 1, n_pch = 15, legend = TRUE, legargs = NULL,
-  quiet = FALSE, ...)
+  PPcex = 1, coldist = berryFunctions::rainbow2(nbest), lty = 1,
+  lwd = 1, pch = NA, cex = 1, n_pch = 15, legend = TRUE,
+  legargs = NULL, quiet = FALSE, ...)
 }
 \arguments{
 \item{dlf}{List as returned by \code{\link{distLextreme}}, containing the elements \code{dat, dleB <- distLexBoot(dlf, nbest=4, conf.lev=0.5), gof}.}
@@ -43,7 +43,7 @@ distLextremePlot(dlf, selection = NULL, order = FALSE, add = FALSE,
 
 \item{PPcex}{Character EXpansion of plotting points. DEFAULT: 1}
 
-\item{coldist}{Color for each distribution added with \code{\link{lines}}. Recycled, if necessary. DEFAULT: \code{\link[berryFunctions]{seqPal}}}
+\item{coldist}{Color for each distribution added with \code{\link{lines}}. Recycled, if necessary. DEFAULT: \code{\link[berryFunctions]{rainbow2}}}
 
 \item{lty}{Line TYpe for plotted distributions. Is recycled to from a vector of length nbest, i.e. a value for each distribution function drawn. DEFAULT: 1}
 

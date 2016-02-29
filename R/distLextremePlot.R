@@ -9,7 +9,7 @@
 #' @seealso \code{\link{distLextreme}}, \code{\link{distLplot}}
 #' @keywords hplot dplot distribution
 #' @export
-#' @importFrom berryFunctions seqPal owa logAxis
+#' @importFrom berryFunctions rainbow2 owa logAxis
 #' @importFrom lmomco plmomco
 #' 
 #' @examples
@@ -31,7 +31,7 @@
 #' @param PPcol Plotting Position point colors, vector of length two for Weibull and Gringorton, recycled. PP are not used for fitting distributions, but for plotting only. DEFAULT: "black"
 #' @param PPpch point characters for plotting positions after Weibull and Grongorton, respectively. NA to suppress in plot and legend. DEFAULT: c(16,3)
 #' @param PPcex Character EXpansion of plotting points. DEFAULT: 1
-#' @param coldist Color for each distribution added with \code{\link{lines}}. Recycled, if necessary. DEFAULT: \code{\link[berryFunctions]{seqPal}}
+#' @param coldist Color for each distribution added with \code{\link{lines}}. Recycled, if necessary. DEFAULT: \code{\link[berryFunctions]{rainbow2}}
 #' @param lty Line TYpe for plotted distributions. Is recycled to from a vector of length nbest, i.e. a value for each distribution function drawn. DEFAULT: 1
 #' @param lwd Line WiDth of distribution lines. Recycled vector of length nbest. DEFAULT: 1
 #' @param pch Point CHaracter of points added at regular intervals. NA to suppress. Recycled vector of length nbest. DEFAULT: NA
@@ -58,7 +58,7 @@ ylab="Discharge HQ  [m\U00B3/s]",
 PPcol="black",
 PPpch=c(16,3),
 PPcex=1,
-coldist=berryFunctions::seqPal(nbest),
+coldist=berryFunctions::rainbow2(nbest),
 lty=1,
 lwd=1,
 pch=NA,
