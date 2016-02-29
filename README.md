@@ -11,8 +11,8 @@ Code to install:
 source("https://raw.githubusercontent.com/brry/misc/master/instgit.R")
 instgithub("brry/extremeStat")
 
-# or use it:
-if(!require(devtools)) install.packages("devtools")
+# or using devtools:
+if(!requireNamespace("devtools", quitly=TRUE)) install.packages("devtools")
 devtools::install_github("brry/berryFunctions")
 devtools::install_github("brry/extremeStat")
 ```
