@@ -179,7 +179,7 @@ for(i in length(dn):1)
   # only plot distribution line if there is some support:
   if(length(xval)>0){
   yval <- lfun(xval,paramd)
-  if(dlf$truncate!=0) yval <- yval*(1-dlf$truncate) + dlf$truncate ## yval <- (yval-dlf$truncate)/(1-dlf$truncate)
+  if(cdf & dlf$truncate!=0) yval <- yval*(1-dlf$truncate) + dlf$truncate ## yval <- (yval-dlf$truncate)/(1-dlf$truncate)
   lines(xval, yval, col=coldist[i], lty=lty[i], ...)
   if(supportends)
     {
