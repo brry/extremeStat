@@ -82,13 +82,22 @@ distLquantile(annMax, probs=0.95, plot=TRUE, qlinargs=list(lwd=3), nbest=5, brea
 # weighted distribution quantiles are calculated by different weighting schemes:
 distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
 
+# compare General Pareto Fitting methods
+# Theoretically, the tails of distributions converge to GPD (General Pareto)
+# q_gpd compares several R packages for fitting and quantile estimation:
+distLquantile(annMax, weight=FALSE, sel="gpa")
+dlq <- distLquantile(annMax, quiet=TRUE, probs=0.97, returnlist=TRUE)
+dlq$quant
+distLplot(dlq, qlines=TRUE) # per default best fitting distribution functions
+distLplot(dlq, qlines=TRUE, qrow=c("wak","q_gpd*"), nbest=14)
+#pdf("dummy.pdf", width=9)
+distLplot(dlq, qlines=TRUE, qrow="q_gpd*", nbest=13, xlim=c(102,110), 
+          qlinargs=list(lwd=3), qheights=seq(0.02, 0.005, len=13))
+#dev.off()
+
 # If speed is important and parameters are already available, pass them via dlf:
 distLquantile(dlf=dlf, probs=0:5/5, selection=c("wak","gev","kap"), order=FALSE)
 distLquantile(dlf=dlf, truncate=0.3, returnlist=TRUE)$truncate
-
-# Theoretically, the tails of distributions converge to GPD (General Pareto)
-# q_gpd compares several R packages for fitting and quantile estimation:
-distLquantile(annMax, weight=FALSE, sel="gpa", quiet=TRUE)
 
 # censored (truncated, trimmed) quantile, Peak Over Treshold (POT) method:
 qwak <- distLquantile(annMax, sel="wak", prob=0.95, plot=TRUE, ylim=c(0,0.06), emp=FALSE)
