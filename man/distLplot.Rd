@@ -87,7 +87,7 @@ easier to discern and tail behaviour is easier to judge visually. See also
 urlhttp://www.vosesoftware.com/vosesoftware/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_\%28histogram\%29_plots.htm
 }
 \examples{
- # See distLfit
+ # See distLfit and distLquantile
 
 }
 \author{

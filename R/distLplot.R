@@ -14,7 +14,7 @@
 #' @importFrom berryFunctions lim0 owa rainbow2
 #' @importFrom lmomco plmomco dlmomco supdist
 #' @examples
-#'  # See distLfit
+#'  # See distLfit and distLquantile
 #' 
 #' @param dlf List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname, gofProp}
 #' @param nbest Number of distributions plotted, in order of goodness of fit. DEFAULT: 5
@@ -126,7 +126,7 @@ if(!add)
 {
   if(cdf)
   {
-  if(is.null(ylim)) ylim <- c(0,1)
+  if(is.null(ylim)) ylim <- c(dlf$truncate,1)
   if(missing(ylab)) ylab <- "(Empirical) Cumulated Density (CDF)"
   if(missing(main)) main <- paste("Cumulated density distributions of", dlf$datname)
   ecdfdef <- list(x=ecdf(dlf$dat_full), do.points=TRUE, col=col, xlim=xlim, xaxt=xaxt, ylab=ylab,
@@ -176,18 +176,25 @@ for(i in length(dn):1)
   paramd <- dlf$parameter[[dn[i]]]
   xsup <- lmomco::supdist(paramd)$support
   xval <- xval[ xval>xsup[1] & xval<xsup[2] ]
-  # last point within support range, if support ends in graphing region:
-  lo <- if(xsup[1] > par("usr")[1])      xval[1] else NA
-  hi <- if(xsup[2] < par("usr")[2]) tail(xval,1) else NA
   # only plot distribution line if there is some support:
-  if(length(xval)>0)            lines(xval, lfun(xval,paramd), col=coldist[i], lty=lty[i], ...)
-  if(supportends & !is.na(lo) ) points(lo, lfun(lo,paramd), pch=16, col=coldist[i])
-  if(supportends & !is.na(hi) ) points(hi, lfun(hi,paramd), pch=16, col=coldist[i])
-  }
+  if(length(xval)>0){
+  yval <- lfun(xval,paramd)
+  if(dlf$truncate!=0) yval <- yval*(1-dlf$truncate) + dlf$truncate ## yval <- (yval-dlf$truncate)/(1-dlf$truncate)
+  lines(xval, yval, col=coldist[i], lty=lty[i], ...)
+  if(supportends)
+    {
+    # last point within support range, if support ends in graphing region:
+    lo <- if(xsup[1] > par("usr")[1])      xval[1] else NA
+    hi <- if(xsup[2] < par("usr")[2]) tail(xval,1) else NA
+    if(!is.na(lo) ) points(lo,      yval[1], pch=16, col=coldist[i])
+    if(!is.na(hi) ) points(hi, tail(yval,1), pch=16, col=coldist[i])
+    } # end if supportends
+  } # end if xval has values
+  } # end for loop over distribution functions
 # draw vertical gofProp line:
 if(is.na(percentline)) percentline <- if(dlf$gofProp!=1) TRUE else FALSE
-if(percentline) do.call(abline, args=berryFunctions::owa(list(v=quantile(dlf$dat, probs=1-dlf$gofProp),
-                                                lty=3, col="red"), percentargs))
+if(percentline) do.call(abline, args=berryFunctions::owa(list(
+       v=quantile(dlf$dat, probs=1-dlf$gofProp), lty=3, col="red"), percentargs))
 # draw quantile lines:
 if(qlines)
   {
