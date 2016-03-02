@@ -53,7 +53,7 @@ if(RP) RPs <- substr(colnames(dlf$returnlev), start=4, stop=8)
 message("----------\nDataset '", dlf$datname, "' with ", n, " values. min/median/max: ", vals(dlf$dat),
 if( ! is.vector(dlf$dat)) "\n--> dat is not a vector!",
 "\ntruncate: ", dlf$truncate, " threshold: ",round(dlf$threshold,digits+1),
-    ". dat_full with ", length(dlf$dat_full), " values. min/median/max: ", vals(dlf$dat_full),
+    ". dat_full with ", length(dlf$dat_full), " values: ", vals(dlf$dat_full),
 "\ndlf with ", nrow(dlf$gof), " distributions. In descending order of fit quality:\n", 
    berryFunctions::pastec(rownames(dlf$gof)),
 if(any(inparnotgof)) "\n--> dists in parameter but not in gof: ",
