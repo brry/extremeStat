@@ -21,7 +21,7 @@
 #' 
 #' @examples
 #' 
-#' require(lmomco)
+#' library(lmomco)
 #' data(annMax)
 #' 
 #' # Goodness of Fit is measured by RMSE of cumulated distribution function and ?ecdf
