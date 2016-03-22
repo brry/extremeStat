@@ -1,0 +1,187 @@
+---
+title: "Estimation of extreme quantiles"
+author: "Berry Boessenkool, <berry-b@gmx.de>"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    \\ toc_float: true \\ not possible as of march 2016
+vignette: >
+  %\VignetteIndexEntry{Estimation of extreme quantiles}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Quantile^[in some disciplines, quantiles are called percentiles, but technically, that are only one kind of quantiles (as are deciles, quartiles, etc).] estimation via distribution fitting  
+comparison of GPD implementations in several R packages
+
+
+```{r options, echo = FALSE}
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+
+## Package installation
+
+Once the package is on CRAN (envisioned for spring 2016), this should be all you need:
+```{r installcran, eval=FALSE}
+install.packages("extremeStat")
+library(extremeStat)
+```
+Until then, you can install from the development repository on github:
+```{r installgit, eval=FALSE}
+if(!requireNamespace("devtools", quitly=TRUE)) install.packages("devtools") 
+devtools::install_github("brry/berryFunctions")
+install.packages("timeDate")
+devtools::install_github("brry/extremeStat") # 28 dependencies
+library(extremeStat)
+```
+That is a huge amount of dependencies, because of the GPD comparison across the packages: `evd, evir, extRemes, fExtremes, ismev, lmomco, Renext`   
+In a clean 2016-03-02 R-devel version, I got an `Error in loadNamespace: there is no package called 'timeDate'`. In other words: Some dependencies may not install properly (this may happen also if they were already installed).
+```{r library, echo=FALSE}
+library(extremeStat)
+```
+
+[TOC](#header)
+
+## Dataset
+
+Let's use the dataset `rain` with 17k values. Let's remove very small values, as they might be considered uncertain records, leaving us with 6k values (it's just for demonstration purposes, so let's not fuss about that too much here).
+```{r dataHist, fig.show='hold', echo=-3}
+data(rain, package="ismev")
+rain <- rain[rain>2]
+par(mar=c(3.2,3.2,1.5,0.7), mgp=c(2.1,0.7,0))
+hist(rain, breaks=80, col=4, las=1)
+# Visual inspection is easier on a logarithmic scale:
+berryFunctions::logHist(rain, breaks=80, col=3, las=1)
+```
+
+
+[TOC](#header)
+
+## Fitting distributions
+
+To fit distribution functions, the function `distLfit` fits 17 of the distribution types avalable in the R package `lmomco` (there are more, but some of these require quite a bit of computation time and are prone to not be able to be fitted to this type of data distribution anyways).  
+
+The parameters are estimated via linear moments.
+These are analogous to the conventional statistical moments (mean, variance, skewness and kurtosis), but "robust [and] suitable for analysis of rare events of non-Normal data. [...]
+L-moments are especially useful in the context of quantile functions"
+[Asquith, W. (2015): lmomco package](\href{https://cran.r-project.org/package=lmomco)
+
+
+`distLfit` ranks the distributions according to their goodness of fit (RMSE between ecdf and cdf).
+
+
+[TOC](#header)
+
+## Quantile estimation
+To estimate the quantile of (small) samples via a distribution function, you can use `distLquantile`, which internally calls distLfit, in the following manner:
+```{r dlq}
+dlq <- distLquantile(rain, probs=c(0.8,0.9,0.99,0.999), returnlist=TRUE, quiet=TRUE)
+```
+By default, the 5 best fitting distribution types are drawn and the quantiles for each distribution returned.
+If returnlist is set to TRUE, it will return an object that can be examined with
+```{r dlprint}
+distLprint(dlq)
+```
+plotted with
+```{r dlplot, echo=-1, fig.height=3.5, fig.width=5.5}
+par(mar=c(3.9,3.9,1.5,0.7), mgp=c(2.8,0.7,0))
+distLplot(dlq, nbest=8, qlines=TRUE, qlinargs=list(lwd=2), 
+          qheights=seq(0.04, 0.01, len=8), breaks=80)
+```
+
+and the resulting **parametric quantiles** can be obtained with
+```{r dlquant}
+dlq$quant # distLquantile output if returnlist=FALSE (the default)
+```
+* The row `quantileMean` is an average of R's 9 methods implemented in `stats::quantile` to determine **empirical percentiles** (order based statistic, keyword plotting positions).  
+* The rows `q_gpd_*` are the General Pareto Distribution quantiles, as estimated by a range of different R packages and methods (specified in the row names), computed by `q_gpd`. More on that in the next section [GPD](#GPD).  
+* The rows `weighted*` are averages of the quantiles estimated from the distribution functions, weighted by their goodness of fit in three (and a custom) weighting schemes:  
+```{r, echo=-1, fig.height=3.5, fig.width=5.5}
+par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
+distLgofPlot(dlq, ranks=FALSE, 
+             legargs=list(cex=0.8, bg="transparent"), quiet=TRUE)
+```
+
+
+[TOC](#header)
+<a name="GPD"></a>
+
+## GPD
+
+The General Pareto Distribution ('GPD', or 'gpa' in the package `lmomco`) is often used to obtain **parametric quantile values** because of the [Pickands-Balkema-DeHaan theorem](https://en.wikipedia.org/wiki/Pickands-Balkema-de_Haan_theorem). 
+It states that the tails of many (empirical) distributions converge to the GPD if a Peak-Over-Threshold (POT) method is used, i.e. the distribution is fitted only to the largest values of a sample.
+The resulting percentiles can be called **censored or truncated quantiles**. 
+
+This package is based on the philosophy that, in order to compare parametric with empirical quantiles, the threshold must be at some percentage of the full sample. 
+That way, the probabilities given to the quantile functions can be updated.  
+For example, if the censored Q0.99 is to be computed from the top 20 % of the full dataset, Q0.95 of the truncated sample must be used.
+The probability adjustment for censored quantiles with truncation percentage **`t`** happens with the equation
+$$ p2  =  \frac{p-t}{1-t}~~derived~from~~\frac{1-p}{1-t}  =  \frac{1-p2}{1-0} $$
+as visualized along a probability line:
+```{r propUpdate, echo=FALSE, fig.height=1, fig.width=5.5}
+  par(mar=rep(0,4))
+  plot(1:6, type="n", ylim=c(1,6), axes=F, ann=F)
+  arrows(x0=1, y0=4, x1=6, code=3, angle=90, length=0.07)
+  arrows(x0=4, y0=4, x1=6, code=1, angle=90, length=0.07)
+  arrows(x0=4, y0=3, x1=6, code=3, angle=90, length=0.07)
+  text(x=c(1,4,5.5,6), y=rep(5,4), c(0,"t","p",1), col=c(1,1,2,1))
+  text(x=c(4,5.5,6),   y=rep(2,3), c(0,"p2",1),    col=c(1,2,1))
+  text(3.8, 3, "truncated sample", adj=1)
+  points(x=rep(5.5,2), y=c(3,4), col=2, pch=16)
+#text(7, 5.5, expression(frac(1-p, 1-t)*"  =  "* frac(1-p2, 1-0)), adj=0, cex=1.2)
+#text(7, 2.5, expression("p2  =  "*frac(p-t, 1-t)), adj=0, cex=1.2)
+
+```
+
+In `distLquantile`, you can set the threshold manually, or (better) as a truncate percentage reflecting the proportion of data discarded:
+```{r, echo=-1, fig.height=3.5, fig.width=5.5}
+par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
+d <- distLquantile(rain, truncate=0.9, plot=TRUE, probs=0.999, quiet=TRUE, breaks=50)
+```
+
+
+[TOC](#header)
+
+## Truncation effect
+
+To examine the effect of the truncation percentage, we can compute the quantiles for different cutoff percentages. This is quite time consuming, so the code is not performed upon vignette creation. The result is loaded instead. 
+
+```{r trunceffect, eval=FALSE}
+tt <- seq(0,0.95, len=50) 
+if(interactive()) lapply <- pbapply::pblapply # for progress bars
+qq <- lapply(tt, function(t) distLquantile(rain, truncate=t, 
+                                             probs=c(0.99,0.999), quiet=TRUE))     
+save(tt,qq, file="vignettes/qq.Rdata")   
+```
+
+We can visualize the truncation dependency with
+```{r trunceffectplot, echo=-(1:4), fig.height=3.5, fig.width=5.5}
+path <- "S:/Dropbox/Public/extremeStat"
+# work PC path change:
+if(!file.exists(path)) path <- gsub("S:", "C:/Users/boessenkool", path)
+setwd(path)
+load("vignettes/qq.Rdata")
+par(mar=c(3,2.8,2.2,0.4), mgp=c(1.8,0.5,0))
+plot(tt,tt, type="n", xlab="truncation proportion", ylab="Quantile estimation",
+     main="truncation effect for 6k values of rain", ylim=c(22,90), las=1)
+dn <- c("wak","kap","wei","gpa","pe3","weighted2")
+cols <- c(4,5,3,"orange",2,1) ; names(cols) <- dn
+for(d in rownames(qq[[1]])) lines(tt, sapply(qq, "[", d, j=2), col=8)
+for(d in dn)
+  {
+  lines(tt, sapply(qq, "[", d, j=1), col=cols[d], lwd=2)
+  lines(tt, sapply(qq, "[", d, j=2), col=cols[d], lwd=2)
+  }
+abline(h=berryFunctions::quantileMean(rain, probs=c(0.99,0.999)), lty=3)
+legend("topright", c(dn,"other"), col=c(cols,8), lty=1, lwd=c(rep(2,6),1), bg="white", cex=0.6)
+text(0.9, 53, "Q99.9%") ; text(0.9, 34, "Q99%")
+text(0.35, 62, "empirical quantile (full sample)", cex=0.7)
+
+```
+
+The 17 different distribution quantiles and 12 different GPD estimates seem to converge with increasing truncation percentage.
+However, at least 5 remaining values in the truncated sample are necessary to fit distributions via linear moments, so don't truncate too much.
+
+
