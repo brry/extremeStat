@@ -1,15 +1,17 @@
 ## ----options, echo = FALSE-----------------------------------------------
 knitr::opts_chunk$set(cache = TRUE)
 
-## ----installcran, eval=FALSE---------------------------------------------
+## ----instcran, eval=FALSE------------------------------------------------
 #  install.packages("extremeStat")
 #  library(extremeStat)
 
-## ----installgit, eval=FALSE----------------------------------------------
-#  if(!requireNamespace("devtools", quitly=TRUE)) install.packages("devtools")
+## ----instgit, eval=FALSE-------------------------------------------------
+#  install.packages(c("lmomco", "pbapply","devtools"))
+#  install.packages(c("evir", "ismev", "fExtremes", "extRemes", "evd", "Renext"))
+#  # reiterate untill all of them work (some may not install properly on first try)
+#  
 #  devtools::install_github("brry/berryFunctions")
-#  install.packages("timeDate")
-#  devtools::install_github("brry/extremeStat") # 28 dependencies
+#  devtools::install_github("brry/extremeStat")
 #  library(extremeStat)
 
 ## ----library, echo=FALSE-------------------------------------------------
@@ -37,12 +39,12 @@ distLplot(dlq, nbest=8, qlines=TRUE, qlinargs=list(lwd=2),
 ## ----dlquant-------------------------------------------------------------
 dlq$quant # distLquantile output if returnlist=FALSE (the default)
 
-## ---- echo=-1, fig.height=3.5, fig.width=5.5-----------------------------
+## ----weight, echo=-1, fig.height=3.5, fig.width=5.5----------------------
 par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
 distLgofPlot(dlq, ranks=FALSE, 
              legargs=list(cex=0.8, bg="transparent"), quiet=TRUE)
 
-## ----propUpdate, echo=FALSE, fig.height=1, fig.width=5.5-----------------
+## ----prob, echo=FALSE, fig.height=1, fig.width=5.5-----------------------
   par(mar=rep(0,4))
   plot(1:6, type="n", ylim=c(1,6), axes=F, ann=F)
   arrows(x0=1, y0=4, x1=6, code=3, angle=90, length=0.07)
@@ -56,23 +58,23 @@ distLgofPlot(dlq, ranks=FALSE,
 #text(7, 2.5, expression("p2  =  "*frac(p-t, 1-t)), adj=0, cex=1.2)
 
 
-## ---- echo=-1, fig.height=3.5, fig.width=5.5-----------------------------
+## ----trunc, echo=-1, fig.height=3.5, fig.width=5.5-----------------------
 par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
 d <- distLquantile(rain, truncate=0.9, plot=TRUE, probs=0.999, quiet=TRUE, breaks=50)
 
-## ----trunceffect, eval=FALSE---------------------------------------------
+## ----teff, eval=FALSE----------------------------------------------------
 #  tt <- seq(0,0.95, len=50)
 #  if(interactive()) lapply <- pbapply::pblapply # for progress bars
 #  qq <- lapply(tt, function(t) distLquantile(rain, truncate=t,
 #                                               probs=c(0.99,0.999), quiet=TRUE))
 #  save(tt,qq, file="vignettes/qq.Rdata")
 
-## ----trunceffectplot, echo=-(1:4), fig.height=3.5, fig.width=5.5---------
-path <- "S:/Dropbox/Public/extremeStat"
+## ----teffplot, echo=-(1:4), fig.height=3.5, fig.width=5.5----------------
+path <- "S:/Dropbox/Public/extremeStat/vignettes"
 # work PC path change:
 if(!file.exists(path)) path <- gsub("S:", "C:/Users/boessenkool", path)
 setwd(path)
-load("vignettes/qq.Rdata")
+load("qq.Rdata")
 par(mar=c(3,2.8,2.2,0.4), mgp=c(1.8,0.5,0))
 plot(tt,tt, type="n", xlab="truncation proportion", ylab="Quantile estimation",
      main="truncation effect for 6k values of rain", ylim=c(22,90), las=1)
