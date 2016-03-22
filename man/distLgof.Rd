@@ -42,7 +42,7 @@ If you get a \code{note in distLgof: NAs removed in CDF ...}, this
 }
 \examples{
 
-require(lmomco)
+library(lmomco)
 data(annMax)
 
 # Goodness of Fit is measured by RMSE of cumulated distribution function and ?ecdf
