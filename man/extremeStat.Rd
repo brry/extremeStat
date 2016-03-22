@@ -8,7 +8,8 @@
 \description{
 Fit (via linear moments), plot (on a linear scale) and compare (by goodness of fit)
 several (extreme value) distributions to estimate discharge at given return periods.\cr
-This package heavily relies on and thankfully acknowledges the package lmomco by WH Asquith.
+This package heavily relies on and thankfully acknowledges the package \code{lmomco} by WH Asquith.\cr
+Open the \href{http://htmlpreview.github.io/?https://github.com/brry/extremeStat/blob/master/inst/doc/quantileEstimation.html}{Vignette} for an introduction to the package. \code{browseVignettes("extremeStat")}
 }
 \details{
 The common object to share between functions is a list (\code{dlf}) with:\cr
