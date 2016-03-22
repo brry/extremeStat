@@ -7,7 +7,7 @@
 #' @seealso \code{\link{distLgof}}, \code{\link{distLfit}}
 #' @keywords hplot distribution
 #' @export
-#' @importFrom berryFunctions pastec
+#' @importFrom berryFunctions pastec owa
 #' @examples
 #' # see distLgof
 #' 
@@ -21,6 +21,7 @@
 #' @param col Vector with 3 values for line customization. Recycled if necessary. DEFAULT: c(1,3,4)
 #' @param pch Vector with 3 values for line customization. Recycled if necessary. DEFAULT: 1:3
 #' @param lty Vector with 3 values for line customization. Recycled if necessary. DEFAULT: 1
+#' @param legargs List of arguments passed to \code{\link{legend}} if weights=TRUE, like cex, bg, etc.
 #' @param quiet Suppress notes? DEFAULT: FALSE
 #' @param main plot titles. DEFAULT: NULL
 #' @param \dots Further arguments passed to \code{\link{plot}}.
@@ -36,6 +37,7 @@ type="o",
 col=c(1,3,4),
 pch=1:3,
 lty=1,
+legargs=NULL,
 quiet=FALSE,
 main=NULL,
 ...)
@@ -91,7 +93,8 @@ lines(gof$weight3, nrow(gof):1, pch=3, col=3, type="o")
 lines(gof$RMSE,    nrow(gof):1, col=4)
 text(head(gof$RMSE,1), nrow(gof), "RMSE", col=4, adj=-0.2)
 axis(2, nrow(gof):1, rownames(gof), las=2)
-legend("bottomright", c("1: max(r)-r + min(r)", "2: max(r)-r", "3: first half", "c: custom"),
-       title="Weighted by RMSE = r", col=c(1:3,8), pch=1:4, lty=1)
+do.call(legend, berryFunctions::owa(list(x="bottomright", legend=c("1: max(r)-r + min(r)",
+        "2: max(r)-r", "3: first half", "c: custom"),
+       title="Weighted by RMSE = r", col=c(1:3,8), pch=1:4, lty=1), legargs))
 }
 } # end of function
