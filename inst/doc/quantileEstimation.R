@@ -89,3 +89,38 @@ text(0.9, 53, "Q99.9%") ; text(0.9, 34, "Q99%")
 text(0.35, 62, "empirical quantile (full sample)", cex=0.7)
 
 
+## ----ssdep, eval=FALSE---------------------------------------------------
+#  set.seed(1)
+#  ss <- c(30,50,70,100,200,300,400,500,1000)
+#  rainsamplequantile <- function() sapply(ss, function(s) distLquantile(sample(rain,s),
+#            probs=0.999, plot=F, truncate=0.8, quiet=T, sel="wak", gpd=F, weight=F))
+#  sq <- pbapply::pbreplicate(n=100, rainsamplequantile())
+#  save(ss,sq, file="vignettes/sq.Rdata")
+
+## ----ssdepplot, echo=-(1:3), fig.height=3.5, fig.width=5.5---------------
+path <- "S:/Dropbox/Public/extremeStat/vignettes"
+if(!file.exists(path)) path <- gsub("S:", "C:/Users/boessenkool", path)
+setwd(path)
+load("sq.Rdata")
+par(mar=c(3,2.8,2.2,0.4), mgp=c(1.7,0.5,0))
+sqs <- function(prob,row) apply(sq, 1:2, quantile, na.rm=TRUE, probs=prob)[row,]
+berryFunctions::ciBand(yu=sqs(0.6,1), yl=sqs(0.4,1), ym=sqs(0.5,1), x=ss, 
+    ylim=c(25,75), xlim=c(30,900), xlab="sample size", ylab="estimated 99.9% quantile", 
+    main="quantile estimations of small random samples", colm="blue")
+berryFunctions::ciBand(yu=sqs(0.6,2), yl=sqs(0.4,2), ym=sqs(0.5,2), x=ss, add=TRUE)
+abline(h=quantile(rain,0.999))
+text(250, 50, "empirical", col="forestgreen")
+text(400, 62, "Wakeby", col="blue")
+text(0, 61, "'True' population value", adj=0)
+text(600, 40, "median and central 20% of 100 simulations")
+
+## ----RP, echo=-1, warning=FALSE, fig.height=4, fig.width=5.5-------------
+par(mar=c(3,2.8,1.2,0.4), mgp=c(1.8,0.5,0))
+data("annMax") # annual discharge maxima in the extremeStat package itself
+dle <- distLextreme(annMax, log=TRUE, legargs=list(cex=0.6, bg="transparent"), nbest=17, quiet=TRUE)
+dle$returnlev[1:20,]
+
+
+## ----help, eval=FALSE----------------------------------------------------
+#  ?extremeStat
+

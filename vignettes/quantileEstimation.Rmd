@@ -12,7 +12,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-*This is the vignette for the R package `extremeStat`, available at <https://github.com/brry/extremeStat>.*
+*This is the vignette for the R package `extremeStat`, available at [github.com/brry](https://github.com/brry/extremeStat).  (Vignette [Rmd source](https://raw.githubusercontent.com/brry/extremeStat/master/vignettes/quantileEstimation.Rmd))*
 
 Main focus of this document:  
 **Quantile estimation via distribution fitting  
@@ -96,9 +96,12 @@ and the resulting **parametric quantiles** can be obtained with
 ```{r dlquant}
 dlq$quant # distLquantile output if returnlist=FALSE (the default)
 ```
+
+
+* The rows for each distribution function are sorted by their goodness of fit (see below). They each yield different results, epecially for very high quantile probailities (values that are exceeded very rarely). Note that the deviation from each other increases for badly fitted distributions.
 * The row `quantileMean` is an average of R's 9 methods implemented in `stats::quantile` to determine **empirical percentiles** (order based statistic, keyword plotting positions).  
 * The rows `q_gpd_*` are the General Pareto Distribution quantiles, as estimated by a range of different R packages and methods (specified in the row names), computed by `q_gpd`. More on that in the next section [GPD](#GPD).  
-* The rows `weighted*` are averages of the quantiles estimated from the distribution functions, weighted by their goodness of fit in three (and a custom) weighting schemes:  
+* The rows `weighted*` are averages of the quantiles estimated from the distribution functions, weighted by their goodness of fit (RMSE ecdf / cdf) in three default and a custom weighting schemes:  
 ```{r weight, echo=-1, fig.height=3.5, fig.width=5.5}
 par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
 distLgofPlot(dlq, ranks=FALSE, 
@@ -109,7 +112,7 @@ distLgofPlot(dlq, ranks=FALSE,
 [TOC](#header)
 <a name="GPD"></a>
 
-## GPD
+## POT, GPD
 
 The General Pareto Distribution ('GPD', or 'gpa' in the package `lmomco`) is often used to obtain **parametric quantile values** because of the [Pickands-Balkema-DeHaan theorem](https://en.wikipedia.org/wiki/Pickands-Balkema-de_Haan_theorem). 
 It states that the tails of many (empirical) distributions converge to the GPD if a Peak-Over-Threshold (POT) method is used, i.e. the distribution is fitted only to the largest values of a sample.
@@ -119,7 +122,7 @@ This package is based on the philosophy that, in order to compare parametric wit
 That way, the probabilities given to the quantile functions can be updated.  
 For example, if the censored Q0.99 is to be computed from the top 20 % of the full dataset, Q0.95 of the truncated sample must be used.
 The probability adjustment for censored quantiles with truncation percentage **`t`** happens with the equation
-$$ p2  =  \frac{p-t}{1-t}~~derived~from~~\frac{1-p}{1-t}  =  \frac{1-p2}{1-0} $$
+$$ p2  =  \frac{p-t}{1-t}  derived from \frac{1-p}{1-t}  =  \frac{1-p2}{1-0} $$
 as visualized along a probability line:
 ```{r prob, echo=FALSE, fig.height=1, fig.width=5.5}
   par(mar=rep(0,4))
@@ -184,5 +187,72 @@ text(0.35, 62, "empirical quantile (full sample)", cex=0.7)
 
 The 17 different distribution quantiles and 12 different GPD estimates seem to converge with increasing truncation percentage.
 However, at least 5 remaining values in the truncated sample are necessary to fit distributions via linear moments, so don't truncate too much.
+I found a good cutoff percentage is 0.8. If you fit to the top 20% of the data, you get good results, while needing 'only' approximately 25 values in a sample to infer a quantile estimate.
+
+
+[TOC](#header)
+
+## Sample size dependency
+
+One motivation behind the development of this package is the finding that high empirical quantiles depend not only on the values of a sample (as it should be), but also on the number of observations available.
+That is not surprising: Given a distribution of a population, small samples tend to less often include the high (and rare) values.
+The cool thing about parametrical quantiles is that they don't systematically underestimate the actual quantile in small samples. 
+Here's a quick demonstration.
+
+```{r ssdep, eval=FALSE}
+set.seed(1)
+ss <- c(30,50,70,100,200,300,400,500,1000)
+rainsamplequantile <- function() sapply(ss, function(s) distLquantile(sample(rain,s), 
+          probs=0.999, plot=F, truncate=0.8, quiet=T, sel="wak", gpd=F, weight=F))
+sq <- pbapply::pbreplicate(n=100, rainsamplequantile())    
+save(ss,sq, file="vignettes/sq.Rdata")   
+```
+
+
+```{r ssdepplot, echo=-(1:3), fig.height=3.5, fig.width=5.5}
+path <- "S:/Dropbox/Public/extremeStat/vignettes"
+if(!file.exists(path)) path <- gsub("S:", "C:/Users/boessenkool", path)
+setwd(path)
+load("sq.Rdata")
+par(mar=c(3,2.8,2.2,0.4), mgp=c(1.7,0.5,0))
+sqs <- function(prob,row) apply(sq, 1:2, quantile, na.rm=TRUE, probs=prob)[row,]
+berryFunctions::ciBand(yu=sqs(0.6,1), yl=sqs(0.4,1), ym=sqs(0.5,1), x=ss, 
+    ylim=c(25,75), xlim=c(30,900), xlab="sample size", ylab="estimated 99.9% quantile", 
+    main="quantile estimations of small random samples", colm="blue")
+berryFunctions::ciBand(yu=sqs(0.6,2), yl=sqs(0.4,2), ym=sqs(0.5,2), x=ss, add=TRUE)
+abline(h=quantile(rain,0.999))
+text(250, 50, "empirical", col="forestgreen")
+text(400, 62, "Wakeby", col="blue")
+text(0, 61, "'True' population value", adj=0)
+text(600, 40, "median and central 20% of 100 simulations")
+```
+
+
+[TOC](#header)
+
+## Extreme value statistics, Return Periods
+
+Once you have quantiles, you can easily compute extremes for given return periods.  
+A value x in a time series has a certain expected frequency to occur or be exceeded.
+
+$$ RP = \frac{1}{exceedance ~  probability ~~ (=Pe)}     ~~   Pe = 1-quantile(x) $$
+Here is an example with annual block maxima of stream discharge in Austria:
+```{r RP, echo=-1, warning=FALSE, fig.height=4, fig.width=5.5}
+par(mar=c(3,2.8,1.2,0.4), mgp=c(1.8,0.5,0))
+data("annMax") # annual discharge maxima in the extremeStat package itself
+dle <- distLextreme(annMax, log=TRUE, legargs=list(cex=0.6, bg="transparent"), nbest=17, quiet=TRUE)
+dle$returnlev[1:20,]
+
+```
+
+Explore the other possibilities of the package by reading the function help files.  
+A good place to start is the package help:
+```{r help, eval=FALSE}
+?extremeStat
+```
+
+[TOC](#header)
+
+Any Feedback on this package (or this vignette) is very welcome via github or <berry-b@gmx.de>!
 
 
