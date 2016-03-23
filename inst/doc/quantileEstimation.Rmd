@@ -12,15 +12,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Quantile estimation via distribution fitting  
-comparison of GPD implementations in several R packages
+*This is the vignette for the R package `extremeStat`, available at <https://github.com/brry/extremeStat>.*
+
+Main focus of this document:  
+**Quantile estimation via distribution fitting  
+comparison of GPD implementations in several R packages**
 
 > Note: in some disciplines, quantiles are called percentiles, but technically, percentiles are only one kind of quantiles (as are deciles, quartiles, etc).
-
-
-```{r options, echo = FALSE}
-knitr::opts_chunk$set(cache = TRUE)
-```
 
 
 ## Package installation

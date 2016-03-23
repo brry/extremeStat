@@ -1,6 +1,3 @@
-## ----options, echo = FALSE-----------------------------------------------
-knitr::opts_chunk$set(cache = TRUE)
-
 ## ----instcran, eval=FALSE------------------------------------------------
 #  install.packages("extremeStat")
 #  library(extremeStat)
