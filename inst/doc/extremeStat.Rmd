@@ -1,5 +1,5 @@
 ---
-title: "Estimation of extreme quantiles"
+title: "extremeStat: quantile estimation"
 author: "Berry Boessenkool, <berry-b@gmx.de>"
 date: "`r Sys.Date()`"
 output: 
@@ -7,12 +7,12 @@ output:
     toc: true
     \\ toc_float: true \\ not possible as of march 2016
 vignette: >
-  %\VignetteIndexEntry{Estimation of extreme quantiles}
+  %\VignetteIndexEntry{extremeStat: quantile estimation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-*This is the vignette for the R package `extremeStat`, available at [github.com/brry](https://github.com/brry/extremeStat).  (Vignette [Rmd source](https://raw.githubusercontent.com/brry/extremeStat/master/vignettes/quantileEstimation.Rmd))*
+*The R package `extremeStat`, available at [github.com/brry](https://github.com/brry/extremeStat), contains code to fit, plot and compare several (extreme value) distribution functions. It can also compute (truncated) distribution quantile estimates and draw a plot with return periods on a linear scale. (Vignette [Rmd source](https://raw.githubusercontent.com/brry/extremeStat/master/vignettes/extremeStat.Rmd))*
 
 Main focus of this document:  
 **Quantile estimation via distribution fitting  

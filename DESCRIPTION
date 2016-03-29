@@ -1,11 +1,11 @@
 Package: extremeStat
 Type: Package
-Title: Extreme Value Statistics on a Linear Scale
-Version: 0.5.11
-Date: 2016-03-22
+Title: Extreme Value Statistics and Quantile Estimation
+Version: 0.5.12
+Date: 2016-03-29
 Imports:
     lmomco (>= 2.1.3),
-    berryFunctions (>= 1.9.15),
+    berryFunctions (>= 1.9.21),
     pbapply,
     graphics,
     evir,
@@ -17,7 +17,7 @@ Imports:
 Author: Berry Boessenkool
 Maintainer: Berry Boessenkool <berry-b@gmx.de>
 Description: Code to fit, plot and compare several (extreme value)
-    distributions. Can also compute (truncated) distribution quantile estimates and
+    distribution functions. Can also compute (truncated) distribution quantile estimates and
     draw a plot with return periods on a linear scale.
 License: GPL-3
 URL: https://github.com/brry/extremeStat
