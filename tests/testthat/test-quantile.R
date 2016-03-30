@@ -5,7 +5,7 @@ data(annMax, package="extremeStat") # Annual Discharge Maxima (streamflow)
 
 test_that("distLquantile generally runs fine",{
 distLquantile(annMax)
-expect_equal(nrow(distLquantile(annMax, addinfo=TRUE)), 37)
+expect_equal(nrow(distLquantile(annMax, addinfo=TRUE)), 37-1)
 expect_silent(distLquantile(annMax, truncate=0.6, gpd=FALSE, quiet=TRUE))
 expect_message(distLquantile(annMax, plot=FALSE, selection="wak", empirical=FALSE), 
   "Note in distLgof: Only wak was fitted, thus GOF can't be compared.")
@@ -41,9 +41,9 @@ test_that("distLquantile can deal with a given dlf",{
 })
 
 test_that("distLquantile can handle emp, truncate",{
-expect_equal(nrow(distLquantile(annMax, emp=FALSE)), 17) # only distributions in lmomco
+expect_equal(nrow(distLquantile(annMax, emp=FALSE)), 17-1) # only distributions in lmomco
 expect_message(aq <- distLquantile(annMax, truncate=0.8, probs=0.95)) # POT
-expect_equal(mean(aq, na.rm=TRUE), 102.055973)
+expect_equal(round(mean(aq, na.rm=TRUE),2), 102.13) # 102.055973 with lap
 expect_equal(sum(is.na(distLquantile(annMax, selection="gpa", weight=FALSE))), 3)
 })
 

@@ -150,7 +150,7 @@ d <- distLquantile(rain, truncate=0.9, plot=TRUE, probs=0.999, quiet=TRUE, break
 
 ## Truncation effect
 
-To examine the effect of the truncation percentage, we can compute the quantiles for different cutoff percentages. This is quite time consuming, so the code is not performed upon vignette creation. The result is loaded instead. 
+To examine the effect of the truncation percentage, we can compute the quantiles for different cutoff percentages. This is quite time consuming, so the code is not performed upon vignette creation. The [result](https://github.com/brry/extremeStat/raw/master/vignettes/qq.Rdata) is loaded instead. 
 
 ```{r teff, eval=FALSE}
 tt <- seq(0,0.95, len=50) 
@@ -208,6 +208,7 @@ sq <- pbapply::pbreplicate(n=100, rainsamplequantile())
 save(ss,sq, file="vignettes/sq.Rdata")   
 ```
 
+Load the [resulting R objects](https://github.com/brry/extremeStat/raw/master/vignettes/sq.Rdata):
 
 ```{r ssdepplot, echo=-(1:3), fig.height=3.5, fig.width=5.5}
 path <- "S:/Dropbox/Public/extremeStat/vignettes"

@@ -133,7 +133,8 @@ if( ! is.null(selection) )
 else
 # remove some to save time and errors, see ?dist.list # gld, gov and tri added
 if(speed) dn <- dn[ ! dn %in%
-   c("aep4","cau","emu","gep","gld","gov","kmu","kur","lmrq","sla","st3","texp","tri")]
+   c("aep4","cau","emu","gep","gld","gov","kmu","kur","lmrq","sla","st3","texp","tri", "lap")]
+### lap (Laplace) is taken out only temporarily until bug in cdflap in lmomco 2.2.2 (2016-03-20) is fixed
 #
 # Check remaining sample size
 if(length(dat) < 5) {if(!ssquiet)on.exit(message("Note in distLfit: sample size (",
