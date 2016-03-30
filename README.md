@@ -18,8 +18,9 @@ devtools::install_github("brry/extremeStat")
 library(extremeStat)
 ?extremeStat
 ```
-There are irregularly spaced github releases that follow the version number, eg
+There are irregularly spaced github releases that follow the version number:
 ```R
 devtools::install_github("brry/extremeStat@v0.4.38") # 2015-09
 devtools::install_github("brry/extremeStat@v0.4.48") # 2016-02
+devtools::install_github("brry/extremeStat@v0.5.13") # 2016-03
 ```
