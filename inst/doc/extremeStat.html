@@ -11,7 +11,7 @@
 
 <meta name="author" content="Berry Boessenkool, berry-b@gmx.de" />
 
-<meta name="date" content="2016-03-30" />
+<meta name="date" content="2016-04-29" />
 
 <title>extremeStat: quantile estimation</title>
 
@@ -52,7 +52,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 
 <h1 class="title">extremeStat: quantile estimation</h1>
 <h4 class="author"><em>Berry Boessenkool, <a href="mailto:berry-b@gmx.de">berry-b@gmx.de</a></em></h4>
-<h4 class="date"><em>2016-03-30</em></h4>
+<h4 class="date"><em>2016-04-29</em></h4>
 
 </div>
 
@@ -81,18 +81,19 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <span class="kw">library</span>(extremeStat)</code></pre>
 <p>Until then, you can install from the development repository on github:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;lmomco&quot;</span>, <span class="st">&quot;pbapply&quot;</span>,<span class="st">&quot;devtools&quot;</span>))
-<span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;evir&quot;</span>, <span class="st">&quot;ismev&quot;</span>, <span class="st">&quot;fExtremes&quot;</span>, <span class="st">&quot;extRemes&quot;</span>, <span class="st">&quot;evd&quot;</span>, <span class="st">&quot;Renext&quot;</span>))
+<span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;evd&quot;</span>, <span class="st">&quot;evir&quot;</span>, <span class="st">&quot;extRemes&quot;</span>, <span class="st">&quot;fExtremes&quot;</span>, <span class="st">&quot;ismev&quot;</span>, <span class="st">&quot;Renext&quot;</span>))
 <span class="co"># reiterate untill all of them work (some may not install properly on first try)</span>
 
 devtools::<span class="kw">install_github</span>(<span class="st">&quot;brry/berryFunctions&quot;</span>)
 devtools::<span class="kw">install_github</span>(<span class="st">&quot;brry/extremeStat&quot;</span>) 
 <span class="kw">library</span>(extremeStat)</code></pre>
-<p>extremeStat has 28 dependencies, because of the GPD comparison across the packages: <code>evd, evir, extRemes, fExtremes, ismev, lmomco, Renext</code>.</p>
+<p>extremeStat has 28 dependencies, because of the GPD comparison across the packages.</p>
+<pre><code>## Note: the specification for S3 class &quot;family&quot; in package 'MatrixModels' seems equivalent to one from package 'lme4': not turning on duplicate class definitions for this class.</code></pre>
 <p><a href="#header">TOC</a></p>
 </div>
 <div id="example-dataset" class="section level2">
 <h2>Example dataset</h2>
-<p>Let’s use the dataset <code>rain</code> with 17k values. Let’s remove very small values, as they might be considered uncertain records, leaving us with 6k values (it’s just for demonstration purposes, so let’s not fuss about that too much here).</p>
+<p>Let’s use the dataset <code>rain</code> with 17k values. With very small values removed, as those might be considered uncertain records, this leaves us with 6k values.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(rain, <span class="dt">package=</span><span class="st">&quot;ismev&quot;</span>)
 rain &lt;-<span class="st"> </span>rain[rain&gt;<span class="dv">2</span>]
 <span class="kw">hist</span>(rain, <span class="dt">breaks=</span><span class="dv">80</span>, <span class="dt">col=</span><span class="dv">4</span>, <span class="dt">las=</span><span class="dv">1</span>)
@@ -103,14 +104,14 @@ berryFunctions::<span class="kw">logHist</span>(rain, <span class="dt">breaks=</
 </div>
 <div id="fitting-distributions" class="section level2">
 <h2>Fitting distributions</h2>
-<p>The function <code>distLfit</code> fits 17 of the distribution types avalable in the R package <code>lmomco</code> (there are more, but some of these require quite a bit of computation time and are prone to not be able to be fitted to this type of data distribution anyways).</p>
+<p>The function <code>distLfit</code> fits 17 of the distribution types avalable in the R package <code>lmomco</code> (there are more, but some of these require quite a bit of computation time and are prone to not be able to be fitted to this type of data distribution anyways. Turn them on with <code>speed=FALSE</code>).</p>
 <p>The parameters are estimated via linear moments. These are analogous to the conventional statistical moments (mean, variance, skewness and kurtosis), but “robust [and] suitable for analysis of rare events of non-Normal data. […] L-moments are especially useful in the context of quantile functions” <a href="\href{https://cran.r-project.org/package=lmomco">Asquith, W. (2015): lmomco package</a></p>
 <p><code>distLfit</code> ranks the distributions according to their goodness of fit (RMSE between ecdf and cdf).</p>
 <p><a href="#header">TOC</a></p>
 </div>
 <div id="quantile-estimation" class="section level2">
 <h2>Quantile estimation</h2>
-<p>To estimate the quantile of (small) samples via a distribution function, you can use <code>distLquantile</code>, which internally calls distLfit, in the following manner:</p>
+<p>To estimate the quantile of (small) samples via a distribution function, you can use <code>distLquantile</code>, which internally calls <code>distLfit</code>, in the following manner:</p>
 <pre class="sourceCode r"><code class="sourceCode r">dlq &lt;-<span class="st"> </span><span class="kw">distLquantile</span>(rain, <span class="dt">probs=</span><span class="kw">c</span>(<span class="fl">0.8</span>,<span class="fl">0.9</span>,<span class="fl">0.99</span>,<span class="fl">0.999</span>), <span class="dt">returnlist=</span><span class="ot">TRUE</span>, <span class="dt">quiet=</span><span class="ot">TRUE</span>)</code></pre>
 <p>By default, the 5 best fitting distribution types are drawn and the quantiles for each distribution returned. If returnlist is set to TRUE, it will return an object that can be examined with</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">distLprint</span>(dlq)</code></pre>

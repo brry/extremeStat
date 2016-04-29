@@ -31,14 +31,14 @@ library(extremeStat)
 Until then, you can install from the development repository on github:
 ```{r instgit, eval=FALSE}
 install.packages(c("lmomco", "pbapply","devtools"))
-install.packages(c("evir", "ismev", "fExtremes", "extRemes", "evd", "Renext"))
+install.packages(c("evd", "evir", "extRemes", "fExtremes", "ismev", "Renext"))
 # reiterate untill all of them work (some may not install properly on first try)
 
 devtools::install_github("brry/berryFunctions")
 devtools::install_github("brry/extremeStat") 
 library(extremeStat)
 ```
-extremeStat has 28 dependencies, because of the GPD comparison across the packages: `evd, evir, extRemes, fExtremes, ismev, lmomco, Renext`.
+extremeStat has 28 dependencies, because of the GPD comparison across the packages.
 
 ```{r library, echo=FALSE}
 library(extremeStat)
@@ -48,7 +48,7 @@ library(extremeStat)
 
 ## Example dataset
 
-Let's use the dataset `rain` with 17k values. Let's remove very small values, as they might be considered uncertain records, leaving us with 6k values (it's just for demonstration purposes, so let's not fuss about that too much here).
+Let's use the dataset `rain` with 17k values. With very small values removed, as those might be considered uncertain records, this leaves us with 6k values.
 ```{r dataHist, fig.show='hold', echo=-3}
 data(rain, package="ismev")
 rain <- rain[rain>2]
@@ -63,7 +63,7 @@ berryFunctions::logHist(rain, breaks=80, col=3, las=1)
 
 ## Fitting distributions
 
-The function `distLfit` fits 17 of the distribution types avalable in the R package `lmomco` (there are more, but some of these require quite a bit of computation time and are prone to not be able to be fitted to this type of data distribution anyways).  
+The function `distLfit` fits 17 of the distribution types avalable in the R package `lmomco` (there are more, but some of these require quite a bit of computation time and are prone to not be able to be fitted to this type of data distribution anyways. Turn them on with `speed=FALSE`).  
 
 The parameters are estimated via linear moments.
 These are analogous to the conventional statistical moments (mean, variance, skewness and kurtosis), but "robust [and] suitable for analysis of rare events of non-Normal data. [...]
@@ -76,7 +76,7 @@ L-moments are especially useful in the context of quantile functions"
 [TOC](#header)
 
 ## Quantile estimation
-To estimate the quantile of (small) samples via a distribution function, you can use `distLquantile`, which internally calls distLfit, in the following manner:
+To estimate the quantile of (small) samples via a distribution function, you can use `distLquantile`, which internally calls `distLfit`, in the following manner:
 ```{r dlq}
 dlq <- distLquantile(rain, probs=c(0.8,0.9,0.99,0.999), returnlist=TRUE, quiet=TRUE)
 ```
