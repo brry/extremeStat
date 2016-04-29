@@ -4,7 +4,9 @@ extremeStat
 Fit, plot and compare several (extreme value) distributions. 
 Can also compute (truncated) distribution quantile estimates and draw a plot with return periods on a linear scale.
 
-See the [Vignette](http://htmlpreview.github.io/?https://github.com/brry/extremeStat/blob/master/inst/doc/extremeStat.html) for an introduction to the package.
+
+**See the [Vignette](http://htmlpreview.github.io/?https://github.com/brry/extremeStat/blob/master/inst/doc/extremeStat.html) for an introduction to the package.**
+
 
 Install / load the package and browse through the examples:
 ```R
