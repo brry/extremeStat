@@ -33,14 +33,14 @@
 #'    or if(returnlist): list with element \code{q_gpd_quant} and info-elements added.
 #'    q_gpd_n_geq is number of values greater than or equal to q_gpd_threshold. gt is only greater than.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Feb 2016
-#' @references \url{http://stackoverflow.com/questions/27524131/calculation-of-return-levels-based-on-a-gpd-in-different-r-packages}
+#' @references \url{http://stackoverflow.com/questions/27524131/calculation-of-return-levels-based-on-a-gpd-in-different-r-packages}\cr
 #'             \url{http://stats.stackexchange.com/questions/129438/different-quantiles-of-a-fitted-gpd-in-different-r-packages}
 #' @seealso \code{\link{distLquantile}} which compares results for all packages\cr
-#'          Other related packages (not implemented):
-#'                \url{https://cran.r-project.org/package=gPdtest}
-#'                \url{https://cran.r-project.org/package=actuar}
-#'                \url{https://cran.r-project.org/package=fitdistrplus}
-#'                \url{https://cran.r-project.org/package=lmom}
+#'          Other related packages (not implemented):\cr
+#'                \url{https://cran.r-project.org/package=gPdtest}\cr
+#'                \url{https://cran.r-project.org/package=actuar}\cr
+#'                \url{https://cran.r-project.org/package=fitdistrplus}\cr
+#'                \url{https://cran.r-project.org/package=lmom}\cr
 #' @keywords distribution robust univar
 #' @export
 #' @importFrom evir quant gpd
@@ -56,19 +56,18 @@
 #' q_gpd(annMax)
 #' q_gpd(annMax, truncate=0.6)
 #' q_gpd(annMax, truncate=0.85)
-#' q_gpd(annMax, truncate=0.91) # error in seq.default from try(initialize),
-#'                              # can be ignored with suppresswarnings=TRUE
+#' q_gpd(annMax, truncate=0.91) 
 #'
 #' q_gpd(annMax, package="evir")
 #' q_gpd(annMax, package="evir", method="ml")
 #' q_gpd(annMax, package="evd")
 #' q_gpd(annMax, package="extRemes")
 #' q_gpd(annMax, package="extRemes", method="GMLE")
-#' q_gpd(annMax, package="extRemes", method="Bayesian") # computes a while
+#' #q_gpd(annMax, package="extRemes", method="Bayesian") # computes a while
 #' q_gpd(annMax, package="extRemes", method="Lmoments")
 #' q_gpd(annMax, package="extRemes", method="nonsense") # NAs
 #' q_gpd(annMax, package="fExtremes")                   # log warnings
-#' q_gpd(annMax, package="fExtremes", suppress=TRUE)    # silenced warnings
+#' q_gpd(annMax, package="fExtremes", efquiet=TRUE)    # silenced warnings
 #' q_gpd(annMax, package="fExtremes", method= "mle")
 #' q_gpd(annMax, package="ismev")
 #' q_gpd(annMax, package="Renext")
@@ -82,13 +81,13 @@
 #' q_gpd(annMax, truncate=0.85, package="evir", undertruncNA=FALSE)
 #'
 #' q_gpd(annMax, truncate=0.85, package="evir", returnlist=TRUE)
-#' q_gpd(annMax, truncate=0.85, probs=0.6, package="evir", returnlist=TRUE) # NAs
-#' q_gpd(annMax, package="evir", returnlist=TRUE)
-#' q_gpd(annMax, package="evd", returnlist=TRUE)
-#' q_gpd(annMax, package="extRemes", returnlist=TRUE)
-#' q_gpd(annMax, package="fExtremes", returnlist=TRUE)
-#' q_gpd(annMax, package="ismev", returnlist=TRUE)
-#' q_gpd(annMax, package="Renext", returnlist=TRUE)
+#' str(  q_gpd(annMax, truncate=0.85, probs=0.6, package="evir", returnlist=TRUE) )# NAs
+#' str(  q_gpd(annMax, package="evir",      returnlist=TRUE)   )
+#' str(  q_gpd(annMax, package="evd",       returnlist=TRUE)   )
+#' str(  q_gpd(annMax, package="extRemes",  returnlist=TRUE)   )
+#' str(  q_gpd(annMax, package="fExtremes", returnlist=TRUE)   )
+#' str(  q_gpd(annMax, package="ismev",     returnlist=TRUE)   )
+#' str(  q_gpd(annMax, package="Renext",    returnlist=TRUE)   )
 #'
 #' q_gpd(annMax, package="evir", truncate=0.9, method="ml") # NAs (MLE fails often)
 #'
