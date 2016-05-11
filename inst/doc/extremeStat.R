@@ -3,7 +3,8 @@
 #  library(extremeStat)
 
 ## ----instgit, eval=FALSE-------------------------------------------------
-#  install.packages(c("devtools","evd","evir","extRemes","fExtremes","ismev","lmomco","pbapply","Renext"))
+#  install.packages(c("devtools","evd","evir","extRemes","fExtremes",
+#                     "ismev","lmomco","pbapply","Renext"))
 #  # reiterate untill all of them work (some may not install properly on first try)
 #  
 #  devtools::install_github("brry/berryFunctions")
@@ -24,8 +25,10 @@ berryFunctions::logHist(rain, breaks=80, col=3, las=1)
 ## ----dlq-----------------------------------------------------------------
 dlq <- distLquantile(rain, probs=c(0.8,0.9,0.99,0.999), returnlist=TRUE, quiet=TRUE)
 
-## ----dlprint-------------------------------------------------------------
+## ----dlprint, eval=1-----------------------------------------------------
 distLprint(dlq)
+# More information on dlf objects in
+?extremeStat
 
 ## ----dlplot, echo=-1, fig.height=3.5, fig.width=5.5----------------------
 par(mar=c(3.9,3.9,1.5,0.7), mgp=c(2.8,0.7,0))
@@ -63,13 +66,9 @@ d <- distLquantile(rain, truncate=0.9, plot=TRUE, probs=0.999, quiet=TRUE, break
 #  if(interactive()) lapply <- pbapply::pblapply # for progress bars
 #  qq <- lapply(tt, function(t) distLquantile(rain, truncate=t,
 #                                               probs=c(0.99,0.999), quiet=TRUE))
-#  save(tt,qq, file="vignettes/qq.Rdata")
+#  save(tt,qq, file="qq.Rdata")
 
-## ----teffplot, echo=-(1:4), fig.height=3.5, fig.width=5.5----------------
-path <- "S:/Dropbox/Public/extremeStat/vignettes"
-# work PC path change:
-if(!file.exists(path)) path <- gsub("S:", "C:/Users/boessenkool", path)
-setwd(path)
+## ----teffplot, fig.height=3.5, fig.width=5.5-----------------------------
 load("qq.Rdata")
 par(mar=c(3,2.8,2.2,0.4), mgp=c(1.8,0.5,0))
 plot(tt,tt, type="n", xlab="truncation proportion", ylab="Quantile estimation",
@@ -94,12 +93,9 @@ text(0.35, 62, "empirical quantile (full sample)", cex=0.7)
 #  rainsamplequantile <- function() sapply(ss, function(s) distLquantile(sample(rain,s),
 #            probs=0.999, plot=F, truncate=0.8, quiet=T, sel="wak", gpd=F, weight=F))
 #  sq <- pbapply::pbreplicate(n=100, rainsamplequantile())
-#  save(ss,sq, file="vignettes/sq.Rdata")
+#  save(ss,sq, file="sq.Rdata")
 
-## ----ssdepplot, echo=-(1:3), fig.height=3.5, fig.width=5.5---------------
-path <- "S:/Dropbox/Public/extremeStat/vignettes"
-if(!file.exists(path)) path <- gsub("S:", "C:/Users/boessenkool", path)
-setwd(path)
+## ----ssdepplot, fig.height=3.5, fig.width=5.5----------------------------
 load("sq.Rdata")
 par(mar=c(3,2.8,2.2,0.4), mgp=c(1.7,0.5,0))
 sqs <- function(prob,row) apply(sq, 1:2, quantile, na.rm=TRUE, probs=prob)[row,]
