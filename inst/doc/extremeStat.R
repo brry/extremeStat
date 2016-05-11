@@ -3,8 +3,7 @@
 #  library(extremeStat)
 
 ## ----instgit, eval=FALSE-------------------------------------------------
-#  install.packages(c("lmomco", "pbapply","devtools"))
-#  install.packages(c("evd", "evir", "extRemes", "fExtremes", "ismev", "Renext"))
+#  install.packages(c("devtools","evd","evir","extRemes","fExtremes","ismev","lmomco","pbapply","Renext"))
 #  # reiterate untill all of them work (some may not install properly on first try)
 #  
 #  devtools::install_github("brry/berryFunctions")

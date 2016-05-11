@@ -23,15 +23,13 @@ comparison of GPD implementations in several R packages**
 
 ## Package installation
 
-Once the package is on CRAN (envisioned for spring 2016), this should be all you need:
 ```{r instcran, eval=FALSE}
 install.packages("extremeStat")
 library(extremeStat)
 ```
-Until then, you can install from the development repository on github:
+To install the development version from github:
 ```{r instgit, eval=FALSE}
-install.packages(c("lmomco", "pbapply","devtools"))
-install.packages(c("evd", "evir", "extRemes", "fExtremes", "ismev", "Renext"))
+install.packages(c("devtools","evd","evir","extRemes","fExtremes","ismev","lmomco","pbapply","Renext"))
 # reiterate untill all of them work (some may not install properly on first try)
 
 devtools::install_github("brry/berryFunctions")
@@ -84,6 +82,8 @@ By default, the 5 best fitting distribution types are drawn and the quantiles fo
 If returnlist is set to TRUE, it will return an object that can be examined with
 ```{r dlprint}
 distLprint(dlq)
+# More information on dlf objects in
+?extremeStat
 ```
 plotted with
 ```{r dlplot, echo=-1, fig.height=3.5, fig.width=5.5}
