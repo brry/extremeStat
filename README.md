@@ -11,15 +11,9 @@ Can also compute (truncated) distribution quantile estimates and draw a plot wit
 
 Install / load the package and browse through the examples:
 ```R
-install.packages(c("lmomco", "pbapply","devtools"))
-install.packages(c("evir", "ismev", "fExtremes", "extRemes", "evd", "Renext"))
-# reiterate untill all of them work (some may not install properly on first try)
-
-devtools::install_github("brry/berryFunctions")
-devtools::install_github("brry/extremeStat") 
-
+install.packages("extremeStat")
 library(extremeStat)
-?extremeStat
+vignette(extremeStat)
 ```
 There are irregularly spaced github releases that follow the version number:
 ```R

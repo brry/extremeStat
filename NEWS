@@ -1,31 +1,31 @@
 
 extremeStat ToDo-list / wishlist / issues
 - distLprint: possibly change to print method for dlf objects with personal class
-
+- q_gpd: consider an extra package in suggests for this, to reduce dependencies for the core of extremeStat
 
 ---------------------------------------
-
-extremeStat - past development
-Package by Berry Boessenkool, berry-b@gmx.de
+extremeStat Package by Berry Boessenkool, berry-b@gmx.de
 Any feedback is welcome, per email or on github.com/brry/extremeStat
-
 ---------------------------------------
 
-Version 0.5 (2015--)
+Version 0.5.14 (2016-05-10)
+submitted to CRAN
 various changes, see github commit log at
 https://github.com/brry/extremeStat/commits/master
 highlights:
+- package has a vignette and is Roxygenized
 - quantile estimation now possible, function tested and expanded thoroughly
+- POT method (truncation parameter) introduced
+- GPD quantile comparison across 7 R packages
 - failed parameter fitting is handled much better, warning messages became useful
 - quiet argument added throughout the package
 - several defaults were improved 
-- documentation was updated and enhanced
+- documentation was updated and enhanced, including comments in code
 - distLgof now returns weights calculated by 3 different methods
 - distLplot now uses supdist, package depends on lmomco >=2.1.3 (version that includes supdist)
 - installB: moved to https://github.com/brry/installB to remove devtools dependency here
 
-
-new functions: distLextremePlot, distLprint, distLquantile, q_evir
+new functions: distLextremePlot, distLprint, distLquantile, q_gpd
 renamed distLgofPlot for consistency in lowerCamel-derived case usage.
 
 
@@ -48,7 +48,6 @@ depends on berryFunctions again (maintaning functions twice is nonsense)
 Version 0.3 (2014-09-30)
 independent from berryFunctions now.
 Thus I included lim0, logAxis, logVals, owa, rainbow2, rmse, rsquare
-Thinking about how to progress. In my opinion, it would make more sense to depend on berryFunctions, but Ripley does not like to see a subpackage like this on CRAN.
 
 
 ---------------------------------------
