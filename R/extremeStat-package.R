@@ -33,7 +33,7 @@ NULL
 #' Fit (via linear moments), plot (on a linear scale) and compare (by goodness of fit)
 #' several (extreme value) distributions to estimate discharge at given return periods.\cr
 #' This package heavily relies on and thankfully acknowledges the package \code{lmomco} by WH Asquith.\cr
-#' Open the \href{http://htmlpreview.github.io/?https://github.com/brry/extremeStat/blob/master/inst/doc/quantileEstimation.html}{Vignette} for an introduction to the package. \code{browseVignettes("extremeStat")}
+#' Open the \href{http://htmlpreview.github.io/?https://github.com/brry/extremeStat/blob/master/inst/doc/extremeStat.html}{Vignette} for an introduction to the package. \code{vignette("extremeStat")}
 #' 
 #' @details
 #' The common object to share between functions is a list (\code{dlf}) with:\cr
@@ -53,7 +53,7 @@ NULL
 #' PP:\cr
 #' Plotting positions are not used for fitting distributions, but for plotting only\cr
 #' The ranks of ascendingly sorted extreme values are used to compute the probability of non-exceedence Pn:\cr
-#' \code{Pn_w <-  Rank      /(n+1)       # Weibull}
+#' \code{Pn_w <-  Rank      /(n+1)       # Weibull}\cr
 #' \code{Pn_g <- (Rank-0.44)/(n+0.12)    # Gringorton (taken from lmom:::evplot.default)}\cr
 #' Finally: RP = Returnperiod = recurrence interval = 1/P_exceedence = 1/(1-P_nonexc.), thus:\cr
 #' \code{RPweibull = 1/(1-Pn_w)} and analogous for gringorton.\cr
@@ -63,9 +63,10 @@ NULL
 #' \code{\link{distLextreme}}     \tab analyse extreme value statistics, calls \code{distLfit} and \code{distLextremePlot}.\cr
 #' \code{\link{distLextremePlot}} \tab plot distribution lines and plotting positions.\cr
 #' \code{\link{distLfit}}         \tab fit the parameters, calls \code{gof} and \code{distLplot}.\cr
-#' \code{\link{distLgof}}         \tab calculate goodness of fits, calls \code{distLgofPlot}. Can also be executed with \code{dlf} to minimize computing time by not fitting the parameters again.\cr
 #' \code{\link{distLplot}}        \tab plot density or cumulated density of data and distributions.\cr
+#' \code{\link{distLgof}}         \tab calculate goodness of fits, calls \code{distLgofPlot}. Can also be executed with \code{dlf} to minimize computing time by not fitting the parameters again.\cr
 #' \code{\link{distLgofPlot}}     \tab compare distribution ranks of different \code{distLgof} methods.\cr
+#' \code{\link{distLquantile}}    \tab compute parametric quantile estimates. Calls \code{distLfit}.\cr
 #' }
 #' \code{Depends} on 'berryFunctions' for \code{\link{rmse}}, \code{\link{rsquare}}, \code{\link{logAxis}}, \code{\link{logVals}}.\cr
 #' \code{Suggests} 'pbapply' to see progress bars if you have large (n > 1e3) datasets.\cr
@@ -96,6 +97,12 @@ NULL
 #' R in Hydrology: \url{http://abouthydrology.blogspot.de/2012/08/r-resources-for-hydrologists.html}\cr
 
 #' @keywords package documentation
+#' @importFrom grDevices extendrange
+#' @importFrom graphics abline axis box hist legend lines par plot points text
+#' @importFrom methods slotNames
+#' @importFrom stats approx ecdf ks.test median quantile
+#' @importFrom utils head tail
+
 #' @examples
 #' 
 #' data(annMax) # annual discharge maxima from a stream in Austria
