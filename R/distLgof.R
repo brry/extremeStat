@@ -152,6 +152,7 @@ exclude <- sapply(dlf$parameter, function(x)
   {
   if(is.null(x)) return(TRUE)
   # if("ifail" %in% names(x)) if(x$ifail != 0) return(TRUE) ## restriction too tight
+  if(x$type=="gld") return(TRUE) # lmomco 2.2.2 cdfgld bug
   if(is.null(lmomco::plmomco(mean(dlf$dat),x))) return(TRUE)  # *)
   any(is.na(x$para))
   })                    #  *): CDF cannot be computed for kappa in Dresden example
