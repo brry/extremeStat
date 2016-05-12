@@ -25,7 +25,6 @@
 #' @examples
 #'
 #' data(annMax) # Annual Discharge Maxima (streamflow)
-#' dlf <- distLfit(annMax)
 #'
 #' distLquantile(annMax, emp=FALSE) # several distribution functions in lmomco
 #' distLquantile(annMax, truncate=0.8, probs=0.95) # POT (annMax already block maxima)
@@ -33,9 +32,6 @@
 #' # Parametric 95% quantile estimates range from 92 to 111!
 #' # But the best fitting distributions all lie aroud 103.
 #'
-#' # weighted distribution quantiles are calculated by different weighting schemes:
-#' distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
-#' 
 #' # compare General Pareto Fitting methods
 #' # Theoretically, the tails of distributions converge to GPD (General Pareto)
 #' # q_gpd compares several R packages for fitting and quantile estimation:
@@ -48,6 +44,14 @@
 #'           qlinargs=list(lwd=3), qheights=seq(0.02, 0.005, len=13))
 #' #dev.off()
 #'
+#'
+#' \dontrun{
+#' ## Taken out from CRAN package check because it's slow
+#' 
+#' # weighted distribution quantiles are calculated by different weighting schemes:
+#' dlf <- distLfit(annMax)
+#' distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
+#' 
 #' # If speed is important and parameters are already available, pass them via dlf:
 #' distLquantile(dlf=dlf, probs=0:5/5, selection=c("wak","gev","kap"), order=FALSE)
 #' distLquantile(dlf=dlf, truncate=0.3, returnlist=TRUE)$truncate
@@ -56,7 +60,7 @@
 #' qwak <- distLquantile(annMax, sel="wak", prob=0.95, plot=TRUE, ylim=c(0,0.06), emp=FALSE)
 #' qwak2 <-distLquantile(annMax, sel="wak", prob=0.95, truncate=0.6, plot=TRUE,
 #'                      addinfo=FALSE, add=TRUE, coldist="blue", empirical=FALSE)
-#'
+#'                      
 #'
 #' # Simulation of truncation effect
 #' library(lmomco)
@@ -86,8 +90,6 @@
 #' textField(rep(0.5,4), trunceffect[,11], paste0("Q",myprobs*100,"%") )
 #' par(op)
 #'
-#' \dontrun{
-#' ## Taken out from CRAN package check because it's slow
 #'
 #' set.seed(3); rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)
 #' qd99 <- evir::quant(rnum, p=0.99, start=15, end=1000, ci=0.5, models=30)
@@ -100,12 +102,11 @@
 #' lines(-1000*(1-mytrunc), trunceffect[1,], col=4)
 #' lines(-1000*(1-mytrunc), trunceffect[2,], col=3) # interesting...
 #' for(i in 3:13) lines(-1000*(1-mytrunc), trunceffect[i,], col=3) # interesting...
-
-#'
-#' }
 #'
 #' # If you want the estimates only for one single truncation, use
 #' q_gpd(rnum, probs=myprobs, truncate=0.5)
+#' 
+#' } # end dontrun
 #' 
 #' @param x Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL
 #' @param probs Numeric vector of probabilities with values in [0,1]. DEFAULT: c(0.8,0.9,0.99)

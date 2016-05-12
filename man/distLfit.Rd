@@ -72,7 +72,7 @@ distLprint(dlf)
 # arguments that can be passed:
 distLfit(annMax, lty=2, col=3, legargs=list(lwd=3), main="booh!")
 set.seed(42)
-dlf_b <- distLfit(rbeta(1e3, 5, 2), nbest=10, legargs=c(x="left"))
+dlf_b <- distLfit(rbeta(100, 5, 2), nbest=10, legargs=c(x="left"))
 distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"))
 distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"), order=TRUE)
 distLplot(dlf_b, coldist=c("orange",3:6), lty=1:3) # lty is recycled
@@ -84,7 +84,7 @@ distLplot(dlf_b, cdf=TRUE, histargs=list(do.points=FALSE), sel="nor")
 
 # logarithmic axes:
 set.seed(1)
-y <- 10^rnorm(1e3, mean=2, sd=0.3) # if you use 1e4, distLgof will be much slower
+y <- 10^rnorm(100, mean=2, sd=0.3) # if you use 1e4, distLgof will be much slower
 hist(y, breaks=20)
 berryFunctions::logHist(y, col=8)
 dlf <- distLfit(log10(y), breaks=50)

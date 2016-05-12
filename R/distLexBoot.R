@@ -15,7 +15,7 @@
 #' 
 #' data(annMax)
 #' dlf <- distLextreme(annMax, log=TRUE, selection=c("wak","gum","gev","nor"))
-#' dleB <- distLexBoot(dlf, nbest=4, conf.lev=0.5)
+#' dleB <- distLexBoot(dlf, nbest=4, conf.lev=0.5, n=10) # n low for quick example tests
 #' 
 #' @param dlf \code{dlf} object, as returned by \code{\link{distLextreme}}, is passed to \code{\link{distLextremePlot}}.
 #' @param nbest Number of best fitted distribution functions in dlf for which bootstrapping is to be done. Overriden by \code{selection}. DEFAULT: 3

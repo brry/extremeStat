@@ -85,11 +85,11 @@ distLgofPlot(dle, ranks=FALSE) # See also section weighted mean below
 # For confidence intervals see distLexBoot
 
 
-# Return period of a given discharge value, say 150 m^3/s:
-sort(1/(1-sapply(dle$parameter, plmomco, x=150) )  )[1:13]
-# exponential:                 every 105 years
-# gev (general extreme value dist):  536,
-# Weibull:                    every 1305 years only
+# Return period of a given discharge value, say 120 m^3/s:
+sort(1/(1-sapply(dle$parameter, plmomco, x=120) )  )[1:13]
+# exponential:                 every 29 years
+# gev (general extreme value dist):  58,
+# Weibull:                     every 72 years only
 
 
 
@@ -109,6 +109,9 @@ distLextremePlot(dle, selection=c("gpa","glo","wei","exp"), pch=c(NA,NA,6,8),
 
 distLextremePlot(dle, legarg=list(cex=0.5, x="bottom", box.col="red", col=3))
 # col in legarg list is (correctly) ignored
+\dontrun{
+## Excluded from package R CMD check because it's time consuming
+
 distLextremePlot(dle, PPpch=c(1,NA)) # only Weibull plotting positions
 # add different dataset to existing plot:
 distLextreme(Nile/15, add=TRUE, PPpch=NA, coldist=1, selection="wak", legend=FALSE)
@@ -119,8 +122,6 @@ distLextreme(Nile, log=TRUE, nbest=8)
 
 
 # weighted mean based on Goodness of fit (GOF) ---------------------------------
-\dontrun{
-## Excluded from package R CMD check because it's time consuming
 # Add discharge weighted average estimate continuously:
 distLextremePlot(dle, nbest=17, legend=FALSE)
 abline(h=115.6, v=50)
@@ -134,11 +135,9 @@ abline(h=115.9, v=50)
 RP <- unique(round(logSpaced(min=1, max=70, n=200, plot=FALSE),2))
 DischargeEstimate <- distLextreme(dlf=dle, RPs=RP, plot=FALSE)$returnlev
 lines(RP, DischargeEstimate["weighted2",], lwd=5) 
-}
 
 
 # Effect of data proportion used to estimate GOF -------------------------------
-\dontrun{ # removed from package testing due to computing time
 # Discharge estimated for 50 years return period
 Goodness <- function(gofProp)
 { # ExtremeStatistics
@@ -176,8 +175,8 @@ return.level(fevd(annMax, type="GEV")) # "GP", "PP", "Gumbel", "Exponential"
 distLextreme(dlf=dle, RPs=c(2,20,100))$returnlev["gev",]
 # differences are small, but noticeable...
 # if you have time for a more thorough control, please pass me the results!
-}
 
+ 
 # yet another dataset for testing purposes:
 Dresden_AnnualMax <- c(403, 468, 497, 539, 542, 634, 662, 765, 834, 847, 851, 873,
 885, 983, 996, 1020, 1028, 1090, 1096, 1110, 1173, 1180, 1180,
@@ -185,6 +184,7 @@ Dresden_AnnualMax <- c(403, 468, 497, 539, 542, 634, 662, 765, 834, 847, 851, 87
 1556, 1580, 1610, 1630, 1680, 1734, 1740, 1748, 1780, 1800, 1820,
 1896, 1962, 2000, 2010, 2238, 2270, 2860, 4500)
 distLextreme(Dresden_AnnualMax)
+} # end dontrun
 
 }
 \author{

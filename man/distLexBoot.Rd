@@ -50,7 +50,7 @@ Has not been thoroughly tested yet. Bootstrapping defaults can probably be impro
 
 data(annMax)
 dlf <- distLextreme(annMax, log=TRUE, selection=c("wak","gum","gev","nor"))
-dleB <- distLexBoot(dlf, nbest=4, conf.lev=0.5)
+dleB <- distLexBoot(dlf, nbest=4, conf.lev=0.5, n=10) # n low for quick example tests
 
 }
 \author{

@@ -57,7 +57,7 @@ plot(ecdf(annMax), add=TRUE)
 
 # weights by three different weighting schemes
 distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
-distLgof(dlf, ks=TRUE)$gof
+distLgof(dlf, ks=TRUE, plot=FALSE)$gof
 
 # Kolmogorov-Smirnov Tests return slightly different values:
 ks.test(annMax, "pnorm", mean(annMax), sd(annMax) )$p.value
@@ -76,8 +76,7 @@ par(mfrow=c(1,1))
 
 
 # effect of Proportion of values used to calculate RMSE
-dlf100 <- distLfit(annMax, gofProp=1) # the default gofProp: 100\%
-distLplot(dlf100, nbest=19, breaks=10, coldist=grey(1:19/19) )
+dlf100 <- distLfit(annMax, gofProp=1, nbest=19, breaks=10) # the default gofProp: 100\%
 distLgofPlot(dlf100)
 
 dlf50 <- distLgof(dlf100, gofProp=0.5)
@@ -90,9 +89,6 @@ distLplot(dlf=dlf50, selection=c("pe3","wei", "rice", "nor", "revgum"),
           xlim=c(60,120), ylim=c(0.5, 1), cdf=TRUE, col=1)
 dlf50$gof
 
-distLgofPlot(dlf50, weights=FALSE)
-
-library(berryFunctions) # for linReg
 compranks <- function(d)
 {
 gofProp <- 0.5
@@ -100,10 +96,10 @@ x <- sort(annMax, decreasing=TRUE)[  1:(gofProp*length(annMax))  ]
 tcdfs <- plmomco(x,dlf50$parameter[[d]])
 ecdfs <- ecdf(annMax)(x) # Empirical CDF
 # Root Mean Square Error, R squared:
-linReg(tcdfs, ecdfs, lwd=1, pch=16, main=d, digits=5, xlim=c(0.5, 1),
+berryFunctions::linReg(tcdfs, ecdfs, lwd=1, pch=16, main=d, digits=5, xlim=c(0.5, 1),
        ylim=c(0.5, 1), pos1="topleft")
 abline(a=0,b=1, lty=3)
-c(rmse(tcdfs, ecdfs), rsquare(tcdfs, ecdfs))
+c(berryFunctions::rmse(tcdfs, ecdfs), berryFunctions::rsquare(tcdfs, ecdfs))
 }
 dn <- rownames(dlf50$gof)
 
@@ -113,6 +109,9 @@ par(op)
 # so revgum, nor and rice systematically deviate from ECDF.
 # RMSE is better to sort by than R2
 
+
+\dontrun{ ## to save CRAN check computing time
+
 # custom weights
 cw <- c("gpa"=7, "gev"=3, "wak"=6, "wei"=4, "kap"=3.5, "gum"=3, "ray"=2.1,
         "ln3"=2, "pe3"=2.5, "gno"=4, "gam"=5)
@@ -120,7 +119,6 @@ dlf <- distLfit(annMax, plot=FALSE, weightc=cw)
 distLgofPlot(dlf, ranks=TRUE)
 
 
-\dontrun{
 dev.new()
 distLplot(dlf50, cdf=TRUE, sel=c("pe3", "rice", "revgum"), order=T)
 x <- sort(annMax, decreasing=TRUE)[  1:(0.5*length(annMax))  ]
@@ -138,7 +136,7 @@ for(i in 1:10/10) distLgof(dlf100, gofProp=i, weights=FALSE,
 # depending on which proportion of the data the GOF is calculated with, different
 # distributions are selected to be the 5 best.
 dev.off()
-}
+} # end dontrun
 
 }
 \author{
