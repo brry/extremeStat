@@ -39,8 +39,7 @@
 #' # compare General Pareto Fitting methods
 #' # Theoretically, the tails of distributions converge to GPD (General Pareto)
 #' # q_gpd compares several R packages for fitting and quantile estimation:
-#' distLquantile(annMax, weight=FALSE, sel="gpa")
-#' dlq <- distLquantile(annMax, quiet=TRUE, probs=0.97, returnlist=TRUE)
+#' dlq <- distLquantile(annMax, weight=FALSE, quiet=TRUE, probs=0.97, returnlist=TRUE)
 #' dlq$quant
 #' distLplot(dlq, qlines=TRUE) # per default best fitting distribution functions
 #' distLplot(dlq, qlines=TRUE, qrow=c("wak","q_gpd*"), nbest=14)
