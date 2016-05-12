@@ -6,7 +6,7 @@
 \usage{
 distLextreme(dat, dlf = NULL, selection = NULL, truncate = 0, RPs = c(2,
   5, 10, 20, 50), progbars = length(dlf$dat) > 200, time = TRUE,
-  plot = TRUE, quiet = FALSE, ...)
+  plot = TRUE, fitargs = NULL, quiet = FALSE, ...)
 }
 \arguments{
 \item{dat}{Vector with extreme values e.g. annual discharge maxima. Ignored if dlf is given.}
@@ -24,6 +24,8 @@ distLextreme(dat, dlf = NULL, selection = NULL, truncate = 0, RPs = c(2,
 \item{time}{\code{\link{message}} execution time? DEFAULT: TRUE}
 
 \item{plot}{Should the return periods and nbest fitted distributions be plotted by a call to \code{\link{distLextremePlot}}? DEFAULT: TRUE}
+
+\item{fitargs}{List of arguments passed to \code{\link{distLfit}}, like gofProp. DEFAULT: NULL}
 
 \item{quiet}{Suppress notes and progbars? DEFAULT: FALSE}
 
@@ -66,12 +68,6 @@ data(annMax) # annual streamflow maxima in river in Austria
 
 # Basic examples ---------------------------------------------------------------
 dle <- distLextreme(annMax, log=TRUE)
-
-# Why do I not get the following warning in interactive mode?
-## calculating RMSE:
-## Warning in rmse(tcdfs[[d]], ecdfs, quiet = q
-##   7 NAs were omitted from 35 data points.
-# maybe also because now rmse is called with quiet=TRUE...
 
 # Object structure:
 str(dle, max.lev=2)
@@ -146,8 +142,8 @@ lines(RP, DischargeEstimate["weighted2",], lwd=5)
 # Discharge estimated for 50 years return period
 Goodness <- function(gofProp)
 { # ExtremeStatistics
-ES <- distLextreme(annMax, gofProp=gofProp, plot=FALSE, progbars=FALSE)
-ES <- cbind(ES$returnlev, ES$gof)
+ES <- distLextreme(annMax, fitargs=list(gofProp=gofProp), plot=FALSE, quiet=TRUE)
+ES <- cbind(ES$returnlev[1:nrow(ES$gof),], ES$gof)
 # simple mean:              # plot(sort(GF))
 av_simple <- mean(ES[,"RP.50"])     # 114.0178  old: 116.8383
 # weighted average:

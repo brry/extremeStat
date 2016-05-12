@@ -24,6 +24,7 @@
 #'             Bemessungsgroessen mit Verfahren der instationaeren Extremwertstatistik
 #' @keywords hplot dplot distribution ts
 #' @export
+#' @importFrom berryFunctions owa
 #' 
 #' @examples
 #' 
@@ -40,13 +41,7 @@
 #' 
 #' # Basic examples ---------------------------------------------------------------
 #' dle <- distLextreme(annMax, log=TRUE)
-#' 
-#' # Why do I not get the following warning in interactive mode?
-#' ## calculating RMSE:
-#' ## Warning in rmse(tcdfs[[d]], ecdfs, quiet = q
-#' ##   7 NAs were omitted from 35 data points.
-#' # maybe also because now rmse is called with quiet=TRUE...
-#' 
+#'
 #' # Object structure:
 #' str(dle, max.lev=2)
 #' distLprint(dle)
@@ -120,8 +115,8 @@
 #' # Discharge estimated for 50 years return period
 #' Goodness <- function(gofProp)
 #' { # ExtremeStatistics
-#' ES <- distLextreme(annMax, gofProp=gofProp, plot=FALSE, progbars=FALSE)
-#' ES <- cbind(ES$returnlev, ES$gof)
+#' ES <- distLextreme(annMax, fitargs=list(gofProp=gofProp), plot=FALSE, quiet=TRUE)
+#' ES <- cbind(ES$returnlev[1:nrow(ES$gof),], ES$gof)
 #' # simple mean:              # plot(sort(GF))
 #' av_simple <- mean(ES[,"RP.50"])     # 114.0178  old: 116.8383
 #' # weighted average:
@@ -172,6 +167,7 @@
 #' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n>200
 #' @param time \code{\link{message}} execution time? DEFAULT: TRUE
 #' @param plot Should the return periods and nbest fitted distributions be plotted by a call to \code{\link{distLextremePlot}}? DEFAULT: TRUE
+#' @param fitargs List of arguments passed to \code{\link{distLfit}}, like gofProp. DEFAULT: NULL
 #' @param quiet Suppress notes and progbars? DEFAULT: FALSE
 #' @param \dots Further arguments passed to \code{\link{distLextremePlot}} like order, lty, lwd, ...
 #' 
@@ -184,6 +180,7 @@ RPs=c(2,5,10,20,50),
 progbars=length(dlf$dat)>200,
 time=TRUE,
 plot=TRUE,
+fitargs=NULL,
 quiet=FALSE,
 ... )
 {
@@ -191,8 +188,9 @@ StartTime <- Sys.time()
 if(quiet) progbars <- FALSE
 if(any(RPs<1.05) & !quiet) on.exit(message("Note in distLextreme: for RPs=1 rather use min(dat)."), add=TRUE)
 # fit distributions and calculate goodness of fits -----------------------------
-if( is.null(dlf) )  dlf <- distLfit(dat=dat, datname=deparse(substitute(dat)), 
-      plot=FALSE, selection=selection, time=FALSE, progbars=progbars, quiet=quiet)
+if( is.null(dlf) )  dlf <- do.call(distLfit, owa(list(dat=dat, datname=deparse(substitute(dat)), 
+      plot=FALSE, selection=selection, time=FALSE, progbars=progbars, quiet=quiet), 
+      fitargs, "dat", "datname", "selection"))
 # Equality check
 if(!missing(dat) & !is.null("dlf")) if(any(dlf$dat != dat) & !quiet)
   on.exit(message("Note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored."), add=TRUE)
