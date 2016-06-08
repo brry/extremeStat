@@ -2,8 +2,6 @@
 extremeStat ToDo-list / wishlist / issues
 - distLprint: possibly change to print method for dlf objects with personal class
 - q_gpd: consider an extra package in suggests for this, to reduce dependencies for the core of extremeStat
-- distLfit line 137: put laplace back in after lmomco update, update version dependency in imports
-- distLgof line 155 + distLplot line 180: put gld back in after bug is fixed
 - read all of https://www.ine.pt/revstat/pdf/rs120102.pdf and coles (2001)
 
 ---------------------------------------

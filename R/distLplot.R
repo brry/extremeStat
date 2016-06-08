@@ -177,8 +177,8 @@ for(i in length(dn):1)
   #browser()
   if(is.null(paramd)) next # 
   if(!is.null(paramd$ifail)) if(paramd$ifail!=0) next # emu # this may be too strict...
-  if(paramd$type=="gld") next # lmomco 2.2.2 cdfgld bug
-  if(!is.null(paramd$error)) if(paramd$convergence!=0) next # gep 
+  ### if(paramd$type=="gld") next # lmomco 2.2.2 cdfgld bug
+  if(!is.null(paramd$error)) if(!is.null(paramd$convergence)) if(paramd$convergence!=0) next # gep 
   xsup <- lmomco::supdist(paramd)$support
   xval <- xval[ xval>xsup[1] & xval<xsup[2] ]
   # only plot distribution line if there is some support:
