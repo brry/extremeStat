@@ -123,7 +123,7 @@ if( ! is.null(selection) )
   if(any(seldn))
    {
    curseldn <- selection[seldn]
-   if(!quiet) on.exit(message("Note in distLfit: selection (", pastec(curseldn),
+   if(!quiet) on.exit(message("Note in distLfit: selection (", toString(curseldn),
    ") not available in lmomco::dist.list(), thus removed."), add=TRUE)
    selection <- selection[!seldn]
    }

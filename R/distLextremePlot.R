@@ -87,10 +87,10 @@ dn <- rownames(dlf$gof) # distribution names
 if(!is.null(selection))
   {
   names(dn) <- dn
-  if(!any(selection %in% dn)) stop("selection ", pastec(selection), " is not available in dlf$gof.")
+  if(!any(selection %in% dn)) stop("selection ", toString(selection), " is not available in dlf$gof.")
   selection_not_dn <- selection[!selection %in% dn]
   if(any(!selection %in% dn)) on.exit(message("Note in distLextremePlot: selection ", 
-          pastec(selection_not_dn), " is not available in dlf$gof, thus ignored."), add=TRUE)
+          toString(selection_not_dn), " is not available in dlf$gof, thus ignored."), add=TRUE)
   selection <- selection[selection %in% dn]
   dn <- dn[selection]
   if(order)

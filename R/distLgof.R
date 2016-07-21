@@ -158,13 +158,13 @@ if(any(exclude))
   {
   curdnexclude <- dn[exclude]
   if(!quiet) on.exit(message("Note in distLgof: The following distributions were excluded since no parameters were estimated:\n",
-             pastec(curdnexclude)), add=TRUE)
+             toString(curdnexclude)), add=TRUE)
   dn <- dn[!exclude]
   # dlf$parameter <- dlf$parameter[!exclude] # not sure whether this is always good...
 }
 if(length(dn)<1&!quiet) on.exit(message("Note in distLgof: No fitted distributions",
                                " in dlf, thus GOF can't be compared."), add=TRUE) else
-if(length(dn)<2&!quiet) on.exit(message("Note in distLgof: Only ", pastec(dn),
+if(length(dn)<2&!quiet) on.exit(message("Note in distLgof: Only ", toString(dn),
                                 " was fitted, thus GOF can't be compared."), add=TRUE)
 if(ks)
   {

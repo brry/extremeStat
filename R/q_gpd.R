@@ -49,7 +49,7 @@
 #' @importFrom fExtremes gpdFit
 #' @importFrom ismev gpd.fit
 #' @importFrom Renext fGPD Renouv qGPD
-#' @importFrom berryFunctions pastec quantileMean
+#' @importFrom berryFunctions quantileMean
 #'
 #' @examples
 #' data(annMax)
@@ -213,7 +213,7 @@ if(returnlist) failout <- c(list(z="not fitted"), outlist)
 if(all(probs < truncate) & undertruncNA)
    {
    if(!quiet) on.exit(message("Note in q_gpd: With undertruncNA=TRUE, 'probs' (",
-              berryFunctions::pastec(probs),
+              toString(probs),
               ")\n  must contain values that are larger than 'truncate' (",
               truncate, "). Returning NAs."), add=TRUE)
    return(failout)
@@ -350,7 +350,7 @@ names(output) <- paste0(probs*100,"%")
 # replace probs below truncation value with NA:
 if(undertruncNA & any(probs < truncate) & !quiet)
   on.exit(message("Note in q_gpd: quantiles for probs (",
-     berryFunctions::pastec(probs[probs<=truncate]),
+     toString(probs[probs<=truncate]),
      ") below truncate (",truncate,") replaced with NAs."), add=TRUE)
 if(undertruncNA) output[probs < truncate] <- NA
 # Output result:

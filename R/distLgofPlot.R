@@ -7,7 +7,7 @@
 #' @seealso \code{\link{distLgof}}, \code{\link{distLfit}}
 #' @keywords hplot distribution
 #' @export
-#' @importFrom berryFunctions pastec owa
+#' @importFrom berryFunctions owa
 #' @examples
 #' # see distLgof
 #' 
@@ -44,7 +44,7 @@ main=NULL,
 {
 # Input control:
 if(nrow(dlf$gof)<1) stop("No fitted distributions in dlf.")
-if(nrow(dlf$gof)<2) stop("Only ", berryFunctions::pastec(rownames(dlf$gof)), " was fitted, thus GOF can't be compared.")
+if(nrow(dlf$gof)<2) stop("Only ",toString(rownames(dlf$gof)), " was fitted, thus GOF can't be compared.")
 # recycling:
 col <- rep(col, length=3)
 pch <- rep(pch, length=3)

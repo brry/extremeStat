@@ -95,10 +95,10 @@ if(!is.null(selection))
   if(order) selection <- selection[rownames(dlf$gof)]
   selection <- selection[!is.na(selection)]
   sing <- selection %in% rownames(dlf$gof)
-  if(!any(sing)) stop("selection (", pastec(selection[!sing]), ") is not available in dlf$gof.")
+  if(!any(sing)) stop("selection (", toString(selection[!sing]), ") is not available in dlf$gof.")
   if(any(!sing)) 
     {
-    curselsing <- pastec(selection[!sing])
+    curselsing <- toString(selection[!sing])
     on.exit(message("Note in disLplot: selection (", curselsing, ") is not available in dlf$gof."), add=TRUE)
     }
   selection <- selection[sing]

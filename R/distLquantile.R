@@ -167,7 +167,7 @@ if(!is.null(dlf)) if(any(dlf$truncate!=truncate)|any(any(dlf$threshold!=threshol
   currentdlfthreshold <- dlf$threshold
   if(!quiet) on.exit(message("Note in distLquantile: truncate (",truncate,
        ") did not match dlf$truncate (",currentdlftruncate,
-       "). Thresholds: ",pastec(signif(c(threshold, currentdlfthreshold),7)),
+       "). Thresholds: ",toString(signif(c(threshold, currentdlfthreshold),7)),
        ".\n   distLfit is called with the original dlf$dat."), add=TRUE)
   x <- dlf$dat
   internaldatname <- dlf$datname
@@ -197,9 +197,9 @@ if(!is.null(selection))
 # Empty output matrix: ---------------------------------------------------------
 dn <- names(dlf$parameter)  # dn = distribution names
 dn2 <- rownames(dlf$gof)
-if(any(!dn2 %in% dn)) warning(pastec(dn2[!dn2 %in% dn]),
+if(any(!dn2 %in% dn)) warning(toString(dn2[!dn2 %in% dn]),
                              " available in dlf$gof, but not in dlf$parameter.")
-if(any(!dn %in% dn2)) warning(pastec( dn[!dn %in% dn2]),
+if(any(!dn %in% dn2)) warning(toString( dn[!dn %in% dn2]),
                              " available in dlf$parameter, but not in dlf$gof.")
 if(order) dn <- dn2
 output <- matrix(NA, ncol=length(probs), nrow=length(dn) )
@@ -210,7 +210,7 @@ rownames(output) <- dn
 miss <- selection[!selection %in% dn]
 if(length(miss)>0)
   {
-  on.exit(message("Note in distLquantile: specified selection (", pastec(miss),
+  on.exit(message("Note in distLquantile: specified selection (", toString(miss),
                   ") is not available in dlf$gof."), add=TRUE)
   m <- matrix(NA, nrow=length(miss), ncol=ncol(output))
   rownames(m) <- miss # always keep the same order if selection is given
@@ -243,7 +243,7 @@ probs2 <- probs
 if(truncate!=0)
   {
   if(all(probs < truncate) & !quiet) on.exit(message("Note in distLquantile: 'probs' (",
-     pastec(probs),") must contain values that are larger than 'truncate' (", 
+     toString(probs),") must contain values that are larger than 'truncate' (",
           truncate, "). Returning NAs."), add=TRUE)
   probs2 <- (probs-truncate)/(1-truncate) # correct probabilities for smaller sample proportion
   probs2[probs < truncate] <- 0   # avoid negative values
