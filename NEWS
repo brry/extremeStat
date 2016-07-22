@@ -3,6 +3,7 @@ extremeStat ToDo-list / wishlist / issues
 - distLprint: possibly change to print method for dlf objects with personal class
 - q_gpd: consider an extra package in suggests for this, to reduce dependencies for the core of extremeStat
 - read all of https://www.ine.pt/revstat/pdf/rs120102.pdf and coles (2001)
+- if lmomco parkap is changed, change distLfit:154 and distLgof:154 (or leave it...)
 
 ---------------------------------------
 extremeStat Package by Berry Boessenkool, berry-b@gmx.de

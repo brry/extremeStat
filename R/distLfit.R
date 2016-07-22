@@ -138,7 +138,7 @@ if(speed) dn <- dn[ ! dn %in%
 if(length(dat) < 5) {if(!ssquiet)on.exit(message("Note in distLfit: sample size (",
                          length(dat), ") is too small to fit parameters (<5)."), add=TRUE)
   error_out <- as.list(dn) # this is very useful for distLquantile
-  names(error_out) <- dn  # since it keeps the columns if a selection is given
+  names(error_out) <- dn  # since it keeps the rows if a selection is given
   error_gof <- matrix(NA, nrow=length(dn), ncol=6)
   colnames(error_gof) <- c("RMSE", "R2", paste0("weight",1:3), "weightc")
   rownames(error_gof) <- dn
@@ -151,7 +151,8 @@ if(length(dat) < 5) {if(!ssquiet)on.exit(message("Note in distLfit: sample size 
 mom <- lmomco::lmoms(dat, nmom=5)
 # estimate parameters for each distribution:    # this takes time!
 if(progbars) message("Parameter estimation from linear moments:")
-parameter <- lapply(dn, function(d) lmomco::lmom2par(mom, type=d) )
+parameter <- lapply(dn, function(d) try(lmomco::lmom2par(mom, type=d), silent=TRUE) )
+# wrapped in try since july 2016 because parkap breaks if TAU4=NA  (lmomco 2.2.4)
 # error catching:
 if( length(parameter) != length(dn))
   {
