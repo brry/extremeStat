@@ -261,7 +261,8 @@ if(threshold != normalthr)
 #
 # distribution quantiles: ------------------------------------------------------
 # This is the actual work...
-for(d in dn) if(!is.null(dlf$parameter[[d]])) {
+for(d in dn) if(!is.null(dlf$parameter[[d]]) &
+                !inherits(dlf$parameter[[d]], "try-error")) {
                quantd <- lmomco::qlmomco(f=probs2, para=dlf$parameter[[d]])
                if(!is.null(quantd)) output[d,] <- quantd
                }
@@ -317,7 +318,8 @@ if(!speed) output["q_gpd_extRemes_Bayesian",] <- q_gpd_int("extRemes", meth="Bay
 #
 dlf$quant <- output
 # Plotting: Quantile lines: ----------------------------------------------------
-if(plot) do.call(distLplot, berryFunctions::owa(c(list(dlf=dlf, qlines=TRUE), list(...)), plotargs))
+if(plot) do.call(distLplot, berryFunctions::owa(c(list(dlf=dlf, qlines=TRUE),
+                                                         list(...)), plotargs))
 # return output: ---------------------------------------------------------------
 if(returnlist) return(dlf) else return(output)
 }
