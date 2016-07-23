@@ -117,12 +117,19 @@
 #' dev.off()
 #' } # end dontrun
 #' 
-#' @param dlf List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, parameter, gofProp}
-#' @param gofProp Overrides value in list. Proportion (0:1) of highest values in \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail
+#' @param dlf List as returned by \code{\link{distLfit}}, containing the elements
+#'            \code{dat, datname, parameter, gofProp}
+#' @param gofProp Overrides value in list. Proportion (0:1) of highest values in
+#'                \code{dat} to compute goodness of fit (dist / ecdf) with.
+#'                 This enables to focus on the dist tail
 #' @param plot Call \code{\link{distLgofPlot}}? DEFAULT: TRUE
 #' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n > 200
-#' @param ks Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. DEFAULT: TRUE
-#' @param weightc Optional: a named vector with custom weights for each distribution. Are internally normalized to sum=1 after removing nonfitted dists. Names must match the parameter names from \code{\link{distLfit}}. DEFAULT: NA
+#' @param ks Include ks.test results in \code{dlf$gof}?
+#'            Computing is much faster when FALSE. DEFAULT: TRUE
+#' @param weightc Optional: a named vector with custom weights for each distribution.
+#'                Are internally normalized to sum=1 after removing nonfitted dists.
+#'                Names must match the parameter names from \code{\link{distLfit}}.
+#'                DEFAULT: NA
 #' @param quiet Suppress notes? DEFAULT: FALSE
 #' @param \dots Further arguments passed to \code{\link{distLgofPlot}}
 #' 

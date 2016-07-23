@@ -8,17 +8,24 @@ distLgof(dlf, gofProp, plot = TRUE, progbars = length(dlf$dat) > 200,
   ks = TRUE, weightc = NA, quiet = FALSE, ...)
 }
 \arguments{
-\item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, datname, parameter, gofProp}}
+\item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements
+\code{dat, datname, parameter, gofProp}}
 
-\item{gofProp}{Overrides value in list. Proportion (0:1) of highest values in \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail}
+\item{gofProp}{Overrides value in list. Proportion (0:1) of highest values in
+\code{dat} to compute goodness of fit (dist / ecdf) with.
+ This enables to focus on the dist tail}
 
 \item{plot}{Call \code{\link{distLgofPlot}}? DEFAULT: TRUE}
 
 \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n > 200}
 
-\item{ks}{Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. DEFAULT: TRUE}
+\item{ks}{Include ks.test results in \code{dlf$gof}?
+Computing is much faster when FALSE. DEFAULT: TRUE}
 
-\item{weightc}{Optional: a named vector with custom weights for each distribution. Are internally normalized to sum=1 after removing nonfitted dists. Names must match the parameter names from \code{\link{distLfit}}. DEFAULT: NA}
+\item{weightc}{Optional: a named vector with custom weights for each distribution.
+Are internally normalized to sum=1 after removing nonfitted dists.
+Names must match the parameter names from \code{\link{distLfit}}.
+DEFAULT: NA}
 
 \item{quiet}{Suppress notes? DEFAULT: FALSE}
 
