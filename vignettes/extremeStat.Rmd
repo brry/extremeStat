@@ -121,8 +121,10 @@ The resulting percentiles can be called **censored or truncated quantiles**.
 
 This package is based on the philosophy that, in order to compare parametric with empirical quantiles, the threshold must be at some percentage of the full sample. 
 That way, the probabilities given to the quantile functions can be updated.  
-For example, if the censored Q0.99 is to be computed from the top 20 % of the full dataset, Q0.95 of the truncated sample must be used.
-The probability adjustment for censored quantiles with truncation percentage **`t`** happens with the equation
+For example, if the censored Q0.99 ( **` p = 0.99 `** ) is to be computed 
+from the top 20 % ( **` t = 0.2 `** ) of the full dataset, 
+then Q0.95 ( **` p2 = 0.95 `** ) of the truncated sample must be used.
+The probability adjustment for censored quantiles with truncation percentage **` t `** happens with the equation
 $$ p2  =  \frac{p-t}{1-t}  $$
 <center>derived from </center>
 $$ \frac{1-p}{1-t}  =  \frac{1-p2}{1-0} $$
