@@ -190,9 +190,17 @@ StartTime <- Sys.time()
 if(quiet) progbars <- FALSE
 if(any(RPs<1.05) & !quiet) on.exit(message("Note in distLextreme: for RPs=1 rather use min(dat)."), add=TRUE)
 # fit distributions and calculate goodness of fits -----------------------------
-if( is.null(dlf) )  dlf <- do.call(distLfit, owa(list(dat=dat, datname=deparse(substitute(dat)), 
+if( is.null(dlf) )  dlf <- do.call(distLfit, owa(list(dat=dat, 
+      datname=deparse(substitute(dat)), truncate=truncate, 
       plot=FALSE, selection=selection, time=FALSE, progbars=progbars, quiet=quiet), 
       fitargs, "dat", "datname", "selection"))
+# Emptyness check:
+if("error" %in% names(dlf)) 
+  {
+  on.exit(message("Note in distLextreme: There was an error in distLfit, ",
+          "thus I'm not plotting anything: ", dlf$error), add=TRUE)
+  plot <- FALSE
+  }
 # Equality check
 if(!missing(dat) & !is.null("dlf")) if(any(dlf$dat != dat) & !quiet)
   on.exit(message("Note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored."), add=TRUE)
