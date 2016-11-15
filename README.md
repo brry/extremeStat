@@ -1,12 +1,13 @@
-extremeStat
-===========
+### intro
 
 Fit, plot and compare several (extreme value) distributions. 
 Can also compute (truncated) distribution quantile estimates and draw a plot with return periods on a linear scale.
 
 **See the [Vignette](https://cran.r-project.org/web/packages/extremeStat/vignettes/extremeStat.html) for an introduction to the package.**
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/extremeStat)](http://cran.r-project.org/package=extremeStat) [![downloads](http://cranlogs.r-pkg.org/badges/extremeStat)](http://www.r-pkg.org/services)
+### installation
+
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version-last-release/extremeStat)](http://cran.r-project.org/package=extremeStat) [![downloads](http://cranlogs.r-pkg.org/badges/extremeStat)](http://www.r-pkg.org/services)
 
 Install / load the package and browse through the examples:
 ```R
@@ -14,12 +15,14 @@ install.packages("extremeStat")
 library(extremeStat)
 vignette(extremeStat)
 
-# update to the most recent development version:
+# update to the current development version:
 berryFunctions::instGit("brry/extremeStat")
 ```
 
+### trouble
+
 If direct installation from CRAN doesn't work, your R version might be too old. In that case, an update is really recommendable: [r-project.org](http://www.r-project.org/). If you can't update R, try installing from source (github) via `instGit` or devtools as mentioned above. If that's not possible either, here's a manual workaround:
-click on **Download ZIP** (to the right, [link](https://github.com/brry/extremeStat/archive/master.zip)), unzip the file to some place, then
+click on **Clone or Download - Download ZIP** (topright, [link](https://github.com/brry/extremeStat/archive/master.zip)), unzip the file to some place, then
 ```R
 setwd("that/path")
 dd <- dir("extremeStat-master/R", full=T)
