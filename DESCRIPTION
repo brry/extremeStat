@@ -19,7 +19,7 @@ Maintainer: Berry Boessenkool <berry-b@gmx.de>
 Description: Code to fit, plot and compare several (extreme value)
     distribution functions. Can also compute (truncated) distribution quantile estimates and
     draw a plot with return periods on a linear scale.
-License: GPL-3
+License: GPL (>= 2)
 URL: https://github.com/brry/extremeStat
 RoxygenNote: 5.0.1
 Suggests: testthat,
