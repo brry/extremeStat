@@ -248,7 +248,7 @@ if(package=="lmomco") # fit lmomco #################
 {                                              # x >= t : equal to rest of extremeStat package 
   outlist$q_gpd_creator <- "lmomco::pargpa"    # x > t  : equal to other functons below
   lmom <- try(lmomco::lmoms(x[x > threshold]), silent=TRUE)
-  if(inherits(lmom, "try-error")) return(failfun(z, "lmomco::lmoms"))
+  if(inherits(lmom, "try-error")) return(failfun(lmom, "lmomco::lmoms"))
   oop <- options(warn=2)
   z <- try(lmomco::pargpa(lmom, ...), silent=TRUE)       
   options(oop)
