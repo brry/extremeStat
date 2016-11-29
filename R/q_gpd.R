@@ -235,8 +235,10 @@ if(package=="lmomco") # fit lmomco #################
 {
   outlist$q_gpd_creator <- "lmomco::pargpa"      # x >= t : equal to rest of extremeStat package 
   lmom <- lmomco::lmoms(x[x > threshold])        # x > t  : equal to other functons below
-  z <- try(lmomco::pargpa(lmom, ...), silent=TRUE)             
- if(inherits(z, "try-error")) return(failfun(z, "lmomco::pargpa"))
+  oop <- options(warn=2)
+  z <- try(lmomco::pargpa(lmom, ...), silent=TRUE)       
+  options(oop)
+  if(inherits(z, "try-error")) return(failfun(z, "lmomco::pargpa"))
 } else
 if(package=="evir") # fit evir #################
 {
@@ -296,7 +298,8 @@ stop("package ", package, " is not in the options. This is a bug. Please report 
 # quantile computing: ----------------------------------------------------------
 if(package=="lmomco") # quant lmomco #################
 {
-  output <- lmomco::quagpa(f=probs2, para=z)
+  output <- try(lmomco::quagpa(f=probs2, para=z), silent=TRUE)
+  if(inherits(output, "try-error")) return(failfun(output, "lmomco::quagpa"))
 } else
 if(package=="evir") # quant evir #################
 {
