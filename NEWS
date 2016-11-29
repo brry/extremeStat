@@ -4,11 +4,14 @@ extremeStat ToDo-list / wishlist / issues
 - q_gpd: consider an extra package in suggests for this, to reduce dependencies for the core of extremeStat
 - read all of https://www.ine.pt/revstat/pdf/rs120102.pdf and coles (2001)
 - if lmomco parkap is changed, change distLfit:154 and distLgof:154 (or leave it...)
+- distLextreme correct RP for POT approach
+
 
 ---------------------------------------
 extremeStat Package by Berry Boessenkool, berry-b@gmx.de
 Any feedback is welcome, per email or on github.com/brry/extremeStat
 ---------------------------------------
+
 
 Version 0.5.15 (2016-05-11)
 submitted to CRAN
@@ -40,7 +43,6 @@ depends on berryFunctions again (maintaning functions twice is nonsense)
 - distLgof now has ks and quiet argument
 - distLplot now has las and ylab arguments
 - distLfit gained quiet argument
-
 
 
 ---------------------------------------

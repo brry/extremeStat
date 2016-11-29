@@ -12,43 +12,67 @@ distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
   quiet = FALSE, ssquiet = quiet, ttquiet = quiet, ...)
 }
 \arguments{
-\item{x}{Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
+\item{x}{Sample for which parametrical quantiles are to be calculated. 
+If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
 
 \item{probs}{Numeric vector of probabilities with values in [0,1]. DEFAULT: c(0.8,0.9,0.99)}
 
-\item{truncate}{Number between 0 and 1 (proportion of sample discarded). Censored quantile: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0}
+\item{truncate}{Number between 0 and 1 (proportion of sample discarded). 
+Censored quantile: fit to highest values only (truncate lower proportion of x). 
+Probabilities are adjusted accordingly. DEFAULT: 0}
 
-\item{threshold}{POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
+\item{threshold}{POT cutoff value. If you want correct percentiles, 
+set this only via truncate, see Details of \code{\link{q_gpd}}. 
+DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
 
-\item{selection}{Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used. DEFAULT: NULL}
+\item{selection}{Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. 
+Can be a vector. If NULL (the default), all types present in 
+dlf$parameter are used. DEFAULT: NULL}
 
-\item{dlf}{dlf object described in \code{\link{extremeStat}}. Use this to save computing time for large datasets where you already have dlf. DEFAULT: NULL}
+\item{dlf}{dlf object described in \code{\link{extremeStat}}. Use this to save 
+computing time for large datasets where you already have dlf. DEFAULT: NULL}
 
-\item{order}{Sort results by GOF? If TRUE (the default) and length(selection)>1, the output is ordered by dlf$gof, else by order of appearance in selection (or dlf$parameter). DEFAULT: TRUE}
+\item{order}{Sort results by GOF? If TRUE (the default) and length(selection)>1, 
+the output is ordered by dlf$gof, else by order of appearance in 
+selection (or dlf$parameter). DEFAULT: TRUE}
 
-\item{returnlist}{Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned. DEFAULT: FALSE}
+\item{returnlist}{Return full \code{dlf}list with output attached as element \code{quant}? 
+If FALSE (the default), just the matrix with quantile estimates 
+is returned. DEFAULT: FALSE}
 
-\item{empirical}{Add empirical \code{\link{quantileMean}} in the output matrix and vertical lines? DEFAULT: TRUE}
+\item{empirical}{Add empirical \code{\link{quantileMean}} in the output matrix 
+and vertical lines? DEFAULT: TRUE}
 
-\item{weighted}{Include weighted averages across distribution functions to the output? DEFAULT: empirical, so additional options can all be excluded with emp=F.}
+\item{weighted}{Include weighted averages across distribution functions to the output?
+DEFAULT: empirical, so additional options can all be excluded with emp=F.}
 
-\item{gpd}{Include GPD quantile estimation via \code{\link{q_gpd}}? DEFAULT: empirical}
+\item{gpd}{Include GPD quantile estimation via \code{\link{q_gpd}}? 
+Note that the 'GPD_LMO_lmomco' result differs slightly from 'gpa' if
+truncate=0. This comes from using x>threshold ('GPD_*') or
+x>=threshold ('gpa' and all other distributions in extremeStat). 
+DEFAULT: empirical}
 
-\item{addinfo}{Should information like sample size be \code{\link{rbind}ed} to the output? DEFAULT: FALSE}
+\item{addinfo}{Should information like sample size be 
+\code{\link{rbind}ed} to the output? DEFAULT: FALSE}
 
-\item{speed}{Compute \code{\link{q_gpd}} only for fast methods? Don't accidentally set this to \code{FALSE} in simulations or with large datasets! DEFAULT: TRUE}
+\item{speed}{Compute \code{\link{q_gpd}} only for fast methods? 
+Don't accidentally set this to \code{FALSE} in simulations or 
+with large datasets! DEFAULT: TRUE}
 
 \item{plot}{Should \code{\link{distLplot}} be called? DEFAULT: FALSE}
 
-\item{plotargs}{List of arguments to be passed to \code{\link{distLplot}} like qlines, qheights, qrow, qlinargs, nbest, cdf, ...}
+\item{plotargs}{List of arguments to be passed to \code{\link{distLplot}} 
+like qlines, qheights, qrow, qlinargs, nbest, cdf, ...}
 
 \item{quiet}{Suppress notes? DEFAULT: FALSE}
 
 \item{ssquiet}{Suppress sample size notes? DEFAULT: quiet}
 
-\item{ttquiet}{Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} is called with ttquiet=TRUE. DEFAULT: quiet}
+\item{ttquiet}{Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} 
+is called with ttquiet=TRUE. DEFAULT: quiet}
 
-\item{\dots}{Arguments passed to \code{\link{distLfit}} (and \code{\link{distLplot}} if plot=TRUE).}
+\item{\dots}{Arguments passed to \code{\link{distLfit}}
+(and \code{\link{distLplot}} if plot=TRUE).}
 }
 \value{
 Matrix with distribution quantile values (with NAs for probs below truncate), \cr
@@ -84,10 +108,10 @@ distLquantile(annMax, probs=0.95, plot=TRUE, qlinargs=list(lwd=3), nbest=5, brea
 dlq <- distLquantile(annMax, weight=FALSE, quiet=TRUE, probs=0.97, returnlist=TRUE)
 dlq$quant
 distLplot(dlq, qlines=TRUE) # per default best fitting distribution functions
-distLplot(dlq, qlines=TRUE, qrow=c("wak","q_gpd*"), nbest=14)
+distLplot(dlq, qlines=TRUE, qrow=c("wak","GPD*"), nbest=14)
 #pdf("dummy.pdf", width=9)
-distLplot(dlq, qlines=TRUE, qrow="q_gpd*", nbest=13, xlim=c(102,110), 
-          qlinargs=list(lwd=3), qheights=seq(0.02, 0.005, len=13))
+distLplot(dlq, qlines=TRUE, qrow="GPD*", nbest=13, xlim=c(102,110), 
+          qlinargs=list(lwd=3), qheights=seq(0.02, 0.005, len=14))
 #dev.off()
 
 
@@ -135,6 +159,11 @@ for(i in 2:4) lines(mytrunc, trunceffect[i,])
 library("berryFunctions")
 textField(rep(0.5,4), trunceffect[,11], paste0("Q",myprobs*100,"\%") )
 par(op)
+
+trunc <- seq(0,0.1,len=200)
+dd <- pbsapply(trunc, function(t) distLquantile(annMax, 
+          selection="gpa", weight=FALSE, truncate=t, prob=0.99, quiet=T)[c(1,3),])
+lines(trunc, dd[2,], type="o", col=2)
 
 
 set.seed(3); rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)

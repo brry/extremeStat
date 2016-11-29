@@ -68,7 +68,7 @@ Ignored if \code{dlf} does not contain the element \code{quant}. DEFAULT: FALSE}
 \item{qheights}{Coordinates of quantile line ends, recycled if necessary. DEFAULT: 20\% of plot height.}
 
 \item{qrow}{Rowname(s) of \code{dlf$quant} that should be drawn instead of the nbest highest ranking distribution functions.
-'q_gpd*' will select all the gpd fits, including gpa.
+'GPD*' will select all the gpd fits, including gpa.
 qheights and coldist must then accordingly have at least 13 elements (or will be recycled). DEFAULT: NULL}
 
 \item{qlinargs}{Arguments passed to \code{\link{lines}} for qlines. DEFAULT: NULL}

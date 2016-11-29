@@ -47,6 +47,7 @@ comparing several R packages doing this
 }
 \details{
 Depending on the value of "package", this fits the GPD using \cr
+\code{lmomco::\link[lmomco]{pargpa}}\cr
 \code{evir::\link[evir]{gpd}}\cr
 \code{evd::\link[evd]{fpot}}\cr
 \code{extRemes::\link[extRemes]{fevd}}\cr
@@ -55,6 +56,7 @@ Depending on the value of "package", this fits the GPD using \cr
 \code{Renext::\link[Renext]{Renouv}} or \code{Renext::\link[Renext]{fGPD}}\cr\cr
 
 The \bold{\code{method}} defaults (and other possibilities) are \cr
+lmomco: none, only linear moments
 evir: "pwm" (probability-weighted moments), or "ml" (maximum likelihood) \cr
 evd: none, only Maximum-likelihood fitting implemented \cr
 extRemes: "MLE", or "GMLE", "Bayesian", "Lmoments" \cr
@@ -69,7 +71,7 @@ For computation, the probabilities are internally updated with \code{p2=(p-t)/(1
 but labelled with the original \code{p}.
 If you truncate 90\% of the sample, you cannot compute the 70th percentile anymore,
 thus \code{undertruncNA} should be left to TRUE. \cr
-If not exported by the packages, the quantile functions are extracted from their current (Feb 2016) source code.
+If not exported by the packages, the quantile functions are extracted from their source code (Nov 2016).
 }
 \examples{
 data(annMax)

@@ -5,6 +5,7 @@
 #' comparing several R packages doing this
 #'
 #' @details Depending on the value of "package", this fits the GPD using \cr
+#' \code{lmomco::\link[lmomco]{pargpa}}\cr
 #' \code{evir::\link[evir]{gpd}}\cr
 #' \code{evd::\link[evd]{fpot}}\cr
 #' \code{extRemes::\link[extRemes]{fevd}}\cr
@@ -13,6 +14,7 @@
 #' \code{Renext::\link[Renext]{Renouv}} or \code{Renext::\link[Renext]{fGPD}}\cr\cr
 #'
 #' The \bold{\code{method}} defaults (and other possibilities) are \cr
+#' lmomco: none, only linear moments
 #' evir: "pwm" (probability-weighted moments), or "ml" (maximum likelihood) \cr
 #' evd: none, only Maximum-likelihood fitting implemented \cr
 #' extRemes: "MLE", or "GMLE", "Bayesian", "Lmoments" \cr
@@ -27,7 +29,7 @@
 #' but labelled with the original \code{p}.
 #' If you truncate 90\% of the sample, you cannot compute the 70th percentile anymore,
 #' thus \code{undertruncNA} should be left to TRUE. \cr
-#' If not exported by the packages, the quantile functions are extracted from their current (Feb 2016) source code.
+#' If not exported by the packages, the quantile functions are extracted from their source code (Nov 2016).
 #' 
 #' @return Named vector of quantile estimates for each value of \code{probs},\cr
 #'    or if(returnlist): list with element \code{q_gpd_quant} and info-elements added.
@@ -168,9 +170,9 @@ efquiet=quiet,
 {
 # Input control: ---------------------------------------------------------------
 if(length(package)!=1) stop("package must have length 1, not ", length(package))
-pospack <- c("evir","evd","extRemes","fExtremes","ismev","Renext")
+pospack <- c("lmomco", "evir","evd","extRemes","fExtremes","ismev","Renext")
 if(!package %in% pospack) stop("package ('",
-     package, "') must be one of:\n  '", paste(pospack, collapse="', '"), "'.")
+     package, "') must be one of:\n", toString(pospack))
 x <- x[!is.na(x)]
 if(length(truncate)>1)
   {
@@ -229,7 +231,14 @@ failfun <- function(z, fitfun) {
   return(failout)
   }
 # actual fitting:
-if(package=="evir") ##################
+if(package=="lmomco") # fit lmomco #################
+{
+  outlist$q_gpd_creator <- "lmomco::pargpa"      # x >= t : equal to rest of extremeStat package 
+  lmom <- lmomco::lmoms(x[x > threshold])        # x > t  : equal to other functons below
+  z <- try(lmomco::pargpa(lmom, ...), silent=TRUE)             
+ if(inherits(z, "try-error")) return(failfun(z, "lmomco::pargpa"))
+} else
+if(package=="evir") # fit evir #################
 {
   outlist$q_gpd_creator <- "evir::gpd"
   if(is.null(method)) method <- "pwm"
@@ -237,33 +246,33 @@ if(package=="evir") ##################
   z <- try(evir::gpd(x, nextremes=pos, method=method, ...), silent=TRUE)
  if(inherits(z, "try-error")) return(failfun(z, "evir::gpd"))
 } else
-if(package=="evd") ##################
+if(package=="evd") # fit evd #################
 {
   outlist$q_gpd_creator <- "evd::fpot"
   z <- try(evd::fpot(x, threshold=threshold, model="gpd", std.err=FALSE, ...), silent=TRUE)
   if(inherits(z, "try-error")) return(failfun(z, "evd::fpot"))
 } else
-if(package=="extRemes") ##################
+if(package=="extRemes") # fit extRemes #################
 {
   outlist$q_gpd_creator <- "extRemes::fevd"
   if(is.null(method)) method <- "MLE"
   z <- try(extRemes::fevd(x, method=method, type="GP", threshold=threshold, ...), silent=TRUE)
   if(inherits(z, "try-error")) return(failfun(z, "extRemes::fevd"))
 } else
-if(package=="fExtremes") ##################
+if(package=="fExtremes") # fit fExtremes #################
 {
   outlist$q_gpd_creator <- "fExtremes::gpdFit"
   if(is.null(method)) method <- "pwm"
   z <- try(z <- fExtremes::gpdFit(x, type=method, u=threshold, ...), silent=TRUE)
   if(inherits(z, "try-error")) return(failfun(z, "fExtremes::gpdFit"))
 } else
-if(package=="ismev") ##################
+if(package=="ismev") # fit ismev #################
 {
   outlist$q_gpd_creator <- "ismev::gpd.fit"
   z <- try(ismev::gpd.fit(x, threshold=threshold, show=FALSE, ...), silent=TRUE)
   if(inherits(z, "try-error")) return(failfun(z, "ismev::gpd.fit"))
 } else
-if(package=="Renext") ##################
+if(package=="Renext") # fit Renext #################
 {
   if(is.null(method)) method <- 'r'
   if(method=="f")
@@ -281,11 +290,15 @@ if(package=="Renext") ##################
   } else
   stop("With package='Renext', method ('",method,"') must be 'f' or 'r'.")
 } else
-stop("package ", package, "is not in the options. This is a bug. Please report to berry-b@gmx.de.")
+stop("package ", package, " is not in the options. This is a bug. Please report to berry-b@gmx.de.")
 #
 #
 # quantile computing: ----------------------------------------------------------
-if(package=="evir") ##################
+if(package=="lmomco") # quant lmomco #################
+{
+  output <- lmomco::quagpa(f=probs2, para=z)
+} else
+if(package=="evir") # quant evir #################
 {
   # computing part from evir::quant, Version: 1.7-3, Date: 2011-07-22
   lambda <- length(x)/z$n.exceed
@@ -293,13 +306,13 @@ if(package=="evir") ##################
   gfunc <- function(a, xihat) (a^(-xihat) - 1)/xihat
   output <- z$threshold + z$par.ests["beta"] * gfunc(a, z$par.ests["xi"])
 } else
-if(package=="evd") ##################
+if(package=="evd") # quant evd #################
 {
   probs2[probs2==0] <- NA
   probs2[probs2==1] <- NA
   output <- evd::qgpd(p=probs2, loc=z$threshold , scale=z$param["scale"], shape=z$param["shape"])
 } else
-if(package=="extRemes") ##################
+if(package=="extRemes") # quant extRemes #################
 {
   # Get parameters from result:
   if(z$method=="Bayesian")
@@ -320,7 +333,7 @@ if(package=="extRemes") ##################
   probs2[probs2==1] <- NA
   output <- extRemes::qevd(p=probs2, scale=scale, shape=shape, threshold=z$threshold, type="GP")
 } else
-if(package=="fExtremes") ##################
+if(package=="fExtremes") #quant fExtremes #################
 {
   output <- fExtremes::qgpd(p=probs2, xi=z@fit$par.ests["xi"], mu=z@parameter$u, beta=z@fit$par.ests["beta"])
   output <- as.vector(output)
@@ -329,13 +342,13 @@ if(package=="fExtremes") ##################
   z <- z2
   outlist$q_gpd_Warning <- "transformed into list from Formal class 'fGPDFIT' [package 'fExtremes'] with 8 slots"
 } else
-if(package=="ismev") ##################
+if(package=="ismev") # quant ismev #################
 {
-  # from ismev Version 1.40 Date 2009-14-07, Published 2014-12-24    ismev:::gpdq
+  # from ismev Version 1.41 Date 2016-04-27,    ismev:::gpdq
   ismev_gpdq <- function(a,u,p) u + (a[1] * (p^(-a[2]) - 1))/a[2]
   output <- ismev_gpdq(a=z$mle, u=z$threshold, p=1-probs2)
 } else
-if(package=="Renext") ##################
+if(package=="Renext") # quant Renext #################
 {
   if(method=="f")
   output <- Renext::qGPD(probs2, scale=z$estimate["scale"], shape=z$estimate["shape"])

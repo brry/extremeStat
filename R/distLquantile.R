@@ -38,10 +38,10 @@
 #' dlq <- distLquantile(annMax, weight=FALSE, quiet=TRUE, probs=0.97, returnlist=TRUE)
 #' dlq$quant
 #' distLplot(dlq, qlines=TRUE) # per default best fitting distribution functions
-#' distLplot(dlq, qlines=TRUE, qrow=c("wak","q_gpd*"), nbest=14)
+#' distLplot(dlq, qlines=TRUE, qrow=c("wak","GPD*"), nbest=14)
 #' #pdf("dummy.pdf", width=9)
-#' distLplot(dlq, qlines=TRUE, qrow="q_gpd*", nbest=13, xlim=c(102,110), 
-#'           qlinargs=list(lwd=3), qheights=seq(0.02, 0.005, len=13))
+#' distLplot(dlq, qlines=TRUE, qrow="GPD*", nbest=13, xlim=c(102,110), 
+#'           qlinargs=list(lwd=3), qheights=seq(0.02, 0.005, len=14))
 #' #dev.off()
 #'
 #'
@@ -89,6 +89,12 @@
 #' library("berryFunctions")
 #' textField(rep(0.5,4), trunceffect[,11], paste0("Q",myprobs*100,"%") )
 #' par(op)
+#' 
+#' trunc <- seq(0,0.1,len=200)
+#' dd <- pbsapply(trunc, function(t) distLquantile(annMax, 
+#'           selection="gpa", weight=FALSE, truncate=t, prob=0.99, quiet=T)[c(1,3),])
+#   plot(trunc, dd[1,], type="o", las=1)
+#' lines(trunc, dd[2,], type="o", col=2)
 #'
 #'
 #' set.seed(3); rnum <- rlmomco(n=1e3, para=dlf$parameter$gpa)
@@ -108,25 +114,49 @@
 #' 
 #' } # end dontrun
 #' 
-#' @param x Sample for which parametrical quantiles are to be calculated. If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL
+#' @param x Sample for which parametrical quantiles are to be calculated. 
+#'          If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL
 #' @param probs Numeric vector of probabilities with values in [0,1]. DEFAULT: c(0.8,0.9,0.99)
-#' @param truncate Number between 0 and 1 (proportion of sample discarded). Censored quantile: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0
-#' @param threshold POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
-#' @param selection Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. Can be a vector. If NULL (the default), all types present in dlf$parameter are used. DEFAULT: NULL
-#' @param dlf dlf object described in \code{\link{extremeStat}}. Use this to save computing time for large datasets where you already have dlf. DEFAULT: NULL
-#' @param order Sort results by GOF? If TRUE (the default) and length(selection)>1, the output is ordered by dlf$gof, else by order of appearance in selection (or dlf$parameter). DEFAULT: TRUE
-#' @param returnlist Return full \code{dlf}list with output attached as element \code{quant}? If FALSE (the default), just the matrix with quantile estimates is returned. DEFAULT: FALSE
-#' @param empirical Add empirical \code{\link{quantileMean}} in the output matrix and vertical lines? DEFAULT: TRUE
-#' @param weighted Include weighted averages across distribution functions to the output? DEFAULT: empirical, so additional options can all be excluded with emp=F.
-#' @param gpd Include GPD quantile estimation via \code{\link{q_gpd}}? DEFAULT: empirical
-#' @param addinfo Should information like sample size be \code{\link{rbind}ed} to the output? DEFAULT: FALSE
-#' @param speed Compute \code{\link{q_gpd}} only for fast methods? Don't accidentally set this to \code{FALSE} in simulations or with large datasets! DEFAULT: TRUE
+#' @param truncate Number between 0 and 1 (proportion of sample discarded). 
+#'                 Censored quantile: fit to highest values only (truncate lower proportion of x). 
+#'                 Probabilities are adjusted accordingly. DEFAULT: 0
+#' @param threshold POT cutoff value. If you want correct percentiles, 
+#'                  set this only via truncate, see Details of \code{\link{q_gpd}}. 
+#'                  DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
+#' @param selection Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. 
+#'                  Can be a vector. If NULL (the default), all types present in 
+#'                  dlf$parameter are used. DEFAULT: NULL
+#' @param dlf dlf object described in \code{\link{extremeStat}}. Use this to save 
+#'            computing time for large datasets where you already have dlf. DEFAULT: NULL
+#' @param order Sort results by GOF? If TRUE (the default) and length(selection)>1, 
+#'              the output is ordered by dlf$gof, else by order of appearance in 
+#'              selection (or dlf$parameter). DEFAULT: TRUE
+#' @param returnlist Return full \code{dlf}list with output attached as element \code{quant}? 
+#'                   If FALSE (the default), just the matrix with quantile estimates 
+#'                   is returned. DEFAULT: FALSE
+#' @param empirical Add empirical \code{\link{quantileMean}} in the output matrix 
+#'                  and vertical lines? DEFAULT: TRUE
+#' @param weighted Include weighted averages across distribution functions to the output?
+#'                 DEFAULT: empirical, so additional options can all be excluded with emp=F.
+#' @param gpd Include GPD quantile estimation via \code{\link{q_gpd}}? 
+#'            Note that the 'GPD_LMO_lmomco' result differs slightly from 'gpa' if
+#'            truncate=0. This comes from using x>threshold ('GPD_*') or
+#'            x>=threshold ('gpa' and all other distributions in extremeStat). 
+#'            DEFAULT: empirical
+#' @param addinfo Should information like sample size be 
+#'                \code{\link{rbind}ed} to the output? DEFAULT: FALSE
+#' @param speed Compute \code{\link{q_gpd}} only for fast methods? 
+#'              Don't accidentally set this to \code{FALSE} in simulations or 
+#'              with large datasets! DEFAULT: TRUE
 #' @param plot Should \code{\link{distLplot}} be called? DEFAULT: FALSE
-#' @param plotargs List of arguments to be passed to \code{\link{distLplot}} like qlines, qheights, qrow, qlinargs, nbest, cdf, ...
+#' @param plotargs List of arguments to be passed to \code{\link{distLplot}} 
+#'                 like qlines, qheights, qrow, qlinargs, nbest, cdf, ...
 #' @param quiet Suppress notes? DEFAULT: FALSE
 #' @param ssquiet Suppress sample size notes? DEFAULT: quiet
-#' @param ttquiet Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} is called with ttquiet=TRUE. DEFAULT: quiet
-#' @param \dots Arguments passed to \code{\link{distLfit}} (and \code{\link{distLplot}} if plot=TRUE).
+#' @param ttquiet Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} 
+#'                is called with ttquiet=TRUE. DEFAULT: quiet
+#' @param \dots Arguments passed to \code{\link{distLfit}}
+#'              (and \code{\link{distLplot}} if plot=TRUE).
 #'
 distLquantile <- function(
 x=NULL,
@@ -221,11 +251,20 @@ if(length(miss)>0)
 # and for GPD comparison methods
 if(empirical) output <- rbind(output, quantileMean=NA)
 if(weighted) output <- rbind(output,weighted1=NA, weighted2=NA, weighted3=NA, weightedc=NA)
-if(gpd) output <- rbind(output, q_gpd_evir_pwm=NA, q_gpd_evir_ml=NA,
-    q_gpd_evd=NA, q_gpd_extRemes_MLE=NA, q_gpd_extRemes_GMLE=NA,
-    q_gpd_extRemes_Bayesian=NA, q_gpd_extRemes_Lmoments=NA,
-    q_gpd_fExtremes_pwm=NA, q_gpd_fExtremes_mle=NA, q_gpd_ismev=NA,
-    q_gpd_Renext_r=NA, q_gpd_Renext_f=NA)
+if(gpd) output <- rbind(output, 
+    GPD_LMO_lmomco=NA, 
+    GPD_LMO_extRemes=NA,
+    GPD_PWM_evir=NA, 
+    GPD_PWM_fExtremes=NA, 
+    GPD_MLE_extRemes=NA,
+    GPD_MLE_ismev=NA,
+    GPD_MLE_evd=NA,
+    GPD_MLE_Renext_Renouv=NA, 
+    GPD_MLE_evir=NA, 
+    GPD_MLE_fExtremes=NA,
+    GPD_GML_extRemes=NA, 
+    GPD_MLE_Renext_2par=NA,
+    GPD_BAY_extRemes=NA)
 if(addinfo) output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$dat), threshold=dlf$threshold)
 #
 # if input sample size is too small, return NA matrix:
@@ -293,7 +332,7 @@ if(weighted)
   output["weighted3",] <- Qweighted("weight3")
   output["weightedc",] <- Qweighted("weightc")
   }
-# q_gpd estimates:
+# q_gpd estimates: -------------------------------------------------------------
 if(gpd)
   {
   # inernal helper function:
@@ -302,18 +341,19 @@ if(gpd)
                         truncate=truncate, threshold=threshold, 
                         quiet=quiet, ttquiet=TRUE)
   #
-  output["q_gpd_evir_pwm",]      <- q_gpd_int("evir", meth="pwm")
-  output["q_gpd_evir_ml",]       <- q_gpd_int("evir", meth="ml")
-  output["q_gpd_evd",]           <- q_gpd_int("evd")
-  output["q_gpd_extRemes_MLE",]  <- q_gpd_int("extRemes", meth="MLE")
-  output["q_gpd_extRemes_GMLE",] <- q_gpd_int("extRemes", meth="GMLE")
-if(!speed) output["q_gpd_extRemes_Bayesian",] <- q_gpd_int("extRemes", meth="Bayesian") # computes a while
-  output["q_gpd_extRemes_Lmoments",] <- q_gpd_int("extRemes", meth="Lmoments")
-  output["q_gpd_fExtremes_pwm",] <- q_gpd_int("fExtremes", meth="pwm")
-  output["q_gpd_fExtremes_mle",] <- q_gpd_int("fExtremes", meth="mle")
-  output["q_gpd_ismev",]         <- q_gpd_int("ismev")
-  output["q_gpd_Renext_r",]      <- q_gpd_int("Renext", meth="r")
-  output["q_gpd_Renext_f",]      <- q_gpd_int("Renext", meth="f")
+  output["GPD_LMO_lmomco",]       <- q_gpd_int("lmomco")
+  output["GPD_LMO_extRemes",]     <- q_gpd_int("extRemes", meth="Lmoments")
+  output["GPD_PWM_evir",]         <- q_gpd_int("evir", meth="pwm")
+  output["GPD_PWM_fExtremes",]    <- q_gpd_int("fExtremes", meth="pwm")
+  output["GPD_MLE_extRemes",]     <- q_gpd_int("extRemes", meth="MLE")
+  output["GPD_MLE_ismev",]        <- q_gpd_int("ismev")
+  output["GPD_MLE_evd",]          <- q_gpd_int("evd")
+  output["GPD_MLE_Renext_Renouv",]<- q_gpd_int("Renext", meth="r")
+  output["GPD_MLE_evir",]         <- q_gpd_int("evir", meth="ml")
+  output["GPD_MLE_fExtremes",]    <- q_gpd_int("fExtremes", meth="mle")
+  output["GPD_GML_extRemes",]     <- q_gpd_int("extRemes", meth="GMLE")
+  output["GPD_MLE_Renext_2par",]  <- q_gpd_int("Renext", meth="f")
+if(!speed)output["GPD_BAY_extRemes",] <- q_gpd_int("extRemes", meth="Bayesian") # computes a while
   }
 #
 dlf$quant <- output

@@ -44,7 +44,7 @@
 #'        Ignored if \code{dlf} does not contain the element \code{quant}. DEFAULT: FALSE
 #' @param qheights Coordinates of quantile line ends, recycled if necessary. DEFAULT: 20\% of plot height.
 #' @param qrow Rowname(s) of \code{dlf$quant} that should be drawn instead of the nbest highest ranking distribution functions.
-#'             'q_gpd*' will select all the gpd fits, including gpa.
+#'             'GPD*' will select all the gpd fits, including gpa.
 #'             qheights and coldist must then accordingly have at least 13 elements (or will be recycled). DEFAULT: NULL
 #' @param qlinargs Arguments passed to \code{\link{lines}} for qlines. DEFAULT: NULL
 #' @param \dots Further arguments passed to \code{\link{lines}}, like type, pch, ...
@@ -114,10 +114,8 @@ if(missing(xlab)       ) xlab <- dlf$datname
 #
 if(!is.null(qrow))
   {
-  if(any(qrow=="q_gpd*")) qrow <- c(qrow[qrow!="q_gpd*"], "gpa", "q_gpd_evir_pwm",
-         "q_gpd_evir_ml", "q_gpd_evd", "q_gpd_extRemes_MLE", "q_gpd_extRemes_GMLE",
-         "q_gpd_extRemes_Bayesian", "q_gpd_extRemes_Lmoments", "q_gpd_fExtremes_pwm",
-         "q_gpd_fExtremes_mle", "q_gpd_ismev", "q_gpd_Renext_r", "q_gpd_Renext_f")
+  rndq <- rownames(dlf$quant)
+  if(any(qrow=="GPD*")) qrow <- c(qrow[qrow!="GPD*"], rndq[grepl("GPD_",rndq)])
   dnqrow <- unique(qrow)
   }
 #
@@ -169,7 +167,7 @@ if(length(dlf$parameter)<1)
 lty <- rep(lty, length=nbest)
 # add distribution function lines:
 if(cdf) lfun <- lmomco::plmomco else lfun <- lmomco::dlmomco
-for(i in length(dn):1)
+if(length(dn)>0) for(i in length(dn):1)
   {
   xval <- seq(from=par("usr")[1], to=par("usr")[2], length=300)
   # cut xval to support region
