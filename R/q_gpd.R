@@ -142,16 +142,29 @@
 #' } # end of dontrun
 #'
 #' @param x Vector with numeric values. NAs are silently ignored.
-#' @param probs Probabilities of truncated (Peak over treshold) quantile. DEFAULT: c(0.8,0.9,0.99)
+#' @param probs Probabilities of truncated (Peak over treshold) quantile. 
+#'              DEFAULT: c(0.8,0.9,0.99)
 #' @param truncate Truncation percentage (proportion of sample discarded). DEFAULT: 0
-#' @param threshold POT cutoff value. If you want correct percentiles, set this only via truncate, see Details. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
-#' @param package Character string naming package to be used. One of c("evir","evd","extRemes","fExtremes","ismev"). DEFAULT: "extRemes"
-#' @param method \code{method} passed to the fitting function, if applicable. Defaults are internally specified (See Details), depending on \code{package}, if left to the DEFAULT: NULL.
-#' @param returnlist Return result from the fitting funtion with the quantiles added to the list as element \code{quant} and some information in elements starting with \code{q_gpd_}. DEFAULT: FALSE
-#' @param undertruncNA Return NAs for probs below truncate? Highly recommended to leave this at the DEFAULT: TRUE
+#' @param threshold POT cutoff value. If you want correct percentiles, set this 
+#'                  only via truncate, see Details. 
+#'                  DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
+#' @param package Character string naming package to be used. One of 
+#'                c("lmomco","evir","evd","extRemes","fExtremes","ismev"). 
+#'                DEFAULT: "extRemes"
+#' @param method \code{method} passed to the fitting function, if applicable. 
+#'               Defaults are internally specified (See Details), depending on 
+#'               \code{package}, if left to the DEFAULT: NULL.
+#' @param returnlist Return result from the fitting funtion with the quantiles 
+#'                   added to the list as element \code{quant} and some information 
+#'                   in elements starting with \code{q_gpd_}. DEFAULT: FALSE
+#' @param undertruncNA Return NAs for probs below truncate? Highly recommended 
+#'                    to leave this at the DEFAULT: TRUE
 #' @param quiet Should messages from this function be suppressed? DEFAULT: FALSE
-#' @param ttquiet Should truncation!=threshold messages from this function be suppressed? DEFAULT: quiet
-#' @param efquiet Should warnings in function calls to the external packages be suppressed via \code{\link{options}(warn=-1)}? The usual type of warning is: NAs produced in log(...). DEFAULT: quiet
+#' @param ttquiet Should truncation!=threshold messages from this function be 
+#'                suppressed? DEFAULT: quiet
+#' @param efquiet Should warnings in function calls to the external packages be 
+#'                suppressed via \code{\link{options}(warn=-1)}? 
+#'                The usual type of warning is: NAs produced in log(...). DEFAULT: quiet
 #' @param \dots Further arguments passed to the fitting funtion listed in section Details.
 #'
 q_gpd <- function(
@@ -232,9 +245,10 @@ failfun <- function(z, fitfun) {
   }
 # actual fitting:
 if(package=="lmomco") # fit lmomco #################
-{
-  outlist$q_gpd_creator <- "lmomco::pargpa"      # x >= t : equal to rest of extremeStat package 
-  lmom <- lmomco::lmoms(x[x > threshold])        # x > t  : equal to other functons below
+{                                              # x >= t : equal to rest of extremeStat package 
+  outlist$q_gpd_creator <- "lmomco::pargpa"    # x > t  : equal to other functons below
+  lmom <- try(lmomco::lmoms(x[x > threshold]), silent=TRUE)
+  if(inherits(lmom, "try-error")) return(failfun(z, "lmomco::lmoms"))
   oop <- options(warn=2)
   z <- try(lmomco::pargpa(lmom, ...), silent=TRUE)       
   options(oop)

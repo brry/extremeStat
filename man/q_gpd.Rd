@@ -13,25 +13,38 @@ q_gpd(x, probs = c(0.8, 0.9, 0.99), truncate = 0,
 \arguments{
 \item{x}{Vector with numeric values. NAs are silently ignored.}
 
-\item{probs}{Probabilities of truncated (Peak over treshold) quantile. DEFAULT: c(0.8,0.9,0.99)}
+\item{probs}{Probabilities of truncated (Peak over treshold) quantile. 
+DEFAULT: c(0.8,0.9,0.99)}
 
 \item{truncate}{Truncation percentage (proportion of sample discarded). DEFAULT: 0}
 
-\item{threshold}{POT cutoff value. If you want correct percentiles, set this only via truncate, see Details. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
+\item{threshold}{POT cutoff value. If you want correct percentiles, set this 
+only via truncate, see Details. 
+DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
 
-\item{package}{Character string naming package to be used. One of c("evir","evd","extRemes","fExtremes","ismev"). DEFAULT: "extRemes"}
+\item{package}{Character string naming package to be used. One of 
+c("lmomco","evir","evd","extRemes","fExtremes","ismev"). 
+DEFAULT: "extRemes"}
 
-\item{method}{\code{method} passed to the fitting function, if applicable. Defaults are internally specified (See Details), depending on \code{package}, if left to the DEFAULT: NULL.}
+\item{method}{\code{method} passed to the fitting function, if applicable. 
+Defaults are internally specified (See Details), depending on 
+\code{package}, if left to the DEFAULT: NULL.}
 
-\item{returnlist}{Return result from the fitting funtion with the quantiles added to the list as element \code{quant} and some information in elements starting with \code{q_gpd_}. DEFAULT: FALSE}
+\item{returnlist}{Return result from the fitting funtion with the quantiles 
+added to the list as element \code{quant} and some information 
+in elements starting with \code{q_gpd_}. DEFAULT: FALSE}
 
-\item{undertruncNA}{Return NAs for probs below truncate? Highly recommended to leave this at the DEFAULT: TRUE}
+\item{undertruncNA}{Return NAs for probs below truncate? Highly recommended 
+to leave this at the DEFAULT: TRUE}
 
 \item{quiet}{Should messages from this function be suppressed? DEFAULT: FALSE}
 
-\item{ttquiet}{Should truncation!=threshold messages from this function be suppressed? DEFAULT: quiet}
+\item{ttquiet}{Should truncation!=threshold messages from this function be 
+suppressed? DEFAULT: quiet}
 
-\item{efquiet}{Should warnings in function calls to the external packages be suppressed via \code{\link{options}(warn=-1)}? The usual type of warning is: NAs produced in log(...). DEFAULT: quiet}
+\item{efquiet}{Should warnings in function calls to the external packages be 
+suppressed via \code{\link{options}(warn=-1)}? 
+The usual type of warning is: NAs produced in log(...). DEFAULT: quiet}
 
 \item{\dots}{Further arguments passed to the fitting funtion listed in section Details.}
 }
