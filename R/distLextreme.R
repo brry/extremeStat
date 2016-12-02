@@ -141,6 +141,26 @@
 #' title(main="The proportion of the data included\nfor calculating RMSE does matter!")
 #' 
 #' 
+#' # Minima -----------------------------------------------------------------------
+#' 
+#' browseURL("http://nrfa.ceh.ac.uk/data/station/meanflow/39072")
+#' qfile <- system.file("extdata/discharge39072.csv", package="berryFunctions")
+#' Q <- read.table(qfile, skip=19, header=TRUE, sep=",", fill=TRUE)[,1:2]
+#' rm(qfile)
+#' colnames(Q) <- c("date","discharge")
+#' Q$date <- as.Date(Q$date)
+#' plot(Q, type="l")
+#' Qmax <- tapply(Q$discharge, format(Q$date,"%Y"), max)
+#' distLextreme(Qmax, quiet=TRUE)
+#' Qmin <- tapply(Q$discharge, format(Q$date,"%Y"), min)
+#' dle <- distLextreme(-Qmin, quiet=TRUE, RPs=c(2,5,10,20,50,100,200,500))
+#' distLextremePlot(dle, ylim=c(0,-31), yaxs="i", yaxt="n", ylab="Q annual minimum", nbest=14)
+#' axis(2, -(0:3*10), 0:3*10, las=1)
+#' -dle$returnlev[c(1:14,21), ]
+#' # Some distribution functions are an obvious bad choice for this, so I use
+#' # weighted 3: Values weighted by GOF of dist only for the best half.
+#' # For the Thames in Windsor, we will likely always have > 9 m^3/s streamflow
+#' 
 #' 
 #' # compare extremeStat with other packages: ---------------------------------------
 #' library(extRemes)
