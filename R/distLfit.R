@@ -110,8 +110,8 @@ if(length(gofProp)>1 | any(gofProp<0) | any(gofProp>1) )
 dat_full <- dat
 dat <- as.numeric( dat[!is.na(dat)]  )
 # truncate (fit values only to upper part of values):
-dat <- dat[dat>=threshold]
-#
+dat <- dat[dat>=threshold] # GPD fits in q_gpd all use x>t, not x>=t
+#                          # but if t=0, I want to use _all_ data
 # possible distributions: ------------------------------------------------------
 dn <- lmomco::dist.list()
 names(dn) <- dn

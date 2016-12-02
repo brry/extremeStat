@@ -52,7 +52,7 @@ truncate=0. This comes from using x>threshold ('GPD_*') or
 x>=threshold ('gpa' and all other distributions in extremeStat). 
 DEFAULT: empirical}
 
-\item{addinfo}{Should information like sample size be 
+\item{addinfo}{Should information about sample size and threshold be 
 \code{\link{rbind}ed} to the output? DEFAULT: FALSE}
 
 \item{speed}{Compute \code{\link{q_gpd}} only for fast methods? 
