@@ -178,6 +178,7 @@ if(ks)
   {
   # Kolmogorov-Smirnov test:
   if(progbars) message("Performing ks.test:")
+  library(lmomco)
   ksA <- lapply(dn, function(d) ks.test(dlf$dat, paste0("cdf",d), dlf$parameter[[d]]) )
   ksP <- sapply(ksA, function(x) x$p.value   )
   ksD <- sapply(ksA, function(x) x$statistic )
@@ -235,7 +236,7 @@ gof$weight3 <- gof$weight3/sum(gof$weight3)
 gof$weightc <- 0
 if(any(!is.na(weightc)))
   {
-  weightc <- weightc[names(weightc)%in%rownames(gof)]
+  weightc <- weightc[names(weightc) %in% rownames(gof)]
   gof[names(weightc), "weightc"] <- weightc
   }
 gof$weightc <- gof$weightc/sum(gof$weightc)

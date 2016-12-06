@@ -21,6 +21,7 @@
 #' @param col Vector with 3 values for line customization. Recycled if necessary. DEFAULT: c(1,3,4)
 #' @param pch Vector with 3 values for line customization. Recycled if necessary. DEFAULT: 1:3
 #' @param lty Vector with 3 values for line customization. Recycled if necessary. DEFAULT: 1
+#' @param lwd Vector with 3 values for line customization. Recycled if necessary. DEFAULT: 1
 #' @param legargs List of arguments passed to \code{\link{legend}} if weights=TRUE, like cex, bg, etc.
 #' @param quiet Suppress notes? DEFAULT: FALSE
 #' @param main plot titles. DEFAULT: NULL
@@ -34,9 +35,10 @@ nbest=NA,
 order=TRUE,
 add=FALSE,
 type="o",
-col=c(1,3,4),
-pch=1:3,
+col=c(1:3,8,4),
+pch=c(1:4,NA),
 lty=1,
+lwd=1,
 legargs=NULL,
 quiet=FALSE,
 main=NULL,
@@ -46,9 +48,10 @@ main=NULL,
 if(nrow(dlf$gof)<1) stop("No fitted distributions in dlf.")
 if(nrow(dlf$gof)<2) stop("Only ",toString(rownames(dlf$gof)), " was fitted, thus GOF can't be compared.")
 # recycling:
-col <- rep(col, length=3)
-pch <- rep(pch, length=3)
-lty <- rep(lty, length=3)
+col <- rep(col, length=5)
+pch <- rep(pch, length=5)
+lty <- rep(lty, length=5)
+lwd <- rep(lwd, length=5)
 # Objects from list:
 gof <- dlf$gof
 gofProp <- dlf$gofProp
@@ -73,10 +76,10 @@ if(is.null(main2)) main2 <- paste("Ranking of distributions by goodness of fit\n
 #
 if(!add) plot(Ranks[,1], 1:n, type="n", ylab="", xlab="Rank", yaxt="n", main=main2, ...)
 if(!add) axis(2, 1:n, rownames(Ranks), las=2)
-lines(Ranks[,1], 1:n, type=type, col=col[1], pch=pch[1], lty=lty[1])
-lines(Ranks[,2], 1:n, type=type, col=col[2], pch=pch[2], lty=lty[2])
+lines(Ranks[,1], 1:n, pch=pch[1], col=col[1], lty=lty[1], lwd=lwd[1], type=type)
+lines(Ranks[,2], 1:n, pch=pch[2], col=col[2], lty=lty[2], lwd=lwd[2], type=type)
 if(ks)
-lines(Ranks[,4], 1:n, type=type, col=col[3], pch=pch[3], lty=lty[3])
+lines(Ranks[,4], 1:n, pch=pch[3], col=col[3], lty=lty[3], lwd=lwd[3], type=type)
 abline(h=n-nbest+0.5)
 legend("bottomleft", c("RMSE","R2",if(ks)"ks.test"), lty=lty, col=col, pch=pch)
 }
@@ -85,16 +88,17 @@ if(weights)
 {
 if(is.null(main)) main <- "Weights of distributions\nfor weighted average"
 Xlim <- range(gof[, grep("weight", colnames(gof))], na.rm=T)
-plot(gof$weightc, nrow(gof):1, xlim=Xlim, type="o", yaxt="n", xlab="Weight",
-     las=1, ylab="Dist", main=main, pch=4, col=8)
-lines(gof$weight1, nrow(gof):1, pch=1, col=1, type="o")
-lines(gof$weight2, nrow(gof):1, pch=2, col=2, type="o")
-lines(gof$weight3, nrow(gof):1, pch=3, col=3, type="o")
-lines(gof$RMSE,    nrow(gof):1, col=4)
-text(head(gof$RMSE,1), nrow(gof), "RMSE", col=4, adj=-0.2)
+plot(gof$weightc, nrow(gof):1, type="n", xlim=Xlim, yaxt="n", xlab="Weight",
+     las=1, ylab="Dist", main=main)
+lines(gof$weight1, nrow(gof):1, pch=pch[1], col=col[1], lty=lty[1], lwd=lwd[1], type=type)
+lines(gof$weight2, nrow(gof):1, pch=pch[2], col=col[2], lty=lty[2], lwd=lwd[2], type=type)
+lines(gof$weight3, nrow(gof):1, pch=pch[3], col=col[3], lty=lty[3], lwd=lwd[3], type=type)
+lines(gof$weightc, nrow(gof):1, pch=pch[4], col=col[4], lty=lty[4], lwd=lwd[4], type=type)
+lines(gof$RMSE,    nrow(gof):1, pch=pch[5], col=col[5], lty=lty[5], lwd=lwd[5], type=type)
+text(head(gof$RMSE,1), nrow(gof), "RMSE", col=col[5], adj=-0.2)
 axis(2, nrow(gof):1, rownames(gof), las=2)
 do.call(legend, berryFunctions::owa(list(x="bottomright", legend=c("1: max(r)-r + min(r)",
         "2: max(r)-r", "3: first half", "c: custom"),
-       title="Weighted by RMSE = r", col=c(1:3,8), pch=1:4, lty=1), legargs))
+       title="Weighted by RMSE = r", col=col[1:4], pch=pch[1:4], lty=lty[1:4], lwd=lwd[1:4]), legargs))
 }
 } # end of function

@@ -5,8 +5,9 @@
 \title{Distribution rank comparison}
 \usage{
 distLgofPlot(dlf, ranks = TRUE, weights = TRUE, nbest = NA,
-  order = TRUE, add = FALSE, type = "o", col = c(1, 3, 4), pch = 1:3,
-  lty = 1, legargs = NULL, quiet = FALSE, main = NULL, ...)
+  order = TRUE, add = FALSE, type = "o", col = c(1:3, 8, 4),
+  pch = c(1:4, NA), lty = 1, lwd = 1, legargs = NULL, quiet = FALSE,
+  main = NULL, ...)
 }
 \arguments{
 \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{gof, gofProp}}
@@ -28,6 +29,8 @@ distLgofPlot(dlf, ranks = TRUE, weights = TRUE, nbest = NA,
 \item{pch}{Vector with 3 values for line customization. Recycled if necessary. DEFAULT: 1:3}
 
 \item{lty}{Vector with 3 values for line customization. Recycled if necessary. DEFAULT: 1}
+
+\item{lwd}{Vector with 3 values for line customization. Recycled if necessary. DEFAULT: 1}
 
 \item{legargs}{List of arguments passed to \code{\link{legend}} if weights=TRUE, like cex, bg, etc.}
 
