@@ -301,10 +301,11 @@ if(threshold != normalthr)
 # distribution quantiles: ------------------------------------------------------
 # This is the actual work...
 for(d in dn) if(!is.null(dlf$parameter[[d]]) &
-                !inherits(dlf$parameter[[d]], "try-error")) {
-               quantd <- lmomco::qlmomco(f=probs2, para=dlf$parameter[[d]])
-               if(!is.null(quantd)) output[d,] <- quantd
-               }
+               !inherits(dlf$parameter[[d]], "try-error")) 
+  {
+  quantd <- try(lmomco::qlmomco(f=probs2, para=dlf$parameter[[d]]), silent=TRUE)
+  if(!inherits(quantd, "try-error") & !is.null(quantd)) output[d,] <- quantd
+  }
 #
 # Change results for probs below truncate to NA
 if(truncate!=0) output[ , probs < truncate] <- NA

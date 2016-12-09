@@ -314,6 +314,7 @@ if(package=="lmomco") # quant lmomco #################
 {
   output <- try(lmomco::quagpa(f=probs2, para=z), silent=TRUE)
   if(inherits(output, "try-error")) return(failfun(output, "lmomco::quagpa"))
+  if(is.null(output)) return(failfun("probably pargpa(lmom)$para returned NAs", "lmomco::quagpa"))
 } else
 if(package=="evir") # quant evir #################
 {
