@@ -1,7 +1,6 @@
 
 extremeStat ToDo-list / wishlist / issues
 - distLprint: possibly change to print method for dlf objects with personal class
-- q_gpd: consider an extra package in suggests for this, to reduce dependencies for the core of extremeStat
 - read all of https://www.ine.pt/revstat/pdf/rs120102.pdf and coles (2001)
 - if lmomco parkap is changed, change distLfit:154 and distLgof:154 (or leave it...)
 - distLextreme correct RP for POT approach
@@ -10,6 +9,22 @@ extremeStat ToDo-list / wishlist / issues
 ---------------------------------------
 extremeStat Package by Berry Boessenkool, berry-b@gmx.de
 Any feedback is welcome, per email or on github.com/brry/extremeStat
+---------------------------------------
+
+
+Version 0.6.0 (2016-12-12)
+For complete log, see https://github.com/brry/extremeStat/commits/master
+- several lmomco changes reflected
+- several rare errors (especially with very small sample sizes) captured
+- documentation updated, vignette clarified
+- distLextreme truncate bug corrected (was not passed to distLfit)
+- Licence made less restrictive (GPL3 changed to GPL>=2)
+- q_gpd captures (and reflects on) more potential errors
+- distLquantile q_gpd rownames are unified and sorted differently
+- distLgofPlot gained more customization options
+
+
+---------------------------------------
 ---------------------------------------
 
 
