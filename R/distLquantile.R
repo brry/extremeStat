@@ -302,8 +302,9 @@ if(threshold != normalthr)
 # This is the actual work...
 for(d in dn) 
   {
-  pard <- dlf$parameter[[d]]
-  if(is.null(pard)) next
+  if(!is.finite(dlf$gof[d, "RMSE"])) next # maybe this is too restricitive...
+  pard <- dlf$parameter[[d]]              # but it catches gno in skewed samples like
+  if(is.null(pard)) next                  # c(2.4,2.7,2.3,2.5,2.2, 62.4 ,3.8,3.1) 
   if(inherits(pard, "try-error")) next
   if(d=="kap") if(pard$ifail!=0) next
   quantd <- try(lmomco::qlmomco(f=probs2, para=dlf$parameter[[d]]), silent=TRUE)
