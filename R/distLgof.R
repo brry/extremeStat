@@ -160,9 +160,10 @@ exclude <- sapply(dlf$parameter, function(x)
   # if("ifail" %in% names(x)) if(x$ifail != 0) return(TRUE) ## restriction too tight
   ### if(x$type=="gld") return(TRUE) # lmomco 2.2.2 cdfgld bug
   if(inherits(x, "try-error")) return(TRUE) # lmomco <=2.2.4: parkap TAU4 NA error
-  if(is.null(lmomco::plmomco(mean(dlf$dat),x))) return(TRUE)  # *)
+  cumuprob <- try(lmomco::plmomco(mean(dlf$dat),x), silent=TRUE)
+  if(is.null(cumuprob)||inherits(cumuprob,"try-error")) return(TRUE)  # kappa errors
   any(is.na(x$para))
-  })                    #  *): CDF cannot be computed for kappa in Dresden example
+  })
 if(any(exclude))
   {
   curdnexclude <- dn[exclude]
