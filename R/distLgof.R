@@ -18,6 +18,7 @@
 #' @export
 #' @importFrom lmomco plmomco
 #' @importFrom berryFunctions rmse rsquare
+#' @importFrom utils getFromNamespace
 #' 
 #' @examples
 #' 
@@ -178,7 +179,8 @@ if(ks)
   {
   # Kolmogorov-Smirnov test:
   if(progbars) message("Performing ks.test:")
-  library(lmomco)
+  ## library("lmomco") # flagged by R CMD check
+  for(d in dn) assign(paste0("cdf",d), getFromNamespace(paste0("cdf",d), "lmomco"))
   ksA <- lapply(dn, function(d) ks.test(dlf$dat, paste0("cdf",d), dlf$parameter[[d]]) )
   ksP <- sapply(ksA, function(x) x$p.value   )
   ksD <- sapply(ksA, function(x) x$statistic )
@@ -210,8 +212,8 @@ if(!quiet)
 gof <- data.frame(RMSE=RMSE, R2=R2)
 if(all(dim(gof) == 0)) # dim = 0,0 if all distributions are excluded
 {
-gof <- data.frame(matrix(NA, ncol=5, nrow=length(dlf$parameter) ))
-colnames(gof) <- c("RMSE","R2","weight1","weight2","weight3")
+gof <- data.frame(matrix(NA, ncol=6, nrow=length(dlf$parameter) ))
+colnames(gof) <- c("RMSE","R2","weight1","weight2","weight3","weightc")
 rownames(gof) <-  names(dlf$parameter)
 } else
 {

@@ -300,9 +300,12 @@ if(threshold != normalthr)
 #
 # distribution quantiles: ------------------------------------------------------
 # This is the actual work...
-for(d in dn) if(!is.null(dlf$parameter[[d]]) &
-               !inherits(dlf$parameter[[d]], "try-error")) 
+for(d in dn) 
   {
+  pard <- dlf$parameter[[d]]
+  if(is.null(pard)) next
+  if(inherits(pard, "try-error")) next
+  if(d=="kap") if(pard$ifail!=0) next
   quantd <- try(lmomco::qlmomco(f=probs2, para=dlf$parameter[[d]]), silent=TRUE)
   if(!inherits(quantd, "try-error") & !is.null(quantd)) output[d,] <- quantd
   }
@@ -323,9 +326,10 @@ if(weighted)
       {
       vals <- output[rownames(dlf$gof), col_n]
       if(!any(is.finite(vals))) return(NA)
-      weights <- dlf$gof[is.finite(vals),Weightnr]
-      weights <- weights/sum(weights) # rescale to 1
-      sum(vals[is.finite(vals)] * weights)
+      weights <- dlf$gof[,Weightnr]
+      if(!any(is.finite(weights))) return(NA)
+      weights <- weights/sum(weights, na.rm=TRUE) # rescale to 1
+      sum((vals*weights)[is.finite(vals)&is.finite(weights)])
       })
     }
   output["weighted1",] <- Qweighted("weight1")
