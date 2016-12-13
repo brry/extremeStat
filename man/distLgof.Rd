@@ -150,8 +150,11 @@ dev.off()
 Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014 + July 2015
 }
 \seealso{
-\code{\link{distLgofPlot}}, \code{\link{distLfit}}. More complex estimates of quality of fits:
-         \url{http://chjs.soche.cl/papers/vol4n1_2013/ChJS-04-01-04.pdf}
+\code{\link{distLgofPlot}}, \code{\link{distLfit}}. 
+    More complex estimates of quality of fits:
+    Fard, M.N.P. and Holmquist, B. (2013, Chilean Journal of Statistics): 
+    Powerful goodness-of-fit tests for the extreme value distribution.
+    http://chjs.mat.utfsm.cl/volumes/04/01/Fard_Holmquist(2013).pdf
 }
 \keyword{distribution}
 \keyword{hplot}

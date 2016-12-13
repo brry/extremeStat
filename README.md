@@ -3,11 +3,11 @@
 Fit, plot and compare several (extreme value) distributions. 
 Can also compute (truncated) distribution quantile estimates and draw a plot with return periods on a linear scale.
 
-**See the [Vignette](https://cran.r-project.org/web/packages/extremeStat/vignettes/extremeStat.html) for an introduction to the package.**
+**See the [Vignette](https://cran.r-project.org/package=extremeStat/vignettes/extremeStat.html) for an introduction to the package.**
 
 ### installation
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version-last-release/extremeStat)](http://cran.r-project.org/package=extremeStat) [![downloads](http://cranlogs.r-pkg.org/badges/extremeStat)](http://www.r-pkg.org/services)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version-last-release/extremeStat)](https://cran.r-project.org/package=extremeStat) [![downloads](http://cranlogs.r-pkg.org/badges/extremeStat)](http://www.r-pkg.org/services)
 
 Install / load the package and browse through the examples:
 ```R
@@ -21,7 +21,7 @@ berryFunctions::instGit("brry/extremeStat")
 
 ### trouble
 
-If direct installation from CRAN doesn't work, your R version might be too old. In that case, an update is really recommendable: [r-project.org](http://www.r-project.org/). If you can't update R, try installing from source (github) via `instGit` or devtools as mentioned above. If that's not possible either, here's a manual workaround:
+If direct installation from CRAN doesn't work, your R version might be too old. In that case, an update is really recommendable: [r-project.org](https://www.r-project.org/). If you can't update R, try installing from source (github) via `instGit` or devtools as mentioned above. If that's not possible either, here's a manual workaround:
 click on **Clone or Download - Download ZIP** (topright, [link](https://github.com/brry/extremeStat/archive/master.zip)), unzip the file to some place, then
 ```R
 setwd("that/path")
