@@ -4,6 +4,8 @@ extremeStat ToDo-list / wishlist / issues
 - read all of https://www.ine.pt/revstat/pdf/rs120102.pdf and coles (2001)
 - if lmomco parkap is changed, change distLfit:154 and distLgof:154 (or leave it...)
 - distLextreme correct RP for POT approach
+- consider option to change all messages to warnings 
+     if(mes2warn) message <- function(...) warning(..., call.=FALSE)
 
 
 ---------------------------------------

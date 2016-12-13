@@ -349,7 +349,8 @@ if(package=="extRemes") # quant extRemes #################
   }
   probs2[probs2==0] <- NA
   probs2[probs2==1] <- NA
-  output <- extRemes::qevd(p=probs2, scale=scale, shape=shape, threshold=z$threshold, type="GP")
+  output <- try(extRemes::qevd(p=probs2, scale=scale, shape=shape, threshold=z$threshold, type="GP"), silent=TRUE)
+  if(inherits(output, "try-error")) return(failfun(output, "extRemes::qevd"))
 } else
 if(package=="fExtremes") #quant fExtremes #################
 {
