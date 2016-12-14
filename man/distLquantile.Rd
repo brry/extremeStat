@@ -6,10 +6,11 @@
 \usage{
 distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
   threshold = berryFunctions::quantileMean(dlf$dat_full, truncate),
-  selection = NULL, dlf = NULL, order = TRUE, returnlist = FALSE,
-  empirical = TRUE, weighted = empirical, gpd = empirical,
-  addinfo = FALSE, speed = TRUE, plot = FALSE, plotargs = NULL,
-  quiet = FALSE, ssquiet = quiet, ttquiet = quiet, ...)
+  sanerange = NA, sanevals = NA, selection = NULL, dlf = NULL,
+  order = TRUE, returnlist = FALSE, empirical = TRUE,
+  weighted = empirical, gpd = empirical, addinfo = FALSE, speed = TRUE,
+  plot = FALSE, plotargs = NULL, quiet = FALSE, ssquiet = quiet,
+  ttquiet = quiet, ...)
 }
 \arguments{
 \item{x}{Sample for which parametrical quantiles are to be calculated. 
@@ -24,6 +25,12 @@ Probabilities are adjusted accordingly. DEFAULT: 0}
 \item{threshold}{POT cutoff value. If you want correct percentiles, 
 set this only via truncate, see Details of \code{\link{q_gpd}}. 
 DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
+
+\item{sanerange}{Range outside of which results should be changed to \code{sanevals}.
+This can capture numerical errors in small samples
+(notably kap and GPD_MLE_extRemes). If NA, this is ignored. DEFAULT: NA}
+
+\item{sanevals}{Values to be used below [1] and above [2] \code{sanerange}. DEFAULT: NA}
 
 \item{selection}{Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. 
 Can be a vector. If NULL (the default), all types present in 
@@ -117,6 +124,14 @@ distLplot(dlq, qlines=TRUE, qrow="GPD*", nbest=13, xlim=c(102,110),
 
 \dontrun{
 ## Taken out from CRAN package check because it's slow
+
+# Sanity checks: important for very small samples:
+x1 <- c(2.6, 2.5, 2.9, 3, 5, 2.7, 2.7, 5.7, 2.8, 3.1, 3.6, 2.6, 5.8, 5.6, 5.7, 5.3)
+q1 <- distLquantile(x1, sanerange=c(0,500), sanevals=c(NA,500))
+x2 <- c(6.1, 2.4, 4.1, 2.4, 6, 6.3, 2.9, 6.8, 3.5)
+q2 <- distLquantile(x2, sanerange=c(0,500), sanevals=c(NA,500))
+x3 <- c(4.4, 3, 1.8, 7.3, 2.1, 2.1, 1.8, 1.8)
+q3 <- distLquantile(x3, sanerange=c(0,500), sanevals=c(NA,500))
 
 # weighted distribution quantiles are calculated by different weighting schemes:
 dlf <- distLfit(annMax)

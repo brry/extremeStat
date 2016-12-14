@@ -48,6 +48,14 @@
 #' \dontrun{
 #' ## Taken out from CRAN package check because it's slow
 #' 
+#' # Sanity checks: important for very small samples:
+#' x1 <- c(2.6, 2.5, 2.9, 3, 5, 2.7, 2.7, 5.7, 2.8, 3.1, 3.6, 2.6, 5.8, 5.6, 5.7, 5.3)
+#' q1 <- distLquantile(x1, sanerange=c(0,500), sanevals=c(NA,500))
+#' x2 <- c(6.1, 2.4, 4.1, 2.4, 6, 6.3, 2.9, 6.8, 3.5)
+#' q2 <- distLquantile(x2, sanerange=c(0,500), sanevals=c(NA,500))
+#' x3 <- c(4.4, 3, 1.8, 7.3, 2.1, 2.1, 1.8, 1.8)
+#' q3 <- distLquantile(x3, sanerange=c(0,500), sanevals=c(NA,500))
+#' 
 #' # weighted distribution quantiles are calculated by different weighting schemes:
 #' dlf <- distLfit(annMax)
 #' distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
@@ -123,6 +131,10 @@
 #' @param threshold POT cutoff value. If you want correct percentiles, 
 #'                  set this only via truncate, see Details of \code{\link{q_gpd}}. 
 #'                  DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
+#' @param sanerange Range outside of which results should be changed to \code{sanevals}.
+#'                  This can capture numerical errors in small samples
+#'                  (notably kap and GPD_MLE_extRemes). If NA, this is ignored. DEFAULT: NA
+#' @param sanevals  Values to be used below [1] and above [2] \code{sanerange}. DEFAULT: NA
 #' @param selection Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. 
 #'                  Can be a vector. If NULL (the default), all types present in 
 #'                  dlf$parameter are used. DEFAULT: NULL
@@ -163,6 +175,8 @@ x=NULL,
 probs=c(0.8,0.9,0.99),
 truncate=0,
 threshold=berryFunctions::quantileMean(dlf$dat_full, truncate),
+sanerange=NA,
+sanevals=NA,
 selection=NULL,
 dlf=NULL,
 order=TRUE,
@@ -318,26 +332,6 @@ if(truncate!=0) output[ , probs < truncate] <- NA
 # Empirical Quantiles:
 if(empirical) output["quantileMean",] <- berryFunctions::quantileMean(dlf$dat_full,
                                              probs=probs, truncate=truncate)
-# Weighted quantile estimates:
-if(weighted)
-  {
-  Qweighted <- function(Weightnr)
-    {
-    sapply(1:ncol(output), function(col_n)
-      {
-      vals <- output[rownames(dlf$gof), col_n]
-      if(!any(is.finite(vals))) return(NA)
-      weights <- dlf$gof[,Weightnr]
-      if(!any(is.finite(weights))) return(NA)
-      weights <- weights/sum(weights, na.rm=TRUE) # rescale to 1
-      sum((vals*weights)[is.finite(vals)&is.finite(weights)])
-      })
-    }
-  output["weighted1",] <- Qweighted("weight1")
-  output["weighted2",] <- Qweighted("weight2")
-  output["weighted3",] <- Qweighted("weight3")
-  output["weightedc",] <- Qweighted("weightc")
-  }
 # q_gpd estimates: -------------------------------------------------------------
 if(gpd)
   {
@@ -360,6 +354,55 @@ if(gpd)
   output["GPD_GML_extRemes",]     <- q_gpd_int("extRemes", meth="GMLE")
   output["GPD_MLE_Renext_2par",]  <- q_gpd_int("Renext", meth="f")
 if(!speed)output["GPD_BAY_extRemes",] <- q_gpd_int("extRemes", meth="Bayesian") # computes a while
+  }
+#
+# sanity checks ----------------------------------------------------------------
+if(!all(is.na(sanerange)))
+  {
+  sr <- range(sanerange, finite=TRUE)
+  if(diff(sr)<sqrt(.Machine$double.eps)) stop("sanerange diff = 0. (",toString(sanerange),")")
+  toosmall <- which(output<sr[1])
+  toosmallnames <- rownames(which(output<sr[1], arr.ind=TRUE))
+  toosmallnames <- toString(unique(toosmallnames))
+  toosmallvals <- toString(output[toosmall])
+  if(length(toosmall)>0)
+  {
+  if(!ssquiet) on.exit(message("Note in distLquantile: The following quantile ",
+      "estimates are smaller than sanerange (",sr[1],") and changed to ",sanevals[1],":\n",
+      toosmallnames, " with values: ", toosmallvals), add=TRUE)
+  output[toosmall] <- sanevals[1]
+  }
+  toolarge <- which(output>sr[2])
+  toolargenames <- rownames(which(output>sr[2], arr.ind=TRUE))
+  toolargenames <- toString(unique(toolargenames))
+  toolargevals <- toString(output[toolarge])
+  if(length(toolarge)>0)
+  {
+  if(!ssquiet) on.exit(message("Note in distLquantile: The following quantile ",
+      "estimates are larger than sanerange (",sr[2],") and changed to ",sanevals[2],":\n",
+      toolargenames, " with values: ", toolargevals), add=TRUE)
+  output[toolarge] <- sanevals[2]
+  }
+}
+# Weighted quantile estimates: -------------------------------------------------
+if(weighted)
+  {
+  Qweighted <- function(Weightnr)
+    {
+    sapply(1:ncol(output), function(col_n)
+      {
+      vals <- output[rownames(dlf$gof), col_n]
+      if(!any(is.finite(vals))) return(NA)
+      weights <- dlf$gof[,Weightnr]
+      if(!any(is.finite(weights))) return(NA)
+      weights <- weights/sum(weights, na.rm=TRUE) # rescale to 1
+      sum((vals*weights)[is.finite(vals)&is.finite(weights)])
+      })
+    }
+  output["weighted1",] <- Qweighted("weight1")
+  output["weighted2",] <- Qweighted("weight2")
+  output["weighted3",] <- Qweighted("weight3")
+  output["weightedc",] <- Qweighted("weightc")
   }
 #
 dlf$quant <- output
