@@ -60,7 +60,9 @@ x>=threshold ('gpa' and all other distributions in extremeStat).
 DEFAULT: empirical}
 
 \item{addinfo}{Should information about sample size and threshold be 
-\code{\link{rbind}ed} to the output? DEFAULT: FALSE}
+\code{\link{rbind}ed} to the output? 
+Will also \code{\link{cbind}} RMSE values to the output.
+DEFAULT: FALSE}
 
 \item{speed}{Compute \code{\link{q_gpd}} only for fast methods? 
 Don't accidentally set this to \code{FALSE} in simulations or 

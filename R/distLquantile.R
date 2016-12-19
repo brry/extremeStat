@@ -156,7 +156,9 @@
 #'            x>=threshold ('gpa' and all other distributions in extremeStat). 
 #'            DEFAULT: empirical
 #' @param addinfo Should information about sample size and threshold be 
-#'                \code{\link{rbind}ed} to the output? DEFAULT: FALSE
+#'                \code{\link{rbind}ed} to the output? 
+#'                Will also \code{\link{cbind}} RMSE values to the output.
+#'                DEFAULT: FALSE
 #' @param speed Compute \code{\link{q_gpd}} only for fast methods? 
 #'              Don't accidentally set this to \code{FALSE} in simulations or 
 #'              with large datasets! DEFAULT: TRUE
@@ -279,7 +281,11 @@ if(gpd) output <- rbind(output,
     GPD_GML_extRemes=NA, 
     GPD_MLE_Renext_2par=NA,
     GPD_BAY_extRemes=NA)
-if(addinfo) output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$dat), threshold=dlf$threshold)
+if(addinfo) 
+  {
+  output <- cbind(output, RMSE=NA)
+  output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$dat), threshold=dlf$threshold)
+  }
 #
 # if input sample size is too small, return NA matrix:
 if( length(dlf$dat)<5 )
@@ -314,6 +320,7 @@ if(threshold != normalthr)
 #
 # distribution quantiles: ------------------------------------------------------
 # This is the actual work...
+lenprob <- 1:length(probs)
 for(d in dn) 
   {
   if(!is.finite(dlf$gof[d, "RMSE"])) next # maybe this is too restricitive...
@@ -322,15 +329,20 @@ for(d in dn)
   if(inherits(pard, "try-error")) next
   if(d=="kap") if(pard$ifail!=0) next
   quantd <- try(lmomco::qlmomco(f=probs2, para=dlf$parameter[[d]]), silent=TRUE)
-  if(!inherits(quantd, "try-error") & !is.null(quantd)) output[d,] <- quantd
+  if(inherits(quantd, "try-error")) next
+  if(is.null(quantd)) next
+  if(d=="kap") quantd[quantd<=pard$support[1] | quantd>=pard$support[2] ] <- NA
+  output[d,lenprob] <- quantd
   }
 #
 # Change results for probs below truncate to NA
 if(truncate!=0) output[ , probs < truncate] <- NA
+# Add RMSE values if wanted:
+if(addinfo) output[dn,"RMSE"] <- dlf$gof[dn,"RMSE"]
 #
 # add further quantile estimates -----------------------------------------------
 # Empirical Quantiles:
-if(empirical) output["quantileMean",] <- berryFunctions::quantileMean(dlf$dat_full,
+if(empirical) output["quantileMean",lenprob] <- berryFunctions::quantileMean(dlf$dat_full,
                                              probs=probs, truncate=truncate)
 # q_gpd estimates: -------------------------------------------------------------
 if(gpd)
@@ -341,19 +353,19 @@ if(gpd)
                         truncate=truncate, threshold=threshold, 
                         quiet=quiet, ttquiet=TRUE)
   #
-  output["GPD_LMO_lmomco",]       <- q_gpd_int("lmomco")
-  output["GPD_LMO_extRemes",]     <- q_gpd_int("extRemes", meth="Lmoments")
-  output["GPD_PWM_evir",]         <- q_gpd_int("evir", meth="pwm")
-  output["GPD_PWM_fExtremes",]    <- q_gpd_int("fExtremes", meth="pwm")
-  output["GPD_MLE_extRemes",]     <- q_gpd_int("extRemes", meth="MLE")
-  output["GPD_MLE_ismev",]        <- q_gpd_int("ismev")
-  output["GPD_MLE_evd",]          <- q_gpd_int("evd")
-  output["GPD_MLE_Renext_Renouv",]<- q_gpd_int("Renext", meth="r")
-  output["GPD_MLE_evir",]         <- q_gpd_int("evir", meth="ml")
-  output["GPD_MLE_fExtremes",]    <- q_gpd_int("fExtremes", meth="mle")
-  output["GPD_GML_extRemes",]     <- q_gpd_int("extRemes", meth="GMLE")
-  output["GPD_MLE_Renext_2par",]  <- q_gpd_int("Renext", meth="f")
-if(!speed)output["GPD_BAY_extRemes",] <- q_gpd_int("extRemes", meth="Bayesian") # computes a while
+  output["GPD_LMO_lmomco",lenprob]       <- q_gpd_int("lmomco")
+  output["GPD_LMO_extRemes",lenprob]     <- q_gpd_int("extRemes", meth="Lmoments")
+  output["GPD_PWM_evir",lenprob]         <- q_gpd_int("evir", meth="pwm")
+  output["GPD_PWM_fExtremes",lenprob]    <- q_gpd_int("fExtremes", meth="pwm")
+  output["GPD_MLE_extRemes",lenprob]     <- q_gpd_int("extRemes", meth="MLE")
+  output["GPD_MLE_ismev",lenprob]        <- q_gpd_int("ismev")
+  output["GPD_MLE_evd",lenprob]          <- q_gpd_int("evd")
+  output["GPD_MLE_Renext_Renouv",lenprob]<- q_gpd_int("Renext", meth="r")
+  output["GPD_MLE_evir",lenprob]         <- q_gpd_int("evir", meth="ml")
+  output["GPD_MLE_fExtremes",lenprob]    <- q_gpd_int("fExtremes", meth="mle")
+  output["GPD_GML_extRemes",lenprob]     <- q_gpd_int("extRemes", meth="GMLE")
+  output["GPD_MLE_Renext_2par",lenprob]  <- q_gpd_int("Renext", meth="f")
+if(!speed)output["GPD_BAY_extRemes",lenprob] <- q_gpd_int("extRemes", meth="Bayesian") # computes a while
   }
 #
 # sanity checks ----------------------------------------------------------------
