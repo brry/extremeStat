@@ -43,7 +43,7 @@ test_that("distLquantile can deal with a given dlf",{
 test_that("distLquantile can handle emp, truncate",{
 expect_equal(nrow(distLquantile(annMax, emp=FALSE)), 17) # only distributions in lmomco
 expect_message(aq <- distLquantile(annMax, truncate=0.8, probs=0.95)) # POT
-expect_equal(round(mean(aq, na.rm=TRUE),2), 102.1) # 102.055973 with lap
+expect_equal(round(mean(aq, na.rm=TRUE),2), 102.09) 
 dd <- distLquantile(annMax, selection="gpa", weight=FALSE, truncate=0.001)
 expect_equal(sum(is.na(dd)), 3)
 expect_equal(dd["gpa",], dd["GPD_LMO_lmomco",])

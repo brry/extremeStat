@@ -49,7 +49,6 @@
 #' 
 #' # GOF: how well do the distributions fit the original data?
 #' pairs(dlf$gof[,1:3]) # measures of goodness of fit are correlated quite well here.
-#' # In the next example, however, we see that it does matter which one is used.
 #' 
 #' # compare Ranks with different proportions used for GOF
 #' par(mfrow=c(1,2))
@@ -72,35 +71,7 @@
 #'           xlim=c(60,120), ylim=c(0.5, 1), cdf=TRUE, col=1)
 #' dlf50$gof
 #' 
-#' compranks <- function(d)
-#' {
-#' gofProp <- 0.5
-#' x <- sort(annMax, decreasing=TRUE)[  1:(gofProp*length(annMax))  ]
-#' tcdfs <- plmomco(x,dlf50$parameter[[d]])
-#' ecdfs <- ecdf(annMax)(x) # Empirical CDF
-#' # Root Mean Square Error, R squared:
-#' berryFunctions::linReg(tcdfs, ecdfs, lwd=1, pch=16, main=d, digits=5, xlim=c(0.5, 1),
-#'        ylim=c(0.5, 1), pos1="topleft")
-#' abline(a=0,b=1, lty=3)
-#' c(berryFunctions::rmse(tcdfs, ecdfs), berryFunctions::rsquare(tcdfs, ecdfs))
-#' }
-#' dn <- rownames(dlf50$gof)
-#' 
-#' op <- par(mfrow=c(5,4), mar=rep(1,4), xaxt="n", yaxt="n")
-#' for(i in dn) compranks(i)
-#' par(op)
-#' # so revgum, nor and rice systematically deviate from ECDF.
-#' # RMSE is better to sort by than R2
-#' 
-#' 
 #' \dontrun{ ## to save CRAN check computing time
-#' 
-#' # custom weights
-#' cw <- c("gpa"=7, "gev"=3, "wak"=6, "wei"=4, "kap"=3.5, "gum"=3, "ray"=2.1,
-#'         "ln3"=2, "pe3"=2.5, "gno"=4, "gam"=5)
-#' dlf <- distLfit(annMax, plot=FALSE, weightc=cw)
-#' distLgofPlot(dlf, ranks=TRUE)
-#' 
 #' 
 #' dev.new()
 #' distLplot(dlf50, cdf=TRUE, sel=c("pe3", "rice", "revgum"), order=T)
@@ -123,6 +94,8 @@
 #' 
 #' @param dlf List as returned by \code{\link{distLfit}}, containing the elements
 #'            \code{dat, datname, parameter, gofProp}
+#' @param order Sort output$gof by RMSE? If FALSE, the order of appearance in 
+#'              selection (or dlf$parameter) is kept. DEFAULT: TRUE
 #' @param gofProp Overrides value in list. Proportion (0:1) of highest values in
 #'                \code{dat} to compute goodness of fit (dist / ecdf) with.
 #'                 This enables to focus on the dist tail
@@ -139,6 +112,7 @@
 #' 
 distLgof <- function(
 dlf,
+order=TRUE,
 gofProp,
 plot=TRUE,
 progbars=length(dlf$dat)>200,
@@ -148,7 +122,6 @@ quiet=FALSE,
 ...
 )
 {
-if(any(!is.na(weightc))) if(is.null(names(weightc))) stop("weightc must have names.")
 # Progress bars
 if(quiet) progbars <- FALSE
 if(progbars) lapply <- pbapply::pblapply
@@ -169,9 +142,10 @@ exclude <- sapply(dlf$parameter, function(x)
   })
 if(any(exclude))
   {
-  curdnexclude <- dn[exclude]
-  if(!quiet) on.exit(message("Note in distLgof: The following distributions were excluded since no parameters were estimated:\n",
-             toString(curdnexclude)), add=TRUE)
+  dnexclude <- dn[exclude]
+  if(!quiet) on.exit(message("Note in distLgof: The following distributions were ",
+                             "excluded since no parameters were estimated:\n",
+                             toString(dnexclude)), add=TRUE)
   dn <- dn[!exclude]
   # dlf$parameter <- dlf$parameter[!exclude] # not sure whether this is always good...
 }
@@ -212,49 +186,26 @@ if(!quiet)
                     dNA, " of ", length(tcdfs[[1]]), " values."), add=TRUE)
     }
   }
-# All into one data.frame:
-gof <- data.frame(RMSE=RMSE, R2=R2)
-if(all(dim(gof) == 0)) # dim = 0,0 if all distributions are excluded
-{
-gof <- data.frame(matrix(NA, ncol=6, nrow=length(dlf$parameter) ))
-colnames(gof) <- c("RMSE","R2","weight1","weight2","weight3","weightc")
-rownames(gof) <-  names(dlf$parameter)
-} else
-{
-if(ks) {gof$ksP=ksP; gof$ksD=ksD}
-# order by GOF:
-gof <- gof[ order(gof$RMSE), ]  # sorting by gof$R2 does not work, see examples compranks
-# Weights for weighted average of return values:
-# Weight including all distributions
-gof$weight1 <- gof[,"RMSE"] # the lower, the better, the more weight
-gof$weight1 <- max(gof$weight1)-gof$weight1+min(gof$weight1)  # with min or mean added,
-gof$weight1 <- gof$weight1/sum(gof$weight1)  # the worst fit is not completely excluded
-# Exclude worst fit (needs 2 or more distributions in selection to work)
-gof$weight2 <- gof[,"RMSE"]
-gof$weight2 <- max(gof$weight2)-gof$weight2
-gof$weight2 <- gof$weight2/sum(gof$weight2)
-# use only best half (needs 4 or more dists - technically, 3 should be enough...)
-gof$weight3 <- gof[,"RMSE"]
-gof$weight3 <- max(gof$weight3)-gof$weight3
-gof$weight3[(nrow(gof)/2):nrow(gof)] <- 0
-gof$weight3 <- gof$weight3/sum(gof$weight3)
-# custom weight
-gof$weightc <- 0
-if(any(!is.na(weightc)))
+# if all distributions are excluded:
+if(length(RMSE)==0 && FALSE) # should be obsolete with next part
   {
-  weightc <- weightc[names(weightc) %in% rownames(gof)]
-  gof[names(weightc), "weightc"] <- weightc
+  RMSE <- rep(NA, length(dlf$parameter)) 
+  R2   <- rep(NA, length(dlf$parameter)) 
+  names(RMSE) <- names(dlf$parameter)
   }
-gof$weightc <- gof$weightc/sum(gof$weightc)
 # add nonfitted distributions:
-if(any(exclude))
+if(any(exclude)) 
   {
-  dnonfitted <- data.frame(matrix(NA, nrow=length(curdnexclude), ncol=ncol(gof)))
-  rownames(dnonfitted) <- curdnexclude
-  colnames(dnonfitted) <- colnames(gof)
-  gof <- rbind(gof, dnonfitted)
+  RMSEexcl <- rep(NA, sum(exclude))
+  names(RMSEexcl) <- dnexclude
+  RMSE <- c(RMSE,RMSEexcl)
+  R2   <- c(  R2,RMSEexcl)
   }
-}
+# Weights for weighted averages:
+gof <- data.frame(RMSE, R2)
+if(ks) {gof$ksP <- ksP; gof$ksD <- ksD}
+if(order) gof <- gof[ order(RMSE), ]
+gof <- cbind(gof, distLweights(RMSE, order=order, weightc=weightc))
 # output:
 dlf$gof <- gof
 if(plot) distLgofPlot(dlf, quiet=quiet, ...)
