@@ -60,6 +60,7 @@
 #' @param ks Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. DEFAULT: FALSE
 #' @param selection Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL
 #' @param gofProp Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1
+#' @param order Should gof output be ordered by fit? Strongly recommended with the default color palette. DEFAULT: TRUE
 #' @param weightc Named custom weights for each distribution, see \code{\link{distLgof}}. DEFAULT: NA
 #' @param truncate Number between 0 and 1. POT Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0
 #' @param threshold POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
@@ -81,6 +82,7 @@ speed=TRUE,
 ks=FALSE,
 selection=NULL,
 gofProp=1,
+order=TRUE,
 weightc=NA,
 truncate=0,
 threshold=berryFunctions::quantileMean(dat, truncate),
@@ -164,7 +166,7 @@ else names(parameter) <- dn
 # Goodness of Fit, output list, plot -------------------------------------------
 output <- distLgof(list(dat=dat, datname=datname, gofProp=gofProp, parameter=parameter,
                         truncate=truncate, threshold=threshold, dat_full=dat_full),
-                   weightc=weightc, plot=FALSE, progbars=progbars, ks=ks, quiet=quiet)
+                   weightc=weightc, plot=FALSE, progbars=progbars, ks=ks, quiet=quiet, order=order)
 # compare GOF
 if(gofComp)
   {

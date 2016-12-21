@@ -133,15 +133,15 @@
 #'                  DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
 #' @param sanerange Range outside of which results should be changed to \code{sanevals}.
 #'                  This can capture numerical errors in small samples
-#'                  (notably kap and GPD_MLE_extRemes). If NA, this is ignored. DEFAULT: NA
+#'                  (notably GPD_MLE_extRemes). If NA, this is ignored. Attention
+#'                  if addinfo=T: the RMSE column is also checked and changed. DEFAULT: NA
 #' @param sanevals  Values to be used below [1] and above [2] \code{sanerange}. DEFAULT: NA
 #' @param selection Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. 
 #'                  Can be a vector. If NULL (the default), all types present in 
 #'                  dlf$parameter are used. DEFAULT: NULL
 #' @param dlf dlf object described in \code{\link{extremeStat}}. Use this to save 
 #'            computing time for large datasets where you already have dlf. DEFAULT: NULL
-#' @param order Sort results by GOF? If TRUE (the default) and length(selection)>1, 
-#'              the output is ordered by dlf$gof, else by order of appearance in 
+#' @param order Sort results by GOF? If FALSE, it is sorted by appearance in 
 #'              selection (or dlf$parameter). DEFAULT: TRUE
 #' @param returnlist Return full \code{dlf}list with output attached as element \code{quant}? 
 #'                   If FALSE (the default), just the matrix with quantile estimates 
@@ -207,7 +207,7 @@ if(!is.null(x)) if(is.list(x)) stop("x must be a vector. Possibly, you want to u
 #
 # Fit distribution functions to (truncated) sample: ----------------------------
 # check truncate
-if(!is.null(dlf)) if(any(dlf$truncate!=truncate)|any(any(dlf$threshold!=threshold)))
+if(!is.null(dlf)) if(any(dlf$truncate!=truncate)|any(dlf$threshold!=threshold))
   {
   currentdlftruncate  <- dlf$truncate
   currentdlfthreshold <- dlf$threshold
@@ -225,29 +225,29 @@ if(is.null(dlf))
   # threshold initialization impossible if dlf = NULL
   if(is.na(threshold)) threshold <- berryFunctions::quantileMean(x, truncate)
   dlf <- distLfit(dat=x, datname=internaldatname, selection=selection,
-                  truncate=truncate, threshold=threshold,
+                  truncate=truncate, threshold=threshold, order=order,
                   plot=FALSE, quiet=quiet, ssquiet=ssquiet, ...)
   }
 # check selection
-if(any(!selection %in% names(dlf$parameter))) if(!quiet) on.exit(message(
+if(!is.null(selection))
+  {
+  if(any(!selection %in% names(dlf$parameter))) if(!quiet) on.exit(message(
    "Note in distLquantile: 'selection' (",selection[!selection %in% names(dlf$parameter)],
    ") is not in dlf$parameter. NAs will be returned for these distributions."), add=TRUE)
 
-# reduce number of distfunctions analyzed if more were present in dlf argument:
-if(!is.null(selection))
-  {
+  # reduce number of distfunctions analyzed if more were present in dlf argument:
   dlf$parameter <- dlf$parameter[selection]
   dlf$gof <- dlf$gof[rownames(dlf$gof) %in% selection,]
   }
 #
-# Empty output matrix: ---------------------------------------------------------
-dn <- names(dlf$parameter)  # dn = distribution names
-dn2 <- rownames(dlf$gof)
-if(any(!dn2 %in% dn)) warning(toString(dn2[!dn2 %in% dn]),
+# check distribution names: ---------------------------------------------------------
+dn <- rownames(dlf$gof)  # dn = distribution names
+dn2 <- names(dlf$parameter)
+if(any(!dn %in% dn2)) warning(toString(dn [!dn  %in% dn2]),
                              " available in dlf$gof, but not in dlf$parameter.")
-if(any(!dn %in% dn2)) warning(toString( dn[!dn %in% dn2]),
+if(any(!dn2%in% dn )) warning(toString(dn2[!dn2 %in% dn ]),
                              " available in dlf$parameter, but not in dlf$gof.")
-if(order) dn <- dn2
+# Empty output matrix: ---------------------------------------------------------
 output <- matrix(NA, ncol=length(probs), nrow=length(dn) )
 colnames(output) <- paste0(probs*100,"%")
 rownames(output) <- dn

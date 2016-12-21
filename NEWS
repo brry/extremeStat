@@ -6,6 +6,8 @@ extremeStat ToDo-list / wishlist / issues
 - distLextreme correct RP for POT approach
 - consider option to change all messages to warnings 
      if(mes2warn) message <- function(...) warning(..., call.=FALSE)
+- kick out gofProp completely?
+- remove on.exits?
 
 
 ---------------------------------------

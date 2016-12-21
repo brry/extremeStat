@@ -5,7 +5,7 @@
 \title{Fit distributions via linear moments}
 \usage{
 distLfit(dat, datname, speed = TRUE, ks = FALSE, selection = NULL,
-  gofProp = 1, weightc = NA, truncate = 0,
+  gofProp = 1, order = TRUE, weightc = NA, truncate = 0,
   threshold = berryFunctions::quantileMean(dat, truncate), gofComp = FALSE,
   progbars = length(dat) > 200, time = TRUE, plot = TRUE, cdf = FALSE,
   legargs = NULL, histargs = NULL, quiet = FALSE, ssquiet = quiet, ...)
@@ -22,6 +22,8 @@ distLfit(dat, datname, speed = TRUE, ks = FALSE, selection = NULL,
 \item{selection}{Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL}
 
 \item{gofProp}{Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1}
+
+\item{order}{Should gof output be ordered by fit? Strongly recommended with the default color palette. DEFAULT: TRUE}
 
 \item{weightc}{Named custom weights for each distribution, see \code{\link{distLgof}}. DEFAULT: NA}
 

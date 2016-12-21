@@ -28,7 +28,8 @@ DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
 
 \item{sanerange}{Range outside of which results should be changed to \code{sanevals}.
 This can capture numerical errors in small samples
-(notably kap and GPD_MLE_extRemes). If NA, this is ignored. DEFAULT: NA}
+(notably GPD_MLE_extRemes). If NA, this is ignored. Attention
+if addinfo=T: the RMSE column is also checked and changed. DEFAULT: NA}
 
 \item{sanevals}{Values to be used below [1] and above [2] \code{sanerange}. DEFAULT: NA}
 
@@ -39,8 +40,7 @@ dlf$parameter are used. DEFAULT: NULL}
 \item{dlf}{dlf object described in \code{\link{extremeStat}}. Use this to save 
 computing time for large datasets where you already have dlf. DEFAULT: NULL}
 
-\item{order}{Sort results by GOF? If TRUE (the default) and length(selection)>1, 
-the output is ordered by dlf$gof, else by order of appearance in 
+\item{order}{Sort results by GOF? If FALSE, it is sorted by appearance in 
 selection (or dlf$parameter). DEFAULT: TRUE}
 
 \item{returnlist}{Return full \code{dlf}list with output attached as element \code{quant}? 
