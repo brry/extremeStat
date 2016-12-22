@@ -13,21 +13,31 @@ distLfit(dat, datname, speed = TRUE, ks = FALSE, selection = NULL,
 \arguments{
 \item{dat}{Vector with values}
 
-\item{datname}{Character string for main, xlab etc. DEFAULT: internal \code{substitute(dat)}}
+\item{datname}{Character string for main, xlab etc. 
+DEFAULT: internal \code{substitute(dat)}}
 
-\item{speed}{If TRUE, several distributions are omitted, for the reasons shown in \code{lmomco::\link[lmomco]{dist.list}()}. DEFAULT: TRUE}
+\item{speed}{If TRUE, several distributions are omitted, for the reasons 
+shown in \code{lmomco::\link[lmomco]{dist.list}()}. DEFAULT: TRUE}
 
-\item{ks}{Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. DEFAULT: FALSE}
+\item{ks}{Include ks.test results in \code{dlf$gof}? Computing is much 
+faster when FALSE. DEFAULT: FALSE}
 
-\item{selection}{Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL}
+\item{selection}{Selection of distributions. Character vector with types 
+as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL}
 
-\item{order}{Should gof output be ordered by fit? Strongly recommended with the default color palette. DEFAULT: TRUE}
+\item{order}{Should gof output be ordered by fit? 
+Strongly recommended with the default color palette. DEFAULT: TRUE}
 
-\item{weightc}{Named custom weights for each distribution, see \code{\link{distLgof}}. DEFAULT: NA}
+\item{weightc}{Named custom weights for each distribution, 
+see \code{\link{distLgof}}. DEFAULT: NA}
 
-\item{truncate}{Number between 0 and 1. POT Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0}
+\item{truncate}{Number between 0 and 1. POT Censored \code{\link{distLquantile}}: 
+fit to highest values only (truncate lower proportion of x). 
+Probabilities are adjusted accordingly. DEFAULT: 0}
 
-\item{threshold}{POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
+\item{threshold}{POT cutoff value. If you want correct percentiles, 
+set this only via truncate, see Details of \code{\link{q_gpd}}. 
+DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
 
 \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n > 200}
 
@@ -35,17 +45,22 @@ distLfit(dat, datname, speed = TRUE, ks = FALSE, selection = NULL,
 
 \item{plot}{Should a histogram with densities be plotted? DEFAULT: TRUE}
 
-\item{cdf}{If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE}
+\item{cdf}{If TRUE, plot cumulated DF instead of probability density. 
+DEFAULT: FALSE}
 
-\item{legargs}{List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL}
+\item{legargs}{List of arguments passed to \code{\link{legend}} 
+except for legend and col. DEFAULT: NULL}
 
-\item{histargs}{List of arguments passed to \code{\link{hist}} except for x, breaks, col, xlim, freq. DEFAULT: NULL}
+\item{histargs}{List of arguments passed to \code{\link{hist}} 
+except for x, breaks, col, xlim, freq. DEFAULT: NULL}
 
 \item{quiet}{Suppress notes? DEFAULT: FALSE}
 
 \item{ssquiet}{Suppress sample size notes? DEFAULT: quiet}
 
-\item{\dots}{Further arguments passed to \code{\link{plotLfit}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...}
+\item{\dots}{Further arguments passed to \code{\link{plotLfit}} 
+if they are accepted there, else passed to 
+\code{\link{lines}}, like lty, type, pch, ...}
 }
 \value{
 List as explained in \code{\link{extremeStat}}.

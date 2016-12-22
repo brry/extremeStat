@@ -6,7 +6,8 @@
 #' a data.frame with the root mean square error (RMSE) and R squared (R2),\cr
 #' if ks=TRUE, the p and D values from a simple ks.test,\cr
 #' as well as weights by three different approaches for each distribution function.\cr
-#' The weights are inverse to RMSE, weight1 for all dists, weight2 places zero weight on the worst function, weight3 on the worst half of functions.
+#' The weights are inverse to RMSE, weight1 for all dists, 
+#' weight2 places zero weight on the worst function, weight3 on the worst half of functions.
 #' @note If you get a \code{note in distLgof: NAs removed in CDF ...}, this
 #'       probably means that the support of some of the fitted distributions do not
 #'       span the whole data range. Instead the outside support regions get NAs that

@@ -32,7 +32,8 @@ List as explained in \code{\link{extremeStat}}. The added element is gof,\cr
 a data.frame with the root mean square error (RMSE) and R squared (R2),\cr
 if ks=TRUE, the p and D values from a simple ks.test,\cr
 as well as weights by three different approaches for each distribution function.\cr
-The weights are inverse to RMSE, weight1 for all dists, weight2 places zero weight on the worst function, weight3 on the worst half of functions.
+The weights are inverse to RMSE, weight1 for all dists, 
+weight2 places zero weight on the worst function, weight3 on the worst half of functions.
 }
 \description{
 Calculate goodness of fit for several distributions, plot rank comparison.

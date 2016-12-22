@@ -54,24 +54,39 @@
 #' d_all$gof
 #' }
 #' 
-#' @param dat Vector with values
-#' @param datname Character string for main, xlab etc. DEFAULT: internal \code{substitute(dat)}
-#' @param speed If TRUE, several distributions are omitted, for the reasons shown in \code{lmomco::\link[lmomco]{dist.list}()}. DEFAULT: TRUE
-#' @param ks Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. DEFAULT: FALSE
-#' @param selection Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL
-#' @param order Should gof output be ordered by fit? Strongly recommended with the default color palette. DEFAULT: TRUE
-#' @param weightc Named custom weights for each distribution, see \code{\link{distLgof}}. DEFAULT: NA
-#' @param truncate Number between 0 and 1. POT Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0
-#' @param threshold POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
-#' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n > 200
-#' @param time \code{\link{message}} execution time? DEFAULT: TRUE
-#' @param plot Should a histogram with densities be plotted? DEFAULT: TRUE
-#' @param cdf If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE
-#' @param legargs List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL
-#' @param histargs List of arguments passed to \code{\link{hist}} except for x, breaks, col, xlim, freq. DEFAULT: NULL
-#' @param quiet Suppress notes? DEFAULT: FALSE
-#' @param ssquiet Suppress sample size notes? DEFAULT: quiet
-#' @param \dots Further arguments passed to \code{\link{plotLfit}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...
+#' @param dat       Vector with values
+#' @param datname   Character string for main, xlab etc. 
+#'                  DEFAULT: internal \code{substitute(dat)}
+#' @param speed     If TRUE, several distributions are omitted, for the reasons 
+#'                  shown in \code{lmomco::\link[lmomco]{dist.list}()}. DEFAULT: TRUE
+#' @param ks        Include ks.test results in \code{dlf$gof}? Computing is much 
+#'                  faster when FALSE. DEFAULT: FALSE
+#' @param selection Selection of distributions. Character vector with types 
+#'                  as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL
+#' @param order     Should gof output be ordered by fit? 
+#'                  Strongly recommended with the default color palette. DEFAULT: TRUE
+#' @param weightc   Named custom weights for each distribution, 
+#'                  see \code{\link{distLgof}}. DEFAULT: NA
+#' @param truncate  Number between 0 and 1. POT Censored \code{\link{distLquantile}}: 
+#'                  fit to highest values only (truncate lower proportion of x). 
+#'                  Probabilities are adjusted accordingly. DEFAULT: 0
+#' @param threshold POT cutoff value. If you want correct percentiles, 
+#'                  set this only via truncate, see Details of \code{\link{q_gpd}}. 
+#'                  DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
+#' @param progbars  Show progress bars for each loop? DEFAULT: TRUE if n > 200
+#' @param time      \code{\link{message}} execution time? DEFAULT: TRUE
+#' @param plot      Should a histogram with densities be plotted? DEFAULT: TRUE
+#' @param cdf       If TRUE, plot cumulated DF instead of probability density. 
+#'                  DEFAULT: FALSE
+#' @param legargs   List of arguments passed to \code{\link{legend}} 
+#'                  except for legend and col. DEFAULT: NULL
+#' @param histargs  List of arguments passed to \code{\link{hist}} 
+#'                  except for x, breaks, col, xlim, freq. DEFAULT: NULL
+#' @param quiet     Suppress notes? DEFAULT: FALSE
+#' @param ssquiet   Suppress sample size notes? DEFAULT: quiet
+#' @param \dots     Further arguments passed to \code{\link{plotLfit}} 
+#'                  if they are accepted there, else passed to 
+#'                  \code{\link{lines}}, like lty, type, pch, ...
 #' 
 distLfit <- function(
 dat,
@@ -160,7 +175,7 @@ else names(parameter) <- dn
 # Goodness of Fit, output list, plot -------------------------------------------
 output <- distLgof(list(dat=dat, datname=datname, parameter=parameter,
                         truncate=truncate, threshold=threshold, dat_full=dat_full),
-                   weightc=weightc, plot=FALSE, progbars=progbars, ks=ks, quiet=quiet, order=order)
+     weightc=weightc, plot=FALSE, progbars=progbars, ks=ks, quiet=quiet, order=order)
 
 if(plot) output <- plotLfit(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
 if(!plot) output$coldist <- berryFunctions::rainbow2(if(is.null(selection)) 5 else length(selection))

@@ -20,11 +20,13 @@
 #' extRemes: "MLE", or "GMLE", "Bayesian", "Lmoments" \cr
 #' fExtremes: "pwm", or "mle"\cr
 #' ismev: none, only Maximum-likelihood fitting implemented \cr
-#' Renext: "r" for \code{\link[Renext]{Renouv}}, or 'f' (no truncation, all negative values ignored!) for \code{\link[Renext]{fGPD}}\cr\cr
+#' Renext: "r" for \code{\link[Renext]{Renouv}}, or 'f' (no truncation, 
+#'             all negative values ignored!) for \code{\link[Renext]{fGPD}}\cr\cr
 #'
 #' The Quantiles are always given with \code{probs} in regard to the full (uncensored) sample.
 #' If e.g. truncate is 0.90, the distribution function is fitted to the top 10\% of the sample.
-#' The 95th percentile of the full sample is equivalent to the 50\% quantile of the subsample acutally used for fitting.
+#' The 95th percentile of the full sample is equivalent to the 50\% quantile of 
+#'     the subsample acutally used for fitting.
 #' For computation, the probabilities are internally updated with \code{p2=(p-t)/(1-t)}
 #' but labelled with the original \code{p}.
 #' If you truncate 90\% of the sample, you cannot compute the 70th percentile anymore,
@@ -33,10 +35,11 @@
 #' 
 #' @return Named vector of quantile estimates for each value of \code{probs},\cr
 #'    or if(returnlist): list with element \code{q_gpd_quant} and info-elements added.
-#'    q_gpd_n_geq is number of values greater than or equal to q_gpd_threshold. gt is only greater than.
+#'    q_gpd_n_geq is number of values greater than or equal to q_gpd_threshold. 
+#'    gt is only greater than.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Feb 2016
-#' @references \url{http://stackoverflow.com/questions/27524131/calculation-of-return-levels-based-on-a-gpd-in-different-r-packages}\cr
-#'             \url{http://stats.stackexchange.com/questions/129438/different-quantiles-of-a-fitted-gpd-in-different-r-packages}
+#' @references \url{http://stackoverflow.com/q/27524131}, 
+#'             \url{http://stats.stackexchange.com/q/129438}
 #' @seealso \code{\link{distLquantile}} which compares results for all packages\cr
 #'          Other related packages (not implemented):\cr
 #'                \url{https://cran.r-project.org/package=gPdtest}\cr
@@ -314,7 +317,8 @@ if(package=="lmomco") # quant lmomco #################
 {
   output <- try(lmomco::quagpa(f=probs2, para=z), silent=TRUE)
   if(inherits(output, "try-error")) return(failfun(output, "lmomco::quagpa"))
-  if(is.null(output)) return(failfun("probably pargpa(lmom)$para returned NAs", "lmomco::quagpa"))
+  if(is.null(output)) return(failfun("probably pargpa(lmom)$para returned NAs", 
+                                     "lmomco::quagpa"))
 } else
 if(package=="evir") # quant evir #################
 {
@@ -328,7 +332,8 @@ if(package=="evd") # quant evd #################
 {
   probs2[probs2==0] <- NA
   probs2[probs2==1] <- NA
-  output <- evd::qgpd(p=probs2, loc=z$threshold , scale=z$param["scale"], shape=z$param["shape"])
+  output <- evd::qgpd(p=probs2, loc=z$threshold , scale=z$param["scale"], 
+                      shape=z$param["shape"])
 } else
 if(package=="extRemes") # quant extRemes #################
 {
@@ -349,17 +354,20 @@ if(package=="extRemes") # quant extRemes #################
   }
   probs2[probs2==0] <- NA
   probs2[probs2==1] <- NA
-  output <- try(extRemes::qevd(p=probs2, scale=scale, shape=shape, threshold=z$threshold, type="GP"), silent=TRUE)
+  output <- try(extRemes::qevd(p=probs2, scale=scale, shape=shape, 
+                               threshold=z$threshold, type="GP"), silent=TRUE)
   if(inherits(output, "try-error")) return(failfun(output, "extRemes::qevd"))
 } else
 if(package=="fExtremes") #quant fExtremes #################
 {
-  output <- fExtremes::qgpd(p=probs2, xi=z@fit$par.ests["xi"], mu=z@parameter$u, beta=z@fit$par.ests["beta"])
+  output <- fExtremes::qgpd(p=probs2, xi=z@fit$par.ests["xi"], mu=z@parameter$u, 
+                            beta=z@fit$par.ests["beta"])
   output <- as.vector(output)
   z2 <- lapply(slotNames(z), getElement, object=z)
   names(z2) <- slotNames(z)
   z <- z2
-  outlist$q_gpd_Warning <- "transformed into list from Formal class 'fGPDFIT' [package 'fExtremes'] with 8 slots"
+  outlist$q_gpd_Warning <- paste("transformed into list from Formal class",
+                                 "'fGPDFIT' [package 'fExtremes'] with 8 slots")
 } else
 if(package=="ismev") # quant ismev #################
 {
@@ -372,7 +380,8 @@ if(package=="Renext") # quant Renext #################
   if(method=="f")
   output <- Renext::qGPD(probs2, scale=z$estimate["scale"], shape=z$estimate["shape"])
   else if(method=="r")
-  output <- Renext::qGPD(probs2, loc=z$threshold, scale=z$estimate["scale"], shape=z$estimate["shape"])
+  output <- Renext::qGPD(probs2, loc=z$threshold, scale=z$estimate["scale"], 
+                         shape=z$estimate["shape"])
 } else
 stop("package ", package, "is not in the options. This is a bug. Please report to berry-b@gmx.de.")
 #

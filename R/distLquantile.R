@@ -9,13 +9,16 @@
 #' quantile. Parametric quantiles need only small sample sizes. They don't have
 #' a systematical underestimation bias, but have higher variability.
 #' 
-#' @return Invisible matrix with distribution quantile values (with NAs for probs below truncate), \cr
-#' or, if returnlist=TRUE, a \code{dlf} list as described in \code{\link{extremeStat}}.
+#' @return Invisible matrix with distribution quantile values 
+#'        (with NAs for probs below truncate), \cr
+#'        or, if returnlist=TRUE, a \code{dlf} list as described in 
+#'        \code{\link{extremeStat}}.
 #' @note NAs are always removed from x in \code{\link{distLfit}}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March + July 2015, Feb 2016
-#' @seealso \code{\link{q_gpd}}, \code{\link{distLfit}}, Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for left truncated and right censored data, Statistica Sinica 10
+#' @seealso \code{\link{q_gpd}}, \code{\link{distLfit}}, require("truncdist")
+#'         Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for 
+#'         left truncated and right censored data, Statistica Sinica 10
 #'          \url{http://www3.stat.sinica.edu.tw/statistica/oldpdf/A10n411.pdf}\cr
-#'          require("truncdist")
 #' @references On GPD: \url{http://stats.stackexchange.com/questions/69438}
 #' @keywords distribution robust univar
 #' @export
@@ -122,12 +125,13 @@
 #' 
 #' } # end dontrun
 #' 
-#' @param x Sample for which parametrical quantiles are to be calculated. 
-#'          If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL
-#' @param probs Numeric vector of probabilities with values in [0,1]. DEFAULT: c(0.8,0.9,0.99)
-#' @param truncate Number between 0 and 1 (proportion of sample discarded). 
-#'                 Censored quantile: fit to highest values only (truncate lower proportion of x). 
-#'                 Probabilities are adjusted accordingly. DEFAULT: 0
+#' @param x         Sample for which parametrical quantiles are to be calculated. 
+#'                  If it is NULL (the default), \code{dat} from \code{dlf} is used. 
+#'                  DEFAULT: NULL
+#' @param probs     Numeric vector of probabilities with values in [0,1]. DEFAULT: c(0.8,0.9,0.99)
+#' @param truncate  Number between 0 and 1 (proportion of sample discarded). 
+#'                  Censored quantile: fit to highest values only (truncate lower proportion of x). 
+#'                  Probabilities are adjusted accordingly. DEFAULT: 0
 #' @param threshold POT cutoff value. If you want correct percentiles, 
 #'                  set this only via truncate, see Details of \code{\link{q_gpd}}. 
 #'                  DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
@@ -135,42 +139,46 @@
 #' @param sanerange Range outside of which results should be changed to \code{sanevals}.
 #'                  This can capture numerical errors in small samples
 #'                  (notably GPD_MLE_extRemes). If NA, this is ignored. Attention
-#'                  if addinfo=T: the RMSE column is also checked and changed. DEFAULT: NA
-#' @param sanevals  Values to be used below [1] and above [2] \code{sanerange}. DEFAULT: NA
-#' @param selection Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. 
+#'                  if addinfo=T: the RMSE column is also checked and changed. 
+#'                  DEFAULT: NA
+#' @param sanevals  Values to be used below [1] and above [2] \code{sanerange}. 
+#'                  DEFAULT: NA
+#' @param selection Distribution type, eg. "gev" or "wak", see 
+#'                  \code{\link[lmomco]{dist.list} in lmomco}. 
 #'                  Can be a vector. If NULL (the default), all types present in 
 #'                  dlf$parameter are used. DEFAULT: NULL
-#' @param dlf dlf object described in \code{\link{extremeStat}}. Use this to save 
-#'            computing time for large datasets where you already have dlf. DEFAULT: NULL
-#' @param order Sort results by GOF? If FALSE, it is sorted by appearance in 
-#'              selection (or dlf$parameter). DEFAULT: TRUE
+#' @param dlf       dlf object described in \code{\link{extremeStat}}. Use this to save 
+#'                  computing time for large datasets where you already have dlf. 
+#'                  DEFAULT: NULL
+#' @param order     Sort results by GOF? If FALSE, it is sorted by appearance in 
+#'                  selection (or dlf$parameter). DEFAULT: TRUE
 #' @param returnlist Return full \code{dlf}list with output attached as element \code{quant}? 
-#'                   If FALSE (the default), just the matrix with quantile estimates 
-#'                   is returned. DEFAULT: FALSE
+#'                  If FALSE (the default), just the matrix with quantile estimates 
+#'                  is returned. DEFAULT: FALSE
 #' @param empirical Add empirical \code{\link{quantileMean}} in the output matrix 
 #'                  and vertical lines? DEFAULT: TRUE
-#' @param weighted Include weighted averages across distribution functions to the output?
-#'                 DEFAULT: empirical, so additional options can all be excluded with emp=F.
-#' @param gpd Include GPD quantile estimation via \code{\link{q_gpd}}? 
-#'            Note that the 'GPD_LMO_lmomco' result differs slightly from 'gpa' if
-#'            truncate=0. This comes from using x>threshold ('GPD_*') or
-#'            x>=threshold ('gpa' and all other distributions in extremeStat). 
-#'            DEFAULT: empirical
-#' @param addinfo Should information about sample size and threshold be 
-#'                \code{\link{rbind}ed} to the output? 
-#'                Will also \code{\link{cbind}} RMSE values to the output.
-#'                DEFAULT: FALSE
-#' @param speed Compute \code{\link{q_gpd}} only for fast methods? 
-#'              Don't accidentally set this to \code{FALSE} in simulations or 
-#'              with large datasets! DEFAULT: TRUE
-#' @param plot Should \code{\link{plotLquantile}} be called? DEFAULT: FALSE
-#' @param plotargs List of arguments to be passed to \code{\link{plotLquantile}} 
-#'                 like qlines, qheights, qrow, qlinargs, nbest, cdf, ...
-#' @param quiet Suppress notes? DEFAULT: FALSE
-#' @param ssquiet Suppress sample size notes? DEFAULT: quiet
-#' @param ttquiet Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} 
-#'                is called with ttquiet=TRUE. DEFAULT: quiet
-#' @param \dots Arguments passed to \code{\link{distLfit}}
+#' @param weighted  Include weighted averages across distribution functions to the output?
+#'                  DEFAULT: empirical, so additional options can all be excluded with emp=F.
+#' @param gpd       Include GPD quantile estimation via \code{\link{q_gpd}}? 
+#'                  Note that the 'GPD_LMO_lmomco' result differs slightly from 'gpa' if
+#'                  truncate=0. This comes from using x>threshold ('GPD_*') or
+#'                  x>=threshold ('gpa' and all other distributions in extremeStat). 
+#'                  DEFAULT: empirical
+#' @param addinfo   Should information about sample size and threshold be 
+#'                  \code{\link{rbind}ed} to the output? 
+#'                  Will also \code{\link{cbind}} RMSE values to the output.
+#'                  DEFAULT: FALSE
+#' @param speed     Compute \code{\link{q_gpd}} only for fast methods? 
+#'                  Don't accidentally set this to \code{FALSE} in simulations or 
+#'                  with large datasets! DEFAULT: TRUE
+#' @param plot      Should \code{\link{plotLquantile}} be called? DEFAULT: FALSE
+#' @param plotargs  List of arguments to be passed to \code{\link{plotLquantile}} 
+#'                  like qlines, qheights, qrow, qlinargs, nbest, cdf, ...
+#' @param quiet     Suppress notes? DEFAULT: FALSE
+#' @param ssquiet   Suppress sample size notes? DEFAULT: quiet
+#' @param ttquiet   Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} 
+#'                  is called with ttquiet=TRUE. DEFAULT: quiet
+#' @param \dots     Arguments passed to \code{\link{distLfit}}
 #'
 distLquantile <- function(
 x=NULL,
@@ -261,7 +269,8 @@ if(length(miss)>0)
                   ") is not available in dlf$gof."), add=TRUE)
   m <- matrix(NA, nrow=length(miss), ncol=ncol(output))
   rownames(m) <- miss # always keep the same order if selection is given
-  output <- rbind(output, m) # append missing distfuns at the end (which should be in correct place if order=F)
+  output <- rbind(output, m) # append missing distfuns at the end 
+                             # (which should be in correct place if order=F)
   }
 #
 # add rows for weighted averages of distribution functions
@@ -285,7 +294,8 @@ if(gpd) output <- rbind(output,
 if(addinfo) 
   {
   output <- cbind(output, RMSE=NA)
-  output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$dat), threshold=dlf$threshold)
+  output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$dat), 
+                  threshold=dlf$threshold)
   }
 #
 # if input sample size is too small, return NA matrix:

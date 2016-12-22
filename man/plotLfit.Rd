@@ -12,15 +12,20 @@ plotLfit(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
   logargs = NULL, legend = TRUE, legargs = NULL, histargs = NULL, ...)
 }
 \arguments{
-\item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname}}
+\item{dlf}{List as returned by \code{\link{distLfit}}, containing the 
+elements \code{dat, parameter, gof, datname}}
 
-\item{nbest}{Number of distributions plotted, in order of goodness of fit. DEFAULT: 5}
+\item{nbest}{Number of distributions plotted, in order of goodness of fit. 
+DEFAULT: 5}
 
-\item{selection}{Names of distributions in \code{dlf$parameter} that will be drawn. Overrides nbest. DEFAULT: NULL}
+\item{selection}{Names of distributions in \code{dlf$parameter} that will be drawn. 
+Overrides nbest. DEFAULT: NULL}
 
-\item{order}{If selection is given, should legend and colors be ordered by gof anyways? DEFAULT: FALSE}
+\item{order}{If selection is given, should legend and colors be ordered 
+by gof anyways? DEFAULT: FALSE}
 
-\item{cdf}{If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE}
+\item{cdf}{If TRUE, plot cumulated DF instead of probability density. 
+DEFAULT: FALSE}
 
 \item{log}{If TRUE, logAxis is called. DEFAULT: FALSE}
 
@@ -28,33 +33,41 @@ plotLfit(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
 
 \item{breaks}{\code{\link{hist}} breaks. DEFAULT: 20}
 
-\item{xlim}{\code{\link{hist}} or \code{\link{ecdf}} xlim. DEFAULT: extendrange(dat, f=0.15)}
-
-\item{ylim}{\code{\link{hist}} or \code{\link{ecdf}} ylim. DEFAULT: NULL}
+\item{xlim, ylim}{\code{\link{hist}} or \code{\link{ecdf}} axis limits.}
 
 \item{xaxs, yaxs}{\code{\link{hist}} or \code{\link{ecdf}} xaxs and yaxs. DEFAULT: both "i"}
 
-\item{xaxt}{\code{\link{par}} xaxt. "n" suppresses axis and numbers, which is used if log}
+\item{xaxt}{\code{\link{par}} xaxt. "n" suppresses axis and numbers, 
+which is used if log}
 
-\item{col}{\code{\link{hist}} bar color or \code{\link{ecdf}} point color. DEFAULT: "grey"}
+\item{col}{\code{\link{hist}} bar color or \code{\link{ecdf}} point color. 
+DEFAULT: "grey"}
 
-\item{main, xlab, ylab}{\code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab. DEFAULT: internal abstraction fom \code{dlf$datname}}
+\item{main, xlab, ylab}{\code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab. 
+DEFAULT: internal abstraction fom \code{dlf$datname}}
 
 \item{las}{Label Axis Style for orientation of numbers along axes. DEFAULT: 1}
 
-\item{coldist}{Color for each distribution added with \code{\link{lines}}. DEFAULT: \code{\link[berryFunctions]{rainbow2}}}
+\item{coldist}{Color for each distribution added with \code{\link{lines}}. 
+DEFAULT: \code{\link[berryFunctions]{rainbow2}}}
 
-\item{lty}{Line TYpe for plotted distributions. Recycled vector of length nbest. DEFAULT: 1}
+\item{lty}{Line TYpe for plotted distributions. 
+Recycled vector of length nbest. DEFAULT: 1}
 
-\item{add}{If TRUE, hist is not called before adding lines. This lets you add lines highly customized one by one. DEFAULT: FALSE}
+\item{add}{If TRUE, hist is not called before adding lines. 
+This lets you add lines highly customized one by one. 
+DEFAULT: FALSE}
 
-\item{logargs}{List of arguments passed to \code{\link{logAxis}} if \code{log=TRUE}. DEFAULT: NULL}
+\item{logargs}{List of arguments passed to \code{\link{logAxis}} if 
+\code{log=TRUE}. DEFAULT: NULL}
 
 \item{legend}{Should \code{\link{legend}} be called? DEFAULT: TRUE}
 
-\item{legargs}{List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL}
+\item{legargs}{List of arguments passed to \code{\link{legend}} except for 
+legend and col. DEFAULT: NULL}
 
-\item{histargs}{List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} except for x, freq. DEFAULT: NULL}
+\item{histargs}{List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} 
+except for x, freq. DEFAULT: NULL}
 
 \item{\dots}{Further arguments passed to \code{\link{lines}}, like type, pch, ...}
 }

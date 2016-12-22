@@ -24,7 +24,8 @@ digits=1
 obj <- deparse(substitute(dlf))
 if(!is.list(dlf)) stop("dlf is not a list")
 must <- c("dat", "dat_full", "datname", "parameter", "gof", "truncate", "threshold")
-for(i in 1:length(must)) if(!must[i] %in% names(dlf)) warning("dlf must include the element '", must[i], "'.")
+if(any(!must %in% names(dlf))) warning("dlf must include the element(s) ", 
+                                       toString(must[!must %in% names(dlf)]))
 # functions:
 vals <- function(x, signi=FALSE)
   {
@@ -48,7 +49,8 @@ if(PP) PPs <- vals(c(dlf$RPweibull, dlf$RPgringorton))
 if(RP) RPs <- substr(colnames(dlf$returnlev), start=4, stop=8)
 
 # message output:
-message("----------\nDataset '", dlf$datname, "' with ", n, " values. min/median/max: ", vals(dlf$dat),
+message("----------\nDataset '", dlf$datname, "' with ", 
+        n, " values. min/median/max: ", vals(dlf$dat),
 if( ! is.vector(dlf$dat)) "\n--> dat is not a vector!",
 "\ntruncate: ", dlf$truncate, " threshold: ",round(dlf$threshold,digits+1),
     ". dat_full with ", length(dlf$dat_full), " values: ", vals(dlf$dat_full),

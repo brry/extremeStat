@@ -14,7 +14,8 @@ distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
 }
 \arguments{
 \item{x}{Sample for which parametrical quantiles are to be calculated. 
-If it is NULL (the default), \code{dat} from \code{dlf} is used. DEFAULT: NULL}
+If it is NULL (the default), \code{dat} from \code{dlf} is used. 
+DEFAULT: NULL}
 
 \item{probs}{Numeric vector of probabilities with values in [0,1]. DEFAULT: c(0.8,0.9,0.99)}
 
@@ -31,16 +32,20 @@ DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
 \item{sanerange}{Range outside of which results should be changed to \code{sanevals}.
 This can capture numerical errors in small samples
 (notably GPD_MLE_extRemes). If NA, this is ignored. Attention
-if addinfo=T: the RMSE column is also checked and changed. DEFAULT: NA}
+if addinfo=T: the RMSE column is also checked and changed. 
+DEFAULT: NA}
 
-\item{sanevals}{Values to be used below [1] and above [2] \code{sanerange}. DEFAULT: NA}
+\item{sanevals}{Values to be used below [1] and above [2] \code{sanerange}. 
+DEFAULT: NA}
 
-\item{selection}{Distribution type, eg. "gev" or "wak", see \code{\link[lmomco]{dist.list} in lmomco}. 
+\item{selection}{Distribution type, eg. "gev" or "wak", see 
+\code{\link[lmomco]{dist.list} in lmomco}. 
 Can be a vector. If NULL (the default), all types present in 
 dlf$parameter are used. DEFAULT: NULL}
 
 \item{dlf}{dlf object described in \code{\link{extremeStat}}. Use this to save 
-computing time for large datasets where you already have dlf. DEFAULT: NULL}
+computing time for large datasets where you already have dlf. 
+DEFAULT: NULL}
 
 \item{order}{Sort results by GOF? If FALSE, it is sorted by appearance in 
 selection (or dlf$parameter). DEFAULT: TRUE}
@@ -85,8 +90,10 @@ is called with ttquiet=TRUE. DEFAULT: quiet}
 \item{\dots}{Arguments passed to \code{\link{distLfit}}}
 }
 \value{
-Invisible matrix with distribution quantile values (with NAs for probs below truncate), \cr
-or, if returnlist=TRUE, a \code{dlf} list as described in \code{\link{extremeStat}}.
+Invisible matrix with distribution quantile values 
+       (with NAs for probs below truncate), \cr
+       or, if returnlist=TRUE, a \code{dlf} list as described in 
+       \code{\link{extremeStat}}.
 }
 \description{
 Parametric quantiles of distributions fitted to a sample.
@@ -209,9 +216,10 @@ Berry Boessenkool, \email{berry-b@gmx.de}, March + July 2015, Feb 2016
 On GPD: \url{http://stats.stackexchange.com/questions/69438}
 }
 \seealso{
-\code{\link{q_gpd}}, \code{\link{distLfit}}, Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for left truncated and right censored data, Statistica Sinica 10
+\code{\link{q_gpd}}, \code{\link{distLfit}}, require("truncdist")
+        Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for 
+        left truncated and right censored data, Statistica Sinica 10
          \url{http://www3.stat.sinica.edu.tw/statistica/oldpdf/A10n411.pdf}\cr
-         require("truncdist")
 }
 \keyword{distribution}
 \keyword{robust}

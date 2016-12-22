@@ -23,22 +23,27 @@ The main functions in the extremeStat package are:
                               \tab \code{\link{distLexBoot}} \tab \cr
 }
 
-The common object to share between functions is a list (\code{dlf}) with:\cr
+The common object to share between functions is a list that can be printed with 
+\code{\link{printL}(dlf)} and contains the following elements:
 \tabular{ll}{
 \code{dat}       \tab numeric vector with (extreme) values \cr
 \code{datname}   \tab character string for main, xlab etc \cr
-\code{parameter} \tab list (usually of length 17 if \code{speed=TRUE}) with parameters of each distribution\cr
-\code{gof}       \tab dataframe with 'Goodness of Fit' measures, sorted by RMSE of theoretical and empirical cumulated density\cr
-\code{returnlev} \tab dataframe with values of distributions for given return periods (\code{RPs}). This element is only added in \code{\link{distLextreme}}\cr
+\code{parameter} \tab list (usually of length 17 if \code{speed=TRUE}) 
+                      with parameters of each distribution\cr
+\code{gof}       \tab dataframe with 'Goodness of Fit' measures, sorted by 
+                      RMSE of theoretical and empirical cumulated density\cr
+\code{returnlev} \tab dataframe with values of distributions for given 
+                      return periods (\code{RPs}). This element is only added
+                      in \code{\link{distLextreme}}\cr
 \code{RP___}     \tab Return periods according to plotting positions, see below. \cr
 \code{coldist}   \tab Colors for plotting, added in \code{\link{plotLfit}}\cr
 \code{truncate}  \tab Truncation percentage, only relevant for \code{\link{distLquantile}}\cr
 \code{quant}     \tab Quantile estimation from \code{\link{distLquantile}}\cr
 }
-It can be printed with \code{\link{printL}}.\cr
-PP:\cr
-Plotting positions are not used for fitting distributions, but for plotting only\cr
-The ranks of ascendingly sorted extreme values are used to compute the probability of non-exceedence Pn:\cr
+
+Plotting positions are not used for fitting distributions, but for plotting only.
+The ranks of ascendingly sorted extreme values are used to 
+compute the probability of non-exceedence Pn:\cr
 \code{Pn_w <-  Rank      /(n+1)       # Weibull}\cr
 \code{Pn_g <- (Rank-0.44)/(n+0.12)    # Gringorton (taken from lmom:::evplot.default)}\cr
 Finally: RP = Returnperiod = recurrence interval = 1/P_exceedence = 1/(1-P_nonexc.), thus:\cr

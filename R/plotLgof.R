@@ -48,7 +48,7 @@ lwd <- rep(lwd, length=5)
 type<- rep(type,length=5)
 
 # plotting
-plot(1, type="n", xlim=xlim, ylim=c(1, nrow(gof)), yaxt="n", xlab=xlab, ylab=ylab, main=main, ...)
+plot(1, type="n", xlim=xlim, ylim=c(1,nrow(gof)), yaxt="n", xlab=xlab, ylab=ylab, main=main, ...)
 cnames <- c("weight1","weight2","weight3","weightc","RMSE")
 for(i in 1:5) lines(gof[,cnames[i]], nrow(gof):1, 
                     pch=pch[i], col=col[i], lty=lty[i], lwd=lwd[i], type=type[i])

@@ -51,7 +51,8 @@ The usual type of warning is: NAs produced in log(...). DEFAULT: quiet}
 \value{
 Named vector of quantile estimates for each value of \code{probs},\cr
    or if(returnlist): list with element \code{q_gpd_quant} and info-elements added.
-   q_gpd_n_geq is number of values greater than or equal to q_gpd_threshold. gt is only greater than.
+   q_gpd_n_geq is number of values greater than or equal to q_gpd_threshold. 
+   gt is only greater than.
 }
 \description{
 Compute quantile of General Pareto Distribution fitted to sample by peak over treshold (POT) method
@@ -75,11 +76,13 @@ evd: none, only Maximum-likelihood fitting implemented \cr
 extRemes: "MLE", or "GMLE", "Bayesian", "Lmoments" \cr
 fExtremes: "pwm", or "mle"\cr
 ismev: none, only Maximum-likelihood fitting implemented \cr
-Renext: "r" for \code{\link[Renext]{Renouv}}, or 'f' (no truncation, all negative values ignored!) for \code{\link[Renext]{fGPD}}\cr\cr
+Renext: "r" for \code{\link[Renext]{Renouv}}, or 'f' (no truncation, 
+            all negative values ignored!) for \code{\link[Renext]{fGPD}}\cr\cr
 
 The Quantiles are always given with \code{probs} in regard to the full (uncensored) sample.
 If e.g. truncate is 0.90, the distribution function is fitted to the top 10\% of the sample.
-The 95th percentile of the full sample is equivalent to the 50\% quantile of the subsample acutally used for fitting.
+The 95th percentile of the full sample is equivalent to the 50\% quantile of 
+    the subsample acutally used for fitting.
 For computation, the probabilities are internally updated with \code{p2=(p-t)/(1-t)}
 but labelled with the original \code{p}.
 If you truncate 90\% of the sample, you cannot compute the 70th percentile anymore,
@@ -179,8 +182,8 @@ text(300, 300, "empirical quantile estimate", col="green3")
 Berry Boessenkool, \email{berry-b@gmx.de}, Feb 2016
 }
 \references{
-\url{http://stackoverflow.com/questions/27524131/calculation-of-return-levels-based-on-a-gpd-in-different-r-packages}\cr
-            \url{http://stats.stackexchange.com/questions/129438/different-quantiles-of-a-fitted-gpd-in-different-r-packages}
+\url{http://stackoverflow.com/q/27524131}, 
+            \url{http://stats.stackexchange.com/q/129438}
 }
 \seealso{
 \code{\link{distLquantile}} which compares results for all packages\cr

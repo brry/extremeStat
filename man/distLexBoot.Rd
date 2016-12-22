@@ -9,23 +9,31 @@ distLexBoot(dlf, nbest = 3, selection = NULL, truncate = 0, n = 100,
   plot = TRUE, add = FALSE, log = TRUE, progbars = TRUE, ...)
 }
 \arguments{
-\item{dlf}{\code{dlf} object, as returned by \code{\link{distLextreme}}, is passed to \code{\link{plotLextreme}}.}
+\item{dlf}{\code{dlf} object, as returned by \code{\link{distLextreme}}, 
+is passed to \code{\link{plotLextreme}}.}
 
-\item{nbest}{Number of best fitted distribution functions in dlf for which bootstrapping is to be done. Overriden by \code{selection}. DEFAULT: 3}
+\item{nbest}{Number of best fitted distribution functions in dlf for which 
+bootstrapping is to be done. Overriden by \code{selection}. DEFAULT: 3}
 
-\item{selection}{Character vector with distribution function names to be used. Suggested to keep this low. DEFAULT: NULL}
+\item{selection}{Character vector with distribution function names to be used. 
+Suggested to keep this low. DEFAULT: NULL}
 
 \item{truncate}{Truncation of subsamples, see \code{\link{distLquantile}}. DEFAULT: 0}
 
-\item{n}{Number of subsamples to be processed (computing time increases extraordinarily). DEFAULT: 100}
+\item{n}{Number of subsamples to be processed 
+(computing time increases extraordinarily). DEFAULT: 100}
 
 \item{prop}{Proportion of sample to be used in each run. DEFAULT: 0.8}
 
-\item{returnall}{Return all simulations, instead of the aggregate confidence level? DEFAULT: FALSE}
+\item{returnall}{Return all simulations, instead of the aggregate confidence level? 
+DEFAULT: FALSE}
 
-\item{conf.lev}{Confidence level (Proportion of subsamples within 'confidence interval'). Quantiles extracted from this value are passed to \code{\link[berryFunctions]{quantileMean}}. DEFAULT: 0.95}
+\item{conf.lev}{Confidence level (Proportion of subsamples within 'confidence interval'). 
+Quantiles extracted from this value are passed to 
+\code{\link[berryFunctions]{quantileMean}}. DEFAULT: 0.95}
 
-\item{RPs}{Return Period vector, by default calculated internally based on log. DEFAULT: NULL}
+\item{RPs}{Return Period vector, by default calculated internally based on 
+value of \code{log}. DEFAULT: NULL}
 
 \item{plot}{Plot results via \code{\link{plotLextreme}}? DEFAULT: TRUE}
 
@@ -38,7 +46,8 @@ distLexBoot(dlf, nbest = 3, selection = NULL, truncate = 0, n = 100,
 \item{\dots}{Further arguments passed to \code{\link{plotLextreme}}}
 }
 \value{
-A list with (for each selection) a matrix with confidence intervals for RPs, or if returnall=TRUE, all the simulation results
+A list with (for each selection) a matrix with confidence intervals 
+        for RPs, or if returnall=TRUE, all the simulation results
 }
 \description{
 Calculates and plots bootstrap uncertainty intervals for \code{\link{plotLextreme}}.

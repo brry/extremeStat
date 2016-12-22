@@ -9,13 +9,17 @@ distLextreme(dat, dlf = NULL, selection = NULL, truncate = 0, RPs = c(2,
   plot = TRUE, fitargs = NULL, quiet = FALSE, ...)
 }
 \arguments{
-\item{dat}{Vector with extreme values e.g. annual discharge maxima. Ignored if dlf is given.}
+\item{dat}{Vector with extreme values e.g. annual discharge maxima. 
+Ignored if dlf is given.}
 
-\item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof}. Overrides dat! DEFAULT: NULL}
+\item{dlf}{List as returned by \code{\link{distLfit}}, containing the 
+elements \code{dat, parameter, gof}. Overrides dat! DEFAULT: NULL}
 
-\item{selection}{Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. DEFAULT: NULL}
+\item{selection}{Selection of distributions. Character vector with types as 
+in \code{\link[lmomco]{lmom2par}}. DEFAULT: NULL}
 
-\item{truncate}{Proportion truncated for censored quantile, see \code{\link{distLquantile}}. DEFAULT: 0}
+\item{truncate}{Proportion truncated for censored quantile, see 
+\code{\link{distLquantile}}. DEFAULT: 0}
 
 \item{RPs}{ReturnPeriods for which discharge is estimated. DEFAULT: c(2,5,10,20,50)}
 
@@ -23,7 +27,8 @@ distLextreme(dat, dlf = NULL, selection = NULL, truncate = 0, RPs = c(2,
 
 \item{time}{\code{\link{message}} execution time? DEFAULT: TRUE}
 
-\item{plot}{Should the return periods and nbest fitted distributions be plotted by a call to \code{\link{plotLextreme}}? DEFAULT: TRUE}
+\item{plot}{Should the return periods and nbest fitted distributions be 
+plotted by a call to \code{\link{plotLextreme}}? DEFAULT: TRUE}
 
 \item{fitargs}{List of arguments passed to \code{\link{distLfit}}. DEFAULT: NULL}
 
@@ -33,21 +38,24 @@ distLextreme(dat, dlf = NULL, selection = NULL, truncate = 0, RPs = c(2,
 }
 \value{
 List as explained in \code{\link{extremeStat}}. The added element is
-        \code{returnlev}, a data.frame with the return level (discharge) for all given RPs and for each distribution.
+        \code{returnlev}, a data.frame with the return level (discharge) 
+        for all given RPs and for each distribution.
 }
 \description{
 Extreme value statistics for flood risk estimation.
 Input: vector with annual discharge maxima.
 Output: discharge estimates for given return periods, 
 parameters of several distributions (fit based on linear moments), 
-quality of fits, plot with linear axis (dists + plotting positions by Weibull and Gringorton).
+quality of fits, plot with linear axis 
+(dists + plotting positions by Weibull and Gringorton).
 }
 \details{
 \code{\link{plotLextreme}} adds weibull and gringorton plotting positions
 to the distribution lines, which are estimated from the linear moments of the data itself.\cr
 I personally believe that if you have, say, 35 values in \code{dat},
 the highest return period should be around 36 years (Weibull) and not 60 (Gringorton).\cr
-The plotting positions don't affect the distribution parameter estimation, so this dispute is not really important.
+The plotting positions don't affect the distribution parameter estimation, 
+so this dispute is not really important.
 But if you care, go ahead and google "weibull vs gringorton plotting positions".
 }
 \note{
@@ -188,7 +196,8 @@ Berry Boessenkool, \email{berry-b@gmx.de}, 2012 (first draft) - 2014 & 2015 (mai
 }
 \seealso{
 \code{\link{distLfit}}. \code{\link{distLexBoot}} for confidence
-         interval from Bootstrapping. \code{\link[extRemes]{fevd}} in the package \code{extRemes}.
+         interval from Bootstrapping. 
+         \code{\link[extRemes]{fevd}} in the package \code{extRemes}.
 }
 \keyword{distribution}
 \keyword{dplot}
