@@ -8,6 +8,7 @@ extremeStat ToDo-list / wishlist / issues
      if(mes2warn) message <- function(...) warning(..., call.=FALSE)
 - kick out gofProp completely?
 - remove on.exits?
+- move half the examples to tests
 
 
 ---------------------------------------

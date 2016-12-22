@@ -7,11 +7,15 @@
 distLweights(rmse, order = TRUE, weightc = NA)
 }
 \arguments{
-\item{rmse}{Numeric: (named) vector with goodness of fit values (RMSE)}
+\item{rmse}{Numeric: Named vector with goodness of fit values (RMSE).
+Can also be a data.frame, in which case the column rmse or RMSE is used.}
 
 \item{order}{Logical: should result be ordered by RMSE? DEFAULT: TRUE}
 
-\item{weightc}{Numeric: Named vector with custom weights. DEFAULT: NA}
+\item{weightc}{Optional: a named vector with custom weights for each distribution.
+Are internally normalized to sum=1 after removing nonfitted dists.
+Names match the parameter names from \code{rmse}.
+DEFAULT: NA}
 }
 \value{
 data.frame
@@ -24,6 +28,23 @@ Determine distribution function weights from RMSE for weighted averages.
 distLweights(c(gum=0.20, wak=0.17, gam=0.21))
 distLweights(c(gum=0.20, wak=0.17, gam=0.21), order=FALSE)
 distLweights(c(gum=0.20))
+df <- data.frame(gum=2:5, rmse=3:6)
+rownames(df) <- letters[1:4]
+distLweights(df)
+
+set.seed(42); x <- data.frame(A=1:5, RMSE=runif(5)) ; x
+distLweights(x)
+distLweights(x, weightc=c("1"=3, "3"=5)) 
+distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE) 
+
+distLweights(data.frame(rmse=1:2))
+distLweights(data.frame(Rmse=1:3))
+distLweights(data.frame(rmse=1:6))
+distLweights(data.frame(rmse=1:11))
+distLweights(data.frame(rmse=1:12))
+distLweights(data.frame(rmse=sample(1:12)))
+distLweights(data.frame(rmse=sample(1:12)), order=FALSE)
+
 
 # RMSE vs R2 for GOF judgement --------
 library(lmomco)
@@ -63,7 +84,7 @@ distLgofPlot(dlf, ranks=TRUE)
 Berry Boessenkool, \email{berry-b@gmx.de}, Dec 2016
 }
 \seealso{
-\code{\link{help}}, \code{\link{help}}
+\code{\link{distLgof}}, \code{\link{distLquantile}}
 }
 \keyword{distribution}
 

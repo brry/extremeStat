@@ -26,10 +26,7 @@ selection (or dlf$parameter) is kept. DEFAULT: TRUE}
 \item{ks}{Include ks.test results in \code{dlf$gof}?
 Computing is much faster when FALSE. DEFAULT: TRUE}
 
-\item{weightc}{Optional: a named vector with custom weights for each distribution.
-Are internally normalized to sum=1 after removing nonfitted dists.
-Names must match the parameter names from \code{\link{distLfit}}.
-DEFAULT: NA}
+\item{weightc}{Custom weights, see \code{\link{distLweights}}. DEFAULT: NA}
 
 \item{quiet}{Suppress notes? DEFAULT: FALSE}
 

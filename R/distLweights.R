@@ -4,7 +4,7 @@
 #'
 #' @return data.frame
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Dec 2016
-#' @seealso \code{\link{help}}, \code{\link{help}}
+#' @seealso \code{\link{distLgof}}, \code{\link{distLquantile}}
 #' @keywords distribution
 #' @export
 #' @examples
@@ -12,6 +12,23 @@
 #' distLweights(c(gum=0.20, wak=0.17, gam=0.21))
 #' distLweights(c(gum=0.20, wak=0.17, gam=0.21), order=FALSE)
 #' distLweights(c(gum=0.20))
+#' df <- data.frame(gum=2:5, rmse=3:6)
+#' rownames(df) <- letters[1:4]
+#' distLweights(df)
+#' 
+#' set.seed(42); x <- data.frame(A=1:5, RMSE=runif(5)) ; x
+#' distLweights(x)
+#' distLweights(x, weightc=c("1"=3, "3"=5)) 
+#' distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE) 
+#' 
+#' distLweights(data.frame(rmse=1:2))
+#' distLweights(data.frame(Rmse=1:3))
+#' distLweights(data.frame(rmse=1:6))
+#' distLweights(data.frame(rmse=1:11))
+#' distLweights(data.frame(rmse=1:12))
+#' distLweights(data.frame(rmse=sample(1:12)))
+#' distLweights(data.frame(rmse=sample(1:12)), order=FALSE)
+#' 
 #' 
 #' # RMSE vs R2 for GOF judgement --------
 #' library(lmomco)
@@ -46,9 +63,13 @@
 #' distLgofPlot(dlf, ranks=TRUE)
 #' 
 #'
-#' @param rmse  Numeric: (named) vector with goodness of fit values (RMSE)
-#' @param order Logical: should result be ordered by RMSE? DEFAULT: TRUE
-#' @param weightc Numeric: Named vector with custom weights. DEFAULT: NA
+#' @param rmse    Numeric: Named vector with goodness of fit values (RMSE).
+#'                Can also be a data.frame, in which case the column rmse or RMSE is used.
+#' @param order   Logical: should result be ordered by RMSE? DEFAULT: TRUE
+#' @param weightc Optional: a named vector with custom weights for each distribution.
+#'                Are internally normalized to sum=1 after removing nonfitted dists.
+#'                Names match the parameter names from \code{rmse}.
+#'                DEFAULT: NA
 #'
 distLweights <- function(
 rmse,
@@ -56,25 +77,32 @@ order=TRUE,
 weightc=NA
 )
 {
-
-# the lower RMSE, the better GOF, the more weight
+# get data.frame column:
+if(is.data.frame(rmse) | is.matrix(rmse))
+  {
+  colm <- grep("rmse", colnames(rmse), ignore.case=TRUE)
+  if(length(colm)!=1) stop("There is not a single column matching 'rmse' among ", 
+                           toString(colnames(rmse)))
+  rmse2 <- rmse[,colm]
+  names(rmse2) <- rownames(rmse)
+  rmse <- rmse2
+  }
   
 if(is.null(names(rmse))) stop("rmse must have names.")
+
+# the lower RMSE, the better GOF, the more weight
+maxrmse <- max(rmse, na.rm=TRUE)
   
 # Zero weight to worst fit (needs 2 or more distributions to work):
-weight2 <- rmse
-weight2 <- max(weight2) - weight2
+weight2 <- maxrmse - rmse
 
 # at least a little weight for all distributions:
-weight1 <- rmse 
-weight1 <- max(weight1) - weight1 + min(weight1)  
+weight1 <- maxrmse - rmse + min(rmse, na.rm=TRUE)  
 # with min or mean added, the worst fit is not completely excluded
 
-# use only best half (needs 4 or more values):
-weight3 <- rmse
-weight3 <- max(weight3) - weight3
-n <- length(rmse)
-weight3[(n/2):n] <- 0
+# use only best half (needs 3 or more values):
+weight3 <-  maxrmse - rmse
+weight3[weight3<median(weight3)] <- 0
 
 # custom weight:
 if(any(!is.na(weightc)))
@@ -83,7 +111,7 @@ if(any(!is.na(weightc)))
   rn <- names(rmse)
   if(is.null(cn)) stop("weightc must have names.")
   miss <- ! rn %in% cn
-  if(any(miss)) warning("names present in rmse, but not in weightc, thus given weight 0: ", 
+  if(any(miss)) warning("names present in rmse, but not in weightc, thus given zero weight: ", 
                         toString(rn[miss]))
   miss <- ! cn %in% rn
   if(any(miss)) 
@@ -99,6 +127,12 @@ if(any(!is.na(weightc)))
 } else
 weightc <- rep(NA, length(rmse))
 
+# replace NAs with 0
+weight1[!is.finite(weight1)] <- 0
+weight2[!is.finite(weight2)] <- 0
+weight3[!is.finite(weight3)] <- 0
+weightc[!is.finite(weightc)] <- 0
+
 # normalize to get sum=1
 weight1 <- weight1/sum(weight1) 
 weight2 <- weight2/sum(weight2)
@@ -107,7 +141,6 @@ weightc <- weightc/sum(weightc)
 
 # output data.frame:
 out <- data.frame(weight1, weight2, weight3, weightc)
-#rownames(out) <- names(rmse)
 
 # order by GOF:
 if(order) out <- out[ order(rmse), ] # sorting by R2 does not work, see examples
