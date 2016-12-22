@@ -55,9 +55,9 @@ if( ! is.vector(dlf$dat)) "\n--> dat is not a vector!",
 "\ndlf with ", nrow(dlf$gof), " distributions. In descending order of fit quality:\n", 
    toString(rownames(dlf$gof)),
 if(any(inparnotgof)) "\n--> dists in parameter but not in gof: ",
-if(any(inparnotgof)) paste(names(dlf$parameter)[inparnotgof], collapse=", "),
+if(any(inparnotgof)) toString(names(dlf$parameter)[inparnotgof]),
 if(any(ingofnotpar)) "\n--> dists in gof but not in parameter: ",
-if(any(ingofnotpar)) paste(rownames(dlf$gof)[ingofnotpar], collapse=", "),
+if(any(ingofnotpar)) toString(rownames(dlf$gof)[ingofnotpar]),
 "\nRMSE min/median/max: ", vals(dlf$gof$RMSE, TRUE),
 if(qq) paste("\nquant:",nrow(dlf$quant),"rows,",ncol(dlf$quant),"columns,",
             prod(dim(dlf$quant)),"values, of which",sum(is.na(dlf$quant)),"NA."),
@@ -70,6 +70,6 @@ if(RP) toString(RPs),
 if(RP) "\nReturn Levels min/median/max: ",
 if(RP) vals(dlf$returnlev),
 if(any(other)) paste0("\n--> Other elements in the object '", obj, "': "),
-if(any(other)) paste(names(dlf)[other], collapse=", ")
+if(any(other)) toString(names(dlf)[other])
 )
 }
