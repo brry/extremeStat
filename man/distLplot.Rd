@@ -5,16 +5,16 @@
 \title{Plot distributions fitted with linear moments}
 \usage{
 distLplot(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
-  log = FALSE, percentline = NA, percentargs = NULL, supportends = TRUE,
-  breaks = 20, xlim = extendrange(dlf$dat, f = 0.15), ylim = NULL,
-  xaxs = "i", yaxs = "i", xaxt, col = "grey", main, xlab, ylab, las = 1,
+  log = FALSE, supportends = TRUE, breaks = 20,
+  xlim = extendrange(dlf$dat, f = 0.15), ylim = NULL, xaxs = "i",
+  yaxs = "i", xaxt, col = "grey", main, xlab, ylab, las = 1,
   coldist = berryFunctions::rainbow2(nbest), lty = 1, add = FALSE,
   logargs = NULL, legend = TRUE, legargs = NULL, histargs = NULL,
   qlines = FALSE, qheights = stats::quantile(par("usr")[3:4], 0.2),
   qrow = NULL, qlinargs = NULL, ...)
 }
 \arguments{
-\item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname, gofProp}}
+\item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname}}
 
 \item{nbest}{Number of distributions plotted, in order of goodness of fit. DEFAULT: 5}
 
@@ -25,10 +25,6 @@ distLplot(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
 \item{cdf}{If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE}
 
 \item{log}{If TRUE, logAxis is called. DEFAULT: FALSE}
-
-\item{percentline}{If TRUE, draw vertical line at 1-dlf$gofProp of dlf$dat. If NA, only do so if gofProp!=1. DEFAULT: NA}
-
-\item{percentargs}{List of arguments passed to \code{\link{abline}}. DEFAULT: NULL}
 
 \item{supportends}{If TRUE, dots are placed at the support bounds. DEFAULT: TRUE}
 

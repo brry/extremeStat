@@ -5,7 +5,7 @@
 \title{Fit distributions via linear moments}
 \usage{
 distLfit(dat, datname, speed = TRUE, ks = FALSE, selection = NULL,
-  gofProp = 1, order = TRUE, weightc = NA, truncate = 0,
+  order = TRUE, weightc = NA, truncate = 0,
   threshold = berryFunctions::quantileMean(dat, truncate), gofComp = FALSE,
   progbars = length(dat) > 200, time = TRUE, plot = TRUE, cdf = FALSE,
   legargs = NULL, histargs = NULL, quiet = FALSE, ssquiet = quiet, ...)
@@ -20,8 +20,6 @@ distLfit(dat, datname, speed = TRUE, ks = FALSE, selection = NULL,
 \item{ks}{Include ks.test results in \code{dlf$gof}? Computing is much faster when FALSE. DEFAULT: FALSE}
 
 \item{selection}{Selection of distributions. Character vector with types as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL}
-
-\item{gofProp}{Upper proportion (0:1) of \code{dat} to compute goodness of fit (dist / ecdf) with. This enables to focus on the dist tail. DEFAULT: 1}
 
 \item{order}{Should gof output be ordered by fit? Strongly recommended with the default color palette. DEFAULT: TRUE}
 
@@ -94,7 +92,7 @@ distLplot(dlf, breaks=50, log=TRUE)
 
 \dontrun{
 # this takes a while, as it tries to fit all 30 distributions:
-d_all <- distLfit(annMax, gofProp=1, speed=FALSE, plot=FALSE) # 35 sec
+d_all <- distLfit(annMax, speed=FALSE, plot=FALSE) # 35 sec
 distLprint(d_all)
 distLplot(d_all, nbest=22, coldist=grey(1:22/29), xlim=c(20,140))
 distLplot(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))

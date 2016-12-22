@@ -10,7 +10,7 @@ distLgofPlot(dlf, ranks = TRUE, weights = TRUE, nbest = NA,
   main = NULL, ...)
 }
 \arguments{
-\item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{gof, gofProp}}
+\item{dlf}{List as returned by \code{\link{distLfit}}, containing the element \code{gof}}
 
 \item{ranks}{plot ranks by different measures of goodness of fit? DEFAULT: TRUE}
 

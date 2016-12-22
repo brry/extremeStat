@@ -112,35 +112,6 @@
 #' lines(RP, DischargeEstimate["weighted2",], lwd=5) 
 #' 
 #' 
-#' # Effect of data proportion used to estimate GOF -------------------------------
-#' # Discharge estimated for 50 years return period
-#' Goodness <- function(gofProp)
-#' { # ExtremeStatistics
-#' ES <- distLextreme(annMax, fitargs=list(gofProp=gofProp), plot=FALSE, quiet=TRUE)
-#' ES <- cbind(ES$returnlev[1:nrow(ES$gof),], ES$gof)
-#' # simple mean:              # plot(sort(GF))
-#' av_simple <- mean(ES[,"RP.50"])     # 114.0178  old: 116.8383
-#' # weighted average:
-#' av_weight <- sum(ES$weight2 * ES[,"RP.50"]) # 115.2842  old: 117.2784
-#' # mean of best 3 distribution functions:
-#' av_3best <- mean(ES[1:3, "RP.50"]) # 114.7579   old: 118.3722
-#' # most functions underestimate the discharge, if we assume that the weibull
-#' # PP method correctly calculates the return period of the highest value
-#' c(av_simple=av_simple, av_weight=av_weight, av_3best=av_3best)
-#' }
-#' 
-#' Goodness(1)
-#' Goodness(0.2)
-#' Proportion <- seq(0.05, 1, len=50)
-#' GoF <- sapply(Proportion, Goodness) # takes a while to compute
-#' plot(Proportion, GoF[3,], type="l", las=1)
-#' lines(Proportion, GoF[2,], col=2)
-#' lines(Proportion, GoF[1,], col=3)
-#' legend("bottomright", col=1:3, lty=1,
-#'    legend=c("mean of 3 dists with lowest RMSE", "weighted average", "simple average"))
-#' title(main="The proportion of the data included\nfor calculating RMSE does matter!")
-#' 
-#' 
 #' # Minima -----------------------------------------------------------------------
 #' 
 #' browseURL("http://nrfa.ceh.ac.uk/data/station/meanflow/39072")
@@ -189,7 +160,7 @@
 #' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n>200
 #' @param time \code{\link{message}} execution time? DEFAULT: TRUE
 #' @param plot Should the return periods and nbest fitted distributions be plotted by a call to \code{\link{distLextremePlot}}? DEFAULT: TRUE
-#' @param fitargs List of arguments passed to \code{\link{distLfit}}, like gofProp. DEFAULT: NULL
+#' @param fitargs List of arguments passed to \code{\link{distLfit}}. DEFAULT: NULL
 #' @param quiet Suppress notes and progbars? DEFAULT: FALSE
 #' @param \dots Further arguments passed to \code{\link{distLextremePlot}} like order, lty, lwd, ...
 #' 

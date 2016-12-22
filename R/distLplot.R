@@ -16,14 +16,12 @@
 #' @examples
 #'  # See distLfit and distLquantile
 #' 
-#' @param dlf List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname, gofProp}
+#' @param dlf List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname}
 #' @param nbest Number of distributions plotted, in order of goodness of fit. DEFAULT: 5
 #' @param selection Names of distributions in \code{dlf$parameter} that will be drawn. Overrides nbest. DEFAULT: NULL
 #' @param order If selection is given, should legend and colors be ordered by gof anyways? DEFAULT: FALSE
 #' @param cdf If TRUE, plot cumulated DF instead of probability density. DEFAULT: FALSE
 #' @param log If TRUE, logAxis is called. DEFAULT: FALSE
-#' @param percentline If TRUE, draw vertical line at 1-dlf$gofProp of dlf$dat. If NA, only do so if gofProp!=1. DEFAULT: NA
-#' @param percentargs List of arguments passed to \code{\link{abline}}. DEFAULT: NULL
 #' @param supportends If TRUE, dots are placed at the support bounds. DEFAULT: TRUE
 #' @param breaks \code{\link{hist}} breaks. DEFAULT: 20
 #' @param xlim \code{\link{hist}} or \code{\link{ecdf}} xlim. DEFAULT: extendrange(dat, f=0.15)
@@ -56,8 +54,6 @@ selection=NULL,
 order=FALSE,
 cdf=FALSE,
 log=FALSE,
-percentline=NA,
-percentargs=NULL,
 supportends=TRUE,
 breaks=20,
 xlim=extendrange(dlf$dat, f=0.15),
@@ -87,7 +83,6 @@ if(is.null(dlf$dat)) stop("dlf must contain the element dat")
 if(is.null(dlf$parameter)) stop("dlf must contain the element parameter")
 if(is.null(dlf$gof)) stop("dlf must contain the element gof")
 if(is.null(dlf$datname)) stop("dlf must contain the element datname")
-if(is.null(dlf$gofProp)) stop("dlf must contain the element gofProp")
 # distribution selection:
 if(!is.null(selection))
   {
@@ -194,10 +189,6 @@ if(length(dn)>0) for(i in length(dn):1)
     } # end if supportends
   } # end if xval has values
   } # end for loop over distribution functions
-# draw vertical gofProp line:
-if(is.na(percentline)) percentline <- if(dlf$gofProp!=1) TRUE else FALSE
-if(percentline) do.call(abline, args=berryFunctions::owa(list(
-       v=quantile(dlf$dat, probs=1-dlf$gofProp), lty=3, col="red"), percentargs))
 # draw quantile lines:
 if(qlines)
   {

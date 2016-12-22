@@ -22,6 +22,8 @@ data.frame
 }
 \description{
 Determine distribution function weights from RMSE for weighted averages.
+The weights are inverse to RMSE, weight1 for all dists, 
+weight2 places zero weight on the worst function, weight3 on the worst half of functions.
 }
 \examples{
 
@@ -52,9 +54,8 @@ data(annMax)
 
 compranks <- function(d)
 {
-gofProp <- 0.5
-x <- sort(annMax, decreasing=TRUE)[  1:(gofProp*length(annMax))  ]
-tcdfs <- plmomco(x,dlf50$parameter[[d]])
+x <- sort(annMax, decreasing=TRUE)
+tcdfs <- plmomco(x,dlf$parameter[[d]])
 ecdfs <- ecdf(annMax)(x) # Empirical CDF
 # Root Mean Square Error, R squared:
 berryFunctions::linReg(tcdfs, ecdfs, lwd=1, pch=16, main=d, digits=5, xlim=c(0.5, 1),
@@ -63,8 +64,8 @@ abline(a=0,b=1, lty=3)
 c(berryFunctions::rmse(tcdfs, ecdfs), berryFunctions::rsquare(tcdfs, ecdfs))
 }
 
-dlf50 <- distLfit(annMax, gofProp=0.5)
-dn <- rownames(dlf50$gof)
+dlf <- distLfit(annMax)
+dn <- rownames(dlf$gof)
 
 op <- par(mfrow=c(5,4), mar=rep(1,4), xaxt="n", yaxt="n")
 for(i in dn) compranks(i)

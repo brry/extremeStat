@@ -3,7 +3,7 @@
 #' Calculate goodness of fit for several distributions, plot rank comparison.
 #' 
 #' @return List as explained in \code{\link{extremeStat}}. The added element is gof,\cr
-#' a data.frame the root mean square error (RMSE) and R squared (R2) for the top \code{gofProp} of \code{dat},\cr
+#' a data.frame with the root mean square error (RMSE) and R squared (R2),\cr
 #' if ks=TRUE, the p and D values from a simple ks.test,\cr
 #' as well as weights by three different approaches for each distribution function.\cr
 #' The weights are inverse to RMSE, weight1 for all dists, weight2 places zero weight on the worst function, weight3 on the worst half of functions.
@@ -12,7 +12,7 @@
 #'       span the whole data range. Instead the outside support regions get NAs that
 #'       are then detected by rmse and rsquare. I plan to fix this with WHA's new supdist.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014 + July 2015
-#' @seealso \code{\link{distLgofPlot}}, \code{\link{distLfit}}. 
+#' @seealso \code{\link{distLweights}}, \code{\link{distLgofPlot}}, \code{\link{distLfit}} 
 #'     More complex estimates of quality of fits:
 #'     Fard, M.N.P. and Holmquist, B. (2013, Chilean Journal of Statistics): 
 #'     Powerful goodness-of-fit tests for the extreme value distribution.
@@ -50,33 +50,13 @@
 #' # GOF: how well do the distributions fit the original data?
 #' pairs(dlf$gof[,1:3]) # measures of goodness of fit are correlated quite well here.
 #' 
-#' # compare Ranks with different proportions used for GOF
-#' par(mfrow=c(1,2))
-#' distLgofPlot(dlf, weights=FALSE)
-#' d <- distLgof(dlf, gofProp=0.8, plot=TRUE, weights=FALSE)
-#' par(mfrow=c(1,1))
-#' 
-#' 
-#' # effect of Proportion of values used to calculate RMSE
-#' dlf100 <- distLfit(annMax, gofProp=1, nbest=19, breaks=10) # the default gofProp: 100%
-#' distLgofPlot(dlf100)
-#' 
-#' dlf50 <- distLgof(dlf100, gofProp=0.5)
-#' # so revgum, nor and rice do well on the upper half by R2, but bad by RMSE
-#' distLplot(dlf50, breaks=10)
-#' # The red dashed line shows the cut above which the data were used to get R2/rmse
-#' 
-#' distLplot(dlf=dlf50, cdf=TRUE)
-#' distLplot(dlf=dlf50, selection=c("pe3","wei", "rice", "nor", "revgum"),
-#'           xlim=c(60,120), ylim=c(0.5, 1), cdf=TRUE, col=1)
-#' dlf50$gof
 #' 
 #' \dontrun{ ## to save CRAN check computing time
 #' 
 #' dev.new()
-#' distLplot(dlf50, cdf=TRUE, sel=c("pe3", "rice", "revgum"), order=T)
+#' distLplot(dlf, cdf=TRUE, sel=c("pe3", "rice", "revgum"), order=T)
 #' x <- sort(annMax, decreasing=TRUE)[  1:(0.5*length(annMax))  ]
-#' tcdfs <- plmomco(x,dlf50$parameter[["revgum"]])
+#' tcdfs <- plmomco(x,dlf$parameter[["revgum"]])
 #' ecdfs <- ecdf(annMax)(x) # Empirical CDF
 #' plot(x, tcdfs, type="o", col=2)
 #' points(x, ecdfs)
@@ -84,21 +64,12 @@
 #' linReg(tcdfs, ecdfs, type="o")
 #' abline(a=0,b=1, lty=3)
 #' 
-#' dev.new(record=TRUE)
-#' for(i in 1:10/10) distLgof(dlf100, gofProp=i, weights=FALSE,
-#'                            main=paste("upper", i*100, "% used for R2"))
-#' # depending on which proportion of the data the GOF is calculated with, different
-#' # distributions are selected to be the 5 best.
-#' dev.off()
 #' } # end dontrun
 #' 
 #' @param dlf List as returned by \code{\link{distLfit}}, containing the elements
-#'            \code{dat, datname, parameter, gofProp}
+#'            \code{dat, datname, parameter}
 #' @param order Sort output$gof by RMSE? If FALSE, the order of appearance in 
 #'              selection (or dlf$parameter) is kept. DEFAULT: TRUE
-#' @param gofProp Overrides value in list. Proportion (0:1) of highest values in
-#'                \code{dat} to compute goodness of fit (dist / ecdf) with.
-#'                 This enables to focus on the dist tail
 #' @param plot Call \code{\link{distLgofPlot}}? DEFAULT: TRUE
 #' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n > 200
 #' @param ks Include ks.test results in \code{dlf$gof}?
@@ -110,7 +81,6 @@
 distLgof <- function(
 dlf,
 order=TRUE,
-gofProp,
 plot=TRUE,
 progbars=length(dlf$dat)>200,
 ks=TRUE,
@@ -122,9 +92,6 @@ quiet=FALSE,
 # Progress bars
 if(quiet) progbars <- FALSE
 if(progbars) lapply <- pbapply::pblapply
-# gofProp overwrite and check:
-if(!missing(gofProp)) dlf$gofProp <- gofProp
-if(length(dlf$gofProp)>1 | any(dlf$gofProp<0) | any(dlf$gofProp>1) ) stop("gofProp must be a single value between 0 and 1.")
 dn <- names(dlf$parameter)
 # Error check:
 exclude <- sapply(dlf$parameter, function(x) 
@@ -161,8 +128,8 @@ if(ks)
   ksD <- sapply(ksA, function(x) x$statistic )
   names(ksD) <- dn
   }
-# CDFS for R2 on upper gofProp of data:
-dat2 <- sort(dlf$dat, decreasing=TRUE)[  1:(dlf$gofProp*length(dlf$dat))  ]
+# CDFS for R2 and RMSE:
+dat2 <- sort(dlf$dat, decreasing=TRUE)
 if(progbars) message("Calculating CDFs:")
 tcdfs <- lapply(dn, function(d) lmomco::plmomco(dat2,dlf$parameter[[d]]))
 names(tcdfs) <- dn # Theoretical CumulatedDensityFunctions

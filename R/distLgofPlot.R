@@ -11,7 +11,7 @@
 #' @examples
 #' # see distLgof
 #' 
-#' @param dlf List as returned by \code{\link{distLfit}}, containing the elements \code{gof, gofProp}
+#' @param dlf List as returned by \code{\link{distLfit}}, containing the element \code{gof}
 #' @param ranks plot ranks by different measures of goodness of fit? DEFAULT: TRUE
 #' @param weights plot weights in second panel? DEFAULT: TRUE
 #' @param nbest Number of distributions plotted by \code{\link{distLplot}}. DEFAULT: NA
@@ -28,7 +28,7 @@
 #' @param \dots Further arguments passed to \code{\link{plot}}.
 #' 
 distLgofPlot <- function(
-dlf, # List as returned by \code{\link{distLfit}}, containing the elements \code{gof, gofProp}
+dlf,
 ranks=TRUE,
 weights=TRUE,
 nbest=NA,
@@ -54,7 +54,6 @@ lty <- rep(lty, length=5)
 lwd <- rep(lwd, length=5)
 # Objects from list:
 gof <- dlf$gof
-gofProp <- dlf$gofProp
 # catch ks=FALSE results:
 ks <- "ksP" %in% colnames(gof)
 if(!ks & !quiet) on.exit(message(
@@ -71,8 +70,7 @@ n <- nrow(Ranks)
 if(ranks)
 {
 main2 <- main
-if(is.null(main2)) main2 <- paste("Ranking of distributions by goodness of fit\n",
-                               "Proportion of data for RMSE/R2 :", gofProp*100, "%")
+if(is.null(main2)) main2 <- paste("Ranking of distributions by goodness of fit")
 #
 if(!add) plot(Ranks[,1], 1:n, type="n", ylab="", xlab="Rank", yaxt="n", main=main2, ...)
 if(!add) axis(2, 1:n, rownames(Ranks), las=2)

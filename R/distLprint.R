@@ -23,7 +23,7 @@ digits=1
 # input checks:
 obj <- deparse(substitute(dlf))
 if(!is.list(dlf)) stop("dlf is not a list")
-must <- c("dat", "dat_full", "datname",  "gofProp", "parameter", "gof", "truncate", "threshold")
+must <- c("dat", "dat_full", "datname", "parameter", "gof", "truncate", "threshold")
 for(i in 1:length(must)) if(!must[i] %in% names(dlf)) warning("dlf must include the element '", must[i], "'.")
 # functions:
 vals <- function(x, signi=FALSE)
@@ -58,7 +58,7 @@ if(any(inparnotgof)) "\n--> dists in parameter but not in gof: ",
 if(any(inparnotgof)) paste(names(dlf$parameter)[inparnotgof], collapse=", "),
 if(any(ingofnotpar)) "\n--> dists in gof but not in parameter: ",
 if(any(ingofnotpar)) paste(rownames(dlf$gof)[ingofnotpar], collapse=", "),
-"\ngofProp: ", dlf$gofProp, ", RMSE min/median/max: ", vals(dlf$gof$RMSE, TRUE),
+"\nRMSE min/median/max: ", vals(dlf$gof$RMSE, TRUE),
 if(qq) paste("\nquant:",nrow(dlf$quant),"rows,",ncol(dlf$quant),"columns,",
             prod(dim(dlf$quant)),"values, of which",sum(is.na(dlf$quant)),"NA."),
 if(CD) paste("\n", length(dlf$coldist),"distribution colors:", toString(dlf$coldist)),

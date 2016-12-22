@@ -17,6 +17,17 @@ Any feedback is welcome, per email or on github.com/brry/extremeStat
 ---------------------------------------
 
 
+Version 1.. (2017-)
+For complete log, see https://github.com/brry/extremeStat/commits/master
+Package thoroughly cleaned up:
+- gofProp option completely removed (POT support is very good now)
+- 
+
+
+---------------------------------------
+---------------------------------------
+
+
 Version 0.6.0 (2016-12-12)
 For complete log, see https://github.com/brry/extremeStat/commits/master
 - several lmomco changes reflected
