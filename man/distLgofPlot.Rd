@@ -4,39 +4,22 @@
 \alias{distLgofPlot}
 \title{Distribution rank comparison}
 \usage{
-distLgofPlot(dlf, ranks = TRUE, weights = TRUE, nbest = NA,
-  order = TRUE, add = FALSE, type = "o", col = c(1:3, 8, 4),
-  pch = c(1:4, NA), lty = 1, lwd = 1, legargs = NULL, quiet = FALSE,
-  main = NULL, ...)
+distLgofPlot(dlf, type = "o", col = RColorBrewer::brewer.pal(5, "Set2"),
+  pch = c(1:4, NA), lty = 1, lwd = 1, legargs = NULL,
+  main = "Distribution function GOF and weights", xlab = "Weight",
+  ylab = "", xlim = range(gof[, grep("weight", colnames(gof))], na.rm =
+  TRUE), ...)
 }
 \arguments{
 \item{dlf}{List as returned by \code{\link{distLfit}}, containing the element \code{gof}}
 
-\item{ranks}{plot ranks by different measures of goodness of fit? DEFAULT: TRUE}
+\item{type, col, pch, lty, lwd}{Vectors with 5 values for line customization. Recycled if necessary.}
 
-\item{weights}{plot weights in second panel? DEFAULT: TRUE}
+\item{legargs}{List of arguments passed to \code{\link{legend}}, like cex, bg, etc.}
 
-\item{nbest}{Number of distributions plotted by \code{\link{distLplot}}. DEFAULT: NA}
+\item{main, xlab, ylab}{plot title and axis labels}
 
-\item{order}{If TRUE, the best distribution is at the top. False to compare across different dlfs. DEFAULT: TRUE}
-
-\item{add}{If TRUE, just the lines and legend are added to an existing plot. DEFAULT: FALSE}
-
-\item{type}{type of line-point combination as in \code{\link{plot}}. DEFAULT: "o"}
-
-\item{col}{Vector with 3 values for line customization. Recycled if necessary. DEFAULT: c(1,3,4)}
-
-\item{pch}{Vector with 3 values for line customization. Recycled if necessary. DEFAULT: 1:3}
-
-\item{lty}{Vector with 3 values for line customization. Recycled if necessary. DEFAULT: 1}
-
-\item{lwd}{Vector with 3 values for line customization. Recycled if necessary. DEFAULT: 1}
-
-\item{legargs}{List of arguments passed to \code{\link{legend}} if weights=TRUE, like cex, bg, etc.}
-
-\item{quiet}{Suppress notes? DEFAULT: FALSE}
-
-\item{main}{plot titles. DEFAULT: NULL}
+\item{xlim}{Range of x axis. DEFAULT: range(gof$weight*)}
 
 \item{\dots}{Further arguments passed to \code{\link{plot}}.}
 }

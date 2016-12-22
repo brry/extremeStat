@@ -1,19 +1,14 @@
 Package: extremeStat
 Type: Package
 Title: Extreme Value Statistics and Quantile Estimation
-Version: 1.0.0
+Version: 1.0.1
 Date: 2016-12-22
 Imports:
     lmomco (>= 2.2.5),
     berryFunctions (>= 1.13.0),
-    pbapply,
+    pbapply, RColorBrewer,
     grDevices, graphics, methods, stats, utils, 
-    evir,
-    ismev,
-    fExtremes,
-    extRemes,
-    evd,
-    Renext
+    evir, ismev, fExtremes, extRemes, evd, Renext
 Author: Berry Boessenkool
 Maintainer: Berry Boessenkool <berry-b@gmx.de>
 Description: Code to fit, plot and compare several (extreme value)
@@ -22,7 +17,5 @@ Description: Code to fit, plot and compare several (extreme value)
 License: GPL (>= 2)
 URL: https://github.com/brry/extremeStat
 RoxygenNote: 5.0.1
-Suggests: testthat,
-    knitr,
-    rmarkdown
+Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
