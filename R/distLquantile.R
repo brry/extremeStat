@@ -35,7 +35,7 @@
 #' # compare General Pareto Fitting methods
 #' # Theoretically, the tails of distributions converge to GPD (General Pareto)
 #' # q_gpd compares several R packages for fitting and quantile estimation:
-#' dlq <- distLquantile(annMax, weight=FALSE, quiet=TRUE, probs=0.97, returnlist=TRUE)
+#' dlq <- distLquantile(annMax, weighted=FALSE, quiet=TRUE, probs=0.97, returnlist=TRUE)
 #' dlq$quant
 #' distLplot(dlq, qlines=TRUE) # per default best fitting distribution functions
 #' distLplot(dlq, qlines=TRUE, qrow=c("wak","GPD*"), nbest=14)
@@ -131,6 +131,7 @@
 #' @param threshold POT cutoff value. If you want correct percentiles, 
 #'                  set this only via truncate, see Details of \code{\link{q_gpd}}. 
 #'                  DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
+#' @param weightc   Custom weights, see \code{\link{distLweights}}. DEFAULT: NA
 #' @param sanerange Range outside of which results should be changed to \code{sanevals}.
 #'                  This can capture numerical errors in small samples
 #'                  (notably GPD_MLE_extRemes). If NA, this is ignored. Attention
@@ -177,6 +178,7 @@ x=NULL,
 probs=c(0.8,0.9,0.99),
 truncate=0,
 threshold=berryFunctions::quantileMean(dlf$dat_full, truncate),
+weightc=NA,
 sanerange=NA,
 sanevals=NA,
 selection=NULL,
@@ -397,25 +399,7 @@ if(!all(is.na(sanerange)))
   }
 }
 # Weighted quantile estimates: -------------------------------------------------
-if(weighted)
-  {
-  Qweighted <- function(Weightnr)
-    {
-    sapply(1:ncol(output), function(col_n)
-      {
-      vals <- output[rownames(dlf$gof), col_n]
-      if(!any(is.finite(vals))) return(NA)
-      weights <- dlf$gof[,Weightnr]
-      if(!any(is.finite(weights))) return(NA)
-      weights <- weights/sum(weights, na.rm=TRUE) # rescale to 1
-      sum((vals*weights)[is.finite(vals)&is.finite(weights)])
-      })
-    }
-  output["weighted1",] <- Qweighted("weight1")
-  output["weighted2",] <- Qweighted("weight2")
-  output["weighted3",] <- Qweighted("weight3")
-  output["weightedc",] <- Qweighted("weightc")
-  }
+if(weighted) output <-  q_weighted(output, distLweights(dlf$gof, weightc=weightc))
 #
 dlf$quant <- output
 # Plotting: Quantile lines: ----------------------------------------------------

@@ -6,8 +6,8 @@
 \usage{
 distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
   threshold = berryFunctions::quantileMean(dlf$dat_full, truncate),
-  sanerange = NA, sanevals = NA, selection = NULL, dlf = NULL,
-  order = TRUE, returnlist = FALSE, empirical = TRUE,
+  weightc = NA, sanerange = NA, sanevals = NA, selection = NULL,
+  dlf = NULL, order = TRUE, returnlist = FALSE, empirical = TRUE,
   weighted = empirical, gpd = empirical, addinfo = FALSE, speed = TRUE,
   plot = FALSE, plotargs = NULL, quiet = FALSE, ssquiet = quiet,
   ttquiet = quiet, ...)
@@ -25,6 +25,8 @@ Probabilities are adjusted accordingly. DEFAULT: 0}
 \item{threshold}{POT cutoff value. If you want correct percentiles, 
 set this only via truncate, see Details of \code{\link{q_gpd}}. 
 DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
+
+\item{weightc}{Custom weights, see \code{\link{distLweights}}. DEFAULT: NA}
 
 \item{sanerange}{Range outside of which results should be changed to \code{sanevals}.
 This can capture numerical errors in small samples
@@ -114,7 +116,7 @@ distLquantile(annMax, probs=0.95, plot=TRUE, qlinargs=list(lwd=3), nbest=5, brea
 # compare General Pareto Fitting methods
 # Theoretically, the tails of distributions converge to GPD (General Pareto)
 # q_gpd compares several R packages for fitting and quantile estimation:
-dlq <- distLquantile(annMax, weight=FALSE, quiet=TRUE, probs=0.97, returnlist=TRUE)
+dlq <- distLquantile(annMax, weighted=FALSE, quiet=TRUE, probs=0.97, returnlist=TRUE)
 dlq$quant
 distLplot(dlq, qlines=TRUE) # per default best fitting distribution functions
 distLplot(dlq, qlines=TRUE, qrow=c("wak","GPD*"), nbest=14)
