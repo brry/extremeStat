@@ -1,10 +1,9 @@
-% edited by hand because of Roxygen bug (unicode escape)  m<U+00B3>/s  to  m\U00B3/s
-
-\name{distLextremePlot}
-\alias{distLextremePlot}
+% manually unicode in usage m\U00B3/s
+\name{plotLextreme}
+\alias{plotLextreme}
 \title{Plot extreme value statistics}
 \usage{
-distLextremePlot(dlf, selection = NULL, order = FALSE, add = FALSE,
+plotLextreme(dlf, selection = NULL, order = FALSE, add = FALSE,
   nbest = 5, log = FALSE, xlim = NULL, ylim = NULL, las = 1,
   main = dlf$datname, xlab = "Return Period RP  [a]",
   ylab = "Discharge HQ  [m\U00B3/s]", PPcol = "black", PPpch = c(16, 3),
@@ -81,7 +80,7 @@ This is an auxiliary graphing function to \code{\link{distLextreme}}
 Berry Boessenkool, \email{berry-b@gmx.de}, March 2015, updated heavily Aug 2015
 }
 \seealso{
-\code{\link{distLextreme}}, \code{\link{distLplot}}
+\code{\link{distLextreme}}, \code{\link{plotLfit}}
 }
 \keyword{distribution}
 \keyword{dplot}

@@ -12,7 +12,7 @@
 #'       span the whole data range. Instead the outside support regions get NAs that
 #'       are then detected by rmse and rsquare. I plan to fix this with WHA's new supdist.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014 + July 2015
-#' @seealso \code{\link{distLweights}}, \code{\link{distLgofPlot}}, \code{\link{distLfit}} 
+#' @seealso \code{\link{distLweights}}, \code{\link{plotLgof}}, \code{\link{distLfit}} 
 #'     More complex estimates of quality of fits:
 #'     Fard, M.N.P. and Holmquist, B. (2013, Chilean Journal of Statistics): 
 #'     Powerful goodness-of-fit tests for the extreme value distribution.
@@ -30,7 +30,7 @@
 #' 
 #' # Goodness of Fit is measured by RMSE of cumulated distribution function and ?ecdf
 #' dlf <- distLfit(annMax, cdf=TRUE, nbest=17)
-#' distLplot(dlf, cdf=TRUE, sel=c("wak", "revgum"))
+#' plotLfit(dlf, cdf=TRUE, sel=c("wak", "revgum"))
 #' dlf$gof
 #' x <- sort(annMax)
 #' segments(x0=x, y0=plmomco(x, dlf$parameter$revgum), y1=ecdf(annMax)(x), col=2)
@@ -39,7 +39,7 @@
 #' # RMSE: root of average of ( errors squared )  ,   errors = line distances
 #' 
 #' # weights by three different weighting schemes
-#' distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
+#' plotLgof(dlf)
 #' distLgof(dlf, ks=TRUE, plot=FALSE)$gof
 #' 
 #' # Kolmogorov-Smirnov Tests return slightly different values:
@@ -53,14 +53,12 @@
 #' 
 #' \dontrun{ ## to save CRAN check computing time
 #' 
-#' dev.new()
-#' distLplot(dlf, cdf=TRUE, sel=c("pe3", "rice", "revgum"), order=T)
+#' plotLfit(dlf, cdf=TRUE, sel=c("pe3", "rice", "revgum"), order=T)
 #' x <- sort(annMax, decreasing=TRUE)[  1:(0.5*length(annMax))  ]
 #' tcdfs <- plmomco(x,dlf$parameter[["revgum"]])
 #' ecdfs <- ecdf(annMax)(x) # Empirical CDF
 #' plot(x, tcdfs, type="o", col=2)
 #' points(x, ecdfs)
-#' dev.new()
 #' linReg(tcdfs, ecdfs, type="o")
 #' abline(a=0,b=1, lty=3)
 #' 
@@ -70,13 +68,13 @@
 #'            \code{dat, datname, parameter}
 #' @param order Sort output$gof by RMSE? If FALSE, the order of appearance in 
 #'              selection (or dlf$parameter) is kept. DEFAULT: TRUE
-#' @param plot Call \code{\link{distLgofPlot}}? DEFAULT: TRUE
+#' @param plot Call \code{\link{plotLgof}}? DEFAULT: TRUE
 #' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n > 200
 #' @param ks Include ks.test results in \code{dlf$gof}?
 #'            Computing is much faster when FALSE. DEFAULT: TRUE
 #' @param weightc Custom weights, see \code{\link{distLweights}}. DEFAULT: NA
 #' @param quiet Suppress notes? DEFAULT: FALSE
-#' @param \dots Further arguments passed to \code{\link{distLgofPlot}}
+#' @param \dots Further arguments passed to \code{\link{plotLgof}}
 #' 
 distLgof <- function(
 dlf,
@@ -172,7 +170,7 @@ if(order) gof <- gof[ order(RMSE), ]
 gof <- cbind(gof, distLweights(RMSE, order=order, weightc=weightc))
 # output:
 dlf$gof <- gof
-if(plot) distLgofPlot(dlf, quiet=quiet, ...)
+if(plot) plotLgof(dlf, quiet=quiet, ...)
 dlf
 } # end of function
 

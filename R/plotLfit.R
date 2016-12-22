@@ -47,7 +47,7 @@
 #' @param qlinargs Arguments passed to \code{\link{lines}} for qlines. DEFAULT: NULL
 #' @param \dots Further arguments passed to \code{\link{lines}}, like type, pch, ...
 #' 
-distLplot <- function(
+plotLfit <- function(
 dlf,
 nbest=5,
 selection=NULL,
@@ -155,7 +155,7 @@ if(qlines) if(!is.null(qrow)) dn <- dnqrow[dnqrow %in% rownames(dlf$gof)]
 coldist <- rep(coldist, length=nbest)  # recycle 1
 if(length(dlf$parameter)<1)
   {
-  message("Note in distLplot: no distributions were available in dlf$parameter.")
+  message("Note in plotLfit: no distributions were available in dlf$parameter.")
   dlf$coldist <- coldist
   return(invisible(dlf))
   }

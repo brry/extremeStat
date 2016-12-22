@@ -70,9 +70,9 @@ DEFAULT: FALSE}
 Don't accidentally set this to \code{FALSE} in simulations or 
 with large datasets! DEFAULT: TRUE}
 
-\item{plot}{Should \code{\link{distLplot}} be called? DEFAULT: FALSE}
+\item{plot}{Should \code{\link{plotLfit}} be called? DEFAULT: FALSE}
 
-\item{plotargs}{List of arguments to be passed to \code{\link{distLplot}} 
+\item{plotargs}{List of arguments to be passed to \code{\link{plotLfit}} 
 like qlines, qheights, qrow, qlinargs, nbest, cdf, ...}
 
 \item{quiet}{Suppress notes? DEFAULT: FALSE}
@@ -82,8 +82,7 @@ like qlines, qheights, qrow, qlinargs, nbest, cdf, ...}
 \item{ttquiet}{Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} 
 is called with ttquiet=TRUE. DEFAULT: quiet}
 
-\item{\dots}{Arguments passed to \code{\link{distLfit}}
-(and \code{\link{distLplot}} if plot=TRUE).}
+\item{\dots}{Arguments passed to \code{\link{distLfit}}}
 }
 \value{
 Matrix with distribution quantile values (with NAs for probs below truncate), \cr
@@ -118,10 +117,10 @@ distLquantile(annMax, probs=0.95, plot=TRUE, qlinargs=list(lwd=3), nbest=5, brea
 # q_gpd compares several R packages for fitting and quantile estimation:
 dlq <- distLquantile(annMax, weighted=FALSE, quiet=TRUE, probs=0.97, returnlist=TRUE)
 dlq$quant
-distLplot(dlq, qlines=TRUE) # per default best fitting distribution functions
-distLplot(dlq, qlines=TRUE, qrow=c("wak","GPD*"), nbest=14)
+plotLfit(dlq, qlines=TRUE) # per default best fitting distribution functions
+plotLfit(dlq, qlines=TRUE, qrow=c("wak","GPD*"), nbest=14)
 #pdf("dummy.pdf", width=9)
-distLplot(dlq, qlines=TRUE, qrow="GPD*", nbest=13, xlim=c(102,110), 
+plotLfit(dlq, qlines=TRUE, qrow="GPD*", nbest=13, xlim=c(102,110), 
           qlinargs=list(lwd=3), qheights=seq(0.02, 0.005, len=14))
 #dev.off()
 
@@ -139,7 +138,7 @@ q3 <- distLquantile(x3, sanerange=c(0,500), sanevals=c(NA,500))
 
 # weighted distribution quantiles are calculated by different weighting schemes:
 dlf <- distLfit(annMax)
-distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
+plotLgof(dlf)
 
 # If speed is important and parameters are already available, pass them via dlf:
 distLquantile(dlf=dlf, probs=0:5/5, selection=c("wak","gev","kap"), order=FALSE)

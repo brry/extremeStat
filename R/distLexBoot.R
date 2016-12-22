@@ -1,6 +1,6 @@
 #' Bootstrapping uncertainty intervals for return periods
 #' 
-#' Calculates and plots bootstrap uncertainty intervals for \code{\link{distLextremePlot}}.
+#' Calculates and plots bootstrap uncertainty intervals for \code{\link{plotLextreme}}.
 #'
 #' @details Has not been thoroughly tested yet. Bootstrapping defaults can probably be improved.
 #' 
@@ -17,7 +17,7 @@
 #' dlf <- distLextreme(annMax, log=TRUE, selection=c("wak","gum","gev","nor"))
 #' dleB <- distLexBoot(dlf, nbest=4, conf.lev=0.5, n=10) # n low for quick example tests
 #' 
-#' @param dlf \code{dlf} object, as returned by \code{\link{distLextreme}}, is passed to \code{\link{distLextremePlot}}.
+#' @param dlf \code{dlf} object, as returned by \code{\link{distLextreme}}, is passed to \code{\link{plotLextreme}}.
 #' @param nbest Number of best fitted distribution functions in dlf for which bootstrapping is to be done. Overriden by \code{selection}. DEFAULT: 3
 #' @param selection Character vector with distribution function names to be used. Suggested to keep this low. DEFAULT: NULL
 #' @param truncate Truncation of subsamples, see \code{\link{distLquantile}}. DEFAULT: 0
@@ -26,11 +26,11 @@
 #' @param returnall Return all simulations, instead of the aggregate confidence level? DEFAULT: FALSE
 #' @param conf.lev Confidence level (Proportion of subsamples within 'confidence interval'). Quantiles extracted from this value are passed to \code{\link[berryFunctions]{quantileMean}}. DEFAULT: 0.95
 #' @param RPs Return Period vector, by default calculated internally based on log. DEFAULT: NULL
-#' @param plot Plot results via \code{\link{distLextremePlot}}? DEFAULT: TRUE
+#' @param plot Plot results via \code{\link{plotLextreme}}? DEFAULT: TRUE
 #' @param add Add to existing plot? DEFAULT: FALSE
 #' @param log Plot on a logarithmic axis. DEFAULT: TRUE
 #' @param progbars Show progress bar for Monte Carlo simulation? DEFAULT: TRUE
-#' @param \dots Further arguments passed to \code{\link{distLextremePlot}}
+#' @param \dots Further arguments passed to \code{\link{plotLextreme}}
 #' 
 distLexBoot <- function(
 dlf,
@@ -73,7 +73,7 @@ quant <- c(0+quant, 1-quant)
 returnCI <- lapply(returnlev2, function(x)
        apply(x, MARGIN=1, FUN=berryFunctions::quantileMean, probs=quant, na.rm=TRUE))
 # Plotting
-if(plot & !add) distLextremePlot(dlf=dlf, selection=selection, nbest=nbest, log=log)
+if(plot & !add) plotLextreme(dlf=dlf, selection=selection, nbest=nbest, log=log)
 if(plot) for(i in length(returnCI):1)
 berryFunctions::ciBand(yu=returnCI[[i]][2,], yl=returnCI[[i]][1,], x=RPs, add=TRUE, colm=dlf$coldist[i], nastars=FALSE)
 # Output

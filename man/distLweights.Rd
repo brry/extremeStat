@@ -77,7 +77,7 @@ par(op)
 cw <- c("gpa"=7, "gev"=3, "wak"=6, "wei"=4, "kap"=3.5, "gum"=3, "ray"=2.1,
         "ln3"=2, "pe3"=2.5, "gno"=4, "gam"=5)
 dlf <- distLfit(annMax, plot=FALSE, weightc=cw)
-distLgofPlot(dlf, ranks=TRUE)
+plotLgof(dlf)
 
 
 }

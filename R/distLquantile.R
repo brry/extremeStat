@@ -37,10 +37,10 @@
 #' # q_gpd compares several R packages for fitting and quantile estimation:
 #' dlq <- distLquantile(annMax, weighted=FALSE, quiet=TRUE, probs=0.97, returnlist=TRUE)
 #' dlq$quant
-#' distLplot(dlq, qlines=TRUE) # per default best fitting distribution functions
-#' distLplot(dlq, qlines=TRUE, qrow=c("wak","GPD*"), nbest=14)
+#' plotLfit(dlq, qlines=TRUE) # per default best fitting distribution functions
+#' plotLfit(dlq, qlines=TRUE, qrow=c("wak","GPD*"), nbest=14)
 #' #pdf("dummy.pdf", width=9)
-#' distLplot(dlq, qlines=TRUE, qrow="GPD*", nbest=13, xlim=c(102,110), 
+#' plotLfit(dlq, qlines=TRUE, qrow="GPD*", nbest=13, xlim=c(102,110), 
 #'           qlinargs=list(lwd=3), qheights=seq(0.02, 0.005, len=14))
 #' #dev.off()
 #'
@@ -58,7 +58,7 @@
 #' 
 #' # weighted distribution quantiles are calculated by different weighting schemes:
 #' dlf <- distLfit(annMax)
-#' distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
+#' plotLgof(dlf)
 #' 
 #' # If speed is important and parameters are already available, pass them via dlf:
 #' distLquantile(dlf=dlf, probs=0:5/5, selection=c("wak","gev","kap"), order=FALSE)
@@ -163,15 +163,14 @@
 #' @param speed Compute \code{\link{q_gpd}} only for fast methods? 
 #'              Don't accidentally set this to \code{FALSE} in simulations or 
 #'              with large datasets! DEFAULT: TRUE
-#' @param plot Should \code{\link{distLplot}} be called? DEFAULT: FALSE
-#' @param plotargs List of arguments to be passed to \code{\link{distLplot}} 
+#' @param plot Should \code{\link{plotLfit}} be called? DEFAULT: FALSE
+#' @param plotargs List of arguments to be passed to \code{\link{plotLfit}} 
 #'                 like qlines, qheights, qrow, qlinargs, nbest, cdf, ...
 #' @param quiet Suppress notes? DEFAULT: FALSE
 #' @param ssquiet Suppress sample size notes? DEFAULT: quiet
 #' @param ttquiet Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} 
 #'                is called with ttquiet=TRUE. DEFAULT: quiet
 #' @param \dots Arguments passed to \code{\link{distLfit}}
-#'              (and \code{\link{distLplot}} if plot=TRUE).
 #'
 distLquantile <- function(
 x=NULL,
@@ -403,7 +402,7 @@ if(weighted) output <-  q_weighted(output, distLweights(dlf$gof, weightc=weightc
 #
 dlf$quant <- output
 # Plotting: Quantile lines: ----------------------------------------------------
-if(plot) do.call(distLplot, berryFunctions::owa(c(list(dlf=dlf, qlines=TRUE),
+if(plot) do.call(plotLfit, berryFunctions::owa(c(list(dlf=dlf, qlines=TRUE),
                                                          list(...)), plotargs))
 # return output: ---------------------------------------------------------------
 if(returnlist) return(dlf) else return(output)

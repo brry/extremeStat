@@ -14,7 +14,7 @@ distLgof(dlf, order = TRUE, plot = TRUE, progbars = length(dlf$dat) > 200,
 \item{order}{Sort output$gof by RMSE? If FALSE, the order of appearance in 
 selection (or dlf$parameter) is kept. DEFAULT: TRUE}
 
-\item{plot}{Call \code{\link{distLgofPlot}}? DEFAULT: TRUE}
+\item{plot}{Call \code{\link{plotLgof}}? DEFAULT: TRUE}
 
 \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n > 200}
 
@@ -25,7 +25,7 @@ Computing is much faster when FALSE. DEFAULT: TRUE}
 
 \item{quiet}{Suppress notes? DEFAULT: FALSE}
 
-\item{\dots}{Further arguments passed to \code{\link{distLgofPlot}}}
+\item{\dots}{Further arguments passed to \code{\link{plotLgof}}}
 }
 \value{
 List as explained in \code{\link{extremeStat}}. The added element is gof,\cr
@@ -50,7 +50,7 @@ data(annMax)
 
 # Goodness of Fit is measured by RMSE of cumulated distribution function and ?ecdf
 dlf <- distLfit(annMax, cdf=TRUE, nbest=17)
-distLplot(dlf, cdf=TRUE, sel=c("wak", "revgum"))
+plotLfit(dlf, cdf=TRUE, sel=c("wak", "revgum"))
 dlf$gof
 x <- sort(annMax)
 segments(x0=x, y0=plmomco(x, dlf$parameter$revgum), y1=ecdf(annMax)(x), col=2)
@@ -59,7 +59,7 @@ plot(ecdf(annMax), add=TRUE)
 # RMSE: root of average of ( errors squared )  ,   errors = line distances
 
 # weights by three different weighting schemes
-distLgofPlot(dlf, ranks=FALSE, weights=TRUE)
+plotLgof(dlf)
 distLgof(dlf, ks=TRUE, plot=FALSE)$gof
 
 # Kolmogorov-Smirnov Tests return slightly different values:
@@ -73,14 +73,12 @@ pairs(dlf$gof[,1:3]) # measures of goodness of fit are correlated quite well her
 
 \dontrun{ ## to save CRAN check computing time
 
-dev.new()
-distLplot(dlf, cdf=TRUE, sel=c("pe3", "rice", "revgum"), order=T)
+plotLfit(dlf, cdf=TRUE, sel=c("pe3", "rice", "revgum"), order=T)
 x <- sort(annMax, decreasing=TRUE)[  1:(0.5*length(annMax))  ]
 tcdfs <- plmomco(x,dlf$parameter[["revgum"]])
 ecdfs <- ecdf(annMax)(x) # Empirical CDF
 plot(x, tcdfs, type="o", col=2)
 points(x, ecdfs)
-dev.new()
 linReg(tcdfs, ecdfs, type="o")
 abline(a=0,b=1, lty=3)
 
@@ -91,7 +89,7 @@ abline(a=0,b=1, lty=3)
 Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014 + July 2015
 }
 \seealso{
-\code{\link{distLweights}}, \code{\link{distLgofPlot}}, \code{\link{distLfit}} 
+\code{\link{distLweights}}, \code{\link{plotLgof}}, \code{\link{distLfit}} 
     More complex estimates of quality of fits:
     Fard, M.N.P. and Holmquist, B. (2013, Chilean Journal of Statistics): 
     Powerful goodness-of-fit tests for the extreme value distribution.

@@ -23,13 +23,13 @@ distLextreme(dat, dlf = NULL, selection = NULL, truncate = 0, RPs = c(2,
 
 \item{time}{\code{\link{message}} execution time? DEFAULT: TRUE}
 
-\item{plot}{Should the return periods and nbest fitted distributions be plotted by a call to \code{\link{distLextremePlot}}? DEFAULT: TRUE}
+\item{plot}{Should the return periods and nbest fitted distributions be plotted by a call to \code{\link{plotLextreme}}? DEFAULT: TRUE}
 
 \item{fitargs}{List of arguments passed to \code{\link{distLfit}}. DEFAULT: NULL}
 
 \item{quiet}{Suppress notes and progbars? DEFAULT: FALSE}
 
-\item{\dots}{Further arguments passed to \code{\link{distLextremePlot}} like order, lty, lwd, ...}
+\item{\dots}{Further arguments passed to \code{\link{plotLextreme}} like order, lty, lwd, ...}
 }
 \value{
 List as explained in \code{\link{extremeStat}}. The added element is
@@ -43,7 +43,7 @@ parameters of several distributions (fit based on linear moments),
 quality of fits, plot with linear axis (dists + plotting positions by Weibull and Gringorton).
 }
 \details{
-\code{\link{distLextremePlot}} adds weibull and gringorton plotting positions
+\code{\link{plotLextreme}} adds weibull and gringorton plotting positions
 to the distribution lines, which are estimated from the linear moments of the data itself.\cr
 I personally believe that if you have, say, 35 values in \code{dat},
 the highest return period should be around 36 years (Weibull) and not 60 (Gringorton).\cr
@@ -71,7 +71,7 @@ dle <- distLextreme(annMax, log=TRUE)
 
 # Object structure:
 str(dle, max.lev=2)
-distLprint(dle)
+printL(dle)
 
 # discharge levels for default return periods:
 dle$returnlev
@@ -81,7 +81,7 @@ Q80 <- distLextreme(dlf=dle, RPs=80)$returnlev
 round(sort(Q80[,1], decr=TRUE),1)
 # 99 to 143 m^3/s can make a relevant difference in engineering!
 # That's why the rows weighted by GOF are helpful! Weights are given as in
-distLgofPlot(dle, ranks=FALSE) # See also section weighted mean below
+plotLgof(dle) # See also section weighted mean below
 # For confidence intervals see distLexBoot
 
 
@@ -94,11 +94,11 @@ sort(1/(1-sapply(dle$parameter, plmomco, x=120) )  )[1:13]
 
 
 # Advanced options -------------------------------------------------------------
-distLextremePlot(dlf=dle)
+plotLextreme(dlf=dle)
 # Line colors / select distributions to be plotted:
-distLextremePlot(dle, nbest=17, coldist=heat.colors(17), lty=1:5) # lty is recycled
-distLextremePlot(dle, selection=c("gev", "gam", "gum"), coldist=4:6, PPcol=3, lty=3:2)
-distLextremePlot(dle, selection=c("gpa","glo","wei","exp"), pch=c(NA,NA,6,8), 
+plotLextreme(dle, nbest=17, coldist=heat.colors(17), lty=1:5) # lty is recycled
+plotLextreme(dle, selection=c("gev", "gam", "gum"), coldist=4:6, PPcol=3, lty=3:2)
+plotLextreme(dle, selection=c("gpa","glo","wei","exp"), pch=c(NA,NA,6,8), 
                  order=TRUE, cex=c(1,0.6, 1,1), log=TRUE, PPpch=c(16,NA), n_pch=20)
 # use n_pch to say how many points are drawn per line (important for linear axis) 
 
@@ -107,12 +107,12 @@ distLextremePlot(dle, selection=c("gpa","glo","wei","exp"), pch=c(NA,NA,6,8),
 ## the condition has length > 1 and only the first element will be used
 # apparently, warnings do not get passed from one function to the next...
 
-distLextremePlot(dle, legarg=list(cex=0.5, x="bottom", box.col="red", col=3))
+plotLextreme(dle, legarg=list(cex=0.5, x="bottom", box.col="red", col=3))
 # col in legarg list is (correctly) ignored
 \dontrun{
 ## Excluded from package R CMD check because it's time consuming
 
-distLextremePlot(dle, PPpch=c(1,NA)) # only Weibull plotting positions
+plotLextreme(dle, PPpch=c(1,NA)) # only Weibull plotting positions
 # add different dataset to existing plot:
 distLextreme(Nile/15, add=TRUE, PPpch=NA, coldist=1, selection="wak", legend=FALSE)
 
@@ -123,14 +123,14 @@ distLextreme(Nile, log=TRUE, nbest=8)
 
 # weighted mean based on Goodness of fit (GOF) ---------------------------------
 # Add discharge weighted average estimate continuously:
-distLextremePlot(dle, nbest=17, legend=FALSE)
+plotLextreme(dle, nbest=17, legend=FALSE)
 abline(h=115.6, v=50)
 RP <- seq(1, 70, len=100)
 DischargeEstimate <- distLextreme(dlf=dle, RPs=RP, plot=FALSE)$returnlev
 lines(RP, DischargeEstimate["weighted2",], lwd=3, col="orange") 
 
 # Or, on log scale:
-distLextremePlot(dle, nbest=17, legend=FALSE, log=TRUE)
+plotLextreme(dle, nbest=17, legend=FALSE, log=TRUE)
 abline(h=115.9, v=50)
 RP <- unique(round(logSpaced(min=1, max=70, n=200, plot=FALSE),2))
 DischargeEstimate <- distLextreme(dlf=dle, RPs=RP, plot=FALSE)$returnlev
@@ -150,7 +150,7 @@ Qmax <- tapply(Q$discharge, format(Q$date,"\%Y"), max)
 distLextreme(Qmax, quiet=TRUE)
 Qmin <- tapply(Q$discharge, format(Q$date,"\%Y"), min)
 dle <- distLextreme(-Qmin, quiet=TRUE, RPs=c(2,5,10,20,50,100,200,500))
-distLextremePlot(dle, ylim=c(0,-31), yaxs="i", yaxt="n", ylab="Q annual minimum", nbest=14)
+plotLextreme(dle, ylim=c(0,-31), yaxs="i", yaxt="n", ylab="Q annual minimum", nbest=14)
 axis(2, -(0:3*10), 0:3*10, las=1)
 -dle$returnlev[c(1:14,21), ]
 # Some distribution functions are an obvious bad choice for this, so I use

@@ -6,7 +6,7 @@
 #' 
 #' @return none, plots things.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March 2015, updated heavily Aug 2015
-#' @seealso \code{\link{distLextreme}}, \code{\link{distLplot}}
+#' @seealso \code{\link{distLextreme}}, \code{\link{plotLfit}}
 #' @keywords hplot dplot distribution
 #' @export
 #' @importFrom berryFunctions rainbow2 owa logAxis
@@ -42,7 +42,7 @@
 #' @param quiet Suppress notes? DEFAULT: FALSE
 #' @param \dots Further arguments passed to \code{\link{plot}} like yaxt="n", ...
 #' 
-distLextremePlot <- function(
+plotLextreme <- function(
 dlf,
 selection=NULL,
 order=FALSE,

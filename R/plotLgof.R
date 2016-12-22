@@ -19,7 +19,7 @@
 #' @param xlim Range of x axis. DEFAULT: range(gof$weight*)
 #' @param \dots Further arguments passed to \code{\link{plot}}.
 #' 
-distLgofPlot <- function(
+plotLgof <- function(
 dlf,
 type="o",
 col=RColorBrewer::brewer.pal(5,"Set2"),#c("#66C2A5", "#FC8D62", "#E78AC3",8,4),

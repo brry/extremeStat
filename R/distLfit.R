@@ -3,12 +3,12 @@
 #' Fit several distributions via linear moments, plot histogram and
 #' distribution densities \emph{or} ecdf with cumulated probability.
 #' Also returns goodness of fit values.
-#' This is the main fitting function calling   distLgof   and   distLgofPlot or distLplot
+#' This is the main fitting function calling   distLgof
 #'
 #' @details Fits parameters via \code{\link[lmomco]{lmom2par}} in the package \code{lmomco}
 #' @return List as explained in \code{\link{extremeStat}}.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014 + July 2015
-#' @seealso \code{\link{distLgof}}, \code{\link{distLplot}}.
+#' @seealso \code{\link{distLgof}}, \code{\link{plotLfit}}.
 #'          \code{\link[extRemes]{fevd}} in the package \code{extRemes},
 #'          \code{\link[MASS]{fitdistr}} in the package \code{MASS}.
 #' @keywords hplot dplot distribution
@@ -22,17 +22,17 @@
 #' # basic usage on real data (annual discharge maxima in Austria)
 #' dlf <- distLfit(annMax)
 #' str(dlf, max.lev=2)
-#' distLprint(dlf)
+#' printL(dlf)
 #' 
 #' # arguments that can be passed:
 #' distLfit(annMax, lty=2, col=3, legargs=list(lwd=3), main="booh!")
 #' set.seed(42)
 #' dlf_b <- distLfit(rbeta(100, 5, 2), nbest=10, legargs=c(x="left"))
-#' distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"))
-#' distLplot(dlf_b, selection=c("gpa", "glo", "gev", "wak"), order=TRUE)
-#' distLplot(dlf_b, coldist=c("orange",3:6), lty=1:3) # lty is recycled
-#' distLplot(dlf_b, cdf=TRUE)
-#' distLplot(dlf_b, cdf=TRUE, histargs=list(do.points=FALSE), sel="nor")
+#' plotLfit(dlf_b, selection=c("gpa", "glo", "gev", "wak"))
+#' plotLfit(dlf_b, selection=c("gpa", "glo", "gev", "wak"), order=TRUE)
+#' plotLfit(dlf_b, coldist=c("orange",3:6), lty=1:3) # lty is recycled
+#' plotLfit(dlf_b, cdf=TRUE)
+#' plotLfit(dlf_b, cdf=TRUE, histargs=list(do.points=FALSE), sel="nor")
 #' 
 #' 
 #' # Goodness of Fit is computed by RMSE, see first example of ?distLgof
@@ -43,14 +43,14 @@
 #' hist(y, breaks=20)
 #' berryFunctions::logHist(y, col=8)
 #' dlf <- distLfit(log10(y), breaks=50)
-#' distLplot(dlf, breaks=50, log=TRUE)
+#' plotLfit(dlf, breaks=50, log=TRUE)
 #' 
 #' \dontrun{
 #' # this takes a while, as it tries to fit all 30 distributions:
 #' d_all <- distLfit(annMax, speed=FALSE, plot=FALSE) # 35 sec
-#' distLprint(d_all)
-#' distLplot(d_all, nbest=22, coldist=grey(1:22/29), xlim=c(20,140))
-#' distLplot(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))
+#' printL(d_all)
+#' plotLfit(d_all, nbest=22, coldist=grey(1:22/29), xlim=c(20,140))
+#' plotLfit(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))
 #' d_all$gof
 #' }
 #' 
@@ -71,7 +71,7 @@
 #' @param histargs List of arguments passed to \code{\link{hist}} except for x, breaks, col, xlim, freq. DEFAULT: NULL
 #' @param quiet Suppress notes? DEFAULT: FALSE
 #' @param ssquiet Suppress sample size notes? DEFAULT: quiet
-#' @param \dots Further arguments passed to \code{\link{distLplot}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...
+#' @param \dots Further arguments passed to \code{\link{plotLfit}} if they are accepted there, else passed to \code{\link{lines}}, like lty, type, pch, ...
 #' 
 distLfit <- function(
 dat,
@@ -162,7 +162,7 @@ output <- distLgof(list(dat=dat, datname=datname, parameter=parameter,
                         truncate=truncate, threshold=threshold, dat_full=dat_full),
                    weightc=weightc, plot=FALSE, progbars=progbars, ks=ks, quiet=quiet, order=order)
 
-if(plot) output <- distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
+if(plot) output <- plotLfit(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
 if(!plot) output$coldist <- berryFunctions::rainbow2(if(is.null(selection)) 5 else length(selection))
 
 if(time & !quiet) on.exit(message("distLfit execution took ", 

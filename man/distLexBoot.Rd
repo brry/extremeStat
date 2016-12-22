@@ -9,7 +9,7 @@ distLexBoot(dlf, nbest = 3, selection = NULL, truncate = 0, n = 100,
   plot = TRUE, add = FALSE, log = TRUE, progbars = TRUE, ...)
 }
 \arguments{
-\item{dlf}{\code{dlf} object, as returned by \code{\link{distLextreme}}, is passed to \code{\link{distLextremePlot}}.}
+\item{dlf}{\code{dlf} object, as returned by \code{\link{distLextreme}}, is passed to \code{\link{plotLextreme}}.}
 
 \item{nbest}{Number of best fitted distribution functions in dlf for which bootstrapping is to be done. Overriden by \code{selection}. DEFAULT: 3}
 
@@ -27,7 +27,7 @@ distLexBoot(dlf, nbest = 3, selection = NULL, truncate = 0, n = 100,
 
 \item{RPs}{Return Period vector, by default calculated internally based on log. DEFAULT: NULL}
 
-\item{plot}{Plot results via \code{\link{distLextremePlot}}? DEFAULT: TRUE}
+\item{plot}{Plot results via \code{\link{plotLextreme}}? DEFAULT: TRUE}
 
 \item{add}{Add to existing plot? DEFAULT: FALSE}
 
@@ -35,13 +35,13 @@ distLexBoot(dlf, nbest = 3, selection = NULL, truncate = 0, n = 100,
 
 \item{progbars}{Show progress bar for Monte Carlo simulation? DEFAULT: TRUE}
 
-\item{\dots}{Further arguments passed to \code{\link{distLextremePlot}}}
+\item{\dots}{Further arguments passed to \code{\link{plotLextreme}}}
 }
 \value{
 A list with (for each selection) a matrix with confidence intervals for RPs, or if returnall=TRUE, all the simulation results
 }
 \description{
-Calculates and plots bootstrap uncertainty intervals for \code{\link{distLextremePlot}}.
+Calculates and plots bootstrap uncertainty intervals for \code{\link{plotLextreme}}.
 }
 \details{
 Has not been thoroughly tested yet. Bootstrapping defaults can probably be improved.

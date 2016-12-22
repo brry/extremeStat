@@ -6,13 +6,23 @@
 \alias{extremeStat-package}
 \title{Extreme value statistics on a linear scale}
 \description{
-Fit (via linear moments), plot (on a linear scale) and compare (by goodness of fit)
-several (extreme value) distributions to estimate discharge at given return periods.\cr
-This package heavily relies on and thankfully acknowledges the package \code{lmomco} by WH Asquith.\cr
+Fit (via L moments), plot (on a linear scale) and compare (by goodness of fit)
+several (extreme value) distributions.
+Compute high quantiles even in small samples and estimate extrema at given return periods.\cr
 Open the \href{https://cran.r-project.org/package=extremeStat/vignettes/extremeStat.html}{Vignette} 
-for an introduction to the package. \code{vignette("extremeStat")}
+for an introduction to the package. \code{vignette("extremeStat")}\cr
+This package heavily relies on and thankfully acknowledges the package \code{lmomco} by WH Asquith.
 }
 \details{
+The main functions in the extremeStat package are:
+\tabular{lll}{
+\code{\link{distLweights}} -> \tab \code{\link{distLgof}} \tab \code{\link{plotLgof}} \cr
+                              \tab \code{\link{distLfit}} \tab \code{\link{plotLfit}} \cr
+\code{\link{q_gpd}}, \code{\link{q_weighted}} \tab \code{\link{distLquantile}} \tab \code{link{plotLquantile}} \cr
+                              \tab \code{\link{distLextreme}} \tab \code{\link{plotLextreme}} \cr
+                              \tab \code{\link{distLexBoot}} \tab \cr
+}
+
 The common object to share between functions is a list (\code{dlf}) with:\cr
 \tabular{ll}{
 \code{dat}       \tab numeric vector with (extreme) values \cr
@@ -21,11 +31,11 @@ The common object to share between functions is a list (\code{dlf}) with:\cr
 \code{gof}       \tab dataframe with 'Goodness of Fit' measures, sorted by RMSE of theoretical and empirical cumulated density\cr
 \code{returnlev} \tab dataframe with values of distributions for given return periods (\code{RPs}). This element is only added in \code{\link{distLextreme}}\cr
 \code{RP___}     \tab Return periods according to plotting positions, see below. \cr
-\code{coldist}   \tab Colors for plotting, added in \code{\link{distLplot}}\cr
+\code{coldist}   \tab Colors for plotting, added in \code{\link{plotLfit}}\cr
 \code{truncate}  \tab Truncation percentage, only relevant for \code{\link{distLquantile}}\cr
 \code{quant}     \tab Quantile estimation from \code{\link{distLquantile}}\cr
 }
-It can be printed with \code{\link{distLprint}}, which may be transformed to a class with printing method.\cr
+It can be printed with \code{\link{printL}}.\cr
 PP:\cr
 Plotting positions are not used for fitting distributions, but for plotting only\cr
 The ranks of ascendingly sorted extreme values are used to compute the probability of non-exceedence Pn:\cr
@@ -34,28 +44,9 @@ The ranks of ascendingly sorted extreme values are used to compute the probabili
 Finally: RP = Returnperiod = recurrence interval = 1/P_exceedence = 1/(1-P_nonexc.), thus:\cr
 \code{RPweibull = 1/(1-Pn_w)} and analogous for gringorton.\cr
 
-The main functions in the extremeStat package are:
-\tabular{ll}{
-\code{\link{distLextreme}}     \tab analyse extreme value statistics, calls \code{distLfit} and \code{distLextremePlot}.\cr
-\code{\link{distLextremePlot}} \tab plot distribution lines and plotting positions.\cr
-\code{\link{distLfit}}         \tab fit the parameters, calls \code{gof} and \code{distLplot}.\cr
-\code{\link{distLplot}}        \tab plot density or cumulated density of data and distributions.\cr
-\code{\link{distLgof}}         \tab calculate goodness of fits, calls \code{distLgofPlot}. Can also be executed with \code{dlf} to minimize computing time by not fitting the parameters again.\cr
-\code{\link{distLgofPlot}}     \tab compare distribution ranks of different \code{distLgof} methods.\cr
-\code{\link{distLquantile}}    \tab compute parametric quantile estimates. Calls \code{distLfit}.\cr
-}
-\code{Depends} on 'berryFunctions' for \code{\link{rmse}}, \code{\link{rsquare}}, \code{\link{logAxis}}, \code{\link{logVals}}.\cr
-\code{Suggests} 'pbapply' to see progress bars if you have large (n > 1e3) datasets.\cr
-At some places you will find \code{## not run} in the examples.
-These code blocks were excluded from checking while building,
-mainly because they are computationally intensive and should not take so much of CRANs resources.
-Normally, you should be able to run them in an interactive session.\cr
-If you do find unexecutable code, please tell me!\cr
 This package was motivated by my need to compare the fits of several distributions to data.
 It was originally triggered by a flood estimation assignment we had in class 2012,
-and it bothered me that we just assumed the gumbel distribution would fit the data fine.\cr
-With the updated form of the original function, I think this is a useful package to compare fits.\cr
-I am no expert on distributions, so I welcome all suggestions you might have for me.
+and it bothered me that we just assumed the gumbel distribution would fit the data fine.
 }
 \examples{
 

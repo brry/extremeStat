@@ -15,7 +15,7 @@
 #' @param dlf List as explained in \code{\link{extremeStat}}
 #' @param digits number of digits \code{\link{round}}ed to. DEFAULT: 1
 #' 
-distLprint <- function(
+printL <- function(
 dlf,
 digits=1
 )
