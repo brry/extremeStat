@@ -99,7 +99,7 @@ n <- length(m);  Rank <- 1:n
 RPw <- 1/(1-  Rank      /(n+1)     )  # Weibull
 RPg <- 1/(1- (Rank-0.44)/(n+0.12)  )  # Gringorton (taken from lmom:::evplot.default)
 #  Selection -------------------------------------------------------------------
-dn <- rownames(dlf$gof) # distribution names
+dn <- rownames(dlf$gof)[order(dlf$gof$RMSE)] # distribution names
 if(!is.null(selection))
   {
   names(dn) <- dn

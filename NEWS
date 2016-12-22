@@ -1,14 +1,17 @@
 
 extremeStat ToDo-list / wishlist / issues
-- distLprint: possibly change to print method for dlf objects with personal class
 - read all of https://www.ine.pt/revstat/pdf/rs120102.pdf and coles (2001)
 - if lmomco parkap is changed, change distLfit:154 and distLgof:154 (or leave it...)
 - distLextreme correct RP for POT approach
 - consider option to change all messages to warnings 
      if(mes2warn) message <- function(...) warning(..., call.=FALSE)
-- kick out gofProp completely?
-- remove on.exits?
 - move half the examples to tests
+- remove as many arguments as possible
+- check out overlap between plotLextreme + plotLfit as well as q_gpd + distLquantile
+- berryFunctions::logHist in plotLfit?
+- check if someting goes wrong when order=FALSE dlf$gof$rmse. Can order be given in ALL functions?
+- exTime with run=T
+- now that distLfit keeps all parameters (does it?), can some of the checks be removed?
 
 
 ---------------------------------------
@@ -21,7 +24,16 @@ Version 1.. (2017-)
 For complete log, see https://github.com/brry/extremeStat/commits/master
 Package thoroughly cleaned up:
 - gofProp option completely removed (POT support is very good now)
-- 
+- order option now available throughout the package
+- plot functions renamed to common syntax plotL*
+- many more line breaks in source code for better readibility
+- on.exit calls changed to immediate messages
+Also:
+- plotLgof rank option removed
+- more rare errors captured
+- distLquantile gains sanity checks
+
+new functions: distLweight, q_weighted, plotLquantile
 
 
 ---------------------------------------
