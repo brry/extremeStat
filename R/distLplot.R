@@ -4,7 +4,7 @@
 #' 
 #' @details By default, this plots density instead of CDF, because the distributions are
 #' easier to discern and tail behaviour is easier to judge visually. See also
-#' urlhttp://www.vosesoftware.com/vosesoftware/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_\%28histogram\%29_plots.htm
+#' \url{http://www.vosesoftware.com/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_(histogram)_plots.htm}
 #' 
 #' @return dlf with coldist added, returned invisibly.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
