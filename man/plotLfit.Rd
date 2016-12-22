@@ -9,9 +9,7 @@ plotLfit(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
   xlim = extendrange(dlf$dat, f = 0.15), ylim = NULL, xaxs = "i",
   yaxs = "i", xaxt, col = "grey", main, xlab, ylab, las = 1,
   coldist = berryFunctions::rainbow2(nbest), lty = 1, add = FALSE,
-  logargs = NULL, legend = TRUE, legargs = NULL, histargs = NULL,
-  qlines = FALSE, qheights = stats::quantile(par("usr")[3:4], 0.2),
-  qrow = NULL, qlinargs = NULL, ...)
+  logargs = NULL, legend = TRUE, legargs = NULL, histargs = NULL, ...)
 }
 \arguments{
 \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname}}
@@ -58,21 +56,10 @@ plotLfit(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
 
 \item{histargs}{List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} except for x, freq. DEFAULT: NULL}
 
-\item{qlines}{Should vertical lines marking the quantiles be added?
-Ignored if \code{dlf} does not contain the element \code{quant}. DEFAULT: FALSE}
-
-\item{qheights}{Coordinates of quantile line ends, recycled if necessary. DEFAULT: 20\% of plot height.}
-
-\item{qrow}{Rowname(s) of \code{dlf$quant} that should be drawn instead of the nbest highest ranking distribution functions.
-'GPD*' will select all the gpd fits, including gpa.
-qheights and coldist must then accordingly have at least 13 elements (or will be recycled). DEFAULT: NULL}
-
-\item{qlinargs}{Arguments passed to \code{\link{lines}} for qlines. DEFAULT: NULL}
-
 \item{\dots}{Further arguments passed to \code{\link{lines}}, like type, pch, ...}
 }
 \value{
-dlf with coldist added, returned invisibly.
+dlf with coldist + dnplotted added, returned invisibly.
 }
 \description{
 Plot histogram and distribution densities \emph{or} ecdf with cumulated probability
@@ -83,14 +70,14 @@ easier to discern and tail behaviour is easier to judge visually. See also
 \url{http://www.vosesoftware.com/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_(histogram)_plots.htm}
 }
 \examples{
- # See distLfit and distLquantile
+ # See distLfit
 
 }
 \author{
 Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014
 }
 \seealso{
-\code{\link{distLfit}}, \code{\link{distLextreme}}
+\code{\link{distLfit}}, \code{\link{plotLquantile}}
 }
 \keyword{distribution}
 \keyword{hplot}

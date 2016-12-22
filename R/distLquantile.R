@@ -9,7 +9,7 @@
 #' quantile. Parametric quantiles need only small sample sizes. They don't have
 #' a systematical underestimation bias, but have higher variability.
 #' 
-#' @return Matrix with distribution quantile values (with NAs for probs below truncate), \cr
+#' @return Invisible matrix with distribution quantile values (with NAs for probs below truncate), \cr
 #' or, if returnlist=TRUE, a \code{dlf} list as described in \code{\link{extremeStat}}.
 #' @note NAs are always removed from x in \code{\link{distLfit}}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March + July 2015, Feb 2016
@@ -37,10 +37,10 @@
 #' # q_gpd compares several R packages for fitting and quantile estimation:
 #' dlq <- distLquantile(annMax, weighted=FALSE, quiet=TRUE, probs=0.97, returnlist=TRUE)
 #' dlq$quant
-#' plotLfit(dlq, qlines=TRUE) # per default best fitting distribution functions
-#' plotLfit(dlq, qlines=TRUE, qrow=c("wak","GPD*"), nbest=14)
+#' plotLquantile(dlq, qlines=TRUE) # per default best fitting distribution functions
+#' plotLquantile(dlq, qlines=TRUE, qrow=c("wak","GPD*"), nbest=14)
 #' #pdf("dummy.pdf", width=9)
-#' plotLfit(dlq, qlines=TRUE, qrow="GPD*", nbest=13, xlim=c(102,110), 
+#' plotLquantile(dlq, qlines=TRUE, qrow="GPD*", nbest=13, xlim=c(102,110), 
 #'           qlinargs=list(lwd=3), qheights=seq(0.02, 0.005, len=14))
 #' #dev.off()
 #'
@@ -163,8 +163,8 @@
 #' @param speed Compute \code{\link{q_gpd}} only for fast methods? 
 #'              Don't accidentally set this to \code{FALSE} in simulations or 
 #'              with large datasets! DEFAULT: TRUE
-#' @param plot Should \code{\link{plotLfit}} be called? DEFAULT: FALSE
-#' @param plotargs List of arguments to be passed to \code{\link{plotLfit}} 
+#' @param plot Should \code{\link{plotLquantile}} be called? DEFAULT: FALSE
+#' @param plotargs List of arguments to be passed to \code{\link{plotLquantile}} 
 #'                 like qlines, qheights, qrow, qlinargs, nbest, cdf, ...
 #' @param quiet Suppress notes? DEFAULT: FALSE
 #' @param ssquiet Suppress sample size notes? DEFAULT: quiet
@@ -402,8 +402,7 @@ if(weighted) output <-  q_weighted(output, distLweights(dlf$gof, weightc=weightc
 #
 dlf$quant <- output
 # Plotting: Quantile lines: ----------------------------------------------------
-if(plot) do.call(plotLfit, berryFunctions::owa(c(list(dlf=dlf, qlines=TRUE),
-                                                         list(...)), plotargs))
+if(plot) do.call(plotLquantile, berryFunctions::owa(list(dlf=dlf), plotargs))
 # return output: ---------------------------------------------------------------
-if(returnlist) return(dlf) else return(output)
+if(returnlist) invisible(dlf) else invisible(output)
 }

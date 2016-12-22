@@ -70,9 +70,9 @@ DEFAULT: FALSE}
 Don't accidentally set this to \code{FALSE} in simulations or 
 with large datasets! DEFAULT: TRUE}
 
-\item{plot}{Should \code{\link{plotLfit}} be called? DEFAULT: FALSE}
+\item{plot}{Should \code{\link{plotLquantile}} be called? DEFAULT: FALSE}
 
-\item{plotargs}{List of arguments to be passed to \code{\link{plotLfit}} 
+\item{plotargs}{List of arguments to be passed to \code{\link{plotLquantile}} 
 like qlines, qheights, qrow, qlinargs, nbest, cdf, ...}
 
 \item{quiet}{Suppress notes? DEFAULT: FALSE}
@@ -85,7 +85,7 @@ is called with ttquiet=TRUE. DEFAULT: quiet}
 \item{\dots}{Arguments passed to \code{\link{distLfit}}}
 }
 \value{
-Matrix with distribution quantile values (with NAs for probs below truncate), \cr
+Invisible matrix with distribution quantile values (with NAs for probs below truncate), \cr
 or, if returnlist=TRUE, a \code{dlf} list as described in \code{\link{extremeStat}}.
 }
 \description{
@@ -117,10 +117,10 @@ distLquantile(annMax, probs=0.95, plot=TRUE, qlinargs=list(lwd=3), nbest=5, brea
 # q_gpd compares several R packages for fitting and quantile estimation:
 dlq <- distLquantile(annMax, weighted=FALSE, quiet=TRUE, probs=0.97, returnlist=TRUE)
 dlq$quant
-plotLfit(dlq, qlines=TRUE) # per default best fitting distribution functions
-plotLfit(dlq, qlines=TRUE, qrow=c("wak","GPD*"), nbest=14)
+plotLquantile(dlq, qlines=TRUE) # per default best fitting distribution functions
+plotLquantile(dlq, qlines=TRUE, qrow=c("wak","GPD*"), nbest=14)
 #pdf("dummy.pdf", width=9)
-plotLfit(dlq, qlines=TRUE, qrow="GPD*", nbest=13, xlim=c(102,110), 
+plotLquantile(dlq, qlines=TRUE, qrow="GPD*", nbest=13, xlim=c(102,110), 
           qlinargs=list(lwd=3), qheights=seq(0.02, 0.005, len=14))
 #dev.off()
 

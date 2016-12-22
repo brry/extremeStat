@@ -6,15 +6,15 @@
 #' easier to discern and tail behaviour is easier to judge visually. See also
 #' \url{http://www.vosesoftware.com/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_(histogram)_plots.htm}
 #' 
-#' @return dlf with coldist added, returned invisibly.
+#' @return dlf with coldist + dnplotted added, returned invisibly.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
-#' @seealso \code{\link{distLfit}}, \code{\link{distLextreme}}
+#' @seealso \code{\link{distLfit}}, \code{\link{plotLquantile}}
 #' @keywords hplot distribution
 #' @export
 #' @importFrom berryFunctions lim0 owa rainbow2
 #' @importFrom lmomco plmomco dlmomco supdist
 #' @examples
-#'  # See distLfit and distLquantile
+#'  # See distLfit
 #' 
 #' @param dlf List as returned by \code{\link{distLfit}}, containing the elements \code{dat, parameter, gof, datname}
 #' @param nbest Number of distributions plotted, in order of goodness of fit. DEFAULT: 5
@@ -38,13 +38,6 @@
 #' @param legend Should \code{\link{legend}} be called? DEFAULT: TRUE
 #' @param legargs List of arguments passed to \code{\link{legend}} except for legend and col. DEFAULT: NULL
 #' @param histargs List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} except for x, freq. DEFAULT: NULL
-#' @param qlines Should vertical lines marking the quantiles be added?
-#'        Ignored if \code{dlf} does not contain the element \code{quant}. DEFAULT: FALSE
-#' @param qheights Coordinates of quantile line ends, recycled if necessary. DEFAULT: 20\% of plot height.
-#' @param qrow Rowname(s) of \code{dlf$quant} that should be drawn instead of the nbest highest ranking distribution functions.
-#'             'GPD*' will select all the gpd fits, including gpa.
-#'             qheights and coldist must then accordingly have at least 13 elements (or will be recycled). DEFAULT: NULL
-#' @param qlinargs Arguments passed to \code{\link{lines}} for qlines. DEFAULT: NULL
 #' @param \dots Further arguments passed to \code{\link{lines}}, like type, pch, ...
 #' 
 plotLfit <- function(
@@ -70,19 +63,15 @@ logargs=NULL,
 legend=TRUE,
 legargs=NULL,
 histargs=NULL,
-qlines=FALSE,
-qheights=stats::quantile(par("usr")[3:4], 0.2),
-qrow=NULL,
-qlinargs=NULL,
 ... )
 {
 # input checks:
 if(!is.list(dlf)) stop("dlf must be a list.")
 # checking list elements:
-if(is.null(dlf$dat)) stop("dlf must contain the element dat")
+if(is.null(dlf$dat))       stop("dlf must contain the element dat")
 if(is.null(dlf$parameter)) stop("dlf must contain the element parameter")
-if(is.null(dlf$gof)) stop("dlf must contain the element gof")
-if(is.null(dlf$datname)) stop("dlf must contain the element datname")
+if(is.null(dlf$gof))       stop("dlf must contain the element gof")
+if(is.null(dlf$datname))   stop("dlf must contain the element datname")
 # distribution selection:
 if(!is.null(selection))
   {
@@ -91,28 +80,20 @@ if(!is.null(selection))
   selection <- selection[!is.na(selection)]
   sing <- selection %in% rownames(dlf$gof)
   if(!any(sing)) stop("selection (", toString(selection[!sing]), ") is not available in dlf$gof.")
-  if(any(!sing)) 
-    {
-    curselsing <- toString(selection[!sing])
-    on.exit(message("Note in disLplot: selection (", curselsing, ") is not available in dlf$gof."), add=TRUE)
-    }
+  if(any(!sing)) message("Note in disLplot: selection (",toString(selection[!sing]),
+                         ") is not available in dlf$gof.")
   selection <- selection[sing]
   dlf$gof <- dlf$gof[selection, ]      # continuing with a different variant of gof!!
   nbest <- length(selection)
   }
 # input checks:
 if(nbest < 0) stop("nbest must be positive")
-if(nbest > nrow(dlf$gof) & is.null(qrow)) {nbest <- nrow(dlf$gof)}
+if(nbest > nrow(dlf$gof)) {nbest <- nrow(dlf$gof)}
 # internal defaults:
 if(missing(xaxt)       ) xaxt <- if(log) "n" else "s"
 if(missing(xlab)       ) xlab <- dlf$datname
 #
-if(!is.null(qrow))
-  {
-  rndq <- rownames(dlf$quant)
-  if(any(qrow=="GPD*")) qrow <- c(qrow[qrow!="GPD*"], rndq[grepl("GPD_",rndq)])
-  dnqrow <- unique(qrow)
-  }
+
 #
 # draw histogram or ecdf -------------------------------------------------------
 if(!add)
@@ -150,8 +131,7 @@ if(!add)
 #
 # distribution names and colors: -----------------------------------------------
 if(nbest < 1) return(invisible(NULL)) # and stop executing
-dn <- rownames(dlf$gof)[1:nbest]
-if(qlines) if(!is.null(qrow)) dn <- dnqrow[dnqrow %in% rownames(dlf$gof)]
+dn <- rownames(dlf$gof)[order(dlf$gof$RMSE)[1:nbest]]
 coldist <- rep(coldist, length=nbest)  # recycle 1
 if(length(dlf$parameter)<1)
   {
@@ -189,21 +169,11 @@ if(length(dn)>0) for(i in length(dn):1)
     } # end if supportends
   } # end if xval has values
   } # end for loop over distribution functions
-# draw quantile lines:
-if(qlines)
-  {
-  if(is.null(dlf$quant)) stop("qlines=TRUE, but dlf does not contain 'quant' element.")
-  if(!is.null(qrow)) dn <- dnqrow
-  # qheights <- lfun(x=qval, para=dlf$parameter[[use[i]]])
-  qheights <- rep(qheights, len=length(dn))
-  coldist <- rep(coldist, len=length(dn)) # recycle 2
-  for(i in seq_len(ncol(dlf$quant))) do.call(graphics::lines, args=berryFunctions::owa(list(
-      x=dlf$quant[dn,i], y=qheights, type="h", col=coldist), qlinargs, "x","y"))
-  }
 # legend - write the names of distributions:
 legdef <- list(legend=dn, lwd=1, col=coldist, x="right", cex=0.7, lty=lty)
 if(legend) do.call(graphics::legend, args=berryFunctions::owa(legdef, legargs, "legend","col","lty"))
 # add to (or change) output:
+dlf$dnplotted <- dn
 dlf$coldist <- coldist
 return(invisible(dlf))
 } # end function

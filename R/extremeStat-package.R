@@ -34,17 +34,17 @@ NULL
 #' several (extreme value) distributions.
 #' Compute high quantiles even in small samples and estimate extrema at given return periods.\cr
 #' Open the \href{https://cran.r-project.org/package=extremeStat/vignettes/extremeStat.html}{Vignette} 
-#' for an introduction to the package. \code{vignette("extremeStat")}\cr
+#' for an introduction to the package: \code{vignette("extremeStat")}\cr
 #' This package heavily relies on and thankfully acknowledges the package \code{lmomco} by WH Asquith.
 #' 
 #' @details
 #' 
 #' The main functions in the extremeStat package are:
 #' \tabular{lll}{
-#' \code{\link{distLweights}} -> \tab \code{\link{distLgof}} \tab \code{\link{plotLgof}} \cr
-#'                               \tab \code{\link{distLfit}} \tab \code{\link{plotLfit}} \cr
-#' \code{\link{q_gpd}}, \code{\link{q_weighted}} \tab \code{\link{distLquantile}} \tab \code{link{plotLquantile}} \cr
-#'                               \tab \code{\link{distLextreme}} \tab \code{\link{plotLextreme}} \cr
+#' \code{\link{distLweights}} -> \tab \code{\link{distLgof}} \tab -> \code{\link{plotLgof}} \cr
+#'                               \tab \code{\link{distLfit}} \tab -> \code{\link{plotLfit}} \cr
+#' \code{\link{q_gpd}} + \code{\link{q_weighted}} -> \tab \code{\link{distLquantile}} \tab -> \code{\link{plotLquantile}} \cr
+#'                               \tab \code{\link{distLextreme}} \tab -> \code{\link{plotLextreme}} \cr
 #'                               \tab \code{\link{distLexBoot}} \tab \cr
 #' }
 #' 
