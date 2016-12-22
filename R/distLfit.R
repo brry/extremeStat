@@ -116,7 +116,7 @@ if(quiet) progbars <- FALSE
 if(progbars) lapply <- pbapply::pblapply
 # checks:
 if( ! is.numeric(dat) ) stop("dat must be numeric.")
-if(!is.vector(dat) & !quiet) on.exit(message("Note in distLfit: dat was not a vector."), add=TRUE)
+if(!is.vector(dat) & !quiet) message("Note in distLfit: dat was not a vector.")
 # remove NAs, convert to vector:
 dat_full <- dat
 dat <- as.numeric( dat[!is.na(dat)]  )
@@ -133,9 +133,8 @@ if( ! is.null(selection) )
   seldn <- !selection %in% dn
   if(any(seldn))
    {
-   curseldn <- selection[seldn]
-   if(!quiet) on.exit(message("Note in distLfit: selection (", toString(curseldn),
-   ") not available in lmomco::dist.list(), thus removed."), add=TRUE)
+   if(!quiet) message("Note in distLfit: selection (", toString(selection[seldn]),
+                      ") not available in lmomco::dist.list(), thus removed.")
    selection <- selection[!seldn]
    }
   dn <- dn[selection]
@@ -146,8 +145,8 @@ else
 if(speed) dn <- dn[ ! dn %in%
    c("aep4","cau","emu","gep","gld","gov","kmu","kur","lmrq","sla","st3","texp","tri")]
 # Check remaining sample size
-if(length(dat) < 5) {if(!ssquiet)on.exit(message("Note in distLfit: sample size (",
-                         length(dat), ") is too small to fit parameters (<5)."), add=TRUE)
+if(length(dat) < 5) {if(!ssquiet) message("Note in distLfit: sample size (",
+                                  length(dat), ") is too small to fit parameters (<5).")
   error_out <- as.list(dn) # this is very useful for distLquantile
   names(error_out) <- dn  # since it keeps the rows if a selection is given
   error_gof <- matrix(NA, nrow=length(dn), ncol=6)
@@ -167,7 +166,7 @@ parameter <- lapply(dn, function(d) try(lmomco::lmom2par(mom, type=d), silent=TR
 # error catching:
 if( length(parameter) != length(dn))
   {
-  if(!quiet) on.exit(message("Note in distLfit: Some distributions could not be fitted. Possibly cau."), add=TRUE)
+  if(!quiet) message("Note in distLfit: Some distributions could not be fitted. Possibly cau.")
   names(parameter) <- sapply(parameter, "[[", "type")
   }
 else names(parameter) <- dn
@@ -180,7 +179,7 @@ output <- distLgof(list(dat=dat, datname=datname, parameter=parameter,
 if(plot) output <- plotLfit(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
 if(!plot) output$coldist <- berryFunctions::rainbow2(if(is.null(selection)) 5 else length(selection))
 
-if(time & !quiet) on.exit(message("distLfit execution took ", 
-      signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds."), add=TRUE)
+if(time & !quiet) message("distLfit execution took ", 
+                  signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
 return(invisible(output))
 } # end of function

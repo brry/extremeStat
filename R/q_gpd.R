@@ -193,7 +193,7 @@ x <- x[!is.na(x)]
 if(length(truncate)>1)
   {
   truncate <- truncate[1] #
-  if(!quiet) on.exit(message("Note in q_gpd: only first value of 'truncate' is used."), add=TRUE)
+  if(!quiet) message("Note in q_gpd: only first value of 'truncate' is used.")
   }
 if(truncate>1 | truncate<0) stop("truncate (proportion discarded) must be 0<t<1, not ", truncate)
 #
@@ -212,9 +212,9 @@ if(!missing(threshold))
   if(threshold != normalthr)
     {
     probs2 <- probs
-    if(!ttquiet) on.exit(message("Note in q_gpd: threshold (",threshold,
+    if(!ttquiet) message("Note in q_gpd: threshold (",threshold,
     ") is not equal to threshold computed from truncate (",normalthr,
-    ").\n  Probabilities are not corrected for truncation!"), add=TRUE)
+    ").\n  Probabilities are not corrected for truncation!")
     }
   }
 #
@@ -230,10 +230,10 @@ if(returnlist) failout <- c(list(z="not fitted"), outlist)
 # check probs for compliance with truncate:
 if(all(probs < truncate) & undertruncNA)
    {
-   if(!quiet) on.exit(message("Note in q_gpd: With undertruncNA=TRUE, 'probs' (",
+   if(!quiet) message("Note in q_gpd: With undertruncNA=TRUE, 'probs' (",
               toString(probs),
               ")\n  must contain values that are larger than 'truncate' (",
-              truncate, "). Returning NAs."), add=TRUE)
+              truncate, "). Returning NAs.")
    return(failout)
    }
 #
@@ -242,8 +242,7 @@ if(all(probs < truncate) & undertruncNA)
 if(efquiet) {oo <- options(warn=-1); on.exit(options(oo), add=TRUE)}
 # function to perform in case of failure. Yields useful error message and returns NAs:
 failfun <- function(z, fitfun) {
-  if(!quiet) on.exit(message(
-     "Note in q_gpd: ",fitfun," failed. Returning NAs. \n  Reason: ", z), add=TRUE)
+  if(!quiet) message("Note in q_gpd: ",fitfun," failed. Returning NAs.\n  Reason: ",z)
   return(failout)
   }
 # actual fitting:
@@ -390,9 +389,8 @@ stop("package ", package, "is not in the options. This is a bug. Please report t
 names(output) <- paste0(probs*100,"%")
 # replace probs below truncation value with NA:
 if(undertruncNA & any(probs < truncate) & !quiet)
-  on.exit(message("Note in q_gpd: quantiles for probs (",
-     toString(probs[probs<=truncate]),
-     ") below truncate (",truncate,") replaced with NAs."), add=TRUE)
+  message("Note in q_gpd: quantiles for probs (",toString(probs[probs<=truncate]),
+          ") below truncate (",truncate,") replaced with NAs.")
 if(undertruncNA) output[probs < truncate] <- NA
 # Output result:
 outlist$q_gpd_method <- method

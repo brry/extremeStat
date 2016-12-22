@@ -103,12 +103,12 @@ dn <- rownames(dlf$gof) # distribution names
 if(!is.null(selection))
   {
   names(dn) <- dn
-  if(!any(selection %in% dn)) stop("selection ", toString(selection), 
+  sind <- selection %in% dn
+  if(!any(sind)) stop("selection ", toString(selection), 
                                    " is not available in dlf$gof.")
-  selection_not_dn <- selection[!selection %in% dn]
-  if(any(!selection %in% dn)) on.exit(message("Note in distLextremePlot: selection ", 
-          toString(selection_not_dn), " is not available in dlf$gof, thus ignored."), add=TRUE)
-  selection <- selection[selection %in% dn]
+  if(any(!sind)) message("Note in plotLextreme: selection ", toString(selection[!sind]), 
+                         " is not available in dlf$gof, thus ignored.")
+  selection <- selection[sind]
   dn <- dn[selection]
   if(order)
     {
@@ -128,9 +128,8 @@ if(length(coldist) != nbest & !quiet)
   {
   # This happens of coldist is specified with wrong length.
   # Can happen if selection is truncated (misspellings, dists not fitted)
-  curlengthcd <- length(coldist)
-  on.exit(message("Note in distLextremePlot: Length of coldist (",curlengthcd,
-          ") was not equal to nbest (",nbest,"). Is now recycled."), add=TRUE)
+  message("Note in plotLextreme: Length of coldist (",length(coldist),
+          ") was not equal to nbest (",nbest,"). Is now recycled.")
   coldist <- rep(coldist, length=nbest)
   }
 #

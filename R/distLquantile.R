@@ -218,12 +218,10 @@ if(!is.null(x)) if(is.list(x)) stop("x must be a vector. Possibly, you want to u
 # check truncate
 if(!is.null(dlf)) if(any(dlf$truncate!=truncate)|any(dlf$threshold!=threshold))
   {
-  currentdlftruncate  <- dlf$truncate
-  currentdlfthreshold <- dlf$threshold
-  if(!quiet) on.exit(message("Note in distLquantile: truncate (",truncate,
-       ") did not match dlf$truncate (",currentdlftruncate,
-       "). Thresholds: ",toString(signif(c(threshold, currentdlfthreshold),7)),
-       ".\n   distLfit is called with the original dlf$dat."), add=TRUE)
+  if(!quiet) message("Note in distLquantile: truncate (",truncate,
+       ") did not match dlf$truncate (",dlf$truncate,
+       "). Thresholds: ",toString(signif(c(threshold, dlf$threshold),7)),
+       ".\n   distLfit is called with the original dlf$dat.")
   x <- dlf$dat
   internaldatname <- dlf$datname
   dlf <- NULL
@@ -240,9 +238,9 @@ if(is.null(dlf))
 # check selection
 if(!is.null(selection))
   {
-  if(any(!selection %in% names(dlf$parameter))) if(!quiet) on.exit(message(
+  if(any(!selection %in% names(dlf$parameter))) if(!quiet) message(
    "Note in distLquantile: 'selection' (",selection[!selection %in% names(dlf$parameter)],
-   ") is not in dlf$parameter. NAs will be returned for these distributions."), add=TRUE)
+   ") is not in dlf$parameter. NAs will be returned for these distributions.")
 
   # reduce number of distfunctions analyzed if more were present in dlf argument:
   dlf$parameter <- dlf$parameter[selection]
@@ -265,8 +263,8 @@ rownames(output) <- dn
 miss <- selection[!selection %in% dn]
 if(length(miss)>0)
   {
-  on.exit(message("Note in distLquantile: specified selection (", toString(miss),
-                  ") is not available in dlf$gof."), add=TRUE)
+  message("Note in distLquantile: specified selection (", 
+          toString(miss), ") is not available in dlf$gof.")
   m <- matrix(NA, nrow=length(miss), ncol=ncol(output))
   rownames(m) <- miss # always keep the same order if selection is given
   output <- rbind(output, m) # append missing distfuns at the end 
@@ -301,9 +299,9 @@ if(addinfo)
 # if input sample size is too small, return NA matrix:
 if( length(dlf$dat)<5 )
   {
-  if(!ssquiet) on.exit(message(
+  if(!ssquiet) message(
     "Note in distLquantile: sample size is too small to fit parameters (",
-    length(dlf$dat),"). Returning NAs"), add=TRUE)
+    length(dlf$dat),"). Returning NAs")
   if(returnlist) {dlf$quant <- output; return(dlf)}
   else return(output)
   }
@@ -312,9 +310,9 @@ if( length(dlf$dat)<5 )
 probs2 <- probs
 if(truncate!=0)
   {
-  if(all(probs < truncate) & !quiet) on.exit(message("Note in distLquantile: 'probs' (",
+  if(all(probs < truncate) & !quiet) message("Note in distLquantile: 'probs' (",
      toString(probs),") must contain values that are larger than 'truncate' (",
-          truncate, "). Returning NAs."), add=TRUE)
+          truncate, "). Returning NAs.")
   probs2 <- (probs-truncate)/(1-truncate) # correct probabilities for smaller sample proportion
   probs2[probs < truncate] <- 0   # avoid negative values
   }
@@ -324,9 +322,9 @@ normalthr <- berryFunctions::quantileMean(dlf$dat_full, truncate)
 if(threshold != normalthr)
     {
     probs2 <- probs
-    if(!ttquiet) on.exit(message("Note in distLquantile: threshold (",threshold,
+    if(!ttquiet) message("Note in distLquantile: threshold (",threshold,
     ") is not equal to threshold computed from truncate (",normalthr,
-    ").\n  Probabilities are not corrected for truncation!"), add=TRUE)
+    ").\n  Probabilities are not corrected for truncation!")
     }
 #
 # distribution quantiles: ------------------------------------------------------
@@ -390,9 +388,9 @@ if(!all(is.na(sanerange)))
   toosmallvals <- toString(output[toosmall])
   if(length(toosmall)>0)
   {
-  if(!ssquiet) on.exit(message("Note in distLquantile: The following quantile ",
+  if(!ssquiet) message("Note in distLquantile: The following quantile ",
       "estimates are smaller than sanerange (",sr[1],") and changed to ",sanevals[1],":\n",
-      toosmallnames, " with values: ", toosmallvals), add=TRUE)
+      toosmallnames, " with values: ", toosmallvals)
   output[toosmall] <- sanevals[1]
   }
   toolarge <- which(output>sr[2])
@@ -401,9 +399,9 @@ if(!all(is.na(sanerange)))
   toolargevals <- toString(output[toolarge])
   if(length(toolarge)>0)
   {
-  if(!ssquiet) on.exit(message("Note in distLquantile: The following quantile ",
+  if(!ssquiet) message("Note in distLquantile: The following quantile ",
       "estimates are larger than sanerange (",sr[2],") and changed to ",sanevals[2],":\n",
-      toolargenames, " with values: ", toolargevals), add=TRUE)
+      toolargenames, " with values: ", toolargevals)
   output[toolarge] <- sanevals[2]
   }
 }

@@ -106,16 +106,16 @@ exclude <- sapply(dlf$parameter, function(x)
 if(any(exclude))
   {
   dnexclude <- dn[exclude]
-  if(!quiet) on.exit(message("Note in distLgof: The following distributions were ",
-                             "excluded since no parameters were estimated:\n",
-                             toString(dnexclude)), add=TRUE)
+  if(!quiet) message("Note in distLgof: The following distributions were ",
+                     "excluded since no parameters were estimated:\n",
+                      toString(dnexclude))
   dn <- dn[!exclude]
   # dlf$parameter <- dlf$parameter[!exclude] # not sure whether this is always good...
 }
-if(length(dn)<1&!quiet) on.exit(message("Note in distLgof: No fitted distributions",
-                               " in dlf, thus GOF can't be compared."), add=TRUE) else
-if(length(dn)<2&!quiet) on.exit(message("Note in distLgof: Only ", toString(dn),
-                                " was fitted, thus GOF can't be compared."), add=TRUE)
+if(length(dn)<1&!quiet) message("Note in distLgof: No fitted distributions",
+                               " in dlf, thus GOF can't be compared.") else
+if(length(dn)<2&!quiet) message("Note in distLgof: Only ", toString(dn),
+                                " was fitted, thus GOF can't be compared.")
 if(ks)
   {
   # Kolmogorov-Smirnov test:
@@ -145,8 +145,8 @@ if(!quiet)
   if(any(nNA>0)) 
     {
     dNA <- paste(paste0(dn[nNA>0], " (", nNA[nNA>0], ")"), collapse=", ")
-    on.exit(message("Note in distLgof: NAs removed in CDF (limited support region?): ", 
-                    dNA, " of ", length(tcdfs[[1]]), " values."), add=TRUE)
+    message("Note in distLgof: NAs removed in CDF (limited support region?): ", 
+                    dNA, " of ", length(tcdfs[[1]]), " values.")
     }
   }
 # if all distributions are excluded:
