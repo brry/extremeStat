@@ -63,7 +63,6 @@
 #' @param weightc Named custom weights for each distribution, see \code{\link{distLgof}}. DEFAULT: NA
 #' @param truncate Number between 0 and 1. POT Censored \code{\link{distLquantile}}: fit to highest values only (truncate lower proportion of x). Probabilities are adjusted accordingly. DEFAULT: 0
 #' @param threshold POT cutoff value. If you want correct percentiles, set this only via truncate, see Details of \code{\link{q_gpd}}. DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
-#' @param gofComp If TRUE, plots a comparison of the ranks of different GOF-methods and sets plot to FALSE. DEFAULT: FALSE
 #' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n > 200
 #' @param time \code{\link{message}} execution time? DEFAULT: TRUE
 #' @param plot Should a histogram with densities be plotted? DEFAULT: TRUE
@@ -84,7 +83,6 @@ order=TRUE,
 weightc=NA,
 truncate=0,
 threshold=berryFunctions::quantileMean(dat, truncate),
-gofComp=FALSE,
 progbars=length(dat)>200,
 time=TRUE,
 plot=TRUE,
@@ -163,12 +161,7 @@ else names(parameter) <- dn
 output <- distLgof(list(dat=dat, datname=datname, parameter=parameter,
                         truncate=truncate, threshold=threshold, dat_full=dat_full),
                    weightc=weightc, plot=FALSE, progbars=progbars, ks=ks, quiet=quiet, order=order)
-# compare GOF
-if(gofComp)
-  {
-  distLgofPlot(output, quiet=quiet)
-  plot <- FALSE
-  }
+
 if(plot) output <- distLplot(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
 if(!plot) output$coldist <- berryFunctions::rainbow2(if(is.null(selection)) 5 else length(selection))
 
