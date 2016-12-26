@@ -14,7 +14,7 @@
 #' @keywords hplot dplot distribution
 #' @export
 #' @importFrom lmomco dist.list lmoms lmom2par
-#' @importFrom berryFunctions rainbow2
+#' @importFrom berryFunctions rainbow2 tryStack
 #' 
 #' @examples
 #' 
@@ -161,7 +161,7 @@ if(length(dat) < 5) {if(!ssquiet) message("Note in distLfit: sample size (",
 mom <- lmomco::lmoms(dat, nmom=5)
 # estimate parameters for each distribution:    # this takes time!
 if(progbars) message("Parameter estimation from linear moments:")
-parameter <- lapply(dn, function(d) try(lmomco::lmom2par(mom, type=d), silent=TRUE) )
+parameter <- lapply(dn, function(d) tryStack(lmomco::lmom2par(mom, type=d), silent=TRUE) )
 # wrapped in try since july 2016 because parkap breaks if TAU4=NA  (lmomco 2.2.4)
 # error catching:
 if( length(parameter) != length(dn))

@@ -54,7 +54,7 @@
 #' @importFrom fExtremes gpdFit
 #' @importFrom ismev gpd.fit
 #' @importFrom Renext fGPD Renouv qGPD
-#' @importFrom berryFunctions quantileMean
+#' @importFrom berryFunctions quantileMean tryStack
 #'
 #' @examples
 #' data(annMax)
@@ -77,8 +77,7 @@
 #' q_gpd(annMax, package="ismev")
 #' q_gpd(annMax, package="Renext")
 #' q_gpd(annMax, package="Renext", method="f")
-#' dummy <- try(q_gpd(annMax, package="nonsense"), silent=TRUE) # error
-#' stopifnot(class(dummy)=="try-error")
+#' berryFunctions::is.error(q_gpd(annMax, package="nonsense"), force=TRUE)
 #'
 #' q_gpd(annMax, truncate=0.85, package="evd")          # Note about quantiles
 #' q_gpd(annMax, truncate=0.85, package="evir")
@@ -249,10 +248,10 @@ failfun <- function(z, fitfun) {
 if(package=="lmomco") # fit lmomco #################
 {                                              # x >= t : equal to rest of extremeStat package 
   outlist$q_gpd_creator <- "lmomco::pargpa"    # x > t  : equal to other functons below
-  lmom <- try(lmomco::lmoms(x[x > threshold]), silent=TRUE)
+  lmom <- tryStack(lmomco::lmoms(x[x > threshold]), silent=TRUE)
   if(inherits(lmom, "try-error")) return(failfun(lmom, "lmomco::lmoms"))
   oop <- options(warn=2)
-  z <- try(lmomco::pargpa(lmom, ...), silent=TRUE)       
+  z <- tryStack(lmomco::pargpa(lmom, ...), silent=TRUE)       
   options(oop)
   if(inherits(z, "try-error")) return(failfun(z, "lmomco::pargpa"))
 } else
@@ -261,33 +260,33 @@ if(package=="evir") # fit evir #################
   outlist$q_gpd_creator <- "evir::gpd"
   if(is.null(method)) method <- "pwm"
   pos <- sum(x > threshold)
-  z <- try(evir::gpd(x, nextremes=pos, method=method, ...), silent=TRUE)
+  z <- tryStack(evir::gpd(x, nextremes=pos, method=method, ...), silent=TRUE)
  if(inherits(z, "try-error")) return(failfun(z, "evir::gpd"))
 } else
 if(package=="evd") # fit evd #################
 {
   outlist$q_gpd_creator <- "evd::fpot"
-  z <- try(evd::fpot(x, threshold=threshold, model="gpd", std.err=FALSE, ...), silent=TRUE)
+  z <- tryStack(evd::fpot(x, threshold=threshold, model="gpd", std.err=FALSE, ...), silent=TRUE)
   if(inherits(z, "try-error")) return(failfun(z, "evd::fpot"))
 } else
 if(package=="extRemes") # fit extRemes #################
 {
   outlist$q_gpd_creator <- "extRemes::fevd"
   if(is.null(method)) method <- "MLE"
-  z <- try(extRemes::fevd(x, method=method, type="GP", threshold=threshold, ...), silent=TRUE)
+  z <- tryStack(extRemes::fevd(x, method=method, type="GP", threshold=threshold, ...), silent=TRUE)
   if(inherits(z, "try-error")) return(failfun(z, "extRemes::fevd"))
 } else
 if(package=="fExtremes") # fit fExtremes #################
 {
   outlist$q_gpd_creator <- "fExtremes::gpdFit"
   if(is.null(method)) method <- "pwm"
-  z <- try(z <- fExtremes::gpdFit(x, type=method, u=threshold, ...), silent=TRUE)
+  z <- tryStack(z <- fExtremes::gpdFit(x, type=method, u=threshold, ...), silent=TRUE)
   if(inherits(z, "try-error")) return(failfun(z, "fExtremes::gpdFit"))
 } else
 if(package=="ismev") # fit ismev #################
 {
   outlist$q_gpd_creator <- "ismev::gpd.fit"
-  z <- try(ismev::gpd.fit(x, threshold=threshold, show=FALSE, ...), silent=TRUE)
+  z <- tryStack(ismev::gpd.fit(x, threshold=threshold, show=FALSE, ...), silent=TRUE)
   if(inherits(z, "try-error")) return(failfun(z, "ismev::gpd.fit"))
 } else
 if(package=="Renext") # fit Renext #################
@@ -296,13 +295,13 @@ if(package=="Renext") # fit Renext #################
   if(method=="f")
   {
   outlist$q_gpd_creator <- "Renext::fGPD"
-  z <- try(Renext::fGPD(x[x>0], ...), silent=TRUE)
+  z <- tryStack(Renext::fGPD(x[x>0], ...), silent=TRUE)
   if(inherits(z, "try-error")) return(failfun(z, "Renext::fGPD"))
   } else
   if(method=="r")
   {
   outlist$q_gpd_creator <- "Renext::Renouv"
-  z <- try(Renext::Renouv(x, threshold=threshold, effDuration=length(x),
+  z <- tryStack(Renext::Renouv(x, threshold=threshold, effDuration=length(x),
                     distname.y="gpd", plot=FALSE, ...), silent=TRUE)
   if(inherits(z, "try-error")) return(failfun(z, "Renext::Renouv"))
   } else
@@ -314,7 +313,7 @@ stop("package ", package, " is not in the options. This is a bug. Please report 
 # quantile computing: ----------------------------------------------------------
 if(package=="lmomco") # quant lmomco #################
 {
-  output <- try(lmomco::quagpa(f=probs2, para=z), silent=TRUE)
+  output <- tryStack(lmomco::quagpa(f=probs2, para=z), silent=TRUE)
   if(inherits(output, "try-error")) return(failfun(output, "lmomco::quagpa"))
   if(is.null(output)) return(failfun("probably pargpa(lmom)$para returned NAs", 
                                      "lmomco::quagpa"))
@@ -353,7 +352,7 @@ if(package=="extRemes") # quant extRemes #################
   }
   probs2[probs2==0] <- NA
   probs2[probs2==1] <- NA
-  output <- try(extRemes::qevd(p=probs2, scale=scale, shape=shape, 
+  output <- tryStack(extRemes::qevd(p=probs2, scale=scale, shape=shape, 
                                threshold=z$threshold, type="GP"), silent=TRUE)
   if(inherits(output, "try-error")) return(failfun(output, "extRemes::qevd"))
 } else

@@ -110,8 +110,7 @@ q_gpd(annMax, package="fExtremes", method= "mle")
 q_gpd(annMax, package="ismev")
 q_gpd(annMax, package="Renext")
 q_gpd(annMax, package="Renext", method="f")
-dummy <- try(q_gpd(annMax, package="nonsense"), silent=TRUE) # error
-stopifnot(class(dummy)=="try-error")
+berryFunctions::is.error(q_gpd(annMax, package="nonsense"), force=TRUE)
 
 q_gpd(annMax, truncate=0.85, package="evd")          # Note about quantiles
 q_gpd(annMax, truncate=0.85, package="evir")

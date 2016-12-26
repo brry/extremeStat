@@ -22,7 +22,7 @@
 #' @references On GPD: \url{http://stats.stackexchange.com/questions/69438}
 #' @keywords distribution robust univar
 #' @export
-#' @importFrom berryFunctions quantileMean owa
+#' @importFrom berryFunctions quantileMean owa tryStack
 #' @importFrom lmomco plmomco dlmomco qlmomco
 #' 
 #' @examples
@@ -337,7 +337,7 @@ for(d in dn)
   if(is.null(pard)) next                  # c(2.4,2.7,2.3,2.5,2.2, 62.4 ,3.8,3.1) 
   if(inherits(pard, "try-error")) next
   if(d=="kap") if(pard$ifail!=0) next
-  quantd <- try(lmomco::qlmomco(f=probs2, para=dlf$parameter[[d]]), silent=TRUE)
+  quantd <- tryStack(lmomco::qlmomco(f=probs2, para=dlf$parameter[[d]]), silent=TRUE)
   if(inherits(quantd, "try-error")) next
   if(is.null(quantd)) next
   if(d=="kap") quantd[quantd<=pard$support[1] | quantd>=pard$support[2] ] <- NA
