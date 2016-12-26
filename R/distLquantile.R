@@ -31,7 +31,7 @@
 #'
 #' distLquantile(annMax, emp=FALSE) # several distribution functions in lmomco
 #' distLquantile(annMax, truncate=0.8, probs=0.95) # POT (annMax already block maxima)
-#' distLquantile(annMax, probs=0.95, plot=TRUE, qlinargs=list(lwd=3), nbest=5, breaks=10)
+#' distLquantile(annMax, probs=0.95, plot=TRUE, linargs=list(lwd=3), nbest=5, breaks=10)
 #' # Parametric 95% quantile estimates range from 92 to 111!
 #' # But the best fitting distributions all lie aroud 103.
 #'
@@ -40,11 +40,11 @@
 #' # q_gpd compares several R packages for fitting and quantile estimation:
 #' dlq <- distLquantile(annMax, weighted=FALSE, quiet=TRUE, probs=0.97, returnlist=TRUE)
 #' dlq$quant
-#' plotLquantile(dlq, qlines=TRUE) # per default best fitting distribution functions
-#' plotLquantile(dlq, qlines=TRUE, qrow=c("wak","GPD*"), nbest=14)
+#' plotLquantile(dlq) # per default best fitting distribution functions
+#' plotLquantile(dlq, row=c("wak","GPD*"), nbest=14)
 #' #pdf("dummy.pdf", width=9)
-#' plotLquantile(dlq, qlines=TRUE, qrow="GPD*", nbest=13, xlim=c(102,110), 
-#'           qlinargs=list(lwd=3), qheights=seq(0.02, 0.005, len=14))
+#' plotLquantile(dlq, row="GPD*", nbest=13, xlim=c(102,110), 
+#'           linargs=list(lwd=3), heights=seq(0.02, 0.005, len=14))
 #' #dev.off()
 #'
 #'
@@ -173,8 +173,8 @@
 #'                  with large datasets! DEFAULT: TRUE
 #' @param plot      Should \code{\link{plotLquantile}} be called? DEFAULT: FALSE
 #' @param plotargs  List of arguments to be passed to \code{\link{plotLquantile}} 
-#'                  like qlines, qheights, qrow, qlinargs, nbest, cdf, ...
-#' @param quiet     Suppress notes? DEFAULT: FALSE
+#'                  like lines, heights, rows, linargs, nbest, cdf, ...
+#' @param quiet     Suppress notes? DEFAULT: TRUE
 #' @param ssquiet   Suppress sample size notes? DEFAULT: quiet
 #' @param ttquiet   Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} 
 #'                  is called with ttquiet=TRUE. DEFAULT: quiet
@@ -199,7 +199,7 @@ addinfo=FALSE,
 speed=TRUE,
 plot=FALSE,
 plotargs=NULL,
-quiet=FALSE,
+quiet=TRUE,
 ssquiet=quiet,
 ttquiet=quiet,
 ...
@@ -357,10 +357,11 @@ if(empirical) output["quantileMean",lenprob] <- berryFunctions::quantileMean(dlf
 if(gpd)
   {
   # inernal helper function:
-  q_gpd_int <- function(pack, meth=NULL) q_gpd(package=pack, method=meth,
+  supwarn <- if(quiet) suppressWarnings else I
+  q_gpd_int <- function(pack, meth=NULL) supwarn(q_gpd(package=pack, method=meth,
                         x=dlf$dat_full, probs=probs,
                         truncate=truncate, threshold=threshold, 
-                        quiet=quiet, ttquiet=TRUE)
+                        quiet=quiet, ttquiet=TRUE))
   #
   output["GPD_LMO_lmomco",lenprob]       <- q_gpd_int("lmomco")
   output["GPD_LMO_extRemes",lenprob]     <- q_gpd_int("extRemes", meth="Lmoments")

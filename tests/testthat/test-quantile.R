@@ -2,17 +2,16 @@ context("distLquantile")
 
 data(annMax, package="extremeStat") # Annual Discharge Maxima (streamflow)
 
-
 test_that("distLquantile generally runs fine",{
 distLquantile(annMax)
 expect_equal(nrow(distLquantile(annMax, addinfo=TRUE)), 38)
-expect_silent(distLquantile(annMax, truncate=0.6, gpd=FALSE, quiet=TRUE))
-expect_message(distLquantile(annMax, plot=FALSE, selection="wak", empirical=FALSE), 
+expect_silent(distLquantile(annMax, truncate=0.6, gpd=FALSE))
+expect_message(distLquantile(annMax, plot=FALSE, selection="wak", empirical=FALSE, quiet=FALSE), 
   "Note in distLgof: Only wak was fitted, thus GOF can't be compared.")
 distLquantile(annMax, plot=TRUE, selection="wak", empirical=FALSE, breaks=10)
-expect_message(distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9)),
+expect_message(distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9), quiet=FALSE),
   "Note in q_gpd: quantiles for probs (0.7, 0.8) below truncate (0.8) replaced with NAs.", fixed=TRUE)
-expect_message(distLquantile(rexp(199), truncate=0.8, probs=0.7, time=FALSE, emp=FALSE),
+expect_message(distLquantile(rexp(199), truncate=0.8, probs=0.7, time=FALSE, emp=FALSE, quiet=FALSE),
   "must contain values that are larger than")
 distLquantile(rexp(199), selection=c("wak", "gpa"))
 distLquantile(rexp(199), selection="gpa")
@@ -42,7 +41,7 @@ test_that("distLquantile can deal with a given dlf",{
 
 test_that("distLquantile can handle emp, truncate",{
 expect_equal(nrow(distLquantile(annMax, emp=FALSE)), 17) # only distributions in lmomco
-expect_message(aq <- distLquantile(annMax, truncate=0.8, probs=0.95)) # POT
+expect_message(aq <- distLquantile(annMax, truncate=0.8, probs=0.95, quiet=FALSE)) # POT
 expect_equal(round(mean(aq, na.rm=TRUE),2), 102.1) 
 dd <- distLquantile(annMax, selection="gpa", weighted=FALSE, truncate=0.001)
 expect_equal(sum(is.na(dd)), 3)
