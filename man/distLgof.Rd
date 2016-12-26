@@ -5,7 +5,7 @@
 \title{Quality of distribution fits}
 \usage{
 distLgof(dlf, order = TRUE, plot = TRUE, progbars = length(dlf$dat) > 200,
-  ks = TRUE, weightc = NA, quiet = FALSE, ...)
+  ks = FALSE, weightc = NA, quiet = FALSE, ...)
 }
 \arguments{
 \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements
@@ -19,7 +19,7 @@ selection (or dlf$parameter) is kept. DEFAULT: TRUE}
 \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n > 200}
 
 \item{ks}{Include ks.test results in \code{dlf$gof}?
-Computing is much faster when FALSE. DEFAULT: TRUE}
+Computing is much faster when FALSE. DEFAULT: FALSE}
 
 \item{weightc}{Custom weights, see \code{\link{distLweights}}. DEFAULT: NA}
 
@@ -31,9 +31,7 @@ Computing is much faster when FALSE. DEFAULT: TRUE}
 List as explained in \code{\link{extremeStat}}. The added element is gof,\cr
 a data.frame with the root mean square error (RMSE) and R squared (R2),\cr
 if ks=TRUE, the p and D values from a simple ks.test,\cr
-as well as weights by three different approaches for each distribution function.\cr
-The weights are inverse to RMSE, weight1 for all dists, 
-weight2 places zero weight on the worst function, weight3 on the worst half of functions.
+as well as weights for each distribution function as explained in \code{\link{distLweights}}
 }
 \description{
 Calculate goodness of fit for several distributions, plot rank comparison.
@@ -67,10 +65,10 @@ distLgof(dlf, ks=TRUE, plot=FALSE)$gof
 ks.test(annMax, "pnorm", mean(annMax), sd(annMax) )$p.value
 ks.test(annMax, "cdfnor", parnor(lmoms(annMax)))$p.value
 
+# todo: develop examples below function
 
 # GOF: how well do the distributions fit the original data?
 pairs(dlf$gof[,1:3]) # measures of goodness of fit are correlated quite well here.
-
 
 \dontrun{ ## to save CRAN check computing time
 

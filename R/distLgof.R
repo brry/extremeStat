@@ -5,9 +5,7 @@
 #' @return List as explained in \code{\link{extremeStat}}. The added element is gof,\cr
 #' a data.frame with the root mean square error (RMSE) and R squared (R2),\cr
 #' if ks=TRUE, the p and D values from a simple ks.test,\cr
-#' as well as weights by three different approaches for each distribution function.\cr
-#' The weights are inverse to RMSE, weight1 for all dists, 
-#' weight2 places zero weight on the worst function, weight3 on the worst half of functions.
+#' as well as weights for each distribution function as explained in \code{\link{distLweights}} 
 #' @note If you get a \code{note in distLgof: NAs removed in CDF ...}, this
 #'       probably means that the support of some of the fitted distributions do not
 #'       span the whole data range. Instead the outside support regions get NAs that
@@ -21,7 +19,7 @@
 #' @keywords univar hplot distribution
 #' @export
 #' @importFrom lmomco plmomco
-#' @importFrom berryFunctions rmse rsquare
+#' @importFrom berryFunctions rmse rsquare tryStack
 #' @importFrom utils getFromNamespace
 #' 
 #' @examples
@@ -47,10 +45,10 @@
 #' ks.test(annMax, "pnorm", mean(annMax), sd(annMax) )$p.value
 #' ks.test(annMax, "cdfnor", parnor(lmoms(annMax)))$p.value
 #' 
+#' # todo: develop examples below function
 #' 
 #' # GOF: how well do the distributions fit the original data?
 #' pairs(dlf$gof[,1:3]) # measures of goodness of fit are correlated quite well here.
-#' 
 #' 
 #' \dontrun{ ## to save CRAN check computing time
 #' 
@@ -72,7 +70,7 @@
 #' @param plot Call \code{\link{plotLgof}}? DEFAULT: TRUE
 #' @param progbars Show progress bars for each loop? DEFAULT: TRUE if n > 200
 #' @param ks Include ks.test results in \code{dlf$gof}?
-#'            Computing is much faster when FALSE. DEFAULT: TRUE
+#'            Computing is much faster when FALSE. DEFAULT: FALSE
 #' @param weightc Custom weights, see \code{\link{distLweights}}. DEFAULT: NA
 #' @param quiet Suppress notes? DEFAULT: FALSE
 #' @param \dots Further arguments passed to \code{\link{plotLgof}}
@@ -82,7 +80,7 @@ dlf,
 order=TRUE,
 plot=TRUE,
 progbars=length(dlf$dat)>200,
-ks=TRUE,
+ks=FALSE,
 weightc=NA,
 quiet=FALSE,
 ...
@@ -99,7 +97,7 @@ exclude <- sapply(dlf$parameter, function(x)
   # if("ifail" %in% names(x)) if(x$ifail != 0) return(TRUE) ## restriction too tight
   ### if(x$type=="gld") return(TRUE) # lmomco 2.2.2 cdfgld bug
   if(inherits(x, "try-error")) return(TRUE) # lmomco <=2.2.4: parkap TAU4 NA error
-  cumuprob <- try(lmomco::plmomco(mean(dlf$dat),x), silent=TRUE)
+  cumuprob <- tryStack(lmomco::plmomco(mean(dlf$dat),x), silent=TRUE)
   if(is.null(cumuprob)||inherits(cumuprob,"try-error")) return(TRUE)  # kappa errors
   any(is.na(x$para))
   })
@@ -130,7 +128,7 @@ if(ks)
 # CDFS for R2 and RMSE:
 dat2 <- sort(dlf$dat, decreasing=TRUE)
 if(progbars) message("Calculating CDFs:")
-tcdfs <- lapply(dn, function(d) lmomco::plmomco(dat2,dlf$parameter[[d]]))
+tcdfs <- tryStack(lapply(dn, function(d) lmomco::plmomco(dat2,dlf$parameter[[d]])))
 names(tcdfs) <- dn # Theoretical CumulatedDensityFunctions
 ecdfs <- ecdf(dlf$dat)(dat2) # Empirical CDF
 # Root Mean Square Error, R squared:
@@ -168,10 +166,26 @@ if(any(exclude))
 gof <- data.frame(RMSE, R2)
 if(ks) {gof$ksP <- ksP; gof$ksD <- ksD}
 if(order) gof <- gof[ order(RMSE), ]
-gof <- cbind(gof, distLweights(RMSE, order=order, weightc=weightc))
+gof <- cbind(gof, distLweights(RMSE, order=order, weightc=weightc)[,-1])
 # output:
 dlf$gof <- gof
-if(plot) plotLgof(dlf, quiet=quiet, ...)
-dlf
+if(plot) plotLgof(dlf, ...)
+invisible(dlf)
 } # end of function
+
+
+
+
+if(FALSE){
+  #data(rain, package="ismev")
+  samp <- function(n, s=42) {set.seed(s); sample(rain[rain>0.1], n)}
+  dlf <- distLfit(samp(25,11))
+  plotLfit(dlf, cdf=T)
+  dlf <- distLfit(samp(25,1))
+  d <- tryStack( distLfit(samp(25,1), time=F), warn=1)
+  d <- tryStack( distLgof(dlf), warn=0 )
+  
+  res <- pblapply(1:1000, function(s) tryStack( distLfit(samp(25,s), time=F, plot=F) )  )
+}
+
 
