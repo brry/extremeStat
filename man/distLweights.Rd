@@ -22,63 +22,47 @@ data.frame
 }
 \description{
 Determine distribution function weights from RMSE for weighted averages.
-The weights are inverse to RMSE, weight1 for all dists, 
-weight2 places zero weight on the worst function, weight3 on the worst half of functions.
+The weights are inverse to RMSE: weight1 for all dists, 
+weight2 places zero weight on the worst fitting function, 
+weight3 on the worst half of functions.
 }
 \examples{
+# weights from RMSE vector:
+rmse <- c(gum=0.20, wak=0.17, gam=0.21, gev=0.15)
+distLweights(rmse)
+distLweights(rmse, order=FALSE)
 
-distLweights(c(gum=0.20, wak=0.17, gam=0.21))
-distLweights(c(gum=0.20, wak=0.17, gam=0.21), order=FALSE)
-distLweights(c(gum=0.20))
-df <- data.frame(gum=2:5, rmse=3:6)
+# weights from RMSE in data.frame:
+df <- data.frame("99.9\%"=2:5, rmse=sample(3:6))
 rownames(df) <- letters[1:4]
-distLweights(df)
+df ;  distLweights(df)
 
+# custom weights:
 set.seed(42); x <- data.frame(A=1:5, RMSE=runif(5)) ; x
 distLweights(x)
 distLweights(x, weightc=c("1"=3, "3"=5)) 
 distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE) 
 
-distLweights(data.frame(rmse=1:2))
-distLweights(data.frame(Rmse=1:3))
-distLweights(data.frame(rmse=1:6))
-distLweights(data.frame(rmse=1:11))
-distLweights(data.frame(rmse=1:12))
-distLweights(data.frame(rmse=sample(1:12)))
-distLweights(data.frame(rmse=sample(1:12)), order=FALSE)
-
-
-# RMSE vs R2 for GOF judgement --------
-library(lmomco)
+# real life example:
 data(annMax)
-
-compranks <- function(d)
-{
-x <- sort(annMax, decreasing=TRUE)
-tcdfs <- plmomco(x,dlf$parameter[[d]])
-ecdfs <- ecdf(annMax)(x) # Empirical CDF
-# Root Mean Square Error, R squared:
-berryFunctions::linReg(tcdfs, ecdfs, lwd=1, pch=16, main=d, digits=5, xlim=c(0.5, 1),
-       ylim=c(0.5, 1), pos1="topleft")
-abline(a=0,b=1, lty=3)
-c(berryFunctions::rmse(tcdfs, ecdfs), berryFunctions::rsquare(tcdfs, ecdfs))
-}
-
-dlf <- distLfit(annMax)
-dn <- rownames(dlf$gof)
-
-op <- par(mfrow=c(5,4), mar=rep(1,4), xaxt="n", yaxt="n")
-for(i in dn) compranks(i)
-par(op)
-# so revgum, nor and rice systematically deviate from ECDF.
-# RMSE is better to sort by than R2
-
-# custom weights
 cw <- c("gpa"=7, "gev"=3, "wak"=6, "wei"=4, "kap"=3.5, "gum"=3, "ray"=2.1,
         "ln3"=2, "pe3"=2.5, "gno"=4, "gam"=5)
-dlf <- distLfit(annMax, plot=FALSE, weightc=cw)
+dlf <- distLfit(annMax, plot=FALSE, weightc=cw, quiet=TRUE, order=FALSE)
 plotLgof(dlf)
 
+# GOF judgement by RMSE, not R2 --------
+# Both RMSE and R2 are computed with ECDF and TCDF
+# R2 may be very good (see below), but fit needs to be close to 1:1 line, 
+# which is better measured by RMSE
+set.seed(42); x <- runif(30)
+y1 <-     x+rnorm(30,sd=0.09)
+y2 <- 1.5*x+rnorm(30,sd=0.01)-0.3
+plot(x,x, asp=1, las=1)
+berryFunctions::linReg(x, y2, add=TRUE, digits=4, pos1="topleft")
+points(x,y2, col="red", pch=3)
+points(x,y1, col="blue")
+berryFunctions::linReg(x, y1, add=TRUE, digits=4, col="blue", pos1="left")
+abline(a=0, b=1, lwd=3, lty=3)
 
 }
 \author{
