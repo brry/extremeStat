@@ -56,7 +56,7 @@
 #' 
 #' @param dat       Vector with values
 #' @param datname   Character string for main, xlab etc. 
-#'                  DEFAULT: internal \code{substitute(dat)}
+#'                  DEFAULT: \code{deparse(substitute(dat))}
 #' @param speed     If TRUE, several distributions are omitted, for the reasons 
 #'                  shown in \code{lmomco::\link[lmomco]{dist.list}()}. DEFAULT: TRUE
 #' @param ks        Include ks.test results in \code{dlf$gof}? Computing is much 
@@ -90,7 +90,7 @@
 #' 
 distLfit <- function(
 dat,
-datname,
+datname=deparse(substitute(dat)),
 speed=TRUE,
 ks=FALSE,
 selection=NULL,
@@ -110,7 +110,7 @@ ssquiet=quiet,
 {
 # preparation ------------------------------------------------------------------
 StartTime <- Sys.time()
-if(missing(datname)) datname <- deparse(substitute(dat))
+datname <- datname # evaluate promise before dat is changed
 # Progress bars
 if(quiet) progbars <- FALSE
 if(progbars) lapply <- pbapply::pblapply

@@ -4,9 +4,9 @@
 \alias{distLfit}
 \title{Fit distributions via linear moments}
 \usage{
-distLfit(dat, datname, speed = TRUE, ks = FALSE, selection = NULL,
-  order = TRUE, weightc = NA, truncate = 0,
-  threshold = berryFunctions::quantileMean(dat, truncate),
+distLfit(dat, datname = deparse(substitute(dat)), speed = TRUE,
+  ks = FALSE, selection = NULL, order = TRUE, weightc = NA,
+  truncate = 0, threshold = berryFunctions::quantileMean(dat, truncate),
   progbars = length(dat) > 200, time = TRUE, plot = TRUE, cdf = FALSE,
   legargs = NULL, histargs = NULL, quiet = FALSE, ssquiet = quiet, ...)
 }
@@ -14,7 +14,7 @@ distLfit(dat, datname, speed = TRUE, ks = FALSE, selection = NULL,
 \item{dat}{Vector with values}
 
 \item{datname}{Character string for main, xlab etc. 
-DEFAULT: internal \code{substitute(dat)}}
+DEFAULT: \code{deparse(substitute(dat))}}
 
 \item{speed}{If TRUE, several distributions are omitted, for the reasons 
 shown in \code{lmomco::\link[lmomco]{dist.list}()}. DEFAULT: TRUE}
