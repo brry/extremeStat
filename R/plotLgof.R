@@ -33,8 +33,10 @@ ylab="",
 xlim=range(gof[,grep("weight",colnames(gof))], na.rm=TRUE),
 ...)
 {
-# Object from list, for code readability:
+  
+# Object from list, for code readability and internal ordering:
 gof <- dlf$gof
+gof <- gof[order(gof$RMSE),]
 
 # Input control:
 if(nrow(gof)<1) stop("No fitted distributions in dlf.")
