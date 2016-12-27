@@ -46,7 +46,7 @@ suppressed? DEFAULT: quiet}
 suppressed via \code{\link{options}(warn=-1)}? 
 The usual type of warning is: NAs produced in log(...). DEFAULT: quiet}
 
-\item{\dots}{Further arguments passed to the fitting funtion listed in section Details.}
+\item{\dots}{Further arguments passed to the fitting function listed in section Details.}
 }
 \value{
 Named vector of quantile estimates for each value of \code{probs},\cr
