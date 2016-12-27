@@ -6,7 +6,7 @@
 \usage{
 q_gpd(x, probs = c(0.8, 0.9, 0.99), truncate = 0,
   threshold = berryFunctions::quantileMean(x, truncate),
-  package = "extRemes", method = NULL, returnlist = FALSE,
+  package = "extRemes", method = NULL, list = FALSE,
   undertruncNA = TRUE, quiet = FALSE, ttquiet = quiet, efquiet = quiet,
   ...)
 }
@@ -30,7 +30,7 @@ DEFAULT: "extRemes"}
 Defaults are internally specified (See Details), depending on 
 \code{package}, if left to the DEFAULT: NULL.}
 
-\item{returnlist}{Return result from the fitting funtion with the quantiles 
+\item{list}{Return result from the fitting funtion with the quantiles 
 added to the list as element \code{quant} and some information 
 in elements starting with \code{q_gpd_}. DEFAULT: FALSE}
 
@@ -50,7 +50,7 @@ The usual type of warning is: NAs produced in log(...). DEFAULT: quiet}
 }
 \value{
 Named vector of quantile estimates for each value of \code{probs},\cr
-   or if(returnlist): list with element \code{q_gpd_quant} and info-elements added.
+   or if(list): list with element \code{q_gpd_quant} and info-elements added.
    q_gpd_n_geq is number of values greater than or equal to q_gpd_threshold. 
    gt is only greater than.
 }
@@ -117,14 +117,14 @@ q_gpd(annMax, truncate=0.85, package="evir")
 q_gpd(annMax, truncate=0.85, package="evir", quiet=TRUE) # No note
 q_gpd(annMax, truncate=0.85, package="evir", undertruncNA=FALSE)
 
-q_gpd(annMax, truncate=0.85, package="evir", returnlist=TRUE)
-str(  q_gpd(annMax, truncate=0.85, probs=0.6, package="evir", returnlist=TRUE) )# NAs
-str(  q_gpd(annMax, package="evir",      returnlist=TRUE)   )
-str(  q_gpd(annMax, package="evd",       returnlist=TRUE)   )
-str(  q_gpd(annMax, package="extRemes",  returnlist=TRUE)   )
-str(  q_gpd(annMax, package="fExtremes", returnlist=TRUE)   )
-str(  q_gpd(annMax, package="ismev",     returnlist=TRUE)   )
-str(  q_gpd(annMax, package="Renext",    returnlist=TRUE)   )
+q_gpd(annMax, truncate=0.85, package="evir", list=TRUE)
+str(  q_gpd(annMax, truncate=0.85, probs=0.6, package="evir", list=TRUE) )# NAs
+str(  q_gpd(annMax, package="evir",      list=TRUE)   )
+str(  q_gpd(annMax, package="evd",       list=TRUE)   )
+str(  q_gpd(annMax, package="extRemes",  list=TRUE)   )
+str(  q_gpd(annMax, package="fExtremes", list=TRUE)   )
+str(  q_gpd(annMax, package="ismev",     list=TRUE)   )
+str(  q_gpd(annMax, package="Renext",    list=TRUE)   )
 
 q_gpd(annMax, package="evir", truncate=0.9, method="ml") # NAs (MLE fails often)
 

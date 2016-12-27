@@ -34,7 +34,7 @@
 #' If not exported by the packages, the quantile functions are extracted from their source code (Nov 2016).
 #' 
 #' @return Named vector of quantile estimates for each value of \code{probs},\cr
-#'    or if(returnlist): list with element \code{q_gpd_quant} and info-elements added.
+#'    or if(list): list with element \code{q_gpd_quant} and info-elements added.
 #'    q_gpd_n_geq is number of values greater than or equal to q_gpd_threshold. 
 #'    gt is only greater than.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Feb 2016
@@ -84,14 +84,14 @@
 #' q_gpd(annMax, truncate=0.85, package="evir", quiet=TRUE) # No note
 #' q_gpd(annMax, truncate=0.85, package="evir", undertruncNA=FALSE)
 #'
-#' q_gpd(annMax, truncate=0.85, package="evir", returnlist=TRUE)
-#' str(  q_gpd(annMax, truncate=0.85, probs=0.6, package="evir", returnlist=TRUE) )# NAs
-#' str(  q_gpd(annMax, package="evir",      returnlist=TRUE)   )
-#' str(  q_gpd(annMax, package="evd",       returnlist=TRUE)   )
-#' str(  q_gpd(annMax, package="extRemes",  returnlist=TRUE)   )
-#' str(  q_gpd(annMax, package="fExtremes", returnlist=TRUE)   )
-#' str(  q_gpd(annMax, package="ismev",     returnlist=TRUE)   )
-#' str(  q_gpd(annMax, package="Renext",    returnlist=TRUE)   )
+#' q_gpd(annMax, truncate=0.85, package="evir", list=TRUE)
+#' str(  q_gpd(annMax, truncate=0.85, probs=0.6, package="evir", list=TRUE) )# NAs
+#' str(  q_gpd(annMax, package="evir",      list=TRUE)   )
+#' str(  q_gpd(annMax, package="evd",       list=TRUE)   )
+#' str(  q_gpd(annMax, package="extRemes",  list=TRUE)   )
+#' str(  q_gpd(annMax, package="fExtremes", list=TRUE)   )
+#' str(  q_gpd(annMax, package="ismev",     list=TRUE)   )
+#' str(  q_gpd(annMax, package="Renext",    list=TRUE)   )
 #'
 #' q_gpd(annMax, package="evir", truncate=0.9, method="ml") # NAs (MLE fails often)
 #'
@@ -156,7 +156,7 @@
 #' @param method \code{method} passed to the fitting function, if applicable. 
 #'               Defaults are internally specified (See Details), depending on 
 #'               \code{package}, if left to the DEFAULT: NULL.
-#' @param returnlist Return result from the fitting funtion with the quantiles 
+#' @param list Return result from the fitting funtion with the quantiles 
 #'                   added to the list as element \code{quant} and some information 
 #'                   in elements starting with \code{q_gpd_}. DEFAULT: FALSE
 #' @param undertruncNA Return NAs for probs below truncate? Highly recommended 
@@ -176,7 +176,7 @@ truncate=0,
 threshold=berryFunctions::quantileMean(x, truncate),
 package="extRemes",
 method=NULL,
-returnlist=FALSE,
+list=FALSE,
 undertruncNA=TRUE,
 quiet=FALSE,
 ttquiet=quiet,
@@ -225,7 +225,7 @@ outlist <- list(q_gpd_created=Sys.time(), q_gpd_creator="",
    q_gpd_n_geq=sum(x>=threshold), q_gpd_n_gt=sum(x>threshold),
    q_gpd_probs=probs, q_gpd_probs2=probs2,
    q_gpd_package=package, q_gpd_method=method, q_gpd_quant=failout)
-if(returnlist) failout <- c(list(z="not fitted"), outlist)
+if(list) failout <- c(list(z="not fitted"), outlist)
 # check probs for compliance with truncate:
 if(all(probs < truncate) & undertruncNA)
    {
@@ -394,7 +394,7 @@ if(undertruncNA) output[probs < truncate] <- NA
 # Output result:
 outlist$q_gpd_method <- method
 outlist$q_gpd_quant <- output
-if(returnlist) output <- c(z, outlist)
+if(list) output <- c(z, outlist)
 output
 }
 

@@ -11,7 +11,7 @@
 #' 
 #' @return Invisible matrix with distribution quantile values 
 #'        (with NAs for probs below truncate), \cr
-#'        or, if returnlist=TRUE, a \code{dlf} list as described in 
+#'        or, if list=TRUE, a \code{dlf} list as described in 
 #'        \code{\link{extremeStat}}.
 #' @note NAs are always removed from x in \code{\link{distLfit}}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March + July 2015, Feb 2016
@@ -31,7 +31,7 @@
 #'
 #' distLquantile(annMax, emp=FALSE)[,] # several distribution functions in lmomco
 #' distLquantile(annMax, truncate=0.8, probs=0.95)[,] # POT (annMax already block maxima)
-#' dlf <- distLquantile(annMax, probs=0.95, returnlist=TRUE)
+#' dlf <- distLquantile(annMax, probs=0.95, list=TRUE)
 #' plotLquantile(dlf, linargs=list(lwd=3), nbest=5, breaks=10)
 #' dlf$quant
 #' # Parametric 95% quantile estimates range from 92 to 111!
@@ -40,7 +40,7 @@
 #' # compare General Pareto Fitting methods
 #' # Theoretically, the tails of distributions converge to GPD (General Pareto)
 #' # q_gpd compares several R packages for fitting and quantile estimation:
-#' dlq <- distLquantile(annMax, weighted=FALSE, quiet=TRUE, probs=0.97, returnlist=TRUE)
+#' dlq <- distLquantile(annMax, weighted=FALSE, quiet=TRUE, probs=0.97, list=TRUE)
 #' dlq$quant
 #' plotLquantile(dlq) # per default best fitting distribution functions
 #' plotLquantile(dlq, row=c("wak","GPD*"), nbest=14)
@@ -66,12 +66,12 @@
 #' 
 #' # If speed is important and parameters are already available, pass them via dlf:
 #' distLquantile(dlf=dlf, probs=0:5/5, selection=c("wak","gev","kap"), order=FALSE)
-#' distLquantile(dlf=dlf, truncate=0.3, returnlist=TRUE)$truncate
+#' distLquantile(dlf=dlf, truncate=0.3, list=TRUE)$truncate
 #'
 #' # censored (truncated, trimmed) quantile, Peak Over Treshold (POT) method:
-#' qwak <- distLquantile(annMax, sel="wak", prob=0.95, emp=FALSE, returnlist=TRUE)
+#' qwak <- distLquantile(annMax, sel="wak", prob=0.95, emp=FALSE, list=TRUE)
 #' plotLquantile(qwak, ylim=c(0,0.06) ); qwak$quant
-#' qwak2 <-distLquantile(annMax, sel="wak", prob=0.95, emp=FALSE, returnlist=TRUE, truncate=0.6)
+#' qwak2 <-distLquantile(annMax, sel="wak", prob=0.95, emp=FALSE, list=TRUE, truncate=0.6)
 #' plotLquantile(qwak2, add=TRUE, coldist="blue")
 #'                      
 #'
@@ -87,8 +87,8 @@
 #' # If more values are truncated, the function runs faster
 #'
 #' op <- par(mfrow=c(2,1), mar=c(2,4.5,2,0.5), cex.main=1)
-#' dlf1 <- distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, returnlist=TRUE)
-#' dlf2 <- distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, returnlist=TRUE, truncate=0.3)
+#' dlf1 <- distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, list=TRUE)
+#' dlf2 <- distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, list=TRUE, truncate=0.3)
 #' plotLquantile(dlf1, ylab="", xlab="")
 #' plotLquantile(dlf2, add=TRUE, coldist=4)
 #' legend("right", c("fitted GEV", "fitted with truncate=0.3"), lty=1, col=c(2,4), bg="white")
@@ -154,7 +154,7 @@
 #'                  DEFAULT: NULL
 #' @param order     Sort results by GOF? If FALSE, it is sorted by appearance in 
 #'                  selection (or dlf$parameter). DEFAULT: TRUE
-#' @param returnlist Return full \code{dlf}list with output attached as element \code{quant}? 
+#' @param list      Return full \code{dlf}list with output attached as element \code{quant}? 
 #'                  If FALSE (the default), just the matrix with quantile estimates 
 #'                  is returned. DEFAULT: FALSE
 #' @param empirical Add empirical \code{\link{quantileMean}} in the output matrix 
@@ -191,7 +191,7 @@ sanevals=NA,
 selection=NULL,
 dlf=NULL,
 order=TRUE,
-returnlist=FALSE,
+list=FALSE,
 empirical=TRUE,
 weighted=empirical,
 gpd=empirical,
@@ -300,7 +300,7 @@ if( length(dlf$dat)<5 )
   if(!ssquiet) message(
     "Note in distLquantile: sample size is too small to fit parameters (",
     length(dlf$dat),"). Returning NAs")
-  if(returnlist) {dlf$quant <- output; return(dlf)}
+  if(list) {dlf$quant <- output; return(dlf)}
   else return(output)
   }
 #
@@ -409,5 +409,5 @@ if(weighted) output <-  q_weighted(output, distLweights(dlf$gof, weightc=weightc
 #
 dlf$quant <- output
 # return output: ---------------------------------------------------------------
-if(returnlist) invisible(dlf) else invisible(output)
+if(list) invisible(dlf) else invisible(output)
 }
