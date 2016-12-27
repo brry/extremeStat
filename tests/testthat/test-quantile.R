@@ -41,18 +41,18 @@ test_that("distLquantile can deal with a given dlf",{
 
 test_that("distLquantile can handle emp, truncate",{
 expect_equal(nrow(distLquantile(annMax, emp=FALSE)), 17) # only distributions in lmomco
-expect_message(aq <- distLquantile(annMax, truncate=0.8, probs=0.95, quiet=FALSE)) # POT
+aq <- distLquantile(annMax, truncate=0.8, probs=0.95) # POT
 expect_equal(round(mean(aq, na.rm=TRUE),2), 102.1) 
 dd <- distLquantile(annMax, selection="gpa", weighted=FALSE, truncate=0.001)
 expect_equal(sum(is.na(dd)), 3)
 expect_equal(dd["gpa",], dd["GPD_LMO_lmomco",])
 })
 
-test_that("distLquantile can handle returnlist",{
+test_that("distLquantile can handle list",{
 # Compare several GPD Fitting functions:
-distLquantile(annMax, threshold=70, selection="gpa", weighted=FALSE, returnlist=TRUE)
-expect_is(distLquantile(annMax, truncate=0.62, returnlist=TRUE), "list")
-expect_is(distLquantile(annMax, threshold=70,  returnlist=TRUE), "list")
+distLquantile(annMax, threshold=70, selection="gpa", weighted=FALSE, list=TRUE)
+expect_is(distLquantile(annMax, truncate=0.62, list=TRUE), "list")
+expect_is(distLquantile(annMax, threshold=70,  list=TRUE), "list")
 })
 
 
