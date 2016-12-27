@@ -12,12 +12,12 @@
 #' @export
 #' @examples
 #' # weights from RMSE vector:
-#' rmse <- c(gum=0.20, wak=0.17, gam=0.21, gev=0.15)
-#' distLweights(rmse)
-#' distLweights(rmse, order=FALSE)
+#' RMSE <- c(gum=0.20, wak=0.17, gam=0.21, gev=0.15)
+#' distLweights(RMSE)
+#' distLweights(RMSE, order=FALSE)
 #' 
 #' # weights from RMSE in data.frame:
-#' df <- data.frame("99.9%"=2:5, rmse=sample(3:6))
+#' df <- data.frame("99.9%"=2:5, RMSE=sample(3:6))
 #' rownames(df) <- letters[1:4]
 #' df ;  distLweights(df)
 #' 
@@ -48,44 +48,44 @@
 #' berryFunctions::linReg(x, y1, add=TRUE, digits=4, col="blue", pos1="left")
 #' abline(a=0, b=1, lwd=3, lty=3)
 #'
-#' @param rmse    Numeric: Named vector with goodness of fit values (RMSE).
+#' @param RMSE    Numeric: Named vector with goodness of fit values (RMSE).
 #'                Can also be a data.frame, in which case the column rmse or RMSE is used.
 #' @param order   Logical: should result be ordered by RMSE? DEFAULT: TRUE
 #' @param weightc Optional: a named vector with custom weights for each distribution.
 #'                Are internally normalized to sum=1 after removing nonfitted dists.
-#'                Names match the parameter names from \code{rmse}.
+#'                Names match the parameter names from \code{RMSE}.
 #'                DEFAULT: NA
 #' 
 distLweights <- function(
-rmse,
+RMSE,
 order=TRUE,
 weightc=NA
 )
 {
 # get data.frame column:
-if(is.data.frame(rmse) | is.matrix(rmse))
+if(is.data.frame(RMSE) | is.matrix(RMSE))
   {
-  colm <- grep("rmse", colnames(rmse), ignore.case=TRUE)
-  if(length(colm)<1) stop("There is no column matching 'rmse' among ", 
-                           toString(colnames(rmse)))
-  if(length(colm)>1) stop("There are several columns matching 'rmse' among ", 
-                           toString(colnames(rmse)))
-  rmse2 <- rmse[,colm]
-  names(rmse2) <- rownames(rmse)
-  rmse <- rmse2
+  colm <- grep("rmse", colnames(RMSE), ignore.case=TRUE)
+  if(length(colm)<1) stop("There is no column matching 'RMSE' among ", 
+                           toString(colnames(RMSE)))
+  if(length(colm)>1) stop("There are several columns matching 'RMSE' among ", 
+                           toString(colnames(RMSE)))
+  RMSE2 <- RMSE[,colm]
+  names(RMSE2) <- rownames(RMSE)
+  RMSE <- RMSE2
   }
   
-if(is.null(names(rmse))) stop("rmse must have names.")
+if(is.null(names(RMSE))) stop("RMSE must have names.")
 
 # the lower RMSE, the better GOF, the more weight
-maxrmse <- max(rmse, na.rm=TRUE)
+maxRMSE <- max(RMSE, na.rm=TRUE)
   
 # Zero weight to worst fit (needs 2 or more distributions to work):
-weight2 <- maxrmse - rmse
+weight2 <- maxRMSE - RMSE
 if(sum(weight2,na.rm=TRUE)==0) weight2[weight2==0] <- 1
 
 # at least a little weight for all distributions:
-weight1 <- maxrmse - rmse + min(rmse, na.rm=TRUE)  
+weight1 <- maxRMSE - RMSE + min(RMSE, na.rm=TRUE)  
 # with min or mean added, the worst fit is not completely excluded
 if(sum(weight1,na.rm=TRUE)==0) weight1[weight1==0] <- 1
 
@@ -97,24 +97,24 @@ weight3[weight3<median(weight3)] <- 0
 if(any(!is.na(weightc)))
   {
   cn <- names(weightc) # custom names
-  rn <- names(rmse)
+  rn <- names(RMSE)
   if(is.null(cn)) stop("weightc must have names.")
   miss <- ! rn %in% cn
-  if(any(miss)) warning("names present in rmse, but not in weightc, thus given zero weight: ", 
+  if(any(miss)) warning("names present in RMSE, but not in weightc, thus given zero weight: ", 
                         toString(rn[miss]))
   miss <- ! cn %in% rn
   if(any(miss)) 
     {
-    warning("names present in weightc, but not in rmse, thus ignored: ", toString(cn[miss]))
+    warning("names present in weightc, but not in RMSE, thus ignored: ", toString(cn[miss]))
     weightc <- weightc[!miss]
     cn <- names(weightc) 
     }
-  weightc2 <- rep(0,length(rmse))
+  weightc2 <- rep(0,length(RMSE))
   names(weightc2) <- rn
   weightc2[cn] <- weightc
   weightc <- weightc2
 } else
-weightc <- rep(NA, length(rmse))
+weightc <- rep(NA, length(RMSE))
 
 # replace NAs with 0
 weight1[!is.finite(weight1)] <- 0
@@ -130,10 +130,10 @@ weight3 <- weight3/mysum(weight3)
 weightc <- weightc/mysum(weightc)
 
 # output data.frame:
-out <- data.frame(rmse, weight1, weight2, weight3, weightc)
+out <- data.frame(RMSE, weight1, weight2, weight3, weightc)
 
 # order by GOF:
-if(order) out <- out[ order(rmse), ] # sorting by R2 does not work, see examples
+if(order) out <- out[ order(RMSE), ] # sorting by R2 does not work, see examples
 
 out
 }

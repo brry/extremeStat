@@ -4,17 +4,17 @@
 \alias{distLweights}
 \title{Compute distribution weights from GOF}
 \usage{
-distLweights(rmse, order = TRUE, weightc = NA)
+distLweights(RMSE, order = TRUE, weightc = NA)
 }
 \arguments{
-\item{rmse}{Numeric: Named vector with goodness of fit values (RMSE).
+\item{RMSE}{Numeric: Named vector with goodness of fit values (RMSE).
 Can also be a data.frame, in which case the column rmse or RMSE is used.}
 
 \item{order}{Logical: should result be ordered by RMSE? DEFAULT: TRUE}
 
 \item{weightc}{Optional: a named vector with custom weights for each distribution.
 Are internally normalized to sum=1 after removing nonfitted dists.
-Names match the parameter names from \code{rmse}.
+Names match the parameter names from \code{RMSE}.
 DEFAULT: NA}
 }
 \value{
@@ -28,12 +28,12 @@ weight3 on the worst half of functions.
 }
 \examples{
 # weights from RMSE vector:
-rmse <- c(gum=0.20, wak=0.17, gam=0.21, gev=0.15)
-distLweights(rmse)
-distLweights(rmse, order=FALSE)
+RMSE <- c(gum=0.20, wak=0.17, gam=0.21, gev=0.15)
+distLweights(RMSE)
+distLweights(RMSE, order=FALSE)
 
 # weights from RMSE in data.frame:
-df <- data.frame("99.9\%"=2:5, rmse=sample(3:6))
+df <- data.frame("99.9\%"=2:5, RMSE=sample(3:6))
 rownames(df) <- letters[1:4]
 df ;  distLweights(df)
 
