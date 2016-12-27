@@ -23,11 +23,13 @@
 #' dlf <- distLfit(annMax)
 #' str(dlf, max.lev=2)
 #' printL(dlf)
+#' plotLfit(dlf)
 #' 
 #' # arguments that can be passed:
-#' distLfit(annMax, lty=2, col=3, legargs=list(lwd=3), main="booh!")
+#' plotLfit(dlf, lty=2, col=3, legargs=list(lwd=3), main="booh!")
 #' set.seed(42)
-#' dlf_b <- distLfit(rbeta(100, 5, 2), nbest=10, legargs=c(x="left"))
+#' dlf_b <- distLfit(rbeta(100, 5, 2))
+#' plotLfit(dlf_b, nbest=10, legargs=c(x="left"))
 #' plotLfit(dlf_b, selection=c("gpa", "glo", "gev", "wak"))
 #' plotLfit(dlf_b, selection=c("gpa", "glo", "gev", "wak"), order=TRUE)
 #' plotLfit(dlf_b, coldist=c("orange",3:6), lty=1:3) # lty is recycled
@@ -35,19 +37,18 @@
 #' plotLfit(dlf_b, cdf=TRUE, histargs=list(do.points=FALSE), sel="nor")
 #' 
 #' 
-#' # Goodness of Fit is computed by RMSE, see first example of ?distLgof
-#' 
 #' # logarithmic axes:
 #' set.seed(1)
 #' y <- 10^rnorm(100, mean=2, sd=0.3) # if you use 1e4, distLgof will be much slower
 #' hist(y, breaks=20)
 #' berryFunctions::logHist(y, col=8)
-#' dlf <- distLfit(log10(y), breaks=50)
+#' dlf <- distLfit(log10(y))
+#' plotLfit(dlf, breaks=50)
 #' plotLfit(dlf, breaks=50, log=TRUE)
 #' 
 #' \dontrun{
 #' # this takes a while, as it tries to fit all 30 distributions:
-#' d_all <- distLfit(annMax, speed=FALSE, plot=FALSE) # 35 sec
+#' d_all <- distLfit(annMax, speed=FALSE) # 35 sec
 #' printL(d_all)
 #' plotLfit(d_all, nbest=22, coldist=grey(1:22/29), xlim=c(20,140))
 #' plotLfit(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))
@@ -59,14 +60,8 @@
 #'                  DEFAULT: \code{deparse(substitute(dat))}
 #' @param speed     If TRUE, several distributions are omitted, for the reasons 
 #'                  shown in \code{lmomco::\link[lmomco]{dist.list}()}. DEFAULT: TRUE
-#' @param ks        Include ks.test results in \code{dlf$gof}? Computing is much 
-#'                  faster when FALSE. DEFAULT: FALSE
 #' @param selection Selection of distributions. Character vector with types 
 #'                  as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL
-#' @param order     Should gof output be ordered by fit? 
-#'                  Strongly recommended with the default color palette. DEFAULT: TRUE
-#' @param weightc   Named custom weights for each distribution, 
-#'                  see \code{\link{distLgof}}. DEFAULT: NA
 #' @param truncate  Number between 0 and 1. POT Censored \code{\link{distLquantile}}: 
 #'                  fit to highest values only (truncate lower proportion of x). 
 #'                  Probabilities are adjusted accordingly. DEFAULT: 0
@@ -75,35 +70,20 @@
 #'                  DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
 #' @param progbars  Show progress bars for each loop? DEFAULT: TRUE if n > 200
 #' @param time      \code{\link{message}} execution time? DEFAULT: TRUE
-#' @param plot      Should a histogram with densities be plotted? DEFAULT: TRUE
-#' @param cdf       If TRUE, plot cumulated DF instead of probability density. 
-#'                  DEFAULT: FALSE
-#' @param legargs   List of arguments passed to \code{\link{legend}} 
-#'                  except for legend and col. DEFAULT: NULL
-#' @param histargs  List of arguments passed to \code{\link{hist}} 
-#'                  except for x, breaks, col, xlim, freq. DEFAULT: NULL
 #' @param quiet     Suppress notes? DEFAULT: FALSE
 #' @param ssquiet   Suppress sample size notes? DEFAULT: quiet
-#' @param \dots     Further arguments passed to \code{\link{plotLfit}} 
-#'                  if they are accepted there, else passed to 
-#'                  \code{\link{lines}}, like lty, type, pch, ...
+#' @param \dots     Further arguments passed to \code{\link{distLgof}} 
+#'                  like cweights, ks=TRUE, order=FALSE
 #' 
 distLfit <- function(
 dat,
 datname=deparse(substitute(dat)),
 speed=TRUE,
-ks=FALSE,
 selection=NULL,
-order=TRUE,
-weightc=NA,
 truncate=0,
 threshold=berryFunctions::quantileMean(dat, truncate),
 progbars=length(dat)>200,
 time=TRUE,
-plot=TRUE,
-cdf=FALSE,
-legargs=NULL,
-histargs=NULL,
 quiet=FALSE,
 ssquiet=quiet,
 ... )
@@ -171,13 +151,10 @@ if( length(parameter) != length(dn))
   }
 else names(parameter) <- dn
 #
-# Goodness of Fit, output list, plot -------------------------------------------
-output <- distLgof(list(dat=dat, datname=datname, parameter=parameter,
-                        truncate=truncate, threshold=threshold, dat_full=dat_full),
-     weightc=weightc, plot=FALSE, progbars=progbars, ks=ks, quiet=quiet, order=order)
-
-if(plot) output <- plotLfit(dlf=output, cdf=cdf, legargs=legargs, histargs=histargs, ... )
-if(!plot) output$coldist <- berryFunctions::rainbow2(if(is.null(selection)) 5 else length(selection))
+# Goodness of Fit, output list -------------------------------------------------
+output <- list(dat=dat, datname=datname, parameter=parameter,
+                        truncate=truncate, threshold=threshold, dat_full=dat_full)
+output <- distLgof(output, progbars=progbars, quiet=quiet, ...)
 
 if(time & !quiet) message("distLfit execution took ", 
                   signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")

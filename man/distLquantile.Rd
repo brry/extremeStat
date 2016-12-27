@@ -9,8 +9,7 @@ distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
   weightc = NA, sanerange = NA, sanevals = NA, selection = NULL,
   dlf = NULL, order = TRUE, returnlist = FALSE, empirical = TRUE,
   weighted = empirical, gpd = empirical, addinfo = FALSE, speed = TRUE,
-  plot = FALSE, plotargs = NULL, quiet = TRUE, ssquiet = quiet,
-  ttquiet = quiet, ...)
+  quiet = TRUE, ssquiet = quiet, ttquiet = quiet, ...)
 }
 \arguments{
 \item{x}{Sample for which parametrical quantiles are to be calculated. 
@@ -75,11 +74,6 @@ DEFAULT: FALSE}
 Don't accidentally set this to \code{FALSE} in simulations or 
 with large datasets! DEFAULT: TRUE}
 
-\item{plot}{Should \code{\link{plotLquantile}} be called? DEFAULT: FALSE}
-
-\item{plotargs}{List of arguments to be passed to \code{\link{plotLquantile}} 
-like lines, heights, rows, linargs, nbest, cdf, ...}
-
 \item{quiet}{Suppress notes? DEFAULT: TRUE}
 
 \item{ssquiet}{Suppress sample size notes? DEFAULT: quiet}
@@ -87,7 +81,8 @@ like lines, heights, rows, linargs, nbest, cdf, ...}
 \item{ttquiet}{Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} 
 is called with ttquiet=TRUE. DEFAULT: quiet}
 
-\item{\dots}{Arguments passed to \code{\link{distLfit}}}
+\item{\dots}{Arguments passed to \code{\link{distLfit}} 
+(and potentially to \code{\link{distLgof}})}
 }
 \value{
 Invisible matrix with distribution quantile values 
@@ -113,9 +108,11 @@ NAs are always removed from x in \code{\link{distLfit}}
 
 data(annMax) # Annual Discharge Maxima (streamflow)
 
-distLquantile(annMax, emp=FALSE) # several distribution functions in lmomco
-distLquantile(annMax, truncate=0.8, probs=0.95) # POT (annMax already block maxima)
-distLquantile(annMax, probs=0.95, plot=TRUE, linargs=list(lwd=3), nbest=5, breaks=10)
+distLquantile(annMax, emp=FALSE)[,] # several distribution functions in lmomco
+distLquantile(annMax, truncate=0.8, probs=0.95)[,] # POT (annMax already block maxima)
+dlf <- distLquantile(annMax, probs=0.95, returnlist=TRUE)
+plotLquantile(dlf, linargs=list(lwd=3), nbest=5, breaks=10)
+dlf$quant
 # Parametric 95\% quantile estimates range from 92 to 111!
 # But the best fitting distributions all lie aroud 103.
 
@@ -144,7 +141,6 @@ x3 <- c(4.4, 3, 1.8, 7.3, 2.1, 2.1, 1.8, 1.8)
 q3 <- distLquantile(x3, sanerange=c(0,500), sanevals=c(NA,500))
 
 # weighted distribution quantiles are calculated by different weighting schemes:
-dlf <- distLfit(annMax)
 plotLgof(dlf)
 
 # If speed is important and parameters are already available, pass them via dlf:
@@ -152,9 +148,10 @@ distLquantile(dlf=dlf, probs=0:5/5, selection=c("wak","gev","kap"), order=FALSE)
 distLquantile(dlf=dlf, truncate=0.3, returnlist=TRUE)$truncate
 
 # censored (truncated, trimmed) quantile, Peak Over Treshold (POT) method:
-qwak <- distLquantile(annMax, sel="wak", prob=0.95, plot=TRUE, ylim=c(0,0.06), emp=FALSE)
-qwak2 <-distLquantile(annMax, sel="wak", prob=0.95, truncate=0.6, plot=TRUE,
-                     addinfo=FALSE, add=TRUE, coldist="blue", empirical=FALSE)
+qwak <- distLquantile(annMax, sel="wak", prob=0.95, emp=FALSE, returnlist=TRUE)
+plotLquantile(qwak, ylim=c(0,0.06) ); qwak$quant
+qwak2 <-distLquantile(annMax, sel="wak", prob=0.95, emp=FALSE, returnlist=TRUE, truncate=0.6)
+plotLquantile(qwak2, add=TRUE, coldist="blue")
                      
 
 # Simulation of truncation effect
@@ -164,16 +161,16 @@ rnum <- rlmomco(n=1e3, para=dlf$parameter$gev)
 myprobs <- c(0.9, 0.95, 0.99, 0.999)
 mytrunc <- seq(0, 0.9, length.out=20)
 trunceffect <- sapply(mytrunc, function(mt) distLquantile(rnum, selection="gev",
-                             probs=myprobs, truncate=mt, plot=FALSE, quiet=TRUE,
-                             progbars=FALSE, empirical=FALSE)["gev",])
+                             probs=myprobs, truncate=mt, quiet=TRUE,
+                             pempirical=FALSE)["gev",])
 # If more values are truncated, the function runs faster
 
 op <- par(mfrow=c(2,1), mar=c(2,4.5,2,0.5), cex.main=1)
-distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, ylab="", xlab="", plot=TRUE)
-distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, addinfo=FALSE,
-              truncate=0.3, add=TRUE, coldist=4, plot=TRUE)
-legend("right", c("fitted GEV", "fitted with truncate=0.3"), lty=1, col=c(2,4),
-       bg="white")
+dlf1 <- distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, returnlist=TRUE)
+dlf2 <- distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, returnlist=TRUE, truncate=0.3)
+plotLquantile(dlf1, ylab="", xlab="")
+plotLquantile(dlf2, add=TRUE, coldist=4)
+legend("right", c("fitted GEV", "fitted with truncate=0.3"), lty=1, col=c(2,4), bg="white")
 par(mar=c(3,4.5,3,0.5))
 plot(mytrunc, trunceffect[1,], ylim=range(trunceffect), las=1, type="l",
      main=c("High quantiles of 1000 random numbers from gev distribution",

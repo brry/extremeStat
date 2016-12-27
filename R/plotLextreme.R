@@ -186,5 +186,6 @@ do.call(graphics::legend, args=berryFunctions::owa(legdef, legargs,
 # output dlf object
 dlf$RPweibull <- RPw
 dlf$RPgringorton <- RPg
+dlf$coldist <- coldist
 return(invisible(dlf))
 }

@@ -44,26 +44,27 @@
 #' data(annMax) # annual streamflow maxima in river in Austria
 #' 
 #' # Basic examples ---------------------------------------------------------------
-#' dle <- distLextreme(annMax, log=TRUE)
+#' dlf <- distLextreme(annMax)
+#' plotLextreme(dlf, log=TRUE)
 #'
 #' # Object structure:
-#' str(dle, max.lev=2)
-#' printL(dle)
+#' str(dlf, max.lev=2)
+#' printL(dlf)
 #' 
 #' # discharge levels for default return periods:
-#' dle$returnlev
+#' dlf$returnlev
 #' 
 #' # Estimate discharge that could occur every 80 years (at least empirically):
-#' Q80 <- distLextreme(dlf=dle, RPs=80)$returnlev
+#' Q80 <- distLextreme(dlf=dlf, RPs=80)$returnlev
 #' round(sort(Q80[,1], decr=TRUE),1)
 #' # 99 to 143 m^3/s can make a relevant difference in engineering!
-#' # That's why the rows weighted by GOF are helpful! Weights are given as in
-#' plotLgof(dle) # See also section weighted mean below
+#' # That's why the rows weighted by GOF are helpful. Weights are given as in
+#' plotLgof(dlf) # See also section weighted mean below
 #' # For confidence intervals see distLexBoot
 #' 
 #' 
 #' # Return period of a given discharge value, say 120 m^3/s:
-#' sort(1/(1-sapply(dle$parameter, plmomco, x=120) )  )[1:13]
+#' sort(1/(1-sapply(dlf$parameter, plmomco, x=120) )  )[1:13]
 #' # exponential:                 every 29 years
 #' # gev (general extreme value dist):  58,
 #' # Weibull:                     every 72 years only
@@ -71,11 +72,11 @@
 #' 
 #' 
 #' # Advanced options -------------------------------------------------------------
-#' plotLextreme(dlf=dle)
+#' plotLextreme(dlf=dlf)
 #' # Line colors / select distributions to be plotted:
-#' plotLextreme(dle, nbest=17, coldist=heat.colors(17), lty=1:5) # lty is recycled
-#' plotLextreme(dle, selection=c("gev", "gam", "gum"), coldist=4:6, PPcol=3, lty=3:2)
-#' plotLextreme(dle, selection=c("gpa","glo","wei","exp"), pch=c(NA,NA,6,8), 
+#' plotLextreme(dlf, nbest=17, coldist=heat.colors(17), lty=1:5) # lty is recycled
+#' plotLextreme(dlf, selection=c("gev", "gam", "gum"), coldist=4:6, PPcol=3, lty=3:2)
+#' plotLextreme(dlf, selection=c("gpa","glo","wei","exp"), pch=c(NA,NA,6,8), 
 #'                  order=TRUE, cex=c(1,0.6, 1,1), log=TRUE, PPpch=c(16,NA), n_pch=20)
 #' # use n_pch to say how many points are drawn per line (important for linear axis) 
 #' 
@@ -84,35 +85,35 @@
 #' ## the condition has length > 1 and only the first element will be used
 #' # apparently, warnings do not get passed from one function to the next...
 #' 
-#' plotLextreme(dle, legarg=list(cex=0.5, x="bottom", box.col="red", col=3))
+#' plotLextreme(dlf, legarg=list(cex=0.5, x="bottom", box.col="red", col=3))
 #' # col in legarg list is (correctly) ignored
 
 
 #' \dontrun{
 #' ## Excluded from package R CMD check because it's time consuming
 #' 
-#' plotLextreme(dle, PPpch=c(1,NA)) # only Weibull plotting positions
+#' plotLextreme(dlf, PPpch=c(1,NA)) # only Weibull plotting positions
 #' # add different dataset to existing plot:
 #' distLextreme(Nile/15, add=TRUE, PPpch=NA, coldist=1, selection="wak", legend=FALSE)
 #' 
 #' # Logarithmic axis
-#' distLextreme(Nile, log=TRUE, nbest=8)
+#' plotLextreme(distLextreme(Nile), log=TRUE, nbest=8)
 #' 
 #' 
 #' 
 #' # weighted mean based on Goodness of fit (GOF) ---------------------------------
 #' # Add discharge weighted average estimate continuously:
-#' plotLextreme(dle, nbest=17, legend=FALSE)
+#' plotLextreme(dlf, nbest=17, legend=FALSE)
 #' abline(h=115.6, v=50)
 #' RP <- seq(1, 70, len=100)
-#' DischargeEstimate <- distLextreme(dlf=dle, RPs=RP, plot=FALSE)$returnlev
+#' DischargeEstimate <- distLextreme(dlf=dlf, RPs=RP, plot=FALSE)$returnlev
 #' lines(RP, DischargeEstimate["weighted2",], lwd=3, col="orange") 
 #' 
 #' # Or, on log scale:
-#' plotLextreme(dle, nbest=17, legend=FALSE, log=TRUE)
+#' plotLextreme(dlf, nbest=17, legend=FALSE, log=TRUE)
 #' abline(h=115.9, v=50)
 #' RP <- unique(round(logSpaced(min=1, max=70, n=200, plot=FALSE),2))
-#' DischargeEstimate <- distLextreme(dlf=dle, RPs=RP, plot=FALSE)$returnlev
+#' DischargeEstimate <- distLextreme(dlf=dlf, RPs=RP)$returnlev
 #' lines(RP, DischargeEstimate["weighted2",], lwd=5) 
 #' 
 #' 
@@ -126,12 +127,12 @@
 #' Q$date <- as.Date(Q$date)
 #' plot(Q, type="l")
 #' Qmax <- tapply(Q$discharge, format(Q$date,"%Y"), max)
-#' distLextreme(Qmax, quiet=TRUE)
+#' plotLextreme(distLextreme(Qmax, quiet=TRUE))
 #' Qmin <- tapply(Q$discharge, format(Q$date,"%Y"), min)
-#' dle <- distLextreme(-Qmin, quiet=TRUE, RPs=c(2,5,10,20,50,100,200,500))
-#' plotLextreme(dle, ylim=c(0,-31), yaxs="i", yaxt="n", ylab="Q annual minimum", nbest=14)
+#' dlf <- distLextreme(-Qmin, quiet=TRUE, RPs=c(2,5,10,20,50,100,200,500))
+#' plotLextreme(dlf, ylim=c(0,-31), yaxs="i", yaxt="n", ylab="Q annual minimum", nbest=14)
 #' axis(2, -(0:3*10), 0:3*10, las=1)
-#' -dle$returnlev[c(1:14,21), ]
+#' -dlf$returnlev[c(1:14,21), ]
 #' # Some distribution functions are an obvious bad choice for this, so I use
 #' # weighted 3: Values weighted by GOF of dist only for the best half.
 #' # For the Thames in Windsor, we will likely always have > 9 m^3/s streamflow
@@ -142,7 +143,7 @@
 #' plot(fevd(annMax))
 #' par(mfrow=c(1,1))
 #' return.level(fevd(annMax, type="GEV")) # "GP", "PP", "Gumbel", "Exponential"
-#' distLextreme(dlf=dle, RPs=c(2,20,100))$returnlev["gev",]
+#' distLextreme(dlf=dlf, RPs=c(2,20,100))$returnlev["gev",]
 #' # differences are small, but noticeable...
 #' # if you have time for a more thorough control, please pass me the results!
 #' 
@@ -153,47 +154,30 @@
 #' 1220, 1270, 1285, 1329, 1360, 1360, 1387, 1401, 1410, 1410, 1456,
 #' 1556, 1580, 1610, 1630, 1680, 1734, 1740, 1748, 1780, 1800, 1820,
 #' 1896, 1962, 2000, 2010, 2238, 2270, 2860, 4500)
-#' distLextreme(Dresden_AnnualMax)
+#' distLplot(distLextreme(Dresden_AnnualMax))
 #' } # end dontrun
 #' 
 #' @param dat       Vector with extreme values e.g. annual discharge maxima. 
 #'                  Ignored if dlf is given.
 #' @param dlf       List as returned by \code{\link{distLfit}}, containing the 
 #'                  elements \code{dat, parameter, gof}. Overrides dat! DEFAULT: NULL
-#' @param selection Selection of distributions. Character vector with types as 
-#'                  in \code{\link[lmomco]{lmom2par}}. DEFAULT: NULL
-#' @param truncate  Proportion truncated for censored quantile, see 
-#'                  \code{\link{distLquantile}}. DEFAULT: 0
 #' @param RPs       ReturnPeriods for which discharge is estimated. DEFAULT: c(2,5,10,20,50)
-#' @param progbars  Show progress bars for each loop? DEFAULT: TRUE if n>200
-#' @param time      \code{\link{message}} execution time? DEFAULT: TRUE
-#' @param plot      Should the return periods and nbest fitted distributions be 
-#'                  plotted by a call to \code{\link{plotLextreme}}? DEFAULT: TRUE
-#' @param fitargs   List of arguments passed to \code{\link{distLfit}}. DEFAULT: NULL
 #' @param quiet     Suppress notes and progbars? DEFAULT: FALSE
-#' @param \dots     Further arguments passed to \code{\link{plotLextreme}} like order, lty, lwd, ...
+#' @param \dots     Further arguments passed to \code{\link{distLfit}} and
+#'                  \code{\link{distLquantile}} like truncate, selection,
+#'                  time, progbars
 #' 
 distLextreme <- function(
 dat,
 dlf=NULL,
-selection=NULL,
-truncate=0,
 RPs=c(2,5,10,20,50),
-progbars=length(dlf$dat)>200,
-time=TRUE,
-plot=TRUE,
-fitargs=NULL,
 quiet=FALSE,
 ... )
 {
-StartTime <- Sys.time()
-if(quiet) progbars <- FALSE
 if(any(RPs<1.05) & !quiet) message("Note in distLextreme: for RPs=1 rather use min(dat).")
 # fit distributions and calculate goodness of fits -----------------------------
-if( is.null(dlf) )  dlf <- do.call(distLfit, owa(list(dat=dat, 
-      datname=deparse(substitute(dat)), truncate=truncate, 
-      plot=FALSE, selection=selection, time=FALSE, progbars=progbars, quiet=quiet), 
-      fitargs, "dat", "datname", "selection"))
+if( is.null(dlf) )  dlf <- distLfit(dat=dat, datname=deparse(substitute(dat)), 
+                                    quiet=quiet, ...)
 # Emptyness check:
 if("error" %in% names(dlf)) 
   {
@@ -205,17 +189,11 @@ if("error" %in% names(dlf))
 if(!missing(dat) & !is.null("dlf")) if(any(dlf$dat != dat) & !quiet)
   message("Note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored.")
 #
-# plot -------------------------------------------------------------------------
-if(plot) dlf <- plotLextreme(dlf=dlf, selection=selection, quiet=quiet, ...)
-#
 # output (discharge) values at return periods ----------------------------------
-returnlev <- distLquantile(dlf=dlf, selection=selection, truncate=truncate, 
-                           probs=1-1/RPs, empirical=TRUE, quiet=quiet)
+returnlev <- distLquantile(dlf=dlf, probs=1-1/RPs, empirical=TRUE, quiet=quiet, ...)
 # column names:
 colnames(returnlev) <- paste0("RP.", RPs)
 # Add to output:
 dlf$returnlev <- as.data.frame(returnlev)
-if(time & !quiet) message("distLextreme execution took ", 
-                  signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
 return(invisible(dlf))
 } # end of function

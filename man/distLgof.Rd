@@ -4,8 +4,8 @@
 \alias{distLgof}
 \title{Quality of distribution fits}
 \usage{
-distLgof(dlf, order = TRUE, plot = TRUE, progbars = length(dlf$dat) > 200,
-  ks = FALSE, weightc = NA, quiet = FALSE, ...)
+distLgof(dlf, order = TRUE, ks = FALSE, weightc = NA,
+  progbars = length(dlf$dat) > 200, quiet = FALSE, ...)
 }
 \arguments{
 \item{dlf}{List as returned by \code{\link{distLfit}}, containing the elements
@@ -14,18 +14,18 @@ distLgof(dlf, order = TRUE, plot = TRUE, progbars = length(dlf$dat) > 200,
 \item{order}{Sort output$gof by RMSE? If FALSE, the order of appearance in 
 selection (or dlf$parameter) is kept. DEFAULT: TRUE}
 
-\item{plot}{Call \code{\link{plotLgof}}? DEFAULT: TRUE}
-
-\item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n > 200}
-
 \item{ks}{Include ks.test results in \code{dlf$gof}?
 Computing is much faster when FALSE. DEFAULT: FALSE}
 
 \item{weightc}{Custom weights, see \code{\link{distLweights}}. DEFAULT: NA}
 
+\item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n > 200}
+
 \item{quiet}{Suppress notes? DEFAULT: FALSE}
 
-\item{\dots}{Further arguments passed to \code{\link{plotLgof}}}
+\item{\dots}{Ignored arguments (so a set of arguments can be passed to
+distLfit and distLquantile and arguments used only in the latter 
+will not throw errors)}
 }
 \value{
 List as explained in \code{\link{extremeStat}}. The added element is gof,\cr
@@ -48,7 +48,8 @@ library(lmomco)
 data(annMax)
 
 # Goodness of Fit is measured by RMSE of cumulated distribution function and ?ecdf
-dlf <- distLfit(annMax, cdf=TRUE, nbest=17)
+dlf <- distLfit(annMax)
+plotLfit(dlf, cdf=TRUE, nbest=17)
 plotLfit(dlf, cdf=TRUE, sel=c("wak", "revgum"))
 dlf$gof
 x <- sort(annMax)
@@ -59,16 +60,16 @@ plot(ecdf(annMax), add=TRUE)
 
 # weights by three different weighting schemes
 plotLgof(dlf)
-distLgof(dlf, ks=TRUE, plot=FALSE)$gof
+# GOF: how well do the distributions fit the original data?
+dlf <- distLgof(dlf, ks=TRUE)
+dlf$gof
+pairs(dlf$gof[,1:3]) # measures of goodness of fit are correlated quite well here.
 
 # Kolmogorov-Smirnov Tests return slightly different values:
 ks.test(annMax, "pnorm", mean(annMax), sd(annMax) )$p.value
 ks.test(annMax, "cdfnor", parnor(lmoms(annMax)))$p.value
 
 # todo: develop examples below function
-
-# GOF: how well do the distributions fit the original data?
-pairs(dlf$gof[,1:3]) # measures of goodness of fit are correlated quite well here.
 
 \dontrun{ ## to save CRAN check computing time
 
