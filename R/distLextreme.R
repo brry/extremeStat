@@ -194,7 +194,8 @@ if(!missing(dat) & !is.null("dlf")) if(any(dlf$dat != dat) & !quiet)
   message("Note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored.")
 #
 # output (discharge) values at return periods ----------------------------------
-returnlev <- distLquantile(dlf=dlf, probs=1-1/RPs, quiet=quiet, ...)
+returnlev <- distLquantile(dlf=dlf, probs=1-1/RPs, quiet=quiet, gpquiet=TRUE, ...)
+returnlev <- returnlev[, - ncol(returnlev), drop=FALSE]
 # column names:
 colnames(returnlev) <- paste0("RP.", RPs)
 # Add to output:
