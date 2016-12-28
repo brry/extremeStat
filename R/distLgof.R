@@ -149,13 +149,6 @@ if(!quiet)
                     dNA, " of ", length(tcdfs[[1]]), " values.")
     }
   }
-# if all distributions are excluded:
-if(length(RMSE)==0 && FALSE) # should be obsolete with next part
-  {
-  RMSE <- rep(NA, length(dlf$parameter)) 
-  R2   <- rep(NA, length(dlf$parameter)) 
-  names(RMSE) <- names(dlf$parameter)
-  }
 # add nonfitted distributions:
 if(any(exclude)) 
   {
