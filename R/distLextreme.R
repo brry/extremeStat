@@ -74,8 +74,8 @@
 #' # Advanced options -------------------------------------------------------------
 #' plotLextreme(dlf=dlf)
 #' # Line colors / select distributions to be plotted:
-#' plotLextreme(dlf, nbest=17, coldist=heat.colors(17), lty=1:5) # lty is recycled
-#' plotLextreme(dlf, selection=c("gev", "gam", "gum"), coldist=4:6, PPcol=3, lty=3:2)
+#' plotLextreme(dlf, nbest=17, distcols=heat.colors(17), lty=1:5) # lty is recycled
+#' plotLextreme(dlf, selection=c("gev", "gam", "gum"), distcols=4:6, PPcol=3, lty=3:2)
 #' plotLextreme(dlf, selection=c("gpa","glo","wei","exp"), pch=c(NA,NA,6,8), 
 #'                  order=TRUE, cex=c(1,0.6, 1,1), log=TRUE, PPpch=c(16,NA), n_pch=20)
 #' # use n_pch to say how many points are drawn per line (important for linear axis) 
@@ -94,7 +94,7 @@
 #' 
 #' plotLextreme(dlf, PPpch=c(1,NA)) # only Weibull plotting positions
 #' # add different dataset to existing plot:
-#' distLextreme(Nile/15, add=TRUE, PPpch=NA, coldist=1, selection="wak", legend=FALSE)
+#' distLextreme(Nile/15, add=TRUE, PPpch=NA, distcols=1, selection="wak", legend=FALSE)
 #' 
 #' # Logarithmic axis
 #' plotLextreme(distLextreme(Nile), log=TRUE, nbest=8)
@@ -159,8 +159,8 @@
 #' 
 #' @param dat       Vector with extreme values e.g. annual discharge maxima. 
 #'                  Ignored if dlf is given.
-#' @param dlf       List as returned by \code{\link{distLfit}}, containing the 
-#'                  elements \code{dat, parameter, gof}. Overrides dat! DEFAULT: NULL
+#' @param dlf       List as returned by \code{\link{distLfit}}. 
+#'                  Overrides dat! DEFAULT: NULL
 #' @param RPs       ReturnPeriods for which discharge is estimated. DEFAULT: c(2,5,10,20,50)
 #' @param quiet     Suppress notes and progbars? DEFAULT: FALSE
 #' @param \dots     Further arguments passed to \code{\link{distLfit}} and
@@ -176,24 +176,22 @@ quiet=FALSE,
 {
 if(any(RPs<1.05) & !quiet) message("Note in distLextreme: for RPs=1 rather use min(dat).")
 # fit distributions and calculate goodness of fits -----------------------------
-if( is.null(dlf) )  dlf <- distLfit(dat=dat, datname=deparse(substitute(dat)), 
-                                    quiet=quiet, ...)
+if( is.null(dlf) )  dlf <- distLfit(dat=dat, datname=deparse(substitute(dat)), quiet=quiet, ...)
 # Emptyness check:
-if("error" %in% names(dlf)) 
-  {
-  message("Note in distLextreme: There was an error in distLfit, ",
-          "thus I'm not plotting anything: ", dlf$error)
-  plot <- FALSE
-  }
+if("error" %in% names(dlf))
+  message("Note in distLextreme: There was an error in distLfit: ", dlf$error)
 # Equality check
 if(!missing(dat) & !is.null("dlf")) if(any(dlf$dat != dat) & !quiet)
   message("Note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored.")
 #
 # output (discharge) values at return periods ----------------------------------
-returnlev <- distLquantile(dlf=dlf, probs=1-1/RPs, empirical=TRUE, quiet=quiet, ...)
+returnlev <- distLquantile(dlf=dlf, probs=1-1/RPs, quiet=quiet, ...)
 # column names:
 colnames(returnlev) <- paste0("RP.", RPs)
 # Add to output:
+#dlf$distnames <- NULL
+#dlf$distcols <- NULL
+#dlf$distselector <- "distLextreme" # remains distLfit for now
 dlf$returnlev <- as.data.frame(returnlev)
 return(invisible(dlf))
 } # end of function

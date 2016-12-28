@@ -26,19 +26,32 @@ The main functions in the extremeStat package are:
 The common object to share between functions is a list that can be printed with 
 \code{\link{printL}(dlf)} and contains the following elements:
 \tabular{ll}{
-\code{dat}       \tab numeric vector with (extreme) values \cr
-\code{datname}   \tab character string for main, xlab etc \cr
-\code{parameter} \tab list (usually of length 17 if \code{speed=TRUE}) 
-                      with parameters of each distribution\cr
-\code{gof}       \tab dataframe with 'Goodness of Fit' measures, sorted by 
-                      RMSE of theoretical and empirical cumulated density\cr
-\code{returnlev} \tab dataframe with values of distributions for given 
-                      return periods (\code{RPs}). This element is only added
-                      in \code{\link{distLextreme}}\cr
-\code{RP___}     \tab Return periods according to plotting positions, see below. \cr
-\code{coldist}   \tab Colors for plotting, added in \code{\link{plotLfit}}\cr
-\code{truncate}  \tab Truncation percentage, only relevant for \code{\link{distLquantile}}\cr
-\code{quant}     \tab Quantile estimation from \code{\link{distLquantile}}\cr
+\code{dat}          \tab numeric vector with (extreme) values, 
+                         with all NAs and values below threshold removed\cr
+\code{dat_full}     \tab original input data complete with NAs\cr
+\code{datname}      \tab character string for main, xlab etc \cr
+\code{parameter}    \tab list (usually of length 17 if \code{speed=TRUE} in 
+                         \code{\link{distLfit}}) 
+                         with parameters of each distribution\cr
+\code{gof}          \tab dataframe with 'Goodness of Fit' measures, sorted by 
+                         RMSE of theoretical and empirical cumulated density,
+                         created by \code{\link{distLgof}}\cr
+\code{distnames}    \tab character vector with selected distribution names\cr
+\code{distcols}     \tab colors for distnames (for plotting). If not given manually,
+                         determined by \code{berryFunctions::\link{rainbow2}}\cr
+\code{distselector} \tab character string with function name creating
+                         the selection\cr
+\code{truncate, threshold} \tab Truncation percentage and threshold value, 
+                         relevant for \code{\link{distLquantile}}\cr
+                      
+optionally:         \tab \cr
+\code{returnlev, }  \tab dataframe with values of distributions for given 
+                         return periods (\code{RPs}). This element is only added
+                         in \code{\link{distLextreme}}\cr
+\code{RPweibull, RPgringorton} \tab Return periods according to plotting positions, 
+                         added in \code{\link{plotLextreme}}\cr
+\code{quant}        \tab Quantile estimates from \code{\link{distLquantile}}\cr
+\code{exBootRPs, qexBootSim, exBootCI} \tab objects from \code{\link{distLexBoot}}\cr
 }
 
 Plotting positions are not used for fitting distributions, but for plotting only.

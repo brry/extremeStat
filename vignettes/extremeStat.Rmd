@@ -77,20 +77,20 @@ L-moments are especially useful in the context of quantile functions"
 ## Quantile estimation
 To estimate the quantile of (small) samples via a distribution function, you can use `distLquantile`, which internally calls `distLfit`, in the following manner:
 ```{r dlq}
-dlq <- distLquantile(rain[1:900], probs=c(0.8,0.9,0.99,0.999), returnlist=TRUE, quiet=TRUE)
+dlq <- distLquantile(rain[1:900], probs=c(0.8,0.9,0.99,0.999), list=TRUE, quiet=TRUE)
 ```
 By default, the 5 best fitting distribution types are drawn and the quantiles for each distribution returned.
-If returnlist is set to TRUE, it will return an object that can be examined with
+If returnlist is set to TRUE, it will return an object that can be examined with printL:
 ```{r dlprint, eval=1}
 printL(dlq)
 # More information on dlf objects in
 ?extremeStat
 ```
-plotted with
+plotted with plotLfit, plotLgof and plotLquantile:
 ```{r dlplot, echo=-1, fig.height=3.5, fig.width=5.5}
 par(mar=c(3.9,3.9,1.5,0.7), mgp=c(2.8,0.7,0))
-plotLfit(dlq, nbest=8, qlines=TRUE, qlinargs=list(lwd=2), 
-          qheights=seq(0.04, 0.01, len=8), breaks=80)
+plotLquantile(dlq, nbest=8, linargs=list(lwd=2), 
+          heights=seq(0.04, 0.01, len=8), breaks=80)
 ```
 
 and the resulting **parametric quantiles** can be obtained with

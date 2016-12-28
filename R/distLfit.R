@@ -32,7 +32,7 @@
 #' plotLfit(dlf_b, nbest=10, legargs=c(x="left"))
 #' plotLfit(dlf_b, selection=c("gpa", "glo", "gev", "wak"))
 #' plotLfit(dlf_b, selection=c("gpa", "glo", "gev", "wak"), order=TRUE)
-#' plotLfit(dlf_b, coldist=c("orange",3:6), lty=1:3) # lty is recycled
+#' plotLfit(dlf_b, distcols=c("orange",3:6), lty=1:3) # lty is recycled
 #' plotLfit(dlf_b, cdf=TRUE)
 #' plotLfit(dlf_b, cdf=TRUE, histargs=list(do.points=FALSE), sel="nor")
 #' 
@@ -50,7 +50,7 @@
 #' # this takes a while, as it tries to fit all 30 distributions:
 #' d_all <- distLfit(annMax, speed=FALSE) # 35 sec
 #' printL(d_all)
-#' plotLfit(d_all, nbest=22, coldist=grey(1:22/29), xlim=c(20,140))
+#' plotLfit(d_all, nbest=22, distcols=grey(1:22/29), xlim=c(20,140))
 #' plotLfit(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))
 #' d_all$gof
 #' }
@@ -124,17 +124,28 @@ else
 # remove some to save time and errors, see ?dist.list # gld, gov and tri added
 if(speed) dn <- dn[ ! dn %in%
    c("aep4","cau","emu","gep","gld","gov","kmu","kur","lmrq","sla","st3","texp","tri")]
-# Check remaining sample size
-if(length(dat) < 5) {if(!ssquiet) message("Note in distLfit: sample size (",
-                                  length(dat), ") is too small to fit parameters (<5).")
-  error_out <- as.list(dn) # this is very useful for distLquantile
-  names(error_out) <- dn  # since it keeps the rows if a selection is given
+
+# prepare output:
+dlf <- list(dat=dat, dat_full=dat_full, datname=datname, 
+            distnames=dn, distcols=berryFunctions::rainbow2(length(dn)), 
+            distselector="distLfit", 
+            truncate=truncate, threshold=threshold)
+
+# Check remaining sample size:
+if(length(dat) < 5) 
+  {
+  if(!ssquiet) message("Note in distLfit: sample size (", length(dat), 
+                       ") is too small to fit parameters (<5).")
+  error_par <- as.list(dn) 
+  names(error_par) <- dn
   error_gof <- matrix(NA, nrow=length(dn), ncol=6)
   colnames(error_gof) <- c("RMSE", "R2", paste0("weight",1:3), "weightc")
   rownames(error_gof) <- dn
-  return(list(dat=dat, datname=datname, parameter=error_out,
-        gof=error_gof, error="dat size too small.",
-        truncate=truncate, threshold=threshold, dat_full=dat_full))}
+  dlf$parameter <- error_par
+  dlf$gof <- error_gof
+  dlf$error <- "dat size too small."
+  return(invisible(dlf))
+  }
 #
 # Fit distribution parameters --------------------------------------------------
 # L-Moments of sample  # package lmomco
@@ -152,11 +163,11 @@ if( length(parameter) != length(dn))
 else names(parameter) <- dn
 #
 # Goodness of Fit, output list -------------------------------------------------
-output <- list(dat=dat, datname=datname, parameter=parameter,
-                        truncate=truncate, threshold=threshold, dat_full=dat_full)
-output <- distLgof(output, progbars=progbars, quiet=quiet, ...)
+dlf$parameter <- parameter
+dlf <- distLgof(dlf, progbars=progbars, quiet=quiet, ...)
+dlf$distnames <- rownames(dlf$gof)[order(dlf$gof$RMSE)]
 
 if(time & !quiet) message("distLfit execution took ", 
                   signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
-return(invisible(output))
+return(invisible(dlf))
 } # end of function

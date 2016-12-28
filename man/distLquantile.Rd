@@ -151,7 +151,7 @@ distLquantile(dlf=dlf, truncate=0.3, list=TRUE)$truncate
 qwak <- distLquantile(annMax, sel="wak", prob=0.95, emp=FALSE, list=TRUE)
 plotLquantile(qwak, ylim=c(0,0.06) ); qwak$quant
 qwak2 <-distLquantile(annMax, sel="wak", prob=0.95, emp=FALSE, list=TRUE, truncate=0.6)
-plotLquantile(qwak2, add=TRUE, coldist="blue")
+plotLquantile(qwak2, add=TRUE, distcols="blue")
                      
 
 # Simulation of truncation effect
@@ -169,7 +169,7 @@ op <- par(mfrow=c(2,1), mar=c(2,4.5,2,0.5), cex.main=1)
 dlf1 <- distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, list=TRUE)
 dlf2 <- distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, list=TRUE, truncate=0.3)
 plotLquantile(dlf1, ylab="", xlab="")
-plotLquantile(dlf2, add=TRUE, coldist=4)
+plotLquantile(dlf2, add=TRUE, distcols=4)
 legend("right", c("fitted GEV", "fitted with truncate=0.3"), lty=1, col=c(2,4), bg="white")
 par(mar=c(3,4.5,3,0.5))
 plot(mytrunc, trunceffect[1,], ylim=range(trunceffect), las=1, type="l",

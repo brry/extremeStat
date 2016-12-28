@@ -6,7 +6,7 @@
 \usage{
 plotLquantile(dlf, nbest = 5, selection = NULL, order = FALSE,
   rows = NULL, heights = stats::quantile(par("usr")[3:4], 0.2),
-  coldist = dlfplot$coldist, linargs = NULL, ...)
+  distcols = dlfplot$distcols, linargs = NULL, ...)
 }
 \arguments{
 \item{dlf}{List as returned by \code{\link{distLquantile}}, containing the 
@@ -16,22 +16,22 @@ elements \code{dat, parameter, gof, datname, quant}}
 
 \item{rows}{Rowname(s) of \code{dlf$quant} that should be drawn instead of 
 the selection / nbest highest ranking distribution functions.
-'GPD*' will select all the gpd fits. heights and coldist must then 
+'GPD*' will select all the gpd fits. heights and distcols must then 
 accordingly have at least 13 elements (or will be recycled). 
 DEFAULT: NULL}
 
 \item{heights}{Coordinates of quantile line ends, recycled if necessary. 
 DEFAULT: 20\% of plot height.}
 
-\item{coldist}{Color for each distribution added with \code{\link{lines}}. 
-DEFAULT: dlfplot$coldist}
+\item{distcols}{Color for each distribution added with \code{\link{lines}}. 
+DEFAULT: dlfplot$distcols}
 
 \item{linargs}{Arguments passed to \code{\link{lines}}. DEFAULT: NULL}
 
 \item{\dots}{Further arguments passed to \code{\link{plotLfit}}}
 }
 \value{
-dlf with coldist + dnplotted added, returned invisibly.
+dlf with distcols + dnplotted added, returned invisibly.
 }
 \description{
 Plot quantiles of distributions fitted with linear moments

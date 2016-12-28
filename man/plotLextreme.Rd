@@ -7,7 +7,7 @@ plotLextreme(dlf, selection = NULL, order = FALSE, add = FALSE,
   nbest = 5, log = FALSE, xlim = NULL, ylim = NULL, las = 1,
   main = dlf$datname, xlab = "Return Period RP  [a]",
   ylab = "Discharge HQ  [m\U00B3/s]", PPcol = "black", PPpch = c(16, 3),
-  PPcex = 1, coldist = berryFunctions::rainbow2(nbest), lty = 1,
+  PPcex = 1, distcols = berryFunctions::rainbow2(nbest), lty = 1,
   lwd = 1, pch = NA, cex = 1, n_pch = 15, legend = TRUE,
   legargs = NULL, quiet = FALSE, ...)
 }
@@ -42,7 +42,7 @@ plotLextreme(dlf, selection = NULL, order = FALSE, add = FALSE,
 
 \item{PPcex}{Character EXpansion of plotting points. DEFAULT: 1}
 
-\item{coldist}{Color for each distribution added with \code{\link{lines}}. Recycled, if necessary. DEFAULT: \code{\link[berryFunctions]{rainbow2}}}
+\item{distcols}{Color for each distribution added with \code{\link{lines}}. Recycled, if necessary. DEFAULT: \code{\link[berryFunctions]{rainbow2}}}
 
 \item{lty}{Line TYpe for plotted distributions. Is recycled to from a vector of length nbest, i.e. a value for each distribution function drawn. DEFAULT: 1}
 

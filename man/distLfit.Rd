@@ -69,7 +69,7 @@ dlf_b <- distLfit(rbeta(100, 5, 2))
 plotLfit(dlf_b, nbest=10, legargs=c(x="left"))
 plotLfit(dlf_b, selection=c("gpa", "glo", "gev", "wak"))
 plotLfit(dlf_b, selection=c("gpa", "glo", "gev", "wak"), order=TRUE)
-plotLfit(dlf_b, coldist=c("orange",3:6), lty=1:3) # lty is recycled
+plotLfit(dlf_b, distcols=c("orange",3:6), lty=1:3) # lty is recycled
 plotLfit(dlf_b, cdf=TRUE)
 plotLfit(dlf_b, cdf=TRUE, histargs=list(do.points=FALSE), sel="nor")
 
@@ -87,7 +87,7 @@ plotLfit(dlf, breaks=50, log=TRUE)
 # this takes a while, as it tries to fit all 30 distributions:
 d_all <- distLfit(annMax, speed=FALSE) # 35 sec
 printL(d_all)
-plotLfit(d_all, nbest=22, coldist=grey(1:22/29), xlim=c(20,140))
+plotLfit(d_all, nbest=22, distcols=grey(1:22/29), xlim=c(20,140))
 plotLfit(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))
 d_all$gof
 }

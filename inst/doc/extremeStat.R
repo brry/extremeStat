@@ -23,25 +23,24 @@ hist(rain, breaks=80, col=4, las=1)
 berryFunctions::logHist(rain, breaks=80, col=3, las=1)
 
 ## ----dlq-----------------------------------------------------------------
-dlq <- distLquantile(rain, probs=c(0.8,0.9,0.99,0.999), returnlist=TRUE, quiet=TRUE)
+dlq <- distLquantile(rain[1:900], probs=c(0.8,0.9,0.99,0.999), list=TRUE, quiet=TRUE)
 
 ## ----dlprint, eval=1-----------------------------------------------------
-distLprint(dlq)
+printL(dlq)
 # More information on dlf objects in
 ?extremeStat
 
 ## ----dlplot, echo=-1, fig.height=3.5, fig.width=5.5----------------------
 par(mar=c(3.9,3.9,1.5,0.7), mgp=c(2.8,0.7,0))
-distLplot(dlq, nbest=8, qlines=TRUE, qlinargs=list(lwd=2), 
-          qheights=seq(0.04, 0.01, len=8), breaks=80)
+plotLquantile(dlq, nbest=8, linargs=list(lwd=2), 
+          heights=seq(0.04, 0.01, len=8), breaks=80)
 
 ## ----dlquant-------------------------------------------------------------
 dlq$quant # distLquantile output if returnlist=FALSE (the default)
 
 ## ----weight, echo=-1, fig.height=3.5, fig.width=5.5----------------------
 par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
-distLgofPlot(dlq, ranks=FALSE, 
-             legargs=list(cex=0.8, bg="transparent"), quiet=TRUE)
+plotLgof(dlq, legargs=list(cex=0.8, bg="transparent") )
 
 ## ----prob, echo=FALSE, fig.height=1, fig.width=5.5-----------------------
   par(mar=rep(0,4))

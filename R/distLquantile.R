@@ -72,7 +72,7 @@
 #' qwak <- distLquantile(annMax, sel="wak", prob=0.95, emp=FALSE, list=TRUE)
 #' plotLquantile(qwak, ylim=c(0,0.06) ); qwak$quant
 #' qwak2 <-distLquantile(annMax, sel="wak", prob=0.95, emp=FALSE, list=TRUE, truncate=0.6)
-#' plotLquantile(qwak2, add=TRUE, coldist="blue")
+#' plotLquantile(qwak2, add=TRUE, distcols="blue")
 #'                      
 #'
 #' # Simulation of truncation effect
@@ -90,7 +90,7 @@
 #' dlf1 <- distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, list=TRUE)
 #' dlf2 <- distLquantile(rnum, sel="gev", probs=myprobs, emp=FALSE, list=TRUE, truncate=0.3)
 #' plotLquantile(dlf1, ylab="", xlab="")
-#' plotLquantile(dlf2, add=TRUE, coldist=4)
+#' plotLquantile(dlf2, add=TRUE, distcols=4)
 #' legend("right", c("fitted GEV", "fitted with truncate=0.3"), lty=1, col=c(2,4), bg="white")
 #' par(mar=c(3,4.5,3,0.5))
 #' plot(mytrunc, trunceffect[1,], ylim=range(trunceffect), las=1, type="l",
@@ -407,6 +407,9 @@ if(!all(is.na(sanerange)))
 # Weighted quantile estimates: -------------------------------------------------
 if(weighted) output <-  q_weighted(output, distLweights(dlf$gof, weightc=weightc))
 #
+dlf$distnames <- dn
+dlf$distcols <- berryFunctions::rainbow2(length(dn))
+dlf$distselector <- "distLquantile"
 dlf$quant <- output
 # return output: ---------------------------------------------------------------
 if(list) invisible(dlf) else invisible(output)

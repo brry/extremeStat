@@ -54,7 +54,7 @@ progbars=TRUE,
 )
 {
 # Selection
-if(is.null(selection)) selection <- rownames(dlf$gof)[1:nbest]
+if(is.null(selection)) selection <- rownames(dlf$gof)[order(dlf$gof$RMSE)][1:nbest]
 # Return period vector:
 RPdef <- berryFunctions::logSpaced(min=1, n=100, plot=FALSE, 
                                    base=if(log) 1.1708 else 1, max=length(dlf$dat)*2)
@@ -80,8 +80,9 @@ returnCI <- lapply(simQ, function(x)
 # Output
 dlf$exBootSim <- simQ
 dlf$exBootCI <- returnCI
-dlf$exBootSelection <- selection
 dlf$exBootRPs <- RPs
-dlf$coldist <- berryFunctions::rainbow2(length(selection))
+dlf$distnames <- selection
+dlf$distcols <- berryFunctions::rainbow2(length(selection))
+dlf$distselector <- "distLexBoot"
 invisible(dlf)
 }

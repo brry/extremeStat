@@ -8,7 +8,7 @@ plotLfit(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
   log = FALSE, supportends = TRUE, breaks = 20,
   xlim = extendrange(dlf$dat, f = 0.15), ylim = NULL, xaxs = "i",
   yaxs = "i", xaxt, col = "grey", main, xlab, ylab, las = 1,
-  coldist = berryFunctions::rainbow2(nbest), lty = 1, add = FALSE,
+  distcols = berryFunctions::rainbow2(nbest), lty = 1, add = FALSE,
   logargs = NULL, legend = TRUE, legargs = NULL, histargs = NULL, ...)
 }
 \arguments{
@@ -48,7 +48,7 @@ DEFAULT: internal abstraction fom \code{dlf$datname}}
 
 \item{las}{Label Axis Style for orientation of numbers along axes. DEFAULT: 1}
 
-\item{coldist}{Color for each distribution added with \code{\link{lines}}. 
+\item{distcols}{Color for each distribution added with \code{\link{lines}}. 
 DEFAULT: \code{\link[berryFunctions]{rainbow2}}}
 
 \item{lty}{Line TYpe for plotted distributions. 
@@ -72,7 +72,7 @@ except for x, freq. DEFAULT: NULL}
 \item{\dots}{Further arguments passed to \code{\link{lines}}, like type, pch, ...}
 }
 \value{
-dlf with coldist + dnplotted added, returned invisibly.
+dlf with distcols + dnplotted added, returned invisibly.
 }
 \description{
 Plot histogram and distribution densities \emph{or} ecdf with cumulated probability

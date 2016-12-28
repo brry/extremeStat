@@ -1,7 +1,6 @@
 
 extremeStat ToDo-list / wishlist / issues
 - read all of https://www.ine.pt/revstat/pdf/rs120102.pdf and coles (2001)
-- if lmomco parkap is changed, change distLfit:154 and distLgof:154 (or leave it...)
 - distLextreme correct RP for POT approach
 - consider option to change all messages to warnings 
      if(mes2warn) message <- function(...) warning(..., call.=FALSE)
@@ -14,6 +13,13 @@ extremeStat ToDo-list / wishlist / issues
 - now that distLfit keeps all parameters (does it?), can some of the checks be removed?
 - change coldist to distcol, add distnames to all functions where that is relevant
 - change selection to distnames as well?
+- distLextreme vs distLquantile output data.frame vs matrix
+- move plotting positions note from package doc to dle doc
+- replace all instances of dat with x?
+- put dlf elements in common order
+- distLfit(annMax, sel="gep") -> distLweights ->  Error in max(RMSE, na.rm = TRUE) : invalid 'type' (list) of argument 
+- distLgof into distLfit? rename plotLgof to plotLweights?
+- distLquantile: remove arguments that can be passed to distLfit
 
 
 ---------------------------------------

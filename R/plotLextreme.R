@@ -40,7 +40,7 @@
 #' @param PPpch   point characters for plotting positions after Weibull and 
 #'                Gringorton, respectively. NA to suppress in plot and legend. DEFAULT: c(16,3)
 #' @param PPcex   Character EXpansion of plotting points. DEFAULT: 1
-#' @param coldist Color for each distribution added with \code{\link{lines}}. 
+#' @param distcols Color for each distribution added with \code{\link{lines}}. 
 #'                Recycled, if necessary. DEFAULT: \code{\link[berryFunctions]{rainbow2}}
 #' @param lty     Line TYpe for plotted distributions. Is recycled to from a 
 #'                vector of length nbest, i.e. a value for each dist. DEFAULT: 1
@@ -74,7 +74,7 @@ ylab="Discharge HQ  [m\U00B3/s]",
 PPcol="black",
 PPpch=c(16,3),
 PPcex=1,
-coldist=berryFunctions::rainbow2(nbest),
+distcols=berryFunctions::rainbow2(nbest),
 lty=1,
 lwd=1,
 pch=NA,
@@ -123,14 +123,14 @@ if(!is.null(selection))
   }
 # nbest must be shorter if dlf with fewer parameters is given as input:
 nbest <- pmin(length(dlf$parameter), nbest)
-# control coldist length
-if(length(coldist) != nbest & !quiet)
+# control distcols length
+if(length(distcols) != nbest & !quiet)
   {
-  # This happens of coldist is specified with wrong length.
+  # This happens of distcols is specified with wrong length.
   # Can happen if selection is truncated (misspellings, dists not fitted)
-  message("Note in plotLextreme: Length of coldist (",length(coldist),
+  message("Note in plotLextreme: Length of distcols (",length(distcols),
           ") was not equal to nbest (",nbest,"). Is now recycled.")
-  coldist <- rep(coldist, length=nbest)
+  distcols <- rep(distcols, length=nbest)
   }
 #
 # Plotting ---------------------------------------------------------------------
@@ -155,11 +155,11 @@ for(i in nbest:1)
   Pnonexceed <- lmomco::plmomco(yval,dlf$parameter[[dn[i]]]) # print(Pnonexceed, digits=20)
   Pnonexceed[Pnonexceed>1] <- 1 # remove numerical errors
   xval <- 1/(1-Pnonexceed)
-  lines(x=xval, y=yval, col=coldist[i], lty=lty[i], lwd=lwd[i])
+  lines(x=xval, y=yval, col=distcols[i], lty=lty[i], lwd=lwd[i])
   if(!is.na(pch[i]))
     {
     x_int <- approx(xval, n=n_pch)$y
-    points(x_int, y_int, pch=pch[i], col=coldist[i])
+    points(x_int, y_int, pch=pch[i], col=distcols[i])
     }
   }
 # Add plotting positions of actual data:
@@ -176,7 +176,7 @@ legdef <- list(
   pch=   c(if(PP1) PPpch[1],    if(PP2) PPpch[2],       pch),
   pt.cex=c(if(PP1) 1,           if(PP2) 1,              cex),
   lwd=   c(if(PP1) NA,          if(PP2) NA,             lwd),
-  col=   c(if(PP1) PPcol[1],    if(PP2) PPcol[2],       coldist),
+  col=   c(if(PP1) PPcol[1],    if(PP2) PPcol[2],       distcols),
   lty=   c(if(PP1) NA,          if(PP2) NA,             lty),
   x="bottomright",  
   cex=0.8, bg="white")
@@ -186,6 +186,8 @@ do.call(graphics::legend, args=berryFunctions::owa(legdef, legargs,
 # output dlf object
 dlf$RPweibull <- RPw
 dlf$RPgringorton <- RPg
-dlf$coldist <- coldist
+dlf$distcols <- distcols
+dlf$distnames <- dn
+dlf$distselector <- "plotLextreme"
 return(invisible(dlf))
 }

@@ -6,7 +6,7 @@
 #' easier to discern and tail behaviour is easier to judge visually. See also
 #' \url{http://www.vosesoftware.com/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_(histogram)_plots.htm}
 #' 
-#' @return dlf with coldist + dnplotted added, returned invisibly.
+#' @return dlf with distcols + dnplotted added, returned invisibly.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
 #' @seealso \code{\link{distLfit}}, \code{\link{plotLquantile}}
 #' @keywords hplot distribution
@@ -38,7 +38,7 @@
 #' @param main,xlab,ylab \code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab. 
 #'                   DEFAULT: internal abstraction fom \code{dlf$datname}
 #' @param las        Label Axis Style for orientation of numbers along axes. DEFAULT: 1
-#' @param coldist    Color for each distribution added with \code{\link{lines}}. 
+#' @param distcols   Color for each distribution added with \code{\link{lines}}. 
 #'                   DEFAULT: \code{\link[berryFunctions]{rainbow2}}
 #' @param lty        Line TYpe for plotted distributions. 
 #'                   Recycled vector of length nbest. DEFAULT: 1
@@ -70,7 +70,7 @@ xaxt,
 col="grey",
 main, xlab, ylab,
 las=1,
-coldist=berryFunctions::rainbow2(nbest),
+distcols=berryFunctions::rainbow2(nbest),
 lty=1,
 add=FALSE,
 logargs=NULL,
@@ -147,11 +147,11 @@ if(!add)
 # distribution names and colors: -----------------------------------------------
 if(nbest < 1) return(invisible(NULL)) # and stop executing
 dn <- rownames(dlf$gof)[order(dlf$gof$RMSE)[1:nbest]]
-coldist <- rep(coldist, length=nbest)  # recycle 1
+distcols <- rep(distcols, length=nbest)  # recycle 1
 if(length(dlf$parameter)<1)
   {
   message("Note in plotLfit: no distributions were available in dlf$parameter.")
-  dlf$coldist <- coldist
+  dlf$distcols <- distcols
   return(invisible(dlf))
   }
 lty <- rep(lty, length=nbest)
@@ -174,23 +174,24 @@ if(length(dn)>0) for(i in length(dn):1)
   yval <- lfun(xval,paramd)
   if(cdf & dlf$truncate!=0) yval <- yval*(1-dlf$truncate) + dlf$truncate 
                          ## yval <- (yval-dlf$truncate)/(1-dlf$truncate)
-  lines(xval, yval, col=coldist[i], lty=lty[i], ...)
+  lines(xval, yval, col=distcols[i], lty=lty[i], ...)
   if(supportends)
     {
     # last point within support range, if support ends in graphing region:
     lo <- if(xsup[1] > par("usr")[1])      xval[1] else NA
     hi <- if(xsup[2] < par("usr")[2]) tail(xval,1) else NA
-    if(!is.na(lo) ) points(lo,      yval[1], pch=16, col=coldist[i])
-    if(!is.na(hi) ) points(hi, tail(yval,1), pch=16, col=coldist[i])
+    if(!is.na(lo) ) points(lo,      yval[1], pch=16, col=distcols[i])
+    if(!is.na(hi) ) points(hi, tail(yval,1), pch=16, col=distcols[i])
     } # end if supportends
   } # end if xval has values
   } # end for loop over distribution functions
 # legend - write the names of distributions:
-legdef <- list(legend=dn, lwd=1, col=coldist, x="right", cex=0.7, lty=lty)
+legdef <- list(legend=dn, lwd=1, col=distcols, x="right", cex=0.7, lty=lty)
 if(legend) do.call(graphics::legend, args=berryFunctions::owa(legdef, legargs, 
                                                               "legend","col","lty"))
 # add to (or change) output:
-dlf$dnplotted <- dn
-dlf$coldist <- coldist
+dlf$distnames <- dn
+dlf$distcols <- distcols
+dlf$distselector <- "plotLfit"
 return(invisible(dlf))
 } # end function

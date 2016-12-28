@@ -23,7 +23,8 @@ digits=1
 # input checks:
 obj <- deparse(substitute(dlf))
 if(!is.list(dlf)) stop("dlf is not a list")
-must <- c("dat", "dat_full", "datname", "parameter", "gof", "truncate", "threshold")
+must <- c("dat", "dat_full", "datname", "parameter", "gof", 
+          "distnames","distcols", "distselector", "truncate", "threshold")
 if(any(!must %in% names(dlf))) warning("dlf must include the element(s) ", 
                                        toString(must[!must %in% names(dlf)]))
 # functions:
@@ -41,12 +42,10 @@ inparnotgof <- ! names(dlf$parameter) %in% rownames(dlf$gof)
 ingofnotpar <- ! rownames(dlf$gof) %in% names(dlf$parameter)
 PP <- "RPweibull" %in% names(dlf) | "RPgringorton" %in% names(dlf)
 RP <- "returnlev" %in% names(dlf)
-CD <- "coldist" %in% names(dlf)
 qq <- "quant" %in% names(dlf)
-other <- ! names(dlf) %in% c(must, "RPweibull", "RPgringorton" , "returnlev", "coldist", "quant")
-# Further elements:
-if(PP) PPs <- vals(c(dlf$RPweibull, dlf$RPgringorton))
-if(RP) RPs <- substr(colnames(dlf$returnlev), start=4, stop=8)
+other <- ! names(dlf) %in% c(must, "returnlev", "RPweibull", "RPgringorton", 
+                             "quant", "exBootRPs", "qexBootSim", "exBootCI")
+
 
 # message output:
 message("----------\nDataset '", dlf$datname, "' with ", 
@@ -55,23 +54,21 @@ if( ! is.vector(dlf$dat)) "\n--> dat is not a vector!",
 "\ntruncate: ", dlf$truncate, " threshold: ",round(dlf$threshold,digits+1),
     ". dat_full with ", length(dlf$dat_full), " values: ", vals(dlf$dat_full),
 "\ndlf with ", nrow(dlf$gof), " distributions. In descending order of fit quality:\n", 
-   toString(rownames(dlf$gof)),
-if(any(inparnotgof)) "\n--> dists in parameter but not in gof: ",
-if(any(inparnotgof)) toString(names(dlf$parameter)[inparnotgof]),
-if(any(ingofnotpar)) "\n--> dists in gof but not in parameter: ",
-if(any(ingofnotpar)) toString(rownames(dlf$gof)[ingofnotpar]),
+   toString(rownames(dlf$gof)[order(dlf$gof$RMSE)]),
+if(any(inparnotgof)) paste0("\n--> dists in parameter but not in gof: ",
+                      toString(names(dlf$parameter)[inparnotgof]) ),
+if(any(ingofnotpar)) paste0("\n--> dists in gof but not in parameter: ",
+                       toString(rownames(dlf$gof)[ingofnotpar])),
 "\nRMSE min/median/max: ", vals(dlf$gof$RMSE, TRUE),
+"\n", length(dlf$distnames), " distnames + ", length(dlf$distcols), 
+      " distcols from distselector ", dlf$distselector,
 if(qq) paste("\nquant:",nrow(dlf$quant),"rows,",ncol(dlf$quant),"columns,",
             prod(dim(dlf$quant)),"values, of which",sum(is.na(dlf$quant)),"NA."),
-if(CD) paste("\n", length(dlf$coldist),"distribution colors:", toString(dlf$coldist)),
 if(PP | RP) "\ndistLextreme elements:",
-if(PP) "\nPlotting positions min/median/max: ",
-if(PP) PPs,
-if(RP) "\nReturn Periods: ",
-if(RP) toString(RPs),
-if(RP) "\nReturn Levels min/median/max: ",
-if(RP) vals(dlf$returnlev),
-if(any(other)) paste0("\n--> Other elements in the object '", obj, "': "),
-if(any(other)) toString(names(dlf)[other])
+if(PP) paste0("\nPlotting positions min/median/max: ", vals(c(dlf$RPweibull, dlf$RPgringorton))),
+if(RP) paste0("\nReturn Periods: ", toString(substr(colnames(dlf$returnlev), start=4, stop=8)),
+              "\nReturn Levels min/median/max: ", vals(dlf$returnlev)),
+if(any(other)) paste0("\n--> Other elements in the object '", obj, "': ",
+                      toString(names(dlf)[other]))
 )
 }
