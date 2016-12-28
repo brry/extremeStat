@@ -57,7 +57,7 @@
 #' x1 <- c(2.6, 2.5, 2.9, 3, 5, 2.7, 2.7, 5.7, 2.8, 3.1, 3.6, 2.6, 5.8, 5.6, 5.7, 5.3)
 #' q1 <- distLquantile(x1, sanerange=c(0,500), sanevals=c(NA,500))
 #' x2 <- c(6.1, 2.4, 4.1, 2.4, 6, 6.3, 2.9, 6.8, 3.5)
-#' q2 <- distLquantile(x2, sanerange=c(0,500), sanevals=c(NA,500))
+#' q2 <- distLquantile(x2, sanerange=c(0,500), sanevals=c(NA,500), quiet=FALSE)
 #' x3 <- c(4.4, 3, 1.8, 7.3, 2.1, 2.1, 1.8, 1.8)
 #' q3 <- distLquantile(x3, sanerange=c(0,500), sanevals=c(NA,500))
 #' 
@@ -65,7 +65,7 @@
 #' plotLgof(dlf)
 #' 
 #' # If speed is important and parameters are already available, pass them via dlf:
-#' distLquantile(dlf=dlf, probs=0:5/5, selection=c("wak","gev","kap"), order=FALSE)
+#' distLquantile(dlf=dlf, probs=0:5/5, selection=c("wak","gev","kap"))
 #' distLquantile(dlf=dlf, truncate=0.3, list=TRUE)$truncate
 #'
 #' # censored (truncated, trimmed) quantile, Peak Over Treshold (POT) method:
@@ -152,8 +152,6 @@
 #' @param dlf       dlf object described in \code{\link{extremeStat}}. Use this to save 
 #'                  computing time for large datasets where you already have dlf. 
 #'                  DEFAULT: NULL
-#' @param order     Sort results by GOF? If FALSE, it is sorted by appearance in 
-#'                  selection (or dlf$parameter). DEFAULT: TRUE
 #' @param list      Return full \code{dlf}list with output attached as element \code{quant}? 
 #'                  If FALSE (the default), just the matrix with quantile estimates 
 #'                  is returned. DEFAULT: FALSE
@@ -177,8 +175,9 @@
 #' @param ssquiet   Suppress sample size notes? DEFAULT: quiet
 #' @param ttquiet   Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} 
 #'                  is called with ttquiet=TRUE. DEFAULT: quiet
+#' @param gpquiet   Suppress warnings in \code{\link{q_gpd}}? DEFAULT: TRUE or quiet
 #' @param \dots     Arguments passed to \code{\link{distLfit}} 
-#'                  (and potentially to \code{\link{distLgof}})
+#'                  (and potentially to \code{\link{distLgof}}) like order
 #'
 distLquantile <- function(
 x=NULL,
@@ -190,16 +189,16 @@ sanerange=NA,
 sanevals=NA,
 selection=NULL,
 dlf=NULL,
-order=TRUE,
 list=FALSE,
 empirical=TRUE,
 weighted=empirical,
 gpd=empirical,
 addinfo=FALSE,
 speed=TRUE,
-quiet=TRUE,
+quiet=FALSE,
 ssquiet=quiet,
 ttquiet=quiet,
+gpquiet=missing(quiet)|quiet,
 ...
 )
 {
@@ -230,7 +229,7 @@ if(is.null(dlf))
   # threshold initialization impossible if dlf = NULL
   if(is.na(threshold)) threshold <- berryFunctions::quantileMean(x, truncate)
   dlf <- distLfit(dat=x, datname=internaldatname, selection=selection,
-                  truncate=truncate, threshold=threshold, order=order,
+                  truncate=truncate, threshold=threshold,
                   plot=FALSE, quiet=quiet, ssquiet=ssquiet, ...)
   }
 # check selection
@@ -355,7 +354,7 @@ if(empirical) output["quantileMean",lenprob] <- berryFunctions::quantileMean(dlf
 if(gpd)
   {
   # inernal helper function:
-  supwarn <- if(quiet) suppressWarnings else I
+  supwarn <- if(gpquiet) suppressWarnings else I
   q_gpd_int <- function(pack, meth=NULL) supwarn(q_gpd(package=pack, method=meth,
                         x=dlf$dat_full, probs=probs,
                         truncate=truncate, threshold=threshold, 
