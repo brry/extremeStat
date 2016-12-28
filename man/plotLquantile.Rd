@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotLquantile.R
 \name{plotLquantile}
 \alias{plotLquantile}
-\title{Plot quantiles of distributions fitted with linear moments}
+\title{Plot quantiles of distributions fitted with L-moments}
 \usage{
 plotLquantile(dlf, nbest = 5, selection = NULL, order = FALSE,
   rows = NULL, heights = stats::quantile(par("usr")[3:4], 0.2),
@@ -34,7 +34,7 @@ DEFAULT: dlfplot$distcols}
 invisible dlf object, see \code{\link{printL}}
 }
 \description{
-Plot quantiles of distributions fitted with linear moments
+Plot quantiles of distributions fitted with L-moments
 }
 \examples{
 # See distLquantile

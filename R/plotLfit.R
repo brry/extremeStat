@@ -1,4 +1,4 @@
-#' Plot distributions fitted with linear moments
+#' Plot distributions fitted with L-moments
 #' 
 #' Plot histogram and distribution densities \emph{or} ecdf with cumulated probability
 #' 

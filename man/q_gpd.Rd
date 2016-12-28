@@ -70,7 +70,7 @@ Depending on the value of "package", this fits the GPD using \cr
 \code{Renext::\link[Renext]{Renouv}} or \code{Renext::\link[Renext]{fGPD}}\cr\cr
 
 The \bold{\code{method}} defaults (and other possibilities) are \cr
-lmomco: none, only linear moments
+lmomco: none, only L-moments \cr
 evir: "pwm" (probability-weighted moments), or "ml" (maximum likelihood) \cr
 evd: none, only Maximum-likelihood fitting implemented \cr
 extRemes: "MLE", or "GMLE", "Bayesian", "Lmoments" \cr

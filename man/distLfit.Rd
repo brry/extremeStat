@@ -2,7 +2,7 @@
 % Please edit documentation in R/distLfit.R
 \name{distLfit}
 \alias{distLfit}
-\title{Fit distributions via linear moments}
+\title{Fit distributions via L-moments}
 \usage{
 distLfit(dat, datname = deparse(substitute(dat)), speed = TRUE,
   selection = NULL, truncate = 0,
@@ -45,7 +45,7 @@ like cweights, ks=TRUE, order=FALSE}
 invisible dlf object, see \code{\link{printL}}.
 }
 \description{
-Fit several distributions via linear moments with \code{lmomco::\link[lmomco]{lmom2par}}.
+Fit several distributions via L-moments with \code{lmomco::\link[lmomco]{lmom2par}}.
 Plot histogram and distribution densities \emph{or} ecdf with cumulated probability.
 Compute goodness of fit values with \code{\link{distLgof}}.
 }

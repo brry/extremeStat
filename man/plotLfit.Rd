@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotLfit.R
 \name{plotLfit}
 \alias{plotLfit}
-\title{Plot distributions fitted with linear moments}
+\title{Plot distributions fitted with L-moments}
 \usage{
 plotLfit(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
   log = FALSE, supportends = TRUE, breaks = 20,

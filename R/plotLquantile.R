@@ -1,4 +1,4 @@
-#' Plot quantiles of distributions fitted with linear moments
+#' Plot quantiles of distributions fitted with L-moments
 #' 
 #' @return invisible dlf object, see \code{\link{printL}}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Dec 2016

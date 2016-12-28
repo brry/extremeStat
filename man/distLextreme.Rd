@@ -31,13 +31,13 @@ for all given RPs and for each distribution.
 Extreme value statistics for flood risk estimation.
 Input: vector with annual discharge maxima.
 Output: discharge estimates for given return periods, 
-parameters of several distributions (fit based on linear moments), 
+parameters of several distributions (fit based on L-moments), 
 quality of fits, plot with linear axis 
 (dists + plotting positions by Weibull and Gringorton).
 }
 \details{
 \code{\link{plotLextreme}} adds weibull and gringorton plotting positions
-to the distribution lines, which are estimated from the linear moments of the data itself.\cr
+to the distribution lines, which are estimated from the L-moments of the data itself.\cr
 I personally believe that if you have, say, 35 values in \code{dat},
 the highest return period should be around 36 years (Weibull) and not 60 (Gringorton).\cr
 The plotting positions don't affect the distribution parameter estimation, 

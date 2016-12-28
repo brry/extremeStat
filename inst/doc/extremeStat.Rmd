@@ -64,7 +64,7 @@ berryFunctions::logHist(rain, breaks=80, col=3, las=1)
 
 The function `distLfit` fits 17 of the distribution types avalable in the R package `lmomco` (there are more, but some of these require quite a bit of computation time and are prone to not be able to be fitted to this type of data distribution anyways. Turn them on with `speed=FALSE`).  
 
-The parameters are estimated via linear moments.
+The parameters are estimated via L-moments.
 These are analogous to the conventional statistical moments (mean, variance, skewness and kurtosis), but "robust [and] suitable for analysis of rare events of non-Normal data. [...]
 L-moments are especially useful in the context of quantile functions"
 [Asquith, W. (2015): lmomco package](https://cran.r-project.org/package=lmomco)
@@ -185,7 +185,7 @@ text(0.35, 62, "empirical quantile (full sample)", cex=0.7)
 ```
 
 The 17 different distribution quantiles and 12 different GPD estimates seem to converge with increasing truncation percentage.
-However, at least 5 remaining values in the truncated sample are necessary to fit distributions via linear moments, so don't truncate too much.
+However, at least 5 remaining values in the truncated sample are necessary to fit distributions via L-moments, so don't truncate too much.
 I found a good cutoff percentage is 0.8. If you fit to the top 20% of the data, you get good results, while needing 'only' approximately 25 values in a sample to infer a quantile estimate.
 
 

@@ -1,6 +1,6 @@
-#' Fit distributions via linear moments
+#' Fit distributions via L-moments
 #' 
-#' Fit several distributions via linear moments with \code{lmomco::\link[lmomco]{lmom2par}}.
+#' Fit several distributions via L-moments with \code{lmomco::\link[lmomco]{lmom2par}}.
 #' Plot histogram and distribution densities \emph{or} ecdf with cumulated probability.
 #' Compute goodness of fit values with \code{\link{distLgof}}.
 #' 
@@ -149,7 +149,7 @@ if(length(dat) < 5)
 # L-Moments of sample  # package lmomco
 mom <- lmomco::lmoms(dat, nmom=5)
 # estimate parameters for each distribution:    # this takes time!
-if(progbars) message("Parameter estimation from linear moments:")
+if(progbars) message("Parameter estimation from L-moments:")
 parameter <- lapply(dn, function(d) tryStack(lmomco::lmom2par(mom, type=d), silent=TRUE) )
 # wrapped in try since july 2016 because parkap breaks if TAU4=NA  (lmomco 2.2.4)
 # error catching:

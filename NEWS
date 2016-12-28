@@ -17,7 +17,6 @@ extremeStat ToDo-list / wishlist / issues
 - distLgof into distLfit? rename plotLgof to plotLweights?
 - q_gpd: also compute RMSE
 - distLquantile: remove sanity checks?
-- linear moments to L-moments
 
 
 ---------------------------------------
