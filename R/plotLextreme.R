@@ -1,10 +1,9 @@
 #' Plot extreme value statistics
 #' 
 #' Plots distributions fitted by L-moments and adds plotting positions by Weibull and Gringorton.
-#'
-#' @details This is an auxiliary graphing function to \code{\link{distLextreme}}
+#' This is an auxiliary graphing function to \code{\link{distLextreme}}
 #' 
-#' @return none, plots things.
+#' @return invisible dlf object, see \code{\link{printL}}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March 2015, updated heavily Aug 2015
 #' @seealso \code{\link{distLextreme}}, \code{\link{plotLfit}}
 #' @keywords hplot dplot distribution

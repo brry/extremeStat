@@ -2,7 +2,7 @@
 #' 
 #' plot bootstrap uncertainty intervals for \code{\link{plotLextreme}}.
 #'
-#' @return dlf list
+#' @return invisible dlf object, see \code{\link{printL}}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Dec 2016
 #' @seealso \code{\link{distLexBoot}}
 #' @keywords bootstrap montecarlo hplot dplot distribution ts

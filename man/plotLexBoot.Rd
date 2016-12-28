@@ -21,7 +21,7 @@ If add=TRUE, they are instead passed to
 \code{berryFunctions::\link{ciBand}}}
 }
 \value{
-dlf list
+invisible dlf object, see \code{\link{printL}}
 }
 \description{
 plot bootstrap uncertainty intervals for \code{\link{plotLextreme}}.

@@ -28,7 +28,8 @@ distLfit and distLquantile and arguments used only in the latter
 will not throw errors)}
 }
 \value{
-List as explained in \code{\link{extremeStat}}. The added element is gof,\cr
+invisible dlf object, see \code{\link{printL}}.
+The added element is gof,\cr
 a data.frame with the root mean square error (RMSE) and R squared (R2),\cr
 if ks=TRUE, the p and D values from a simple ks.test,\cr
 as well as weights for each distribution function as explained in \code{\link{distLweights}}

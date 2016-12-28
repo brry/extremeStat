@@ -4,7 +4,8 @@
 #'
 #' @details Has not been thoroughly tested yet. Bootstrapping defaults can probably be improved.
 #' 
-#' @return dlf object with added elements exBootSelection (names of distributions), 
+#' @return invisible dlf object, see \code{\link{printL}}.
+#' Additional elements are: exBootSelection (names of distributions), 
 #' exBootRPs (x values for plot)
 #' exBootSim (all simulation results) and exBootCI (agregated into CI band). 
 #' The last two are each a list with a matrix (RPs)

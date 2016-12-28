@@ -72,7 +72,7 @@ except for x, freq. DEFAULT: NULL}
 \item{\dots}{Further arguments passed to \code{\link{lines}}, like type, pch, ...}
 }
 \value{
-dlf with distcols + dnplotted added, returned invisibly.
+invisible dlf object, see \code{\link{printL}}
 }
 \description{
 Plot histogram and distribution densities \emph{or} ecdf with cumulated probability

@@ -42,16 +42,12 @@ DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
 like cweights, ks=TRUE, order=FALSE}
 }
 \value{
-List as explained in \code{\link{extremeStat}}.
+invisible dlf object, see \code{\link{printL}}.
 }
 \description{
-Fit several distributions via linear moments, plot histogram and
-distribution densities \emph{or} ecdf with cumulated probability.
-Also returns goodness of fit values.
-This is the main fitting function calling   distLgof
-}
-\details{
-Fits parameters via \code{\link[lmomco]{lmom2par}} in the package \code{lmomco}
+Fit several distributions via linear moments with \code{lmomco::\link[lmomco]{lmom2par}}.
+Plot histogram and distribution densities \emph{or} ecdf with cumulated probability.
+Compute goodness of fit values with \code{\link{distLgof}}.
 }
 \examples{
 

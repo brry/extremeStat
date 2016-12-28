@@ -6,7 +6,7 @@
 #' easier to discern and tail behaviour is easier to judge visually. See also
 #' \url{http://www.vosesoftware.com/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_(histogram)_plots.htm}
 #' 
-#' @return dlf with distcols + dnplotted added, returned invisibly.
+#' @return invisible dlf object, see \code{\link{printL}}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
 #' @seealso \code{\link{distLfit}}, \code{\link{plotLquantile}}
 #' @keywords hplot distribution

@@ -7,9 +7,9 @@
 distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
   threshold = berryFunctions::quantileMean(dlf$dat_full, truncate),
   weightc = NA, sanerange = NA, sanevals = NA, selection = NULL,
-  dlf = NULL, order = TRUE, list = FALSE, empirical = TRUE,
-  weighted = empirical, gpd = empirical, addinfo = FALSE, speed = TRUE,
-  quiet = TRUE, ssquiet = quiet, ttquiet = quiet, ...)
+  dlf = NULL, list = FALSE, empirical = TRUE, weighted = empirical,
+  gpd = empirical, speed = TRUE, quiet = FALSE, ssquiet = quiet,
+  ttquiet = quiet, gpquiet = missing(quiet) | quiet, ...)
 }
 \arguments{
 \item{x}{Sample for which parametrical quantiles are to be calculated. 
@@ -30,8 +30,8 @@ DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
 
 \item{sanerange}{Range outside of which results should be changed to \code{sanevals}.
 This can capture numerical errors in small samples
-(notably GPD_MLE_extRemes). If NA, this is ignored. Attention
-if addinfo=T: the RMSE column is also checked and changed. 
+(notably GPD_MLE_extRemes). If NA, this is ignored. 
+Attention: the RMSE column is also checked and changed. 
 DEFAULT: NA}
 
 \item{sanevals}{Values to be used below [1] and above [2] \code{sanerange}. 
@@ -45,9 +45,6 @@ dlf$parameter are used. DEFAULT: NULL}
 \item{dlf}{dlf object described in \code{\link{extremeStat}}. Use this to save 
 computing time for large datasets where you already have dlf. 
 DEFAULT: NULL}
-
-\item{order}{Sort results by GOF? If FALSE, it is sorted by appearance in 
-selection (or dlf$parameter). DEFAULT: TRUE}
 
 \item{list}{Return full \code{dlf}list with output attached as element \code{quant}? 
 If FALSE (the default), just the matrix with quantile estimates 
@@ -65,30 +62,24 @@ truncate=0. This comes from using x>threshold ('GPD_*') or
 x>=threshold ('gpa' and all other distributions in extremeStat). 
 DEFAULT: empirical}
 
-\item{addinfo}{Should information about sample size and threshold be 
-\code{\link{rbind}ed} to the output? 
-Will also \code{\link{cbind}} RMSE values to the output.
-DEFAULT: FALSE}
-
 \item{speed}{Compute \code{\link{q_gpd}} only for fast methods? 
-Don't accidentally set this to \code{FALSE} in simulations or 
-with large datasets! DEFAULT: TRUE}
+Currently, only the Bayesian method is excluded. DEFAULT: TRUE}
 
-\item{quiet}{Suppress notes? DEFAULT: TRUE}
+\item{quiet}{Suppress notes? DEFAULT: FALSE}
 
 \item{ssquiet}{Suppress sample size notes? DEFAULT: quiet}
 
-\item{ttquiet}{Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} 
-is called with ttquiet=TRUE. DEFAULT: quiet}
+\item{ttquiet}{Suppress truncation!=threshold note? DEFAULT: quiet}
+
+\item{gpquiet}{Suppress warnings in \code{\link{q_gpd}}? 
+DEFAULT: TRUE if quiet is not specified, else quiet}
 
 \item{\dots}{Arguments passed to \code{\link{distLfit}} 
-(and potentially to \code{\link{distLgof}})}
+(and potentially to \code{\link{distLgof}}) like order}
 }
 \value{
-Invisible matrix with distribution quantile values 
-       (with NAs for probs below truncate), \cr
-       or, if list=TRUE, a \code{dlf} list as described in 
-       \code{\link{extremeStat}}.
+if list=FALSE (default): invisible matrix with distribution quantile values .
+        if list=TRUE: invisible dlf object, see \code{\link{printL}}
 }
 \description{
 Parametric quantiles of distributions fitted to a sample.
@@ -136,7 +127,7 @@ plotLquantile(dlq, row="GPD*", nbest=13, xlim=c(102,110),
 x1 <- c(2.6, 2.5, 2.9, 3, 5, 2.7, 2.7, 5.7, 2.8, 3.1, 3.6, 2.6, 5.8, 5.6, 5.7, 5.3)
 q1 <- distLquantile(x1, sanerange=c(0,500), sanevals=c(NA,500))
 x2 <- c(6.1, 2.4, 4.1, 2.4, 6, 6.3, 2.9, 6.8, 3.5)
-q2 <- distLquantile(x2, sanerange=c(0,500), sanevals=c(NA,500))
+q2 <- distLquantile(x2, sanerange=c(0,500), sanevals=c(NA,500), quiet=FALSE)
 x3 <- c(4.4, 3, 1.8, 7.3, 2.1, 2.1, 1.8, 1.8)
 q3 <- distLquantile(x3, sanerange=c(0,500), sanevals=c(NA,500))
 
@@ -144,7 +135,7 @@ q3 <- distLquantile(x3, sanerange=c(0,500), sanevals=c(NA,500))
 plotLgof(dlf)
 
 # If speed is important and parameters are already available, pass them via dlf:
-distLquantile(dlf=dlf, probs=0:5/5, selection=c("wak","gev","kap"), order=FALSE)
+distLquantile(dlf=dlf, probs=0:5/5, selection=c("wak","gev","kap"))
 distLquantile(dlf=dlf, truncate=0.3, list=TRUE)$truncate
 
 # censored (truncated, trimmed) quantile, Peak Over Treshold (POT) method:

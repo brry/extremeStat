@@ -1,6 +1,6 @@
 #' Plot quantiles of distributions fitted with linear moments
 #' 
-#' @return dlf with distcols + dnplotted added, returned invisibly.
+#' @return invisible dlf object, see \code{\link{printL}}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Dec 2016
 #' @seealso \code{\link{distLquantile}}, \code{\link{plotLfit}}
 #' @keywords hplot distribution

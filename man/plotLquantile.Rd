@@ -31,7 +31,7 @@ DEFAULT: dlfplot$distcols}
 \item{\dots}{Further arguments passed to \code{\link{plotLfit}}}
 }
 \value{
-dlf with distcols + dnplotted added, returned invisibly.
+invisible dlf object, see \code{\link{printL}}
 }
 \description{
 Plot quantiles of distributions fitted with linear moments

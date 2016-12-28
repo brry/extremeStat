@@ -2,8 +2,42 @@
 #' 
 #' print list objects created in this package
 #' 
+#' The common object to share between functions (see overview in \code{\link{extremeStat}}) 
+#' is a list with the following elements:
+#' \tabular{ll}{
+#' \code{dat}          \tab numeric vector with (extreme) values, 
+#'                          with all NAs and values below threshold removed\cr
+#' \code{dat_full}     \tab original input data complete with NAs\cr
+#' \code{datname}      \tab character string for main, xlab etc \cr
+#' \code{parameter}    \tab list (usually of length 17 if \code{speed=TRUE} in 
+#'                          \code{\link{distLfit}}) 
+#'                          with parameters of each distribution\cr
+#' \code{gof}          \tab dataframe with 'Goodness of Fit' measures, sorted by 
+#'                          RMSE of theoretical and empirical cumulated density,
+#'                          created by \code{\link{distLgof}}\cr
+#' \code{distnames}    \tab character vector with selected distribution names\cr
+#' \code{distcols}     \tab colors for distnames (for plotting). If not given manually,
+#'                          determined by \code{berryFunctions::\link{rainbow2}}\cr
+#' \code{distselector} \tab character string with function name creating
+#'                          the selection\cr
+#' \code{truncate, threshold} \tab Truncation percentage and threshold value, 
+#'                          relevant for \code{\link{distLquantile}}\cr
+#' }
+#' 
+#' optionally, it can also contain:
+#' 
+#' \tabular{ll}{
+#' \code{returnlev, }  \tab dataframe with values of distributions for given 
+#'                          return periods (\code{RPs}). This element is only added
+#'                          in \code{\link{distLextreme}}\cr
+#' \code{RPweibull, RPgringorton} \tab Return periods according to plotting positions, 
+#'                          added in \code{\link{plotLextreme}}\cr
+#' \code{quant}        \tab Quantile estimates from \code{\link{distLquantile}}\cr
+#' \code{exBootRPs, qexBootSim, exBootCI} \tab objects from \code{\link{distLexBoot}}\cr
+#' }
+#' 
 #' @return none, prints via \code{\link{message}}.
-#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014, March + July 2015
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014, March + July 2015, Dec 2016
 #' @seealso \code{\link{extremeStat}}
 #' @keywords list methods print
 #' @export
@@ -12,7 +46,7 @@
 #' # see 
 #' ?distLextreme
 #' 
-#' @param dlf List as explained in \code{\link{extremeStat}}
+#' @param dlf List as explained in section Details
 #' @param digits number of digits \code{\link{round}}ed to. DEFAULT: 1
 #' 
 printL <- function(

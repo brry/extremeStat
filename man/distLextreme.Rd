@@ -18,14 +18,14 @@ Overrides dat! DEFAULT: NULL}
 
 \item{quiet}{Suppress notes and progbars? DEFAULT: FALSE}
 
-\item{\dots}{Further arguments passed to \code{\link{distLfit}} and
-\code{\link{distLquantile}} like truncate, selection,
+\item{\dots}{Further arguments passed to \code{\link{distLquantile}} (and
+\code{\link{distLfit}} if dlf=NULL) like truncate, selection,
 time, progbars}
 }
 \value{
-List as explained in \code{\link{extremeStat}}. The added element is
-        \code{returnlev}, a data.frame with the return level (discharge) 
-        for all given RPs and for each distribution.
+invisible dlf object, see \code{\link{printL}}.
+The added element is \code{returnlev}, a data.frame with the return level (discharge) 
+for all given RPs and for each distribution.
 }
 \description{
 Extreme value statistics for flood risk estimation.
@@ -43,6 +43,14 @@ the highest return period should be around 36 years (Weibull) and not 60 (Gringo
 The plotting positions don't affect the distribution parameter estimation, 
 so this dispute is not really important.
 But if you care, go ahead and google "weibull vs gringorton plotting positions".
+
+Plotting positions are not used for fitting distributions, but for plotting only.
+The ranks of ascendingly sorted extreme values are used to 
+compute the probability of non-exceedence Pn:\cr
+\code{Pn_w <-  Rank      /(n+1)       # Weibull}\cr
+\code{Pn_g <- (Rank-0.44)/(n+0.12)    # Gringorton (taken from lmom:::evplot.default)}\cr
+Finally: RP = Returnperiod = recurrence interval = 1/P_exceedence = 1/(1-P_nonexc.), thus:\cr
+\code{RPweibull = 1/(1-Pn_w)} and analogous for gringorton.\cr
 }
 \note{
 This function replaces \code{berryFunctions::extremeStatLmom}

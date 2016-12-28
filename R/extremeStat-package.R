@@ -37,7 +37,7 @@ NULL
 #' for an introduction to the package: \code{vignette("extremeStat")}\cr
 #' This package heavily relies on and thankfully acknowledges the package \code{lmomco} by WH Asquith.
 #' 
-#' @details
+#' @section Package overview:
 #' 
 #' The main functions in the extremeStat package are:
 #' \tabular{lll}{
@@ -47,57 +47,13 @@ NULL
 #'                               \tab \code{\link{distLextreme}} \tab -> \code{\link{plotLextreme}} \cr
 #'                               \tab \code{\link{distLexBoot}} \tab \cr
 #' }
-#' 
-#' The common object to share between functions is a list that can be printed with 
-#' \code{\link{printL}(dlf)} and contains the following elements:
-#' \tabular{ll}{
-#' \code{dat}          \tab numeric vector with (extreme) values, 
-#'                          with all NAs and values below threshold removed\cr
-#' \code{dat_full}     \tab original input data complete with NAs\cr
-#' \code{datname}      \tab character string for main, xlab etc \cr
-#' \code{parameter}    \tab list (usually of length 17 if \code{speed=TRUE} in 
-#'                          \code{\link{distLfit}}) 
-#'                          with parameters of each distribution\cr
-#' \code{gof}          \tab dataframe with 'Goodness of Fit' measures, sorted by 
-#'                          RMSE of theoretical and empirical cumulated density,
-#'                          created by \code{\link{distLgof}}\cr
-#' \code{distnames}    \tab character vector with selected distribution names\cr
-#' \code{distcols}     \tab colors for distnames (for plotting). If not given manually,
-#'                          determined by \code{berryFunctions::\link{rainbow2}}\cr
-#' \code{distselector} \tab character string with function name creating
-#'                          the selection\cr
-#' \code{truncate, threshold} \tab Truncation percentage and threshold value, 
-#'                          relevant for \code{\link{distLquantile}}\cr
-#'                       
-#' optionally:         \tab \cr
-#' \code{returnlev, }  \tab dataframe with values of distributions for given 
-#'                          return periods (\code{RPs}). This element is only added
-#'                          in \code{\link{distLextreme}}\cr
-#' \code{RPweibull, RPgringorton} \tab Return periods according to plotting positions, 
-#'                          added in \code{\link{plotLextreme}}\cr
-#' \code{quant}        \tab Quantile estimates from \code{\link{distLquantile}}\cr
-#' \code{exBootRPs, qexBootSim, exBootCI} \tab objects from \code{\link{distLexBoot}}\cr
-
-#' }
-#' 
-#' Plotting positions are not used for fitting distributions, but for plotting only.
-#' The ranks of ascendingly sorted extreme values are used to 
-#' compute the probability of non-exceedence Pn:\cr
-#' \code{Pn_w <-  Rank      /(n+1)       # Weibull}\cr
-#' \code{Pn_g <- (Rank-0.44)/(n+0.12)    # Gringorton (taken from lmom:::evplot.default)}\cr
-#' Finally: RP = Returnperiod = recurrence interval = 1/P_exceedence = 1/(1-P_nonexc.), thus:\cr
-#' \code{RPweibull = 1/(1-Pn_w)} and analogous for gringorton.\cr
-#'
-
-#' This package was motivated by my need to compare the fits of several distributions to data.
-#' It was originally triggered by a flood estimation assignment we had in class 2012,
-#' and it bothered me that we just assumed the gumbel distribution would fit the data fine.
+#' They create and modify a list object printed by (and documented in) \code{\link{printL}}.
 #' 
 #' @name extremeStat
 #' @aliases extremeStat-package extremeStat
 #' @docType package
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, 2014-2016
-
+#' 
 #' @seealso
 #' If you are looking for more detailed (uncertainty) analysis, eg confidence intervals,
 #' check out the package \code{extRemes}, especially the function \code{\link[extRemes]{fevd}}.
@@ -107,16 +63,15 @@ NULL
 #' Distributions: \url{https://www.rmetrics.org/files/Meielisalp2009/Presentations/Scott.pdf}
 #' and: \url{https://cran.r-project.org/view=Distributions} \cr
 #' R in Hydrology: \url{http://abouthydrology.blogspot.de/2012/08/r-resources-for-hydrologists.html}\cr
-
+#' 
 #' @keywords package documentation
 #' @importFrom grDevices extendrange
 #' @importFrom graphics abline axis box hist legend lines par plot points text
 #' @importFrom methods slotNames
 #' @importFrom stats approx ecdf ks.test median quantile
 #' @importFrom utils head tail
-
-#' @examples
 #' 
+#' @examples
 #' data(annMax) # annual discharge maxima from a stream in Austria
 #' plot(annMax, type="l")
 #' dle <- distLextreme(annMax)

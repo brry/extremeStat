@@ -1,12 +1,10 @@
 #' Fit distributions via linear moments
 #' 
-#' Fit several distributions via linear moments, plot histogram and
-#' distribution densities \emph{or} ecdf with cumulated probability.
-#' Also returns goodness of fit values.
-#' This is the main fitting function calling   distLgof
-#'
-#' @details Fits parameters via \code{\link[lmomco]{lmom2par}} in the package \code{lmomco}
-#' @return List as explained in \code{\link{extremeStat}}.
+#' Fit several distributions via linear moments with \code{lmomco::\link[lmomco]{lmom2par}}.
+#' Plot histogram and distribution densities \emph{or} ecdf with cumulated probability.
+#' Compute goodness of fit values with \code{\link{distLgof}}.
+#' 
+#' @return invisible dlf object, see \code{\link{printL}}.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014 + July 2015
 #' @seealso \code{\link{distLgof}}, \code{\link{plotLfit}}.
 #'          \code{\link[extRemes]{fevd}} in the package \code{extRemes},

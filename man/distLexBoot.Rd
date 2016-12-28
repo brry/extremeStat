@@ -37,7 +37,8 @@ value of \code{log}. DEFAULT: NULL}
 like truncate, quiet=TRUE}
 }
 \value{
-dlf object with added elements exBootSelection (names of distributions), 
+invisible dlf object, see \code{\link{printL}}.
+Additional elements are: exBootSelection (names of distributions), 
 exBootRPs (x values for plot)
 exBootSim (all simulation results) and exBootCI (agregated into CI band). 
 The last two are each a list with a matrix (RPs)
