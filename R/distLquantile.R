@@ -9,10 +9,9 @@
 #' quantile. Parametric quantiles need only small sample sizes. They don't have
 #' a systematical underestimation bias, but have higher variability.
 #' 
-#' @return Invisible matrix with distribution quantile values 
-#'        (with NAs for probs below truncate), \cr
-#'        or, if list=TRUE, a \code{dlf} list as described in 
-#'        \code{\link{extremeStat}}.
+#' @return if list=FALSE (default): invisible matrix with distribution quantile values .
+#'         if list=TRUE: invisible dlf object, see \code{\link{printL}}
+
 #' @note NAs are always removed from x in \code{\link{distLfit}}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March + July 2015, Feb 2016
 #' @seealso \code{\link{q_gpd}}, \code{\link{distLfit}}, require("truncdist")
@@ -140,8 +139,8 @@
 #' @param weightc   Custom weights, see \code{\link{distLweights}}. DEFAULT: NA
 #' @param sanerange Range outside of which results should be changed to \code{sanevals}.
 #'                  This can capture numerical errors in small samples
-#'                  (notably GPD_MLE_extRemes). If NA, this is ignored. Attention
-#'                  if addinfo=T: the RMSE column is also checked and changed. 
+#'                  (notably GPD_MLE_extRemes). If NA, this is ignored. 
+#'                  Attention: the RMSE column is also checked and changed. 
 #'                  DEFAULT: NA
 #' @param sanevals  Values to be used below [1] and above [2] \code{sanerange}. 
 #'                  DEFAULT: NA
@@ -336,7 +335,7 @@ for(d in dn)
 # Change results for probs below truncate to NA
 if(truncate!=0) output[ , probs < truncate] <- NA
 # Add RMSE values if wanted:
-if(addinfo) output[dn,"RMSE"] <- dlf$gof[dn,"RMSE"]
+output[dn,"RMSE"] <- dlf$gof[dn,"RMSE"]
 #
 # add further quantile estimates -----------------------------------------------
 # Empirical Quantiles:
