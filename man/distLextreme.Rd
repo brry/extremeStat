@@ -25,7 +25,8 @@ time, progbars}
 \value{
 invisible dlf object, see \code{\link{printL}}.
 The added element is \code{returnlev}, a data.frame with the return level (discharge) 
-for all given RPs and for each distribution.
+for all given RPs and for each distribution. 
+Note that this differs from \code{\link{distLquantile}} (matrix output, not data.frame)
 }
 \description{
 Extreme value statistics for flood risk estimation.

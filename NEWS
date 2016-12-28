@@ -2,8 +2,6 @@
 extremeStat ToDo-list / wishlist / issues
 - read all of https://www.ine.pt/revstat/pdf/rs120102.pdf and coles (2001)
 - distLextreme correct RP for POT approach
-- consider option to change all messages to warnings 
-     if(mes2warn) message <- function(...) warning(..., call.=FALSE)
 - move half the examples to tests
 - remove as many arguments as possible
 - check out overlap between plotLextreme + plotLfit as well as q_gpd + distLquantile
@@ -11,7 +9,6 @@ extremeStat ToDo-list / wishlist / issues
 - check if someting goes wrong when order=FALSE dlf$gof$rmse. Can order be given in ALL functions?
 - exTime with run=T
 - now that distLfit keeps all parameters (does it?), can some of the checks be removed?
-- distLextreme vs distLquantile output data.frame vs matrix
 - put dlf elements in common order
 - distLfit(annMax, sel="gep") -> distLweights ->  Error in max(RMSE, na.rm = TRUE) : invalid 'type' (list) of argument 
 - distLgof into distLfit? rename plotLgof to plotLweights?
