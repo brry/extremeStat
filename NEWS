@@ -19,7 +19,8 @@ extremeStat ToDo-list / wishlist / issues
 - put dlf elements in common order
 - distLfit(annMax, sel="gep") -> distLweights ->  Error in max(RMSE, na.rm = TRUE) : invalid 'type' (list) of argument 
 - distLgof into distLfit? rename plotLgof to plotLweights?
-- distLquantile: remove arguments that can be passed to distLfit
+- q_gpd: also compute RMSE
+- distLquantile: remove sanity checks?
 
 
 ---------------------------------------

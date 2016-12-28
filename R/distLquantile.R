@@ -164,18 +164,13 @@
 #'                  truncate=0. This comes from using x>threshold ('GPD_*') or
 #'                  x>=threshold ('gpa' and all other distributions in extremeStat). 
 #'                  DEFAULT: empirical
-#' @param addinfo   Should information about sample size and threshold be 
-#'                  \code{\link{rbind}ed} to the output? 
-#'                  Will also \code{\link{cbind}} RMSE values to the output.
-#'                  DEFAULT: FALSE
 #' @param speed     Compute \code{\link{q_gpd}} only for fast methods? 
-#'                  Don't accidentally set this to \code{FALSE} in simulations or 
-#'                  with large datasets! DEFAULT: TRUE
-#' @param quiet     Suppress notes? DEFAULT: TRUE
+#'                  Currently, only the Bayesian method is excluded. DEFAULT: TRUE
+#' @param quiet     Suppress notes? DEFAULT: FALSE
 #' @param ssquiet   Suppress sample size notes? DEFAULT: quiet
-#' @param ttquiet   Suppress truncation!=threshold note? Note that \code{\link{q_gpd}} 
-#'                  is called with ttquiet=TRUE. DEFAULT: quiet
-#' @param gpquiet   Suppress warnings in \code{\link{q_gpd}}? DEFAULT: TRUE or quiet
+#' @param ttquiet   Suppress truncation!=threshold note? DEFAULT: quiet
+#' @param gpquiet   Suppress warnings in \code{\link{q_gpd}}? 
+#'                  DEFAULT: TRUE if quiet is not specified, else quiet
 #' @param \dots     Arguments passed to \code{\link{distLfit}} 
 #'                  (and potentially to \code{\link{distLgof}}) like order
 #'
@@ -193,7 +188,6 @@ list=FALSE,
 empirical=TRUE,
 weighted=empirical,
 gpd=empirical,
-addinfo=FALSE,
 speed=TRUE,
 quiet=FALSE,
 ssquiet=quiet,
@@ -286,12 +280,10 @@ if(gpd) output <- rbind(output,
     GPD_GML_extRemes=NA, 
     GPD_MLE_Renext_2par=NA,
     GPD_BAY_extRemes=NA)
-if(addinfo) 
-  {
-  output <- cbind(output, RMSE=NA)
-  output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$dat), 
-                  threshold=dlf$threshold)
-  }
+
+output <- cbind(output, RMSE=NA)
+output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$dat), 
+                threshold=dlf$threshold)
 #
 # if input sample size is too small, return NA matrix:
 if( length(dlf$dat)<5 )
