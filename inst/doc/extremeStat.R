@@ -111,8 +111,9 @@ text(600, 40, "median and central 20% of 100 simulations")
 ## ----RP, echo=-1, warning=FALSE, fig.height=4, fig.width=5.5-------------
 par(mar=c(3,2.8,1.2,0.4), mgp=c(1.8,0.5,0))
 data("annMax") # annual discharge maxima in the extremeStat package itself
-dle <- distLextreme(annMax, log=TRUE, legargs=list(cex=0.6, bg="transparent"), nbest=17, quiet=TRUE)
-dle$returnlev[1:20,]
+dlf <- distLextreme(annMax, quiet=TRUE)
+plotLextreme(dlf, log=TRUE, legargs=list(cex=0.6, bg="transparent"), nbest=17)
+dlf$returnlev[1:20,]
 
 
 ## ----help, eval=FALSE----------------------------------------------------

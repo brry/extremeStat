@@ -79,7 +79,6 @@ To estimate the quantile of (small) samples via a distribution function, you can
 ```{r dlq}
 dlq <- distLquantile(rain[1:900], probs=c(0.8,0.9,0.99,0.999), list=TRUE, quiet=TRUE)
 ```
-By default, the 5 best fitting distribution types are drawn and the quantiles for each distribution returned.
 If returnlist is set to TRUE, it will return an object that can be examined with printL:
 ```{r dlprint, eval=1}
 printL(dlq)
@@ -240,8 +239,9 @@ Here is an example with annual block maxima of stream discharge in Austria:
 ```{r RP, echo=-1, warning=FALSE, fig.height=4, fig.width=5.5}
 par(mar=c(3,2.8,1.2,0.4), mgp=c(1.8,0.5,0))
 data("annMax") # annual discharge maxima in the extremeStat package itself
-dle <- distLextreme(annMax, log=TRUE, legargs=list(cex=0.6, bg="transparent"), nbest=17, quiet=TRUE)
-dle$returnlev[1:20,]
+dlf <- distLextreme(annMax, quiet=TRUE)
+plotLextreme(dlf, log=TRUE, legargs=list(cex=0.6, bg="transparent"), nbest=17)
+dlf$returnlev[1:20,]
 
 ```
 
