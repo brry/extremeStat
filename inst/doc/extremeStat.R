@@ -40,7 +40,7 @@ dlq$quant # distLquantile output if returnlist=FALSE (the default)
 
 ## ----weight, echo=-1, fig.height=3.5, fig.width=5.5----------------------
 par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
-plotLgof(dlq, legargs=list(cex=0.8, bg="transparent") )
+plotLweights(dlq, legargs=list(cex=0.8, bg="transparent") )
 
 ## ----prob, echo=FALSE, fig.height=1, fig.width=5.5-----------------------
   par(mar=rep(0,4))
