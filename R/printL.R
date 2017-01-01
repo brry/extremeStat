@@ -62,13 +62,13 @@ if(any(!must %in% names(dlf))) warning("dlf must include the element(s) ",
                                        toString(must[!must %in% names(dlf)]))
 # functions:
 vals <- function(x, signi=FALSE)
-  {
+  suppressWarnings({
   nNA <- sum(is.na(x))
   x <- x[!is.na(x)]
   if(!signi)values <-  round(c(min(x), median(x), max(x)), digits)
   if(signi) values <- signif(c(min(x), median(x), max(x)), digits+1)
   paste(paste(values, collapse="/"), " nNA:", nNA)
-  } 
+  })
 # message preparation:
 n <- length(dlf$dat)
 inparnotgof <- ! names(dlf$parameter) %in% rownames(dlf$gof)
