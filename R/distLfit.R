@@ -159,9 +159,17 @@ if(length(dat) < 5)
 # Fit distribution parameters --------------------------------------------------
 # L-Moments of sample  # package lmomco
 mom <- lmomco::lmoms(dat, nmom=5)
-# estimate parameters for each distribution:    # this takes time!
-if(progbars) message("Parameter estimation from L-moments:")
-dlf$parameter <- lapply(dn, function(d) tryStack(lmomco::lmom2par(mom, type=d), silent=TRUE) )
+if(lmomco::are.lmom.valid(mom))
+{
+  # estimate parameters for each distribution:    # this takes time!
+  if(progbars) message("Parameter estimation from L-moments:")
+  dlf$parameter <- lapply(dn, function(d) tryStack(lmomco::lmom2par(mom, type=d), silent=TRUE) )
+} else 
+{
+  dlf$parameter <- rep(NA, length(dn))
+  if(!quiet) message("Note in distLfit: L-moments are not valid. No distributions are fitted.")
+  dlf$error <- c(error="invalid lmomco::lmoms", mom)
+}
 names(dlf$parameter) <- dn
 #
 # Error check ------------------------------------------------------------------
