@@ -177,7 +177,7 @@ exclude <- sapply(dlf$parameter, function(x)
   {
   if(is.null(x)) return(TRUE)
   if(inherits(x, "try-error")) return(TRUE)
-  cumuprob <- try(lmomco::plmomco(mean(dlf$dat),x), silent=TRUE)
+  cumuprob <- suppressWarnings(try(lmomco::plmomco(mean(dlf$dat),x), silent=TRUE))
   if(is.null(cumuprob)||inherits(cumuprob,"try-error")) return(TRUE) 
   any(is.na(x$para))
   })
@@ -194,7 +194,9 @@ if(any(exclude))
 # Goodness of Fit --------------------------------------------------------------
 # CDFS for RMSE (and R2): (dat must be sorted at this point in time!)
 if(progbars) message("Calculating CDFs:")
-tcdfs <- tryStack(lapply(dn, function(d) lmomco::plmomco(dat,dlf$parameter[[d]])))
+tcdfs <- tryStack(suppressWarnings(
+         lapply(dn, function(d) lmomco::plmomco(dat,dlf$parameter[[d]]))
+         ))
 names(tcdfs) <- dn # Theoretical CumulatedDensityFunctions
 if(!quiet)
   {
