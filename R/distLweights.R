@@ -84,14 +84,14 @@ if(is.data.frame(RMSE) | is.matrix(RMSE))
 if(is.null(names(RMSE))) stop("RMSE must have names.")
 
 # the lower RMSE, the better GOF, the more weight
-maxRMSE <- max(RMSE, na.rm=TRUE)
+maxRMSE <- suppressWarnings(max(RMSE, na.rm=TRUE))
   
 # Zero weight to worst fit (needs 2 or more distributions to work):
 weight2 <- maxRMSE - RMSE
 if(sum(weight2,na.rm=TRUE)==0) weight2[weight2==0] <- 1
 
 # at least a little weight for all distributions:
-weight1 <- maxRMSE - RMSE + min(RMSE, na.rm=TRUE)  
+weight1 <- maxRMSE - RMSE + suppressWarnings(min(RMSE, na.rm=TRUE))
 # with min or mean added, the worst fit is not completely excluded
 if(sum(weight1,na.rm=TRUE)==0) weight1[weight1==0] <- 1
 

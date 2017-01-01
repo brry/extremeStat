@@ -10,7 +10,6 @@ extremeStat ToDo-list / wishlist / issues
 - exTime with run=T
 - now that distLfit keeps all parameters (does it?), can some of the checks be removed?
 - put dlf elements in common order
-- distLfit(annMax, sel="gep") -> distLweights ->  Error in max(RMSE, na.rm = TRUE) : invalid 'type' (list) of argument 
 - q_gpd: also compute RMSE
 - distLquantile: remove sanity checks?
 

@@ -206,7 +206,7 @@ if(any(exclude))
   {
   RMSEexcl <- rep(NA, sum(exclude))
   names(RMSEexcl) <- dnexclude
-  RMSE <- c(RMSE,RMSEexcl)
+  RMSE <- c(if(length(dn>0))RMSE,RMSEexcl)
   ###R2   <- c(  R2,RMSEexcl)
   }
 # Weights for weighted averages:
