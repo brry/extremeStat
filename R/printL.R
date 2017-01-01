@@ -57,7 +57,7 @@ digits=1
 obj <- deparse(substitute(dlf))
 if(!is.list(dlf)) stop("dlf is not a list")
 must <- c("dat", "dat_full", "datname", "parameter", "gof", 
-          "distnames","distcols", "distselector", "truncate", "threshold")
+          "distnames","distcols", "distselector", "dn_failed", "truncate", "threshold")
 if(any(!must %in% names(dlf))) warning("dlf must include the element(s) ", 
                                        toString(must[!must %in% names(dlf)]))
 # functions:
@@ -95,6 +95,8 @@ if(any(ingofnotpar)) paste0("\n--> dists in gof but not in parameter: ",
 "\nRMSE min/median/max: ", vals(dlf$gof$RMSE, TRUE),
 "\n", length(dlf$distnames), " distnames + ", length(dlf$distcols), 
       " distcols from distselector ", dlf$distselector,
+if(dlf$dn_failed[1]!="") paste0("\n--> fitting failed for ",length(dlf$dn_failed),
+                                " distributions: ", toString(dlf$dn_failed)),
 if(qq) paste("\nquant:",nrow(dlf$quant),"rows,",ncol(dlf$quant),"columns,",
             prod(dim(dlf$quant)),"values, of which",sum(is.na(dlf$quant)),"NA."),
 if(PP | RP) "\ndistLextreme elements:",

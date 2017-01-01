@@ -181,12 +181,13 @@ exclude <- sapply(dlf$parameter, function(x)
   if(is.null(cumuprob)||inherits(cumuprob,"try-error")) return(TRUE) 
   any(is.na(x$para))
   })
+dlf$dn_failed <- ""
 if(any(exclude))
   {
-  dnexclude <- dn[exclude]
+  dlf$dn_failed <- dn[exclude]
   if(!quiet) message("Note in distLfit: The following distributions were ",
                      "excluded since no parameters were estimated (",
-                     sum(exclude),"/",length(dn),"):\n", toString(dnexclude),
+                     sum(exclude),"/",length(dn),"):\n", toString(dlf$dn_failed),
                      if(sum(!exclude)<2) "\nGOF cannot be compared")
   dn <- dn[!exclude]
   # dlf$parameter <- dlf$parameter[!exclude] # not sure whether this is always good...
@@ -215,7 +216,7 @@ RMSE <- sapply(dn, function(d) berryFunctions::rmse(tcdfs[[d]], ecdfs, quiet=TRU
 if(any(exclude)) 
   {
   RMSEexcl <- rep(NA, sum(exclude))
-  names(RMSEexcl) <- dnexclude
+  names(RMSEexcl) <- dlf$dn_failed
   RMSE <- c(if(length(dn>0))RMSE,RMSEexcl)
   ###R2   <- c(  R2,RMSEexcl)
   }
@@ -241,7 +242,7 @@ if(ks)
   }
 #
 # time message + output --------------------------------------------------------
-dlf$distnames <- rownames(dlf$gof)[order(dlf$gof$RMSE)] # in order even if order=FALSE
+dlf$distnames <- rownames(dlf$gof)
 if(time & !quiet) message("distLfit execution took ", 
                   signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
 return(invisible(dlf))
