@@ -136,7 +136,6 @@
 #' @param threshold POT cutoff value. If you want correct percentiles, 
 #'                  set this only via truncate, see Details of \code{\link{q_gpd}}. 
 #'                  DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
-#' @param weightc   Custom weights, see \code{\link{distLweights}}. DEFAULT: NA
 #' @param sanerange Range outside of which results should be changed to \code{sanevals}.
 #'                  This can capture numerical errors in small samples
 #'                  (notably GPD_MLE_extRemes). If NA, this is ignored. 
@@ -171,14 +170,13 @@
 #' @param gpquiet   Suppress warnings in \code{\link{q_gpd}}? 
 #'                  DEFAULT: TRUE if quiet is not specified, else quiet
 #' @param \dots     Arguments passed to \code{\link{distLfit}} 
-#'                  (and potentially to \code{\link{distLweights}}) like order
+#'                  and \code{\link{distLweights}} like weightc, order=FALSE
 #'
 distLquantile <- function(
 x=NULL,
 probs=c(0.8,0.9,0.99),
 truncate=0,
 threshold=berryFunctions::quantileMean(dlf$dat_full, truncate),
-weightc=NA,
 sanerange=NA,
 sanevals=NA,
 selection=NULL,
@@ -223,7 +221,7 @@ if(is.null(dlf))
   if(is.na(threshold)) threshold <- berryFunctions::quantileMean(x, truncate)
   dlf <- distLfit(dat=x, datname=internaldatname, selection=selection,
                   truncate=truncate, threshold=threshold,
-                  plot=FALSE, quiet=quiet, ssquiet=ssquiet, ...)
+                  quiet=quiet, ssquiet=ssquiet, ...)
   }
 # check selection
 if(!is.null(selection))
@@ -349,7 +347,7 @@ if(gpd)
   q_gpd_int <- function(pack, meth=NULL) supwarn(q_gpd(package=pack, method=meth,
                         x=dlf$dat_full, probs=probs,
                         truncate=truncate, threshold=threshold, 
-                        quiet=quiet, ttquiet=TRUE))
+                        quiet=gpquiet, ttquiet=TRUE))
   #
   output["GPD_LMO_lmomco",lenprob]       <- q_gpd_int("lmomco")
   output["GPD_LMO_extRemes",lenprob]     <- q_gpd_int("extRemes", meth="Lmoments")
@@ -395,7 +393,7 @@ if(!all(is.na(sanerange)))
   }
 }
 # Weighted quantile estimates: -------------------------------------------------
-if(weighted) output <-  q_weighted(output, distLweights(dlf$gof, weightc=weightc))
+if(weighted) output <- q_weighted(output, distLweights(dlf$gof, ...))
 #
 dlf$distnames <- dn
 dlf$distcols <- berryFunctions::rainbow2(length(dn))

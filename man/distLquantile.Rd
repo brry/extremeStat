@@ -6,10 +6,10 @@
 \usage{
 distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
   threshold = berryFunctions::quantileMean(dlf$dat_full, truncate),
-  weightc = NA, sanerange = NA, sanevals = NA, selection = NULL,
-  dlf = NULL, list = FALSE, empirical = TRUE, weighted = empirical,
-  gpd = empirical, speed = TRUE, quiet = FALSE, ssquiet = quiet,
-  ttquiet = quiet, gpquiet = missing(quiet) | quiet, ...)
+  sanerange = NA, sanevals = NA, selection = NULL, dlf = NULL,
+  list = FALSE, empirical = TRUE, weighted = empirical, gpd = empirical,
+  speed = TRUE, quiet = FALSE, ssquiet = quiet, ttquiet = quiet,
+  gpquiet = missing(quiet) | quiet, ...)
 }
 \arguments{
 \item{x}{Sample for which parametrical quantiles are to be calculated. 
@@ -25,8 +25,6 @@ Probabilities are adjusted accordingly. DEFAULT: 0}
 \item{threshold}{POT cutoff value. If you want correct percentiles, 
 set this only via truncate, see Details of \code{\link{q_gpd}}. 
 DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
-
-\item{weightc}{Custom weights, see \code{\link{distLweights}}. DEFAULT: NA}
 
 \item{sanerange}{Range outside of which results should be changed to \code{sanevals}.
 This can capture numerical errors in small samples
@@ -75,7 +73,7 @@ Currently, only the Bayesian method is excluded. DEFAULT: TRUE}
 DEFAULT: TRUE if quiet is not specified, else quiet}
 
 \item{\dots}{Arguments passed to \code{\link{distLfit}} 
-(and potentially to \code{\link{distLweights}}) like order}
+and \code{\link{distLweights}} like weightc, order=FALSE}
 }
 \value{
 if list=FALSE (default): invisible matrix with distribution quantile values .
