@@ -9,6 +9,7 @@
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Dec 2016
 #' @seealso \code{\link{distLfit}}, \code{\link{distLquantile}}
 #' @keywords distribution
+#' @importFrom berryFunctions traceCall
 #' @export
 #' @examples
 #' # weights from RMSE vector:
@@ -68,6 +69,11 @@ weightc=NA,
 ...
 )
 {
+# warning:
+unused <- names(list(...))
+unused <- unused[!unused %in% names(formals(distLfit))]
+if(length(unused)>0) warning("unused arguments in ", traceCall(1,"",""), ": ", 
+                             toString(unused), call.=FALSE)
 # get data.frame column:
 if(is.data.frame(RMSE) | is.matrix(RMSE))
   {
