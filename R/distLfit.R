@@ -101,22 +101,21 @@ dat <- as.numeric( dat[!is.na(dat)]  )
 # truncate (fit values only to upper part of values):
 dat <- dat[dat>=threshold] # GPD fits in q_gpd all use x>t, not x>=t
 #                          # but if t=0, I want to use _all_ data
-# possible distributions: ------------------------------------------------------
+# possible / selected distributions --------------------------------------------
 dn <- lmomco::dist.list()
 names(dn) <- dn
 # Selection:
 if( ! is.null(selection) )
   {
   if(!is.character(selection)) stop("Since Version 0.4.36 (2015-08-31), 'selection' _must_ be a character string vector.")
-  seldn <- !selection %in% dn
-  if(any(seldn))
+  seldn <- selection %in% dn
+  if(any(!seldn))
    {
-   if(!quiet) message("Note in distLfit: selection (", toString(selection[seldn]),
+   if(!quiet) message("Note in distLfit: selection (", toString(selection[!seldn]),
                       ") not available in lmomco::dist.list(), thus removed.")
-   selection <- selection[!seldn]
+   selection <- selection[seldn]
    }
   dn <- dn[selection]
-  names(dn) <- NULL
   }
 else
 # remove some to save time and errors, see ?dist.list # gld, gov and tri added
@@ -134,14 +133,11 @@ if(length(dat) < 5)
   {
   if(!ssquiet) message("Note in distLfit: sample size (", length(dat), 
                        ") is too small to fit parameters (<5).")
-  error_par <- as.list(dn) 
-  names(error_par) <- dn
-  error_gof <- matrix(NA, nrow=length(dn), ncol=6)
-  colnames(error_gof) <- c("RMSE", "R2", paste0("weight",1:3), "weightc")
-  rownames(error_gof) <- dn
-  dlf$parameter <- error_par
-  dlf$gof <- error_gof
-  dlf$error <- "dat size too small."
+  # error output:
+  dlf$parameter <- as.list(dn)
+  dn2 <- rep(NA,length(dn)) ; names(dn2) <- dn
+  dlf$gof <- suppressWarnings(distLweights(dn2))
+  dlf$error <- paste0("dat size too small (",length(dat),")")
   return(invisible(dlf))
   }
 #
@@ -150,18 +146,11 @@ if(length(dat) < 5)
 mom <- lmomco::lmoms(dat, nmom=5)
 # estimate parameters for each distribution:    # this takes time!
 if(progbars) message("Parameter estimation from L-moments:")
-parameter <- lapply(dn, function(d) tryStack(lmomco::lmom2par(mom, type=d), silent=TRUE) )
-# wrapped in try since july 2016 because parkap breaks if TAU4=NA  (lmomco 2.2.4)
-# error catching:
-if( length(parameter) != length(dn))
-  {
-  if(!quiet) message("Note in distLfit: Some distributions could not be fitted. Possibly cau.")
-  names(parameter) <- sapply(parameter, "[[", "type")
-  }
-else names(parameter) <- dn
+dlf$parameter <- lapply(dn, function(d) tryStack(lmomco::lmom2par(mom, type=d), silent=TRUE) )
+names(dlf$parameter) <- dn
 #
-# Goodness of Fit, output list -------------------------------------------------
-dlf$parameter <- parameter
+# Goodness of Fit --------------------------------------------------------------
+
 dlf <- distLgof(dlf, progbars=progbars, quiet=quiet, ...)
 dlf$distnames <- rownames(dlf$gof)[order(dlf$gof$RMSE)]
 
