@@ -75,7 +75,7 @@ Currently, only the Bayesian method is excluded. DEFAULT: TRUE}
 DEFAULT: TRUE if quiet is not specified, else quiet}
 
 \item{\dots}{Arguments passed to \code{\link{distLfit}} 
-(and potentially to \code{\link{distLgof}}) like order}
+(and potentially to \code{\link{distLweights}}) like order}
 }
 \value{
 if list=FALSE (default): invisible matrix with distribution quantile values .

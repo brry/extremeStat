@@ -4,8 +4,8 @@
 \alias{distLfit}
 \title{Fit distributions via L-moments}
 \usage{
-distLfit(dat, datname = deparse(substitute(dat)), speed = TRUE,
-  selection = NULL, truncate = 0,
+distLfit(dat, datname = deparse(substitute(dat)), selection = NULL,
+  speed = TRUE, ks = FALSE, truncate = 0,
   threshold = berryFunctions::quantileMean(dat, truncate),
   progbars = length(dat) > 200, time = TRUE, quiet = FALSE,
   ssquiet = quiet, ...)
@@ -16,11 +16,14 @@ distLfit(dat, datname = deparse(substitute(dat)), speed = TRUE,
 \item{datname}{Character string for main, xlab etc. 
 DEFAULT: \code{deparse(substitute(dat))}}
 
+\item{selection}{Selection of distributions. Character vector with types 
+as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL}
+
 \item{speed}{If TRUE, several distributions are omitted, for the reasons 
 shown in \code{lmomco::\link[lmomco]{dist.list}()}. DEFAULT: TRUE}
 
-\item{selection}{Selection of distributions. Character vector with types 
-as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL}
+\item{ks}{Include ks.test results and CDF R^2 in \code{dlf$gof}?
+Computing is much faster when FALSE. DEFAULT: FALSE}
 
 \item{truncate}{Number between 0 and 1. POT Censored \code{\link{distLquantile}}: 
 fit to highest values only (truncate lower proportion of x). 
@@ -38,16 +41,15 @@ DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
 
 \item{ssquiet}{Suppress sample size notes? DEFAULT: quiet}
 
-\item{\dots}{Further arguments passed to \code{\link{distLgof}} 
-like cweights, ks=TRUE, order=FALSE}
+\item{\dots}{Further arguments passed to \code{\link{distLweights}} 
+like weightc, order=FALSE}
 }
 \value{
 invisible dlf object, see \code{\link{printL}}.
 }
 \description{
-Fit several distributions via L-moments with \code{lmomco::\link[lmomco]{lmom2par}}.
-Plot histogram and distribution densities \emph{or} ecdf with cumulated probability.
-Compute goodness of fit values with \code{\link{distLgof}}.
+Fit several distributions via L-moments with \code{lmomco::\link[lmomco]{lmom2par}}
+and compute goodness of fit measures.
 }
 \examples{
 
@@ -58,7 +60,7 @@ str(dlf, max.lev=2)
 printL(dlf)
 plotLfit(dlf)
 
-# arguments that can be passed:
+# arguments that can be passed to plotting function:
 plotLfit(dlf, lty=2, col=3, legargs=list(lwd=3), main="booh!")
 set.seed(42)
 dlf_b <- distLfit(rbeta(100, 5, 2))
@@ -72,32 +74,43 @@ plotLfit(dlf_b, cdf=TRUE, histargs=list(do.points=FALSE), sel="nor")
 
 # logarithmic axes:
 set.seed(1)
-y <- 10^rnorm(100, mean=2, sd=0.3) # if you use 1e4, distLgof will be much slower
+y <- 10^rnorm(100, mean=2, sd=0.3) # if you use 1e4, distLfit will be much slower
 hist(y, breaks=20)
 berryFunctions::logHist(y, col=8)
 dlf <- distLfit(log10(y))
 plotLfit(dlf, breaks=50)
 plotLfit(dlf, breaks=50, log=TRUE)
 
-\dontrun{
-# this takes a while, as it tries to fit all 30 distributions:
+
+# Goodness of fit (see distLweights):
+# measured by RMSE of cumulated distribution function and ?ecdf
+
+
+
+# Fit all available distributions (30):
+\dontrun{# this takes a while...
 d_all <- distLfit(annMax, speed=FALSE) # 35 sec
 printL(d_all)
 plotLfit(d_all, nbest=22, distcols=grey(1:22/29), xlim=c(20,140))
 plotLfit(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))
+plotLweights(dlf_all)
 d_all$gof
 }
 
 }
 \author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014 + July 2015
+Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014, July 2015, Dec 2016
 }
 \seealso{
-\code{\link{distLgof}}, \code{\link{plotLfit}}.
-         \code{\link[extRemes]{fevd}} in the package \code{extRemes},
-         \code{\link[MASS]{fitdistr}} in the package \code{MASS}.
+\code{\link{plotLfit}}, \code{\link{distLweights}}, \code{\link{plotLweights}}, 
+    \code{extRemes::\link[extRemes]{fevd}}, \code{MASS::\link[MASS]{fitdistr}}.\cr
+    More complex estimates of quality of fits:
+    Fard, M.N.P. and Holmquist, B. (2013, Chilean Journal of Statistics): 
+    Powerful goodness-of-fit tests for the extreme value distribution.
+    http://chjs.mat.utfsm.cl/volumes/04/01/Fard_Holmquist(2013).pdf
 }
 \keyword{distribution}
 \keyword{dplot}
 \keyword{hplot}
+\keyword{univar}
 

@@ -171,7 +171,7 @@
 #' @param gpquiet   Suppress warnings in \code{\link{q_gpd}}? 
 #'                  DEFAULT: TRUE if quiet is not specified, else quiet
 #' @param \dots     Arguments passed to \code{\link{distLfit}} 
-#'                  (and potentially to \code{\link{distLgof}}) like order
+#'                  (and potentially to \code{\link{distLweights}}) like order
 #'
 distLquantile <- function(
 x=NULL,

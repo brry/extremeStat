@@ -7,7 +7,7 @@
 #'
 #' @return data.frame
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Dec 2016
-#' @seealso \code{\link{distLgof}}, \code{\link{distLquantile}}
+#' @seealso \code{\link{distLfit}}, \code{\link{distLquantile}}
 #' @keywords distribution
 #' @export
 #' @examples
@@ -32,7 +32,7 @@
 #' cw <- c("gpa"=7, "gev"=3, "wak"=6, "wei"=4, "kap"=3.5, "gum"=3, "ray"=2.1,
 #'         "ln3"=2, "pe3"=2.5, "gno"=4, "gam"=5)
 #' dlf <- distLfit(annMax, plot=FALSE, weightc=cw, quiet=TRUE, order=FALSE)
-#' plotLgof(dlf)
+#' plotLweights(dlf)
 #' 
 #' # GOF judgement by RMSE, not R2 --------
 #' # Both RMSE and R2 are computed with ECDF and TCDF
@@ -50,16 +50,22 @@
 #'
 #' @param RMSE    Numeric: Named vector with goodness of fit values (RMSE).
 #'                Can also be a data.frame, in which case the column rmse or RMSE is used.
-#' @param order   Logical: should result be ordered by RMSE? DEFAULT: TRUE
+#' @param order   Logical: should result be ordered by RMSE? If order=FALSE,
+#'                the order of appearance in RMSE is kept (alphabetic or selection 
+#'                in \code{\link{distLfit}}). DEFAULT: TRUE
 #' @param weightc Optional: a named vector with custom weights for each distribution.
 #'                Are internally normalized to sum=1 after removing nonfitted dists.
 #'                Names match the parameter names from \code{RMSE}.
 #'                DEFAULT: NA
+#' @param \dots   Ignored arguments (so a set of arguments can be passed to
+#'                distLfit and distLquantile and arguments used only in the latter 
+#'                will not throw errors) 
 #' 
 distLweights <- function(
 RMSE,
 order=TRUE,
-weightc=NA
+weightc=NA,
+...
 )
 {
 # get data.frame column:

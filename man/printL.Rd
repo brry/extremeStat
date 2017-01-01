@@ -29,8 +29,7 @@ is a list with the following elements:
                          \code{\link{distLfit}}) 
                          with parameters of each distribution\cr
 \code{gof}          \tab dataframe with 'Goodness of Fit' measures, sorted by 
-                         RMSE of theoretical and empirical cumulated density,
-                         created by \code{\link{distLgof}}\cr
+                         RMSE of theoretical and empirical cumulated density\cr
 \code{distnames}    \tab character vector with selected distribution names\cr
 \code{distcols}     \tab colors for distnames (for plotting). If not given manually,
                          determined by \code{berryFunctions::\link{rainbow2}}\cr

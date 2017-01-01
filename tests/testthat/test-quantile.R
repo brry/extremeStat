@@ -6,8 +6,8 @@ test_that("distLquantile generally runs fine",{
 distLquantile(annMax)
 expect_equal(nrow(distLquantile(annMax, addinfo=TRUE)), 38)
 expect_silent(distLquantile(annMax, truncate=0.6, gpd=FALSE, time=FALSE))
-expect_message(distLquantile(annMax, plot=FALSE, selection="wak", empirical=FALSE, quiet=FALSE), 
-  "Note in distLgof: Only wak was fitted, thus GOF can't be compared.")
+expect_message(distLquantile(annMax, selection="wak", empirical=FALSE, quiet=FALSE), 
+  "distLfit execution took")
 distLquantile(annMax, plot=TRUE, selection="wak", empirical=FALSE, breaks=10)
 expect_message(distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9), quiet=FALSE),
   "Note in q_gpd: quantiles for probs (0.7, 0.8) below truncate (0.8) replaced with NAs.", fixed=TRUE)
@@ -16,8 +16,8 @@ expect_message(distLquantile(rexp(199), truncate=0.8, probs=0.7, time=FALSE, emp
 distLquantile(rexp(199), selection=c("wak", "gpa"))
 distLquantile(rexp(199), selection="gpa")
 distLquantile(rexp(4))
-expect_warning(distLquantile(rexp(4), selection="gpa"),
-               "gpa available in dlf$parameter, but not in dlf$gof", fixed=TRUE)
+expect_message(distLquantile(rexp(4), selection="gpa"),
+               "Note in distLquantile: sample size is too small to fit parameters (4). Returning NAs", fixed=TRUE)
 expect_error(distLquantile(rexp(199), selection=1:5, emp=FALSE), # index is a bad idea anyways
   "Since Version 0.4.36 (2015-08-31), 'selection' _must_ be a character string vector", fixed=TRUE)
 expect_error(distLquantile(rexp(199), selection=-3),
