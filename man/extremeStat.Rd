@@ -17,12 +17,12 @@ This package heavily relies on and thankfully acknowledges the package \code{lmo
 
 
 The main functions in the extremeStat package are:
-\tabular{lll}{
-\code{\link{distLweights}} -> \tab \code{\link{distLgof}} \tab -> \code{\link{plotLgof}} \cr
-                              \tab \code{\link{distLfit}} \tab -> \code{\link{plotLfit}} \cr
-\code{\link{q_gpd}} + \code{\link{q_weighted}} -> \tab \code{\link{distLquantile}} \tab -> \code{\link{plotLquantile}} \cr
-                              \tab \code{\link{distLextreme}} \tab -> \code{\link{plotLextreme}} \cr
-                              \tab \code{\link{distLexBoot}} \tab \cr
+\tabular{ll}{
+\code{\link{distLweights}} \tab -> \code{\link{plotLweights}}    \cr
+\code{\link{distLfit}}     \tab -> \code{\link{plotLfit}}     \cr
+\code{\link{q_gpd}} + \code{\link{q_weighted}} -> \code{\link{distLquantile}} \tab -> \code{\link{plotLquantile}} \cr
+\code{\link{distLextreme}} \tab -> \code{\link{plotLextreme}} \cr
+\code{\link{distLexBoot}}  \tab \cr
 }
 They create and modify a list object printed by (and documented in) \code{\link{printL}}.
 }

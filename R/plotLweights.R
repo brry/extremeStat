@@ -1,16 +1,16 @@
 #' Distribution rank comparison
 #' 
-#' Plot rank comparison of fitted distributions calculated by \code{\link{distLgof}}.
+#' Plot rank comparison of fitted distributions calculated by \code{\link{distLfit}}.
 #' 
 #' @return None.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
-#' @seealso \code{\link{distLgof}}, \code{\link{distLfit}}
+#' @seealso \code{\link{distLweights}}, \code{\link{distLfit}}
 #' @keywords hplot distribution
 #' @export
 #' @importFrom berryFunctions owa
 #' @importFrom RColorBrewer brewer.pal
 #' @examples
-#' # see distLgof
+#' # see distLweights and distLfit
 #' 
 #' @param dlf List as returned by \code{\link{distLfit}}, containing the element \code{gof}
 #' @param type,col,pch,lty,lwd Vectors with 5 values for line customization. Recycled if necessary.
@@ -19,7 +19,7 @@
 #' @param xlim Range of x axis. DEFAULT: range(gof$weight*)
 #' @param \dots Further arguments passed to \code{\link{plot}}.
 #' 
-plotLgof <- function(
+plotLweights <- function(
 dlf,
 type="o",
 col=RColorBrewer::brewer.pal(5,"Set2"),#c("#66C2A5", "#FC8D62", "#E78AC3",8,4),

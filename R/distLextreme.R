@@ -69,7 +69,7 @@
 #' round(sort(Q80[,1], decr=TRUE),1)
 #' # 99 to 143 m^3/s can make a relevant difference in engineering!
 #' # That's why the rows weighted by GOF are helpful. Weights are given as in
-#' plotLgof(dlf) # See also section weighted mean below
+#' plotLweights(dlf) # See also section weighted mean below
 #' # For confidence intervals see distLexBoot
 #' 
 #' 

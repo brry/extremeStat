@@ -132,7 +132,7 @@ x3 <- c(4.4, 3, 1.8, 7.3, 2.1, 2.1, 1.8, 1.8)
 q3 <- distLquantile(x3, sanerange=c(0,500), sanevals=c(NA,500))
 
 # weighted distribution quantiles are calculated by different weighting schemes:
-plotLgof(dlf)
+plotLweights(dlf)
 
 # If speed is important and parameters are already available, pass them via dlf:
 distLquantile(dlf=dlf, probs=0:5/5, selection=c("wak","gev","kap"))

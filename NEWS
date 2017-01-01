@@ -11,7 +11,6 @@ extremeStat ToDo-list / wishlist / issues
 - now that distLfit keeps all parameters (does it?), can some of the checks be removed?
 - put dlf elements in common order
 - distLfit(annMax, sel="gep") -> distLweights ->  Error in max(RMSE, na.rm = TRUE) : invalid 'type' (list) of argument 
-- distLgof into distLfit? rename plotLgof to plotLweights?
 - q_gpd: also compute RMSE
 - distLquantile: remove sanity checks?
 
@@ -24,10 +23,11 @@ Any feedback is welcome, per email or on github.com/brry/extremeStat
 
 Version 1.. (2017-)
 For complete log, see https://github.com/brry/extremeStat/commits/master
-Package thoroughly cleaned up:
+Package thoroughly cleaned up and restructured:
 - gofProp option completely removed (POT support is very good now)
 - order option now available throughout the package
 - plot functions renamed to common syntax plotL*
+- distLgof integrated into distLfit, but weight part moved into distLweights
 - many more line breaks in source code for better readibility
 - on.exit calls changed to immediate messages
 Also:
@@ -35,7 +35,7 @@ Also:
 - more rare errors captured
 - distLquantile gains sanity checks
 
-new functions: distLweight, q_weighted, plotLquantile
+new functions: distLweights, q_weighted, plotLquantile
 
 
 ---------------------------------------
