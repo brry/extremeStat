@@ -6,10 +6,10 @@
 \usage{
 distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
   threshold = berryFunctions::quantileMean(dlf$dat_full, truncate),
-  sanerange = NA, sanevals = NA, selection = NULL, dlf = NULL,
-  list = FALSE, empirical = TRUE, weighted = empirical, gpd = empirical,
-  speed = TRUE, quiet = FALSE, ssquiet = quiet, ttquiet = quiet,
-  gpquiet = missing(quiet) | quiet, ...)
+  sanerange = NA, sanevals = NA, selection = NULL, order = TRUE,
+  dlf = NULL, list = FALSE, empirical = TRUE, weighted = empirical,
+  gpd = empirical, speed = TRUE, quiet = FALSE, ssquiet = quiet,
+  ttquiet = quiet, gpquiet = missing(quiet) | quiet, ...)
 }
 \arguments{
 \item{x}{Sample for which parametrical quantiles are to be calculated. 
@@ -36,9 +36,12 @@ DEFAULT: NA}
 DEFAULT: NA}
 
 \item{selection}{Distribution type, eg. "gev" or "wak", see 
-\code{\link[lmomco]{dist.list} in lmomco}. 
+\code{lmomco::\link[lmomco]{dist.list}}. 
 Can be a vector. If NULL (the default), all types present in 
-dlf$parameter are used. DEFAULT: NULL}
+dlf$distnames are used. DEFAULT: NULL}
+
+\item{order}{Logical: sort by RMSE, even if selection is given? 
+See \code{\link{distLweights}}. DEFAULT: TRUE}
 
 \item{dlf}{dlf object described in \code{\link{extremeStat}}. Use this to save 
 computing time for large datasets where you already have dlf. 
@@ -73,7 +76,7 @@ Currently, only the Bayesian method is excluded. DEFAULT: TRUE}
 DEFAULT: TRUE if quiet is not specified, else quiet}
 
 \item{\dots}{Arguments passed to \code{\link{distLfit}} 
-and \code{\link{distLweights}} like weightc, order=FALSE}
+and \code{\link{distLweights}} like weightc, ks=TRUE}
 }
 \value{
 if list=FALSE (default): invisible matrix with distribution quantile values .

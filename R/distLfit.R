@@ -105,7 +105,7 @@ StartTime <- Sys.time()
 datname <- datname # evaluate promise before dat is changed
 # Progress bars
 if(quiet) progbars <- FALSE
-if(progbars) {  lapply <- pbapply::pblapply   ;   sapply <- pbapply::pbsapply  }
+if(progbars) lapply <- pbapply::pblapply
 # checks:
 if( ! is.numeric(dat) ) stop("dat must be numeric.")
 if(!is.vector(dat) & !quiet) message("Note in distLfit: dat was not a vector.")
@@ -119,26 +119,23 @@ dat <- sort(dat, decreasing=TRUE)
 # possible / selected distributions --------------------------------------------
 dn <- lmomco::dist.list()
 names(dn) <- dn
-# Selection:
-if( ! is.null(selection) )
-  {
-  if(!is.character(selection)) stop("Since Version 0.4.36 (2015-08-31), 'selection' _must_ be a character string vector.")
-  seldn <- selection %in% dn
-  if(any(!seldn))
-   {
-   if(!quiet) message("Note in distLfit: selection (", toString(selection[!seldn]),
-                      ") not available in lmomco::dist.list(), thus removed.")
-   selection <- selection[seldn]
-   }
-  dn <- dn[selection]
-  }
-else
 # remove some to save time and errors, see ?dist.list # gld, gov and tri added
 if(speed) dn <- dn[ ! dn %in%
    c("aep4","cau","emu","gep","gld","gov","kmu","kur","lmrq","sla","st3","texp","tri")]
 #
-# (error) output ---------------------------------------------------------------
-dlf <- list(dat=dat, dat_full=dat_full, datname=datname, 
+# Selection:
+if( ! is.null(selection) )
+  {
+  if(!is.character(selection)) stop("Since Version 0.4.36 (2015-08-31), 'selection' _must_ be a character string vector.")
+  nondn <- selection[!selection %in% dn]
+  if(length(nondn)>0 & !quiet) message("Note in distLfit: selection (", toString(nondn),
+                                       ") not available in lmomco::dist.list().")
+  dn <- selection ; names(dn) <- dn
+  }
+#
+# output list ------------------------------------------------------------------
+dlf <- list(parameter=as.list(replace(dn,TRUE,NA)),
+            dat_full=dat_full, dat=dat, datname=datname, 
             distnames=dn, distcols=berryFunctions::rainbow2(length(dn)), 
             distselector="distLfit", 
             truncate=truncate, threshold=threshold)
@@ -149,14 +146,13 @@ if(length(dat) < 5)
   if(!ssquiet) message("Note in distLfit: sample size (", length(dat), 
                        ") is too small to fit parameters (<5).")
   # error output:
-  dlf$parameter <- as.list(dn)
-  dn2 <- rep(NA,length(dn)) ; names(dn2) <- dn
-  dlf$gof <- suppressWarnings(distLweights(dn2))
+  dlf$gof <- distLweights(replace(dn,TRUE,NA)) #suppressWarnings()
   dlf$error <- paste0("dat size too small (",length(dat),")")
   return(invisible(dlf))
   }
 #
 # Fit distribution parameters --------------------------------------------------
+# This is the actual work...
 # L-Moments of sample  # package lmomco
 mom <- lmomco::lmoms(dat, nmom=5)
 if(lmomco::are.lmom.valid(mom))
@@ -166,42 +162,40 @@ if(lmomco::are.lmom.valid(mom))
   dlf$parameter <- lapply(dn, function(d) tryStack(lmomco::lmom2par(mom, type=d), silent=TRUE) )
 } else 
 {
-  dlf$parameter <- rep(NA, length(dn))
   if(!quiet) message("Note in distLfit: L-moments are not valid. No distributions are fitted.")
   dlf$error <- c(error="invalid lmomco::lmoms", mom)
 }
 names(dlf$parameter) <- dn
 #
 # Error check ------------------------------------------------------------------
-exclude <- sapply(dlf$parameter, function(x) 
+failed <- sapply(dlf$parameter, function(x) 
   {
   if(is.null(x)) return(TRUE)
+  if(all(is.na(x))) return(TRUE)
   if(inherits(x, "try-error")) return(TRUE)
   cumuprob <- suppressWarnings(try(lmomco::plmomco(mean(dlf$dat),x), silent=TRUE))
   if(is.null(cumuprob)||inherits(cumuprob,"try-error")) return(TRUE) 
   any(is.na(x$para))
   })
-dlf$dn_failed <- ""
-if(any(exclude))
+dlf$distfailed <- ""
+if(any(failed))
   {
-  dlf$dn_failed <- dn[exclude]
-  if(!quiet) message("Note in distLfit: The following distributions were ",
-                     "excluded since no parameters were estimated (",
-                     sum(exclude),"/",length(dn),"):\n", toString(dlf$dn_failed),
-                     if(sum(!exclude)<2) "\nGOF cannot be compared")
-  dn <- dn[!exclude]
-  # dlf$parameter <- dlf$parameter[!exclude] # not sure whether this is always good...
+  dlf$distfailed <- dn[failed]
+  if(!quiet) message("Note in distLfit: ", sum(failed),"/",length(dn),
+                     " distributions could not be fitted: ", toString(dlf$distfailed),
+                     if(sum(!failed)<2) "\nGOF cannot be compared")
+  ###dn <- dn[!failed]
 }
 # Goodness of Fit --------------------------------------------------------------
 # CDFS for RMSE (and R2): (dat must be sorted at this point in time!)
 if(progbars) message("Calculating CDFs:")
-tcdfs <- tryStack(suppressWarnings(
-         lapply(dn, function(d) lmomco::plmomco(dat,dlf$parameter[[d]]))
-         ))
-names(tcdfs) <- dn # Theoretical CumulatedDensityFunctions
+# Theoretical CumulatedDensityFunctions:
+tcdfs <- suppressWarnings(
+         lapply(dn, function(d) tryStack(lmomco::plmomco(dat,dlf$parameter[[d]]), silent=TRUE)))
+# support region check:
 if(!quiet)
   {
-  nNA <- base::sapply(tcdfs, function(x) sum(is.na(x)))
+  nNA <- sapply(tcdfs, function(x) sum(is.na(x)))
   if(any(nNA>0)) 
     message("Note in distLfit: there are NAs in CDF (distribution support region ",
             "probably does not span the whole data range): ", 
@@ -211,34 +205,34 @@ if(!quiet)
 ecdfs <- ecdf(dlf$dat)(dat) # Empirical CDF
 # RMSE:
 if(progbars) message("Calculating RMSE:")
-RMSE <- sapply(dn, function(d) berryFunctions::rmse(tcdfs[[d]], ecdfs, quiet=TRUE))
-# add nonfitted distributions:
-if(any(exclude)) 
-  {
-  RMSEexcl <- rep(NA, sum(exclude))
-  names(RMSEexcl) <- dlf$dn_failed
-  RMSE <- c(if(length(dn>0))RMSE,RMSEexcl)
-  ###R2   <- c(  R2,RMSEexcl)
-  }
-# Weights for weighted averages:
+RMSE <- suppressWarnings(
+        lapply(dn, function(d)  tryStack(rmse(tcdfs[[d]], ecdfs, quiet=TRUE), 
+                                         silent=TRUE)))
+# change nonfitted distributions RMSE to NA:
+RMSE <- sapply(RMSE, function(x) if(inherits(x, "try-error")) NA else x)
+# distribution weights:
 dlf$gof <- distLweights(RMSE, ...)
 # ks and R^2 values:
 if(ks)
   {
   # Kolmogorov-Smirnov test:
   if(progbars) message("Performing ks.test:")
-  ## library("lmomco") # flagged by R CMD check
-  for(d in dn) assign(paste0("cdf",d), getFromNamespace(paste0("cdf",d), "lmomco"))
-  ksA <- lapply(dn, function(d) ks.test(dlf$dat, paste0("cdf",d), dlf$parameter[[d]]) )
-  ksP <- base::sapply(ksA, function(x) x$p.value   ) 
-  ksD <- base::sapply(ksA, function(x) x$statistic )
+  ## library("lmomco") # flagged by R CMD check, not necessary if plmomco is imported
+  ksA <- suppressWarnings(
+         lapply(dn, function(d) tryStack(ks.test(dlf$dat, "plmomco", 
+                                                 dlf$parameter[[d]]), silent=TRUE)))
+  ksP <- sapply(ksA, function(x) x$p.value   ) 
+  ksD <- sapply(ksA, function(x) x$statistic )
   # R2
   if(progbars) message("Calculating R2:")
-  R2 <- sapply(dn, function(d) berryFunctions::rsquare(tcdfs[[d]], ecdfs, quiet=TRUE))
+  R2 <- suppressWarnings(
+        lapply(dn, function(d)  tryStack(rsquare(tcdfs[[d]], ecdfs, quiet=TRUE), 
+                                         silent=TRUE)))
+  R2 <- sapply(R2, function(x) if(inherits(x, "try-error")) NA else x)
   # add to output data.frame:
-  dlf$gof$ksP[dn] <- ksP 
-  dlf$gof$ksD[dn] <- ksD 
-  dlf$gof$R2 [dn] <- R2 
+  dlf$gof$ksP <- ksP[rownames(dlf$gof)] 
+  dlf$gof$ksD <- ksD[paste0(rownames(dlf$gof),".D")]
+  dlf$gof$R2  <-  R2[rownames(dlf$gof)] 
   }
 #
 # time message + output --------------------------------------------------------

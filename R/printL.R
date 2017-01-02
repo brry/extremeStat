@@ -15,6 +15,7 @@
 #' \code{gof}          \tab dataframe with 'Goodness of Fit' measures, sorted by 
 #'                          RMSE of theoretical and empirical cumulated density\cr
 #' \code{distnames}    \tab character vector with selected distribution names\cr
+#' \code{distfailed}   \tab Names of nonfitted distributions or ""\cr
 #' \code{distcols}     \tab colors for distnames (for plotting). If not given manually,
 #'                          determined by \code{berryFunctions::\link{rainbow2}}\cr
 #' \code{distselector} \tab character string with function name creating
@@ -57,7 +58,7 @@ digits=1
 obj <- deparse(substitute(dlf))
 if(!is.list(dlf)) stop("dlf is not a list")
 must <- c("dat", "dat_full", "datname", "parameter", "gof", 
-          "distnames","distcols", "distselector", "dn_failed", "truncate", "threshold")
+          "distnames","distcols", "distselector", "distfailed", "truncate", "threshold")
 if(any(!must %in% names(dlf))) warning("dlf must include the element(s) ", 
                                        toString(must[!must %in% names(dlf)]))
 # functions:
@@ -95,8 +96,8 @@ if(any(ingofnotpar)) paste0("\n--> dists in gof but not in parameter: ",
 "\nRMSE min/median/max: ", vals(dlf$gof$RMSE, TRUE),
 "\n", length(dlf$distnames), " distnames + ", length(dlf$distcols), 
       " distcols from distselector ", dlf$distselector,
-if(dlf$dn_failed[1]!="") paste0("\n--> fitting failed for ",length(dlf$dn_failed),
-                                " distributions: ", toString(dlf$dn_failed)),
+if(dlf$distfailed[1]!="") paste0("\n--> fitting failed for ",length(dlf$distfailed),
+                                " distributions: ", toString(dlf$distfailed)),
 if(qq) paste("\nquant:",nrow(dlf$quant),"rows,",ncol(dlf$quant),"columns,",
             prod(dim(dlf$quant)),"values, of which",sum(is.na(dlf$quant)),"NA."),
 if(PP | RP) "\ndistLextreme elements:",

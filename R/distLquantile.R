@@ -144,9 +144,11 @@
 #' @param sanevals  Values to be used below [1] and above [2] \code{sanerange}. 
 #'                  DEFAULT: NA
 #' @param selection Distribution type, eg. "gev" or "wak", see 
-#'                  \code{\link[lmomco]{dist.list} in lmomco}. 
+#'                  \code{lmomco::\link[lmomco]{dist.list}}. 
 #'                  Can be a vector. If NULL (the default), all types present in 
-#'                  dlf$parameter are used. DEFAULT: NULL
+#'                  dlf$distnames are used. DEFAULT: NULL
+#' @param order     Logical: sort by RMSE, even if selection is given? 
+#'                  See \code{\link{distLweights}}. DEFAULT: TRUE
 #' @param dlf       dlf object described in \code{\link{extremeStat}}. Use this to save 
 #'                  computing time for large datasets where you already have dlf. 
 #'                  DEFAULT: NULL
@@ -170,7 +172,7 @@
 #' @param gpquiet   Suppress warnings in \code{\link{q_gpd}}? 
 #'                  DEFAULT: TRUE if quiet is not specified, else quiet
 #' @param \dots     Arguments passed to \code{\link{distLfit}} 
-#'                  and \code{\link{distLweights}} like weightc, order=FALSE
+#'                  and \code{\link{distLweights}} like weightc, ks=TRUE
 #'
 distLquantile <- function(
 x=NULL,
@@ -180,6 +182,7 @@ threshold=berryFunctions::quantileMean(dlf$dat_full, truncate),
 sanerange=NA,
 sanevals=NA,
 selection=NULL,
+order=TRUE,
 dlf=NULL,
 list=FALSE,
 empirical=TRUE,
@@ -203,8 +206,8 @@ if(!is.null(x)) if(is.list(x)) stop("x must be a vector. Possibly, you want to u
                                     deparse(substitute(x)))
 #
 # Fit distribution functions to (truncated) sample: ----------------------------
-# check truncate
-if(!is.null(dlf)) if(any(dlf$truncate!=truncate)|any(dlf$threshold!=threshold))
+# refit if dlf is given, but truncate/threshold do not match
+if(!is.null(dlf)) if( dlf$truncate!=truncate | dlf$threshold!=threshold )
   {
   if(!quiet) message("Note in distLquantile: truncate (",truncate,
        ") did not match dlf$truncate (",dlf$truncate,
@@ -214,73 +217,45 @@ if(!is.null(dlf)) if(any(dlf$truncate!=truncate)|any(dlf$threshold!=threshold))
   internaldatname <- dlf$datname
   dlf <- NULL
   }
-# actual fitting:
+# actual fitting of distributions:
 if(is.null(dlf))
   {
   # threshold initialization impossible if dlf = NULL
   if(is.na(threshold)) threshold <- berryFunctions::quantileMean(x, truncate)
   dlf <- distLfit(dat=x, datname=internaldatname, selection=selection,
                   truncate=truncate, threshold=threshold,
-                  quiet=quiet, ssquiet=ssquiet, ...)
+                  quiet=quiet, ssquiet=ssquiet, order=order, ...)
   }
-# check selection
+#
+dn <- dlf$distnames # dn = distribution names
+df <- dlf$dn_failed # names of nonfitted (failed) distributions
+
+# check selection --------------------------------------------------------------
 if(!is.null(selection))
   {
-  if(any(!selection %in% names(dlf$parameter))) if(!quiet) message(
-   "Note in distLquantile: 'selection' (",selection[!selection %in% names(dlf$parameter)],
-   ") is not in dlf$parameter. NAs will be returned for these distributions.")
+  missing <- selection[!selection %in% dn]
+  if(length(missing)>0 & !quiet) message("Note in distLquantile: 'selection' (", 
+    toString(missing),") is not in dlf$distnames. NAs will be returned for these distributions.")
+  # control for distributions that could not be fitted:
+  failed <- selection[selection %in% df]
+  if(length(failed)>0 & !quiet) message("Note in distLquantile: fitting failed for ", 
+    toString(failed),". NAs will be returned for these distributions.")
+  # compute quantiles only for available distributions:
+  dn <- selection
+  }
 
-  # reduce number of distfunctions analyzed if more were present in dlf argument:
-  dlf$parameter <- dlf$parameter[selection]
-  dlf$gof <- dlf$gof[rownames(dlf$gof) %in% selection,]
-  }
-#
-# check distribution names: ---------------------------------------------------------
-dn <- rownames(dlf$gof)  # dn = distribution names
-dn2 <- names(dlf$parameter)
-if(any(!dn %in% dn2)) warning(toString(dn [!dn  %in% dn2]),
-                             " available in dlf$gof, but not in dlf$parameter.")
-if(any(!dn2%in% dn )) warning(toString(dn2[!dn2 %in% dn ]),
-                             " available in dlf$parameter, but not in dlf$gof.")
 # Empty output matrix: ---------------------------------------------------------
-output <- matrix(NA, ncol=length(probs), nrow=length(dn) )
-colnames(output) <- paste0(probs*100,"%")
+if(order) dn <- dn[order(dlf$gof[dn, "RMSE"])]
+output <- matrix(NA, ncol=length(probs)+1, nrow=length(dn) )
+colnames(output) <- c(paste0(probs*100,"%"), "RMSE")
 rownames(output) <- dn
-#
-# control for distributions that could not be fitted, e.g. kappa, but are in selection:
-miss <- selection[!selection %in% dn]
-if(length(miss)>0)
-  {
-  message("Note in distLquantile: specified selection (", 
-          toString(miss), ") is not available in dlf$gof.")
-  m <- matrix(NA, nrow=length(miss), ncol=ncol(output))
-  rownames(m) <- miss # always keep the same order if selection is given
-  output <- rbind(output, m) # append missing distfuns at the end 
-                             # (which should be in correct place if order=F)
-  }
-#
-# add rows for weighted averages of distribution functions
-# and for GPD comparison methods
+# add rows for weighted averages of distribution functions and GPD comparison methods
 if(empirical) output <- rbind(output, quantileMean=NA)
 if(weighted) output <- rbind(output,weighted1=NA, weighted2=NA, weighted3=NA, weightedc=NA)
-if(gpd) output <- rbind(output, 
-    GPD_LMO_lmomco=NA, 
-    GPD_LMO_extRemes=NA,
-    GPD_PWM_evir=NA, 
-    GPD_PWM_fExtremes=NA, 
-    GPD_MLE_extRemes=NA,
-    GPD_MLE_ismev=NA,
-    GPD_MLE_evd=NA,
-    GPD_MLE_Renext_Renouv=NA, 
-    GPD_MLE_evir=NA, 
-    GPD_MLE_fExtremes=NA,
-    GPD_GML_extRemes=NA, 
-    GPD_MLE_Renext_2par=NA,
-    GPD_BAY_extRemes=NA)
-
-output <- cbind(output, RMSE=NA)
-output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$dat), 
-                threshold=dlf$threshold)
+if(gpd) output <- rbind(output,  GPD_LMO_lmomco=NA, GPD_LMO_extRemes=NA,
+        GPD_PWM_evir=NA, GPD_PWM_fExtremes=NA, GPD_MLE_extRemes=NA, GPD_MLE_ismev=NA, 
+        GPD_MLE_evd=NA, GPD_MLE_Renext_Renouv=NA, GPD_MLE_evir=NA, GPD_MLE_fExtremes=NA, 
+        GPD_GML_extRemes=NA, GPD_MLE_Renext_2par=NA, GPD_BAY_extRemes=NA)
 #
 # if input sample size is too small, return NA matrix:
 if( length(dlf$dat)<5 )
@@ -288,8 +263,8 @@ if( length(dlf$dat)<5 )
   if(!ssquiet) message(
     "Note in distLquantile: sample size is too small to fit parameters (",
     length(dlf$dat),"). Returning NAs")
-  if(list) {dlf$quant <- output; return(dlf)}
-  else return(output)
+  dlf$quant <- rbind(output,output)
+  if(list) invisible(dlf) else invisible(dlf$quant)
   }
 #
 # truncation probs update: -----------------------------------------------------
@@ -305,7 +280,7 @@ if(truncate!=0)
 #
 # Threshold check:
 normalthr <- berryFunctions::quantileMean(dlf$dat_full, truncate)
-if(threshold != normalthr)
+if(signif(threshold,7) != signif(normalthr,7))
     {
     probs2 <- probs
     if(!ttquiet) message("Note in distLquantile: threshold (",threshold,
@@ -322,6 +297,7 @@ for(d in dn)
   pard <- dlf$parameter[[d]]              # but it catches gno in skewed samples like
   if(is.null(pard)) next                  # c(2.4,2.7,2.3,2.5,2.2, 62.4 ,3.8,3.1) 
   if(inherits(pard, "try-error")) next
+  if(all(is.na(pard))) next
   if(d=="kap") if(pard$ifail!=0) next
   quantd <- tryStack(lmomco::qlmomco(f=probs2, para=dlf$parameter[[d]]), silent=TRUE)
   if(inherits(quantd, "try-error")) next
@@ -332,8 +308,10 @@ for(d in dn)
 #
 # Change results for probs below truncate to NA
 if(truncate!=0) output[ , probs < truncate] <- NA
-# Add RMSE values if wanted:
+# Add RMSE values:
 output[dn,"RMSE"] <- dlf$gof[dn,"RMSE"]
+# Weighted quantile estimates:
+if(weighted) output <- q_weighted(output, distLweights(output, order=order, ...))
 #
 # add further quantile estimates -----------------------------------------------
 # Empirical Quantiles:
@@ -392,13 +370,14 @@ if(!all(is.na(sanerange)))
   output[toolarge] <- sanevals[2]
   }
 }
-# Weighted quantile estimates: -------------------------------------------------
-if(weighted) output <- q_weighted(output, distLweights(dlf$gof, ...))
 #
+# output: ----------------------------------------------------------------------
+# add sample size and threshold info:
+output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$dat), 
+                threshold=dlf$threshold)
 dlf$distnames <- dn
 dlf$distcols <- berryFunctions::rainbow2(length(dn))
 dlf$distselector <- "distLquantile"
 dlf$quant <- output
-# return output: ---------------------------------------------------------------
 if(list) invisible(dlf) else invisible(output)
 }
