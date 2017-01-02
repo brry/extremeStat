@@ -19,7 +19,7 @@ test_that("distLquantile can handle selection input",{
 dlf <- distLquantile(annMax, selection="wak", empirical=FALSE, list=TRUE)
 plotLquantile(dlf, breaks=10)
 expect_message(distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9), quiet=FALSE),
-  "Note in q_gpd: quantiles for probs (0.7, 0.8) below truncate (0.8) replaced with NAs.", fixed=TRUE)
+  "Note in q_gpd: quantiles for probs (0.7) below truncate (0.8) replaced with NAs.", fixed=TRUE)
 distLquantile(rexp(199), selection=c("wak", "gpa"))
 distLquantile(rexp(199), selection="gpa")
 expect_error(distLquantile(rexp(199), selection=1:5, emp=FALSE), # index is a bad idea anyways
@@ -75,7 +75,19 @@ test_that("distLquantile can deal with a given dlf",{
 test_that("distLquantile can handle emp, truncate",{
 expect_equal(nrow(distLquantile(annMax, emp=FALSE)), 20) # only distributions in lmomco
 aq <- distLquantile(annMax, truncate=0.8, probs=0.95) # POT
-expect_equal(round(mean(aq[1:35,1], na.rm=TRUE),2), 102.1) 
+expect_equal(round(aq[1:35,1],2), 
+             structure(c(101.16, 100.55, 103.48, 103.48, 102.75, 102.48, 106.03, 
+102.14, 102.14, 101.97, 101.42, 102.55, 103.68, 103.9, 104.21, 
+104.22, 105, 105.73, 102.88, 102.74, 102.66, NaN, 103.48, 99.84, 
+100.99, 100.7, 99.1, 108.88, 108.44, 108.42, NA, NA, 99.1, 77.26, 
+NA), .Names = c("exp", "lap", "gpa", "wak", "wei", "pe3", "kap", 
+"gno", "ln3", "gev", "glo", "gum", "ray", "gam", "rice", "nor", 
+"revgum", "quantileMean", "weighted1", "weighted2", "weighted3", 
+"weightedc", "GPD_LMO_lmomco", "GPD_LMO_extRemes", "GPD_PWM_evir", 
+"GPD_PWM_fExtremes", "GPD_MLE_extRemes", "GPD_MLE_ismev", "GPD_MLE_evd", 
+"GPD_MLE_Renext_Renouv", "GPD_MLE_evir", "GPD_MLE_fExtremes", 
+"GPD_GML_extRemes", "GPD_MLE_Renext_2par", "GPD_BAY_extRemes"
+))) 
 dd <- distLquantile(annMax, selection="gpa", weighted=FALSE, truncate=0.001)
 expect_equal(sum(is.na(dd[,1:3])), 3)
 expect_equal(dd["gpa",1:3], dd["GPD_LMO_lmomco",1:3])

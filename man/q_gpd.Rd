@@ -112,6 +112,9 @@ q_gpd(annMax, package="Renext")
 q_gpd(annMax, package="Renext", method="f")
 berryFunctions::is.error(q_gpd(annMax, package="nonsense"), force=TRUE)
 
+# compare all at once with
+d <- distLquantile(annMax, speed=FALSE); d
+
 q_gpd(annMax, truncate=0.85, package="evd")          # Note about quantiles
 q_gpd(annMax, truncate=0.85, package="evir")
 q_gpd(annMax, truncate=0.85, package="evir", quiet=TRUE) # No note
@@ -128,9 +131,34 @@ str(  q_gpd(annMax, package="Renext",    list=TRUE)   )
 
 q_gpd(annMax, package="evir", truncate=0.9, method="ml") # NAs (MLE fails often)
 
+trunc <- seq(0,0.9,len=500)
+library("pbapply")
+quant <- pbsapply(trunc, function(tr) q_gpd(annMax, pack="evir", method = "pwm", 
+                                            truncate=tr, quiet=TRUE))
+quant <- pbsapply(trunc, function(tr) q_gpd(annMax, pack="lmomco", truncate=tr, quiet=TRUE))
+plot(trunc, quant["99\%",], type="l", ylim=c(80,130), las=1)
+lines(trunc, quant["90\%",])
+lines(trunc, quant["80\%",])
+plot(trunc, quant["RMSE",], type="l", las=1)
 
 \dontrun{
 ## Not run in checks because simulation takes too long
+
+trunc <- seq(0,0.9,len=200)
+dlfs <- pblapply(trunc, function(tr) distLfit(annMax, truncate=tr, quiet=TRUE, order=FALSE))
+rmses <- sapply(dlfs, function(x) x$gof$RMSE)
+plot(trunc, trunc, type="n", ylim=range(rmses,na.rm=TRUE), las=1, ylab="rmse")
+cols <- rainbow2(17)[rank(rmses[,1])]
+for(i in 1:17) lines(trunc, rmses[i,], col=cols[i])
+
+dlfs2 <- lapply(0:8/10, function(tr) distLfit(annMax, truncate=tr, quiet=TRUE))
+pdf("dummy.pdf")
+dummy <- sapply(dlfs2, function(x) 
+{plotLfit(x, cdf=TRUE, main=x$truncate, ylim=0:1, xlim=c(20,135), nbest=1)
+title(sub=round(x$gof$RMSE[1],4))
+})
+dev.off()
+
 # truncation effect
 mytruncs <- seq(0, 0.9, len=150)
 oo <- options(show.error.messages=FALSE, warn=-1)

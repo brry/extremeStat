@@ -78,6 +78,9 @@
 #' q_gpd(annMax, package="Renext")
 #' q_gpd(annMax, package="Renext", method="f")
 #' berryFunctions::is.error(q_gpd(annMax, package="nonsense"), force=TRUE)
+#' 
+#' # compare all at once with
+#' d <- distLquantile(annMax, speed=FALSE); d
 #'
 #' q_gpd(annMax, truncate=0.85, package="evd")          # Note about quantiles
 #' q_gpd(annMax, truncate=0.85, package="evir")
@@ -94,10 +97,35 @@
 #' str(  q_gpd(annMax, package="Renext",    list=TRUE)   )
 #'
 #' q_gpd(annMax, package="evir", truncate=0.9, method="ml") # NAs (MLE fails often)
-#'
-#'
+#' 
+#' trunc <- seq(0,0.9,len=500)
+#' library("pbapply")
+#' quant <- pbsapply(trunc, function(tr) q_gpd(annMax, pack="evir", method = "pwm", 
+#'                                             truncate=tr, quiet=TRUE))
+#' quant <- pbsapply(trunc, function(tr) q_gpd(annMax, pack="lmomco", truncate=tr, quiet=TRUE))
+#' plot(trunc, quant["99%",], type="l", ylim=c(80,130), las=1)
+#' lines(trunc, quant["90%",])
+#' lines(trunc, quant["80%",])
+#' plot(trunc, quant["RMSE",], type="l", las=1)
+#' 
 #' \dontrun{
 #' ## Not run in checks because simulation takes too long
+#' 
+#' trunc <- seq(0,0.9,len=200)
+#' dlfs <- pblapply(trunc, function(tr) distLfit(annMax, truncate=tr, quiet=TRUE, order=FALSE))
+#' rmses <- sapply(dlfs, function(x) x$gof$RMSE)
+#' plot(trunc, trunc, type="n", ylim=range(rmses,na.rm=TRUE), las=1, ylab="rmse")
+#' cols <- rainbow2(17)[rank(rmses[,1])]
+#' for(i in 1:17) lines(trunc, rmses[i,], col=cols[i])
+#'
+#' dlfs2 <- lapply(0:8/10, function(tr) distLfit(annMax, truncate=tr, quiet=TRUE))
+#' pdf("dummy.pdf")
+#' dummy <- sapply(dlfs2, function(x) 
+#' {plotLfit(x, cdf=TRUE, main=x$truncate, ylim=0:1, xlim=c(20,135), nbest=1)
+#' title(sub=round(x$gof$RMSE[1],4))
+#' })
+#' dev.off()
+#' 
 #' # truncation effect
 #' mytruncs <- seq(0, 0.9, len=150)
 #' oo <- options(show.error.messages=FALSE, warn=-1)
@@ -140,7 +168,7 @@
 #' text(300, 360, "empirical quantile of full sample")
 #' text(300, 340, "GPD parametric estimate", col=4)
 #' text(300, 300, "empirical quantile estimate", col="green3")
-#'
+#' 
 #' } # end of dontrun
 #'
 #' @param x         Vector with numeric values. NAs are silently ignored.
@@ -188,7 +216,8 @@ if(length(package)!=1) stop("package must have length 1, not ", length(package))
 pospack <- c("lmomco", "evir","evd","extRemes","fExtremes","ismev","Renext")
 if(!package %in% pospack) stop("package ('",
      package, "') must be one of:\n", toString(pospack))
-x <- x[!is.na(x)]
+x <- sort(x[!is.na(x)])
+xt <- x[x > threshold]
 if(length(truncate)>1)
   {
   truncate <- truncate[1] #
@@ -218,8 +247,8 @@ if(!missing(threshold))
   }
 #
 # prepare failure output + regular output for list:
-failout <- rep(NA, length(probs))
-names(failout) <- paste0(probs*100,"%")
+failout <- rep(NA, length(probs)+1)
+names(failout) <- c(paste0(probs*100,"%"), "RMSE")
 outlist <- list(q_gpd_created=Sys.time(), q_gpd_creator="",
    q_gpd_truncate=truncate, q_gpd_threshold=threshold, q_gpd_n_full=length(x),
    q_gpd_n_geq=sum(x>=threshold), q_gpd_n_gt=sum(x>threshold),
@@ -313,28 +342,39 @@ stop("package ", package, " is not in the options. This is a bug. Please report 
 # quantile computing: ----------------------------------------------------------
 if(package=="lmomco") # quant lmomco #################
 {
+  # quantile estimates:
   output <- tryStack(lmomco::quagpa(f=probs2, para=z), silent=TRUE)
+  # TCDF:
+  TCDF <- tryStack(lmomco::plmomco(xt,z), silent=TRUE)
   if(inherits(output, "try-error")) return(failfun(output, "lmomco::quagpa"))
   if(is.null(output)) return(failfun("probably pargpa(lmom)$para returned NAs", 
                                      "lmomco::quagpa"))
 } else
 if(package=="evir") # quant evir #################
 {
+  # quantile estimates:
   # computing part from evir::quant, Version: 1.7-3, Date: 2011-07-22
   lambda <- length(x)/z$n.exceed
   a <- lambda * (1 - probs)
   gfunc <- function(a, xihat) (a^(-xihat) - 1)/xihat
   output <- z$threshold + z$par.ests["beta"] * gfunc(a, z$par.ests["xi"])
+  # TCDF:
+  TCDF <- evir::pgpd(xt, xi=z$par.ests["xi"], mu=z$threshold, beta=z$par.ests["beta"])
 } else
 if(package=="evd") # quant evd #################
 {
+  # quantile estimates:
   probs2[probs2==0] <- NA
   probs2[probs2==1] <- NA
-  output <- evd::qgpd(p=probs2, loc=z$threshold , scale=z$param["scale"], 
+  output <- evd::qgpd(p=probs2, loc=z$threshold, scale=z$param["scale"], 
                       shape=z$param["shape"])
+  # TCDF:
+  TCDF <- evd::pgpd(xt, loc=z$threshold, scale=z$param["scale"], 
+                      shape=z$param["shape"]) 
 } else
 if(package=="extRemes") # quant extRemes #################
 {
+  # quantile estimates:
   # Get parameters from result:
   if(z$method=="Bayesian")
   {
@@ -355,12 +395,21 @@ if(package=="extRemes") # quant extRemes #################
   output <- tryStack(extRemes::qevd(p=probs2, scale=scale, shape=shape, 
                                threshold=z$threshold, type="GP"), silent=TRUE)
   if(inherits(output, "try-error")) return(failfun(output, "extRemes::qevd"))
+  # TCDF:
+  TCDF <- tryStack(extRemes::pevd(xt, scale=scale, shape=shape, 
+                               threshold=z$threshold, type="GP"), silent=TRUE)
+  if(inherits(output, "try-error")) return(failfun(output, "extRemes::pevd"))
 } else
 if(package=="fExtremes") #quant fExtremes #################
 {
+  # quantile estimates:
   output <- fExtremes::qgpd(p=probs2, xi=z@fit$par.ests["xi"], mu=z@parameter$u, 
                             beta=z@fit$par.ests["beta"])
   output <- as.vector(output)
+  # TCDF:
+  TCDF <- fExtremes::pgpd(xt, xi=z@fit$par.ests["xi"], mu=z@parameter$u, 
+                            beta=z@fit$par.ests["beta"])
+  # slots to list:
   z2 <- lapply(slotNames(z), getElement, object=z)
   names(z2) <- slotNames(z)
   z <- z2
@@ -369,28 +418,45 @@ if(package=="fExtremes") #quant fExtremes #################
 } else
 if(package=="ismev") # quant ismev #################
 {
+  # quantile estimates:
   # from ismev Version 1.41 Date 2016-04-27,    ismev:::gpdq
   ismev_gpdq <- function(a,u,p) u + (a[1] * (p^(-a[2]) - 1))/a[2]
   output <- ismev_gpdq(a=z$mle, u=z$threshold, p=1-probs2)
+  # TCDF:
+  ismev_gpdf <- function(a, u, z) 1 - (1 + (a[2] * (z - u))/a[1])^(-1/a[2])
+  TCDF <- ismev_gpdf(a=z$mle, u=z$threshold, z=xt) 
 } else
 if(package=="Renext") # quant Renext #################
 {
+  # quantile estimates:
   if(method=="f")
   output <- Renext::qGPD(probs2, scale=z$estimate["scale"], shape=z$estimate["shape"])
   else if(method=="r")
   output <- Renext::qGPD(probs2, loc=z$threshold, scale=z$estimate["scale"], 
                          shape=z$estimate["shape"])
+  # TCDF:
+  if(method=="f")
+  TCDF <- Renext::pGPD(xt, scale=z$estimate["scale"], shape=z$estimate["shape"])
+  else if(method=="r")
+  TCDF <- Renext::pGPD(xt, loc=z$threshold, scale=z$estimate["scale"], 
+                         shape=z$estimate["shape"])
 } else
 stop("package ", package, "is not in the options. This is a bug. Please report to berry-b@gmx.de.")
 #
 #
+# RMSE goodness of fit ---------------------------------------------------------
+ECDF <- ecdf(x)(xt) # Empirical CDF
+if(truncate!=0) TCDF <- TCDF*(1-truncate) + truncate
+TCDF <- rep(TCDF,len=length(ECDF))
+output <- c(output, rmse(TCDF, ECDF, quiet=TRUE) )
+#
 # output formatting, checks: ---------------------------------------------------
-names(output) <- paste0(probs*100,"%")
+names(output) <- c(paste0(probs*100,"%"), "RMSE")
 # replace probs below truncation value with NA:
 if(undertruncNA & any(probs < truncate) & !quiet)
-  message("Note in q_gpd: quantiles for probs (",toString(probs[probs<=truncate]),
+  message("Note in q_gpd: quantiles for probs (",toString(probs[probs<truncate]),
           ") below truncate (",truncate,") replaced with NAs.")
-if(undertruncNA) output[probs < truncate] <- NA
+if(undertruncNA) output[c(probs < truncate,FALSE)] <- NA
 # Output result:
 outlist$q_gpd_method <- method
 outlist$q_gpd_quant <- output

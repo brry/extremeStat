@@ -8,7 +8,7 @@ extremeStat ToDo-list / wishlist / issues
 - berryFunctions::logHist in plotLfit?
 - test-gof last part
 - exTime with run=T
-- q_gpd: also compute RMSE
+- remove dev.new calls
 
 
 ---------------------------------------

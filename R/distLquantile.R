@@ -327,19 +327,19 @@ if(gpd)
                         truncate=truncate, threshold=threshold, 
                         quiet=gpquiet, ttquiet=TRUE))
   #
-  output["GPD_LMO_lmomco",lenprob]       <- q_gpd_int("lmomco")
-  output["GPD_LMO_extRemes",lenprob]     <- q_gpd_int("extRemes", meth="Lmoments")
-  output["GPD_PWM_evir",lenprob]         <- q_gpd_int("evir", meth="pwm")
-  output["GPD_PWM_fExtremes",lenprob]    <- q_gpd_int("fExtremes", meth="pwm")
-  output["GPD_MLE_extRemes",lenprob]     <- q_gpd_int("extRemes", meth="MLE")
-  output["GPD_MLE_ismev",lenprob]        <- q_gpd_int("ismev")
-  output["GPD_MLE_evd",lenprob]          <- q_gpd_int("evd")
-  output["GPD_MLE_Renext_Renouv",lenprob]<- q_gpd_int("Renext", meth="r")
-  output["GPD_MLE_evir",lenprob]         <- q_gpd_int("evir", meth="ml")
-  output["GPD_MLE_fExtremes",lenprob]    <- q_gpd_int("fExtremes", meth="mle")
-  output["GPD_GML_extRemes",lenprob]     <- q_gpd_int("extRemes", meth="GMLE")
-  output["GPD_MLE_Renext_2par",lenprob]  <- q_gpd_int("Renext", meth="f")
-if(!speed)output["GPD_BAY_extRemes",lenprob] <- q_gpd_int("extRemes", meth="Bayesian") # computes a while
+  output["GPD_LMO_lmomco",]       <- q_gpd_int("lmomco")
+  output["GPD_LMO_extRemes",]     <- q_gpd_int("extRemes", meth="Lmoments")
+  output["GPD_PWM_evir",]         <- q_gpd_int("evir", meth="pwm")
+  output["GPD_PWM_fExtremes",]    <- q_gpd_int("fExtremes", meth="pwm")
+  output["GPD_MLE_extRemes",]     <- q_gpd_int("extRemes", meth="MLE")
+  output["GPD_MLE_ismev",]        <- q_gpd_int("ismev")
+  output["GPD_MLE_evd",]          <- q_gpd_int("evd")
+  output["GPD_MLE_Renext_Renouv",]<- q_gpd_int("Renext", meth="r")
+  output["GPD_MLE_evir",]         <- q_gpd_int("evir", meth="ml")
+  output["GPD_MLE_fExtremes",]    <- q_gpd_int("fExtremes", meth="mle")
+  output["GPD_GML_extRemes",]     <- q_gpd_int("extRemes", meth="GMLE")
+  output["GPD_MLE_Renext_2par",]  <- q_gpd_int("Renext", meth="f")
+if(!speed)output["GPD_BAY_extRemes",] <- q_gpd_int("extRemes", meth="Bayesian") # computes a while
   }
 #
 # sanity checks ----------------------------------------------------------------
