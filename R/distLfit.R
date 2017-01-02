@@ -51,6 +51,8 @@
 #' 
 #' # Goodness of fit (see distLweights):
 #' # measured by RMSE of cumulated distribution function and ?ecdf
+#' plotLfit(distLfit(annMax              ), cdf=TRUE, nbest=17)$gof
+#' plotLfit(distLfit(annMax, truncate=0.7), cdf=TRUE, nbest=17)$gof
 #' 
 #' 
 #' 
@@ -60,7 +62,7 @@
 #' printL(d_all)
 #' plotLfit(d_all, nbest=22, distcols=grey(1:22/29), xlim=c(20,140))
 #' plotLfit(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))
-#' plotLweights(dlf_all)
+#' plotLweights(d_all)
 #' d_all$gof
 #' }
 #' 
@@ -137,7 +139,7 @@ if( ! is.null(selection) )
 dlf <- list(parameter=as.list(replace(dn,TRUE,NA)),
             dat_full=dat_full, dat=dat, datname=datname, 
             distnames=dn, distcols=berryFunctions::rainbow2(length(dn)), 
-            distselector="distLfit", 
+            distselector="distLfit", distfailed="",
             truncate=truncate, threshold=threshold)
 
 # Check remaining sample size:
@@ -163,7 +165,10 @@ if(lmomco::are.lmom.valid(mom))
 } else 
 {
   if(!quiet) message("Note in distLfit: L-moments are not valid. No distributions are fitted.")
+  dlf$gof <- distLweights(replace(dn,TRUE,NA)) #suppressWarnings()
   dlf$error <- c(error="invalid lmomco::lmoms", mom)
+  dlf$distfailed <- dn
+  return(invisible(dlf))
 }
 names(dlf$parameter) <- dn
 #
@@ -177,7 +182,6 @@ failed <- sapply(dlf$parameter, function(x)
   if(is.null(cumuprob)||inherits(cumuprob,"try-error")) return(TRUE) 
   any(is.na(x$para))
   })
-dlf$distfailed <- ""
 if(any(failed))
   {
   dlf$distfailed <- dn[failed]
@@ -187,7 +191,7 @@ if(any(failed))
   ###dn <- dn[!failed]
 }
 # Goodness of Fit --------------------------------------------------------------
-# CDFS for RMSE (and R2): (dat must be sorted at this point in time!)
+# CDFS for RMSE (and R2): (dat must be sorted at this point)
 if(progbars) message("Calculating CDFs:")
 # Theoretical CumulatedDensityFunctions:
 tcdfs <- suppressWarnings(
@@ -202,7 +206,9 @@ if(!quiet)
             toString(paste0(dn[nNA>0], " (", nNA[nNA>0], ")" )),
             " of ", length(tcdfs[[1]]), " values.")
   }
-ecdfs <- ecdf(dlf$dat)(dat) # Empirical CDF
+ecdfs <- ecdf(dlf$dat_full)(dat) # Empirical CDF
+# rescale for truncation
+if(truncate!=0) tcdfs <- lapply(tcdfs, function(x) x*(1-truncate)+truncate)
 # RMSE:
 if(progbars) message("Calculating RMSE:")
 RMSE <- suppressWarnings(
