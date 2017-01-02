@@ -133,7 +133,7 @@ if(sum(weight1,na.rm=TRUE)==0) weight1[weight1==0] <- 1
 
 # use only best half (needs 3 or more values):
 weight3 <-  weight2
-weight3[weight3<median(weight3)] <- 0
+weight3[weight3<median(weight3, na.rm=TRUE)] <- 0
 
 # custom weight:
 if(any(!is.na(weightc)))
