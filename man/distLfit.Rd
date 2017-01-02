@@ -84,6 +84,8 @@ plotLfit(dlf, breaks=50, log=TRUE)
 
 # Goodness of fit (see distLweights):
 # measured by RMSE of cumulated distribution function and ?ecdf
+plotLfit(distLfit(annMax              ), cdf=TRUE, nbest=17)$gof
+plotLfit(distLfit(annMax, truncate=0.7), cdf=TRUE, nbest=17)$gof
 
 
 
@@ -93,7 +95,7 @@ d_all <- distLfit(annMax, speed=FALSE) # 35 sec
 printL(d_all)
 plotLfit(d_all, nbest=22, distcols=grey(1:22/29), xlim=c(20,140))
 plotLfit(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))
-plotLweights(dlf_all)
+plotLweights(d_all)
 d_all$gof
 }
 

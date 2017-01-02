@@ -164,7 +164,7 @@
 #' 1220, 1270, 1285, 1329, 1360, 1360, 1387, 1401, 1410, 1410, 1456,
 #' 1556, 1580, 1610, 1630, 1680, 1734, 1740, 1748, 1780, 1800, 1820,
 #' 1896, 1962, 2000, 2010, 2238, 2270, 2860, 4500)
-#' distLplot(distLextreme(Dresden_AnnualMax))
+#' plotLextreme(distLextreme(Dresden_AnnualMax))
 #' } # end dontrun
 #' 
 #' @param dat       Vector with extreme values e.g. annual discharge maxima. 
