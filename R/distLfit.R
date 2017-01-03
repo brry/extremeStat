@@ -150,6 +150,7 @@ if(length(dat) < 5)
   # error output:
   dlf$gof <- distLweights(replace(dn,TRUE,NA)) #suppressWarnings()
   dlf$error <- paste0("dat size too small (",length(dat),")")
+  dlf$distfailed <- dn
   return(invisible(dlf))
   }
 #
@@ -168,7 +169,7 @@ if(lmomco::are.lmom.valid(mom))
   dlf$gof <- distLweights(replace(dn,TRUE,NA)) #suppressWarnings()
   dlf$error <- c(error="invalid lmomco::lmoms", mom)
   dlf$distfailed <- dn
-  return(invisible(dlf))
+  #return(invisible(dlf))
 }
 names(dlf$parameter) <- dn
 #
@@ -178,12 +179,14 @@ failed <- sapply(dlf$parameter, function(x)
   if(is.null(x)) return(TRUE)
   if(all(is.na(x))) return(TRUE)
   if(inherits(x, "try-error")) return(TRUE)
+  if(x$type=="kap") if(x$ifail!=0 | round(x$support[2],7)<=round(x$support[1],7) ) return(TRUE)
   cumuprob <- suppressWarnings(try(lmomco::plmomco(mean(dlf$dat),x), silent=TRUE))
   if(is.null(cumuprob)||inherits(cumuprob,"try-error")) return(TRUE) 
   any(is.na(x$para))
   })
 if(any(failed))
   {
+  dlf$parameter[failed] <- NA # needed in kappa cases like xx3 in test-quantile
   dlf$distfailed <- dn[failed]
   if(!quiet) message("Note in distLfit: ", sum(failed),"/",length(dn),
                      " distributions could not be fitted: ", toString(dlf$distfailed),
@@ -208,6 +211,7 @@ if(!quiet)
   }
 ecdfs <- ecdf(dlf$dat_full)(dat) # Empirical CDF
 # rescale for truncation
+tcdfs[sapply(tcdfs, inherits, "try-error")] <- NA
 if(truncate!=0) tcdfs <- lapply(tcdfs, function(x) x*(1-truncate)+truncate)
 # RMSE:
 if(progbars) message("Calculating RMSE:")
