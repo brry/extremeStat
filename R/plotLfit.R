@@ -102,7 +102,8 @@ if(!is.null(selection))
   }
 # input checks:
 if(nbest < 0) stop("nbest must be positive")
-if(nbest > nrow(dlf$gof)) {nbest <- nrow(dlf$gof)}
+nfitted <- sum(!is.na(dlf$gof$RMSE))
+if(nbest > nfitted) {nbest <- nfitted}
 # internal defaults:
 if(missing(xaxt)       ) xaxt <- if(log) "n" else "s"
 if(missing(xlab)       ) xlab <- dlf$datname

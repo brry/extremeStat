@@ -28,7 +28,7 @@
 #' plotLfit(dlf)
 #' 
 #' # arguments that can be passed to plotting function:
-#' plotLfit(dlf, lty=2, col=3, legargs=list(lwd=3), main="booh!")
+#' plotLfit(dlf, lty=2, col=3, nbest=17, legargs=list(lwd=3), main="booh!")
 #' set.seed(42)
 #' dlf_b <- distLfit(rbeta(100, 5, 2))
 #' plotLfit(dlf_b, nbest=10, legargs=c(x="left"))
@@ -59,10 +59,10 @@
 #' 
 #' # Fit all available distributions (30):
 #' \dontrun{# this takes a while...
-#' d_all <- distLfit(annMax, speed=FALSE) # 35 sec
+#' d_all <- distLfit(annMax, speed=FALSE, progbars=TRUE) # 20 sec
 #' printL(d_all)
-#' plotLfit(d_all, nbest=22, distcols=grey(1:22/29), xlim=c(20,140))
-#' plotLfit(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))
+#' plotLfit(d_all, nbest=30, distcols=grey(1:22/29), xlim=c(20,140))
+#' plotLfit(d_all, nbest=30, ylim=c(0,0.04), xlim=c(20,140))
 #' plotLweights(d_all)
 #' d_all$gof
 #' }

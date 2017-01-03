@@ -92,10 +92,10 @@ plotLfit(distLfit(annMax, truncate=0.7), cdf=TRUE, nbest=17)$gof
 
 # Fit all available distributions (30):
 \dontrun{# this takes a while...
-d_all <- distLfit(annMax, speed=FALSE) # 35 sec
+d_all <- distLfit(annMax, speed=FALSE, progbars=TRUE) # 20 sec
 printL(d_all)
-plotLfit(d_all, nbest=22, distcols=grey(1:22/29), xlim=c(20,140))
-plotLfit(d_all, nbest=22, histargs=list(ylim=c(0,0.04)), xlim=c(20,140))
+plotLfit(d_all, nbest=30, distcols=grey(1:22/29), xlim=c(20,140))
+plotLfit(d_all, nbest=30, ylim=c(0,0.04), xlim=c(20,140))
 plotLweights(d_all)
 d_all$gof
 }
