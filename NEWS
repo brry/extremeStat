@@ -2,10 +2,6 @@
 extremeStat ToDo-list / wishlist / issues
 - read all of https://www.ine.pt/revstat/pdf/rs120102.pdf and coles (2001)
 - distLextreme correct RP for POT approach (npy)
-- remove as many arguments as possible
-- check out overlap between plotLextreme + plotLfit as well as q_gpd + distLquantile
-- exTime with run=T
-- remove dev.new calls
 - distLextreme, distLquantile, q_gpd: reduce example section, potentially move some to tests. add Nile, rain, danish
 
 
@@ -16,18 +12,25 @@ Any feedback is welcome, per email or on github.com/brry/extremeStat
 
 
 Version 1.. (2017-)
-For complete log, see https://github.com/brry/extremeStat/commits/master
 Package thoroughly cleaned up and restructured:
-- gofProp option completely removed (POT support is very good now)
-- order option now available throughout the package
 - plot functions renamed to common syntax plotL*
 - distLgof integrated into distLfit, but weight part moved into distLweights
-- many more line breaks in source code for better readibility
+- q_gpd now computes RMSE as well
+- fitting failure checks now more extensive + all concentrated in distLfit
+- failure outputs and messages have been improved
+- computing functions do not plot anymore (for more clarity and reproducibility)
+- more code is now formally tested with testthat
+- gofProp option completely removed (POT support is very good now)
+- order option now available throughout the package
+- more line breaks in source code for better readibility
 - on.exit calls changed to immediate messages
-Also:
-- plotLgof rank option removed
-- more rare errors captured
 - distLquantile gains sanity checks
+- extensive use of berryFunctions::tryStack to trace errors and warnings
+- several arguments removed and some renamed
+- documentation more standardized
+
+For a complete change log, see https://github.com/brry/extremeStat/commits/master
+https://github.com/brry/extremeStat/compare/master@{2016-12-12}...master@{2017-01-03}
 
 new functions: distLweights, q_weighted, plotLquantile
 
