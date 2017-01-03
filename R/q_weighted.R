@@ -21,9 +21,10 @@ weights=distLweights(quant)
 )
 {
 weights <- weights # evaluate promise
+notRMSE <- which(colnames(quant)!="RMSE")
 Qweighted <- function(w)
   {
-  sapply(1:ncol(quant), function(col_n)
+  sapply(notRMSE, function(col_n)
     {
     vals <- quant[rownames(weights),col_n]
     wx <- weights[,w]
@@ -35,9 +36,9 @@ Qweighted <- function(w)
     sum(vals*wx)
     })
   }
-quant["weighted1",] <- Qweighted("weight1")
-quant["weighted2",] <- Qweighted("weight2")
-quant["weighted3",] <- Qweighted("weight3")
-quant["weightedc",] <- Qweighted("weightc")
+quant["weighted1",notRMSE] <- Qweighted("weight1")
+quant["weighted2",notRMSE] <- Qweighted("weight2")
+quant["weighted3",notRMSE] <- Qweighted("weight3")
+quant["weightedc",notRMSE] <- Qweighted("weightc")
 quant
 }
