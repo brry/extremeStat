@@ -127,7 +127,7 @@ if(!add)
   {
   if(is.null(ylim)) ylim <- lim0(hist(dlf$dat,breaks=breaks,plot=FALSE)$density)
   histdef <- list(x=dlf$dat, breaks=breaks, col=col, xlim=xlim, ylim=ylim, ylab=ylab,
-                  freq=FALSE, main=main, xlab=xlab, las=las, xaxt=if(log)"n" else "r")
+                  freq=FALSE, main=main, xlab=xlab, las=las, xaxt=if(log)"n" else "s")
   do.call(hist, args=berryFunctions::owa(histdef, histargs, "x", "freq"))
   if(log)
     {
