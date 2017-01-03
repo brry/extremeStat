@@ -12,6 +12,8 @@ expect_message(distLquantile(rexp(199), truncate=0.8, probs=0.7, time=FALSE, emp
   "must contain values that are larger than")
 expect_message(distLquantile(rexp(4), selection="gpa"),
   "Note in distLquantile: sample size is too small to fit parameters (4). Returning NAs", fixed=TRUE)
+
+d <- distLquantile(annMax, probs=0:4/4)
 })
 
 
@@ -89,7 +91,7 @@ NA), .Names = c("exp", "lap", "gpa", "wak", "wei", "pe3", "kap",
 "GPD_GML_extRemes", "GPD_MLE_Renext_2par", "GPD_BAY_extRemes"
 ))) 
 dd <- distLquantile(annMax, selection="gpa", weighted=FALSE, truncate=0.001)
-expect_equal(sum(is.na(dd[,1:3])), 3)
+expect_equal(sum(is.na(dd[1:15,1:3])), 3)
 expect_equal(dd["gpa",1:3], dd["GPD_LMO_lmomco",1:3])
 })
 
@@ -101,3 +103,29 @@ expect_is(distLquantile(annMax, threshold=70,  list=TRUE), "list")
 })
 
 
+test_that("distLquantile can handle inputs with (rare) errors",{
+# invalid lmoms
+xx1 <- c(4.2, 1.1, 0.9, 5, 0.6, 5.1, 0.9, 1.2, 0.6, 0.7, 0.9, 1.1, 1.3, 
+1.4, 1.4, 0.6, 3, 1.6, 0.5, 1.4, 1.1, 0.5, 1.3, 3.6, 0.5)
+expect_message(distLquantile(xx1, truncate=0.8), 
+               "Note in distLfit: L-moments are not valid. No distributions are fitted.")
+
+# kap failed
+xx2 <- c(0.6, 1.6, 2.2, 0.6, 0.9, 3.3, 1.3, 4.7, 0.9, 0.8, 0.5, 0.8, 0.6, 0.7, 1.1, 0.9, 
+       5.4, 3.9, 0.9, 0.7, 0.6, 0.7, 15.1, 2.7, 0.7, 1, 0.5, 0.6, 1, 0.9, 1.4)
+dd <- distLquantile(xx2, truncate=0.8)
+expect_equal(dd["kap","RMSE"], NA_real_)
+
+# kap and ln3
+xx3 <- c(0.7, 1.5, 0.7, 2.6, 0.7, 0.8, 1.9, 5.4, 1.4, 1, 1.7, 0.8, 1.3, 0.8, 0.9, 0.5, 
+       0.5, 5.1, 0.9, 1, 1, 1.4, 1.5, 1.4, 4.9, 0.6, 4.3, 0.7, 0.7, 1.2, 0.9, 0.8)
+expect_warning(dd <- distLquantile(xx3, truncate=0.8), 
+               glob2rx("in parln3(lmom, ...): L-skew is negative, try reversing the data*"))
+expect_equal(dd["kap","RMSE"], NA_real_)
+
+# strongly skewed (gno):
+xx4 <- c(2.4,2.7,2.3,2.5,2.2, 62.4 ,3.8,3.1) 
+expect_warning(dd <- distLquantile(xx4), 
+               glob2rx("in pargno(lmom, ...): L-SKEW IS TOO LARGE FOR ROUTINE*"))
+
+})
