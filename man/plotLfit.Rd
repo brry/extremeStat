@@ -6,8 +6,7 @@
 \usage{
 plotLfit(dlf, nbest = 5, selection = NULL, order = TRUE, rmse = 4,
   cdf = FALSE, log = FALSE, supportends = TRUE, breaks = 20,
-  xlim = extendrange(dlf$dat, f = 0.15), ylim = NULL, xaxs = "i",
-  yaxs = "i", xaxt = if (log) "n" else "s", col = "grey",
+  xlim = extendrange(dlf$dat, f = 0.15), ylim = NULL, col = "grey",
   main = paste(if (cdf) "Cumulated", "density distributions of", dlf$datname),
   xlab = dlf$datname, ylab = if (cdf) "(Empirical) Cumulated Density (CDF)"
   else "Probability Density Function (PDF)", las = 1,
@@ -40,11 +39,6 @@ DEFAULT: FALSE}
 \item{breaks}{\code{\link{hist}} breaks. DEFAULT: 20}
 
 \item{xlim, ylim}{\code{\link{hist}} or \code{\link{ecdf}} axis limits.}
-
-\item{xaxs, yaxs}{\code{\link{hist}} or \code{\link{ecdf}} xaxs and yaxs. DEFAULT: both "i"}
-
-\item{xaxt}{\code{\link{par}} xaxt. "n" suppresses axis and numbers, 
-which is used if log}
 
 \item{col}{\code{\link{hist}} bar color or \code{\link{ecdf}} point color. 
 DEFAULT: "grey"}

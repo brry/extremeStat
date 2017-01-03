@@ -1,15 +1,13 @@
 
 extremeStat ToDo-list / wishlist / issues
 - read all of https://www.ine.pt/revstat/pdf/rs120102.pdf and coles (2001)
-- distLextreme correct RP for POT approach
-- move half the examples to tests
+- distLextreme correct RP for POT approach (npy)
 - remove as many arguments as possible
 - check out overlap between plotLextreme + plotLfit as well as q_gpd + distLquantile
-- berryFunctions::logHist in plotLfit?
-- test-gof last part
 - exTime with run=T
 - remove dev.new calls
 - Renext stuff, see email
+- distLextreme, distLquantile, q_gpd: reduce example section, potentially move some to tests. add Nile, rain, danish
 
 
 ---------------------------------------

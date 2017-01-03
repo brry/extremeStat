@@ -32,9 +32,6 @@
 #' @param supportends If TRUE, dots are placed at the support bounds. DEFAULT: TRUE
 #' @param breaks     \code{\link{hist}} breaks. DEFAULT: 20
 #' @param xlim,ylim  \code{\link{hist}} or \code{\link{ecdf}} axis limits.
-#' @param xaxs,yaxs  \code{\link{hist}} or \code{\link{ecdf}} xaxs and yaxs. DEFAULT: both "i"
-#' @param xaxt       \code{\link{par}} xaxt. "n" suppresses axis and numbers, 
-#'                   which is used if log
 #' @param col        \code{\link{hist}} bar color or \code{\link{ecdf}} point color. 
 #'                   DEFAULT: "grey"
 #' @param main,xlab,ylab \code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab. 
@@ -68,8 +65,6 @@ supportends=TRUE,
 breaks=20,
 xlim=extendrange(dlf$dat, f=0.15),
 ylim=NULL,
-xaxs="i", yaxs="i",
-xaxt=if(log) "n" else "s",
 col="grey",
 main=paste(if(cdf)"Cumulated", "density distributions of", dlf$datname), 
 xlab=dlf$datname, 
@@ -120,8 +115,8 @@ if(!add)
   if(cdf)
   {
   if(is.null(ylim)) ylim <- c(dlf$truncate,1)
-  ecdfdef <- list(x=ecdf(dlf$dat_full), do.points=TRUE, col=col, xlim=xlim, xaxt=xaxt, 
-             ylab=ylab, ylim=ylim, xaxs=xaxs, yaxs=yaxs, main=main, xlab=xlab, las=las)
+  ecdfdef <- list(x=ecdf(dlf$dat_full), do.points=TRUE, col=col, xlim=xlim, 
+             ylab=ylab, ylim=ylim, main=main, xlab=xlab, las=las)
   do.call(plot, args=berryFunctions::owa(ecdfdef, histargs, "x", "y"))
   if(log)
     {do.call(logAxis, args=berryFunctions::owa(list(xaxt="s"), logargs))
@@ -130,18 +125,15 @@ if(!add)
   }
   else # if not cdf, then density
   {
-  if(is.null(ylim)) ylim <- berryFunctions::lim0(hist(dlf$dat, breaks=breaks,plot=FALSE)$density,
-                                  curtail=if(yaxs=="i") FALSE else TRUE)
-  op <- par(xaxs=xaxs, yaxs=yaxs, xaxt=xaxt)
+  if(is.null(ylim)) ylim <- lim0(hist(dlf$dat,breaks=breaks,plot=FALSE)$density)
   histdef <- list(x=dlf$dat, breaks=breaks, col=col, xlim=xlim, ylim=ylim, ylab=ylab,
-                  freq=FALSE, main=main, xlab=xlab, las=las)
+                  freq=FALSE, main=main, xlab=xlab, las=las, xaxt=if(log)"n" else "r")
   do.call(hist, args=berryFunctions::owa(histdef, histargs, "x", "freq"))
   if(log)
-    {do.call(logAxis, args=berryFunctions::owa(list(xaxt="s"), logargs))
-     do.call(hist,    args=berryFunctions::owa(c(histdef, add=TRUE), histargs, 
-                                               "x", "freq", "add"))
+    {
+    do.call(logAxis, args=berryFunctions::owa(list(xaxt="s"), logargs))
+    do.call(hist, owa(c(histdef, add=TRUE), histargs, "x", "freq", "add"))
     }
-  par(op)
   }
 }
 #
