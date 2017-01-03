@@ -80,7 +80,8 @@
 #' berryFunctions::is.error(q_gpd(annMax, package="nonsense"), force=TRUE)
 #' 
 #' # compare all at once with
-#' d <- distLquantile(annMax, speed=FALSE); d
+#' d <- distLquantile(annMax); d
+#' # d <- distLquantile(annMax, speed=FALSE); d # for Bayesian also
 #'
 #' q_gpd(annMax, truncate=0.85, package="evd")          # Note about quantiles
 #' q_gpd(annMax, truncate=0.85, package="evir")
