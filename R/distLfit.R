@@ -49,12 +49,25 @@
 #' plotLfit(dlf, breaks=50, log=TRUE)
 #' 
 #' 
-#' # Goodness of fit (see distLweights):
+#' # Goodness of fit: how well do the distributions fit the original data?
 #' # measured by RMSE of cumulated distribution function and ?ecdf
+#' # RMSE: root of average of ( errors squared )  ,   errors = line distances
+#' dlf <- distLfit(annMax, ks=TRUE)
+#' plotLfit(dlf, cdf=TRUE, sel=c("wak", "revgum"))
+#' x <- sort(annMax)
+#' segments(x0=x, y0=lmomco::plmomco(x, dlf$parameter$revgum), y1=ecdf(annMax)(x), col=2)
+#' segments(x0=x, y0=lmomco::plmomco(x, dlf$parameter$wak), y1=ecdf(annMax)(x), col=4, lwd=2)
+#' # weights by three different weighting schemes, see distLweights:
 #' plotLweights(dlf)
 #' plotLfit(distLfit(annMax              ), cdf=TRUE, nbest=17)$gof
 #' plotLfit(distLfit(annMax, truncate=0.7), cdf=TRUE, nbest=17)$gof
-#' 
+#' pairs(dlf$gof[,-(2:5)]) # measures of goodness of fit are correlated quite well here.
+#' dlf$gof
+#'
+#' # Kolmogorov-Smirnov Tests for normal distribution return slightly different values:
+#' library(lmomco)
+#' ks.test(annMax, "pnorm", mean(annMax), sd(annMax) )$p.value
+#' ks.test(annMax, "cdfnor", parnor(lmoms(annMax)))$p.value
 #' 
 #' 
 #' # Fit all available distributions (30):
