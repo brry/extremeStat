@@ -4,10 +4,13 @@
 \alias{plotLfit}
 \title{Plot distributions fitted with L-moments}
 \usage{
-plotLfit(dlf, nbest = 5, selection = NULL, order = FALSE, cdf = FALSE,
-  log = FALSE, supportends = TRUE, breaks = 20,
+plotLfit(dlf, nbest = 5, selection = NULL, order = TRUE, rmse = 4,
+  cdf = FALSE, log = FALSE, supportends = TRUE, breaks = 20,
   xlim = extendrange(dlf$dat, f = 0.15), ylim = NULL, xaxs = "i",
-  yaxs = "i", xaxt, col = "grey", main, xlab, ylab, las = 1,
+  yaxs = "i", xaxt = if (log) "n" else "s", col = "grey",
+  main = paste(if (cdf) "Cumulated", "density distributions of", dlf$datname),
+  xlab = dlf$datname, ylab = if (cdf) "(Empirical) Cumulated Density (CDF)"
+  else "Probability Density Function (PDF)", las = 1,
   distcols = berryFunctions::rainbow2(nbest), lty = 1, add = FALSE,
   logargs = NULL, legend = TRUE, legargs = NULL, histargs = NULL, ...)
 }
@@ -21,8 +24,11 @@ DEFAULT: 5}
 \item{selection}{Names of distributions in \code{dlf$parameter} that will be drawn. 
 Overrides nbest. DEFAULT: NULL}
 
-\item{order}{If selection is given, should legend and colors be ordered 
-by gof anyways? DEFAULT: FALSE}
+\item{order}{Logical: order legend and colors by RMSE, even if dlf$gof is 
+unordered or selection is given? DEFAULT: TRUE}
+
+\item{rmse}{Integers. If rmse != 0, RMSE values are added to legend.
+They are rounded to \code{rmse} digits. DEFAULT: 4}
 
 \item{cdf}{If TRUE, plot cumulated DF instead of probability density. 
 DEFAULT: FALSE}
@@ -44,7 +50,7 @@ which is used if log}
 DEFAULT: "grey"}
 
 \item{main, xlab, ylab}{\code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab. 
-DEFAULT: internal abstraction fom \code{dlf$datname}}
+DEFAULT: abstractions fom \code{dlf$datname}}
 
 \item{las}{Label Axis Style for orientation of numbers along axes. DEFAULT: 1}
 
@@ -54,7 +60,7 @@ DEFAULT: \code{\link[berryFunctions]{rainbow2}}}
 \item{lty}{Line TYpe for plotted distributions. 
 Recycled vector of length nbest. DEFAULT: 1}
 
-\item{add}{If TRUE, hist is not called before adding lines. 
+\item{add}{If TRUE, hist/ecdf is not called before adding lines. 
 This lets you add lines highly customized one by one. 
 DEFAULT: FALSE}
 

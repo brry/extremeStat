@@ -22,8 +22,10 @@
 #'                   DEFAULT: 5
 #' @param selection  Names of distributions in \code{dlf$parameter} that will be drawn. 
 #'                   Overrides nbest. DEFAULT: NULL
-#' @param order      If selection is given, should legend and colors be ordered 
-#'                   by gof anyways? DEFAULT: FALSE
+#' @param order      Logical: order legend and colors by RMSE, even if dlf$gof is 
+#'                   unordered or selection is given? DEFAULT: TRUE
+#' @param rmse       Integers. If rmse != 0, RMSE values are added to legend.
+#'                   They are rounded to \code{rmse} digits. DEFAULT: 4
 #' @param cdf        If TRUE, plot cumulated DF instead of probability density. 
 #'                   DEFAULT: FALSE
 #' @param log        If TRUE, logAxis is called. DEFAULT: FALSE
@@ -36,13 +38,13 @@
 #' @param col        \code{\link{hist}} bar color or \code{\link{ecdf}} point color. 
 #'                   DEFAULT: "grey"
 #' @param main,xlab,ylab \code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab. 
-#'                   DEFAULT: internal abstraction fom \code{dlf$datname}
+#'                   DEFAULT: abstractions fom \code{dlf$datname}
 #' @param las        Label Axis Style for orientation of numbers along axes. DEFAULT: 1
 #' @param distcols   Color for each distribution added with \code{\link{lines}}. 
 #'                   DEFAULT: \code{\link[berryFunctions]{rainbow2}}
 #' @param lty        Line TYpe for plotted distributions. 
 #'                   Recycled vector of length nbest. DEFAULT: 1
-#' @param add        If TRUE, hist is not called before adding lines. 
+#' @param add        If TRUE, hist/ecdf is not called before adding lines. 
 #'                   This lets you add lines highly customized one by one. 
 #'                   DEFAULT: FALSE
 #' @param logargs    List of arguments passed to \code{\link{logAxis}} if 
@@ -52,13 +54,14 @@
 #'                   legend and col. DEFAULT: NULL
 #' @param histargs   List of arguments passed to \code{\link{hist}} or \code{\link{ecdf}} 
 #'                   except for x, freq. DEFAULT: NULL
-#' @param \dots     Further arguments passed to \code{\link{lines}}, like type, pch, ...
+#' @param \dots      Further arguments passed to \code{\link{lines}}, like type, pch, ...
 #' 
 plotLfit <- function(
 dlf,
 nbest=5,
 selection=NULL,
-order=FALSE,
+order=TRUE,
+rmse=4,
 cdf=FALSE,
 log=FALSE,
 supportends=TRUE,
@@ -66,9 +69,11 @@ breaks=20,
 xlim=extendrange(dlf$dat, f=0.15),
 ylim=NULL,
 xaxs="i", yaxs="i",
-xaxt,
+xaxt=if(log) "n" else "s",
 col="grey",
-main, xlab, ylab,
+main=paste(if(cdf)"Cumulated", "density distributions of", dlf$datname), 
+xlab=dlf$datname, 
+ylab=if(cdf) "(Empirical) Cumulated Density (CDF)" else "Probability Density Function (PDF)",
 las=1,
 distcols=berryFunctions::rainbow2(nbest),
 lty=1,
@@ -87,28 +92,27 @@ if(is.null(dlf$parameter)) stop("dlf must contain the element parameter")
 if(is.null(dlf$gof))       stop("dlf must contain the element gof")
 if(is.null(dlf$datname))   stop("dlf must contain the element datname")
 # distribution selection:
+dn <- rownames(dlf$gof)[!is.na(dlf$gof$RMSE)]
 if(!is.null(selection))
   {
   names(selection) <- selection
-  if(order) selection <- selection[rownames(dlf$gof)]
-  selection <- selection[!is.na(selection)]
-  sing <- selection %in% rownames(dlf$gof)
-  if(!any(sing)) stop("selection (", toString(selection[!sing]), ") is not available in dlf$gof.")
+  sing <- selection %in% dn
+  if(!any(sing)) stop("selection (", toString(selection[!sing]), ") is not available in dlf.")
   if(any(!sing)) message("Note in disLplot: selection (",toString(selection[!sing]),
-                         ") is not available in dlf$gof.")
+                         ") is not available in dlf.")
   selection <- selection[sing]
-  dlf$gof <- dlf$gof[selection, ]      # continuing with a different variant of gof!!
   nbest <- length(selection)
+  dn <- selection
   }
-# input checks:
-if(nbest < 0) stop("nbest must be positive")
-nfitted <- sum(!is.na(dlf$gof$RMSE))
+# final selection + nbest checks:
+nfitted <- length(dn)
 if(nbest > nfitted) {nbest <- nfitted}
-# internal defaults:
-if(missing(xaxt)       ) xaxt <- if(log) "n" else "s"
-if(missing(xlab)       ) xlab <- dlf$datname
+if(nbest < 1) stop("nbest must be a positive integer > 0")
+if(order) dn <- dn[order(dlf$gof[dn,"RMSE"])]
+dn <- dn[1:nbest]
+distcols <- rep(distcols, length=nbest)  # recycle
+lty <- rep(lty, length=nbest)
 #
-
 #
 # draw histogram or ecdf -------------------------------------------------------
 if(!add)
@@ -116,8 +120,6 @@ if(!add)
   if(cdf)
   {
   if(is.null(ylim)) ylim <- c(dlf$truncate,1)
-  if(missing(ylab)) ylab <- "(Empirical) Cumulated Density (CDF)"
-  if(missing(main)) main <- paste("Cumulated density distributions of", dlf$datname)
   ecdfdef <- list(x=ecdf(dlf$dat_full), do.points=TRUE, col=col, xlim=xlim, xaxt=xaxt, 
              ylab=ylab, ylim=ylim, xaxs=xaxs, yaxs=yaxs, main=main, xlab=xlab, las=las)
   do.call(plot, args=berryFunctions::owa(ecdfdef, histargs, "x", "y"))
@@ -130,8 +132,6 @@ if(!add)
   {
   if(is.null(ylim)) ylim <- berryFunctions::lim0(hist(dlf$dat, breaks=breaks,plot=FALSE)$density,
                                   curtail=if(yaxs=="i") FALSE else TRUE)
-  if(missing(ylab)) ylab <- "Probability Density Function (PDF)"
-  if(missing(main)) main <- paste("Density distributions of", dlf$datname)
   op <- par(xaxs=xaxs, yaxs=yaxs, xaxt=xaxt)
   histdef <- list(x=dlf$dat, breaks=breaks, col=col, xlim=xlim, ylim=ylim, ylab=ylab,
                   freq=FALSE, main=main, xlab=xlab, las=las)
@@ -145,29 +145,13 @@ if(!add)
   }
 }
 #
-# distribution names and colors: -----------------------------------------------
-if(nbest < 1) return(invisible(NULL)) # and stop executing
-dn <- rownames(dlf$gof)[order(dlf$gof$RMSE)[1:nbest]]
-distcols <- rep(distcols, length=nbest)  # recycle 1
-if(length(dlf$parameter)<1)
-  {
-  message("Note in plotLfit: no distributions were available in dlf$parameter.")
-  dlf$distcols <- distcols
-  return(invisible(dlf))
-  }
-lty <- rep(lty, length=nbest)
-# add distribution function lines:
+# add distribution function lines: ---------------------------------------------
 if(cdf) lfun <- lmomco::plmomco else lfun <- lmomco::dlmomco
-if(length(dn)>0) for(i in length(dn):1)
+for(i in length(dn):1)
   {
   xval <- seq(from=par("usr")[1], to=par("usr")[2], length=300)
   # cut xval to support region
   paramd <- dlf$parameter[[dn[i]]]
-  #browser()
-  if(is.null(paramd)) next # 
-  if(!is.null(paramd$ifail)) if(paramd$ifail!=0) next # emu # this may be too strict...
-  ### if(paramd$type=="gld") next # lmomco 2.2.2 cdfgld bug
-  if(!is.null(paramd$error)) if(!is.null(paramd$convergence)) if(paramd$convergence!=0) next # gep 
   xsup <- lmomco::supdist(paramd)$support
   xval <- xval[ xval>xsup[1] & xval<xsup[2] ]
   # only plot distribution line if there is some support:
@@ -186,8 +170,10 @@ if(length(dn)>0) for(i in length(dn):1)
     } # end if supportends
   } # end if xval has values
   } # end for loop over distribution functions
-# legend - write the names of distributions:
-legdef <- list(legend=dn, lwd=1, col=distcols, x="right", cex=0.7, lty=lty)
+#
+# legend -----------------------------------------------------------------------
+legdn <- paste(if(rmse[1]>0) formatC(round(dlf$gof[dn,"RMSE"],rmse), format='f', digits=rmse), dn)
+legdef <- list(legend=legdn, lwd=1, col=distcols, x="right", cex=0.7, lty=lty)
 if(legend) do.call(graphics::legend, args=berryFunctions::owa(legdef, legargs, 
                                                               "legend","col","lty"))
 # add to (or change) output:
