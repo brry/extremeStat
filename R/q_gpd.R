@@ -20,8 +20,8 @@
 #' extRemes: "MLE", or "GMLE", "Bayesian", "Lmoments" \cr
 #' fExtremes: "pwm", or "mle"\cr
 #' ismev: none, only Maximum-likelihood fitting implemented \cr
-#' Renext: "r" for \code{\link[Renext]{Renouv}}, or 'f' (no truncation, 
-#'             all negative values ignored!) for \code{\link[Renext]{fGPD}}\cr\cr
+#' Renext: "r" for \code{\link[Renext]{Renouv}} (since distname.y = "gpd", evd::fpot is used), 
+#'      or 'f' for \code{\link[Renext]{fGPD}} (with minimum POTs added)\cr\cr
 #'
 #' The Quantiles are always given with \code{probs} in regard to the full (uncensored) sample.
 #' If e.g. truncate is 0.90, the distribution function is fitted to the top 10\% of the sample.
@@ -325,7 +325,7 @@ if(package=="Renext") # fit Renext #################
   if(method=="f")
   {
   outlist$q_gpd_creator <- "Renext::fGPD"
-  z <- tryStack(Renext::fGPD(x[x>0], ...), silent=TRUE)
+  z <- tryStack(Renext::fGPD(x-min(x)+1, ...), silent=TRUE)
   if(inherits(z, "try-error")) return(failfun(z, "Renext::fGPD"))
   } else
   if(method=="r")
@@ -431,13 +431,13 @@ if(package=="Renext") # quant Renext #################
 {
   # quantile estimates:
   if(method=="f")
-  output <- Renext::qGPD(probs2, scale=z$estimate["scale"], shape=z$estimate["shape"])
+  output <- Renext::qGPD(probs2, loc=min(x)-1, scale=z$estimate["scale"], shape=z$estimate["shape"])
   else if(method=="r")
   output <- Renext::qGPD(probs2, loc=z$threshold, scale=z$estimate["scale"], 
                          shape=z$estimate["shape"])
   # TCDF:
   if(method=="f")
-  TCDF <- Renext::pGPD(xt, scale=z$estimate["scale"], shape=z$estimate["shape"])
+  TCDF <- Renext::pGPD(xt, loc=min(x)-1, scale=z$estimate["scale"], shape=z$estimate["shape"])
   else if(method=="r")
   TCDF <- Renext::pGPD(xt, loc=z$threshold, scale=z$estimate["scale"], 
                          shape=z$estimate["shape"])

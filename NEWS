@@ -6,7 +6,6 @@ extremeStat ToDo-list / wishlist / issues
 - check out overlap between plotLextreme + plotLfit as well as q_gpd + distLquantile
 - exTime with run=T
 - remove dev.new calls
-- Renext stuff, see email
 - distLextreme, distLquantile, q_gpd: reduce example section, potentially move some to tests. add Nile, rain, danish
 
 
