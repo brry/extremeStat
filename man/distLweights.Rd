@@ -4,7 +4,7 @@
 \alias{distLweights}
 \title{Compute distribution weights from GOF}
 \usage{
-distLweights(RMSE, order = TRUE, weightc = NA, ...)
+distLweights(RMSE, order = TRUE, onlydn = TRUE, weightc = NA, ...)
 }
 \arguments{
 \item{RMSE}{Numeric: Named vector with goodness of fit values (RMSE).
@@ -13,6 +13,9 @@ Can also be a data.frame, in which case the column rmse or RMSE is used.}
 \item{order}{Logical: should result be ordered by RMSE? If order=FALSE,
 the order of appearance in RMSE is kept (alphabetic or selection 
 in \code{\link{distLfit}}). DEFAULT: TRUE}
+
+\item{onlydn}{Logical: weight only distributions from \code{lmomco::\link{dist.list}}?
+DEFAULT: TRUE (all other RMSEs are set to 0)}
 
 \item{weightc}{Optional: a named vector with custom weights for each distribution.
 Are internally normalized to sum=1 after removing nonfitted dists.

@@ -81,6 +81,8 @@
 #' @param order   Logical: should result be ordered by RMSE? If order=FALSE,
 #'                the order of appearance in RMSE is kept (alphabetic or selection 
 #'                in \code{\link{distLfit}}). DEFAULT: TRUE
+#' @param onlydn  Logical: weight only distributions from \code{lmomco::\link{dist.list}}?
+#'                DEFAULT: TRUE (all other RMSEs are set to 0)
 #' @param weightc Optional: a named vector with custom weights for each distribution.
 #'                Are internally normalized to sum=1 after removing nonfitted dists.
 #'                Names match the parameter names from \code{RMSE}.
@@ -92,6 +94,7 @@
 distLweights <- function(
 RMSE,
 order=TRUE,
+onlydn=TRUE,
 weightc=NA,
 ...
 )
@@ -118,6 +121,9 @@ if(is.null(names(RMSE))) stop("RMSE must have names.")
 
 # convert character NAs to numerics without losing the names:
 mode(RMSE) <- "numeric"
+
+RMSE_orig <- RMSE
+if(onlydn) RMSE[!names(RMSE) %in% lmomco::dist.list()] <- NA
 
 # the lower RMSE, the better GOF, the more weight
 maxRMSE <- suppressWarnings(max(RMSE, na.rm=TRUE))
@@ -172,10 +178,10 @@ weight3 <- weight3/mysum(weight3)
 weightc <- weightc/mysum(weightc)
 
 # output data.frame:
-out <- data.frame(RMSE, weight1, weight2, weight3, weightc)
+out <- data.frame(RMSE=RMSE_orig, weight1, weight2, weight3, weightc)
 
 # order by GOF:
-if(order) out <- out[ order(RMSE), ] # sorting by R2 does not work, see examples
+if(order) out <- out[ order(RMSE_orig), ] # sorting by R2 does not work, see examples
 
 out
 }

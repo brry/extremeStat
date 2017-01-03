@@ -40,7 +40,7 @@ expect_error(distLweights(1:8), "RMSE must have names")
 })
 
 test_that("distLweights weight3 has half of values zero",{
-nzeros <- function(n, ...) sum(distLweights(data.frame(RMSE=1:n), ...)[,"weight3"]==0)
+nzeros <- function(n, ...) sum(distLweights(data.frame(RMSE=1:n), onlydn=FALSE, ...)[,"weight3"]==0)
 expect_equal(nzeros(1), 0)
 expect_equal(nzeros(2), 1)
 expect_equal(nzeros(3), 1)
@@ -49,3 +49,9 @@ expect_equal(nzeros(6), 3)
 expect_equal(nzeros(11), 5)
 expect_equal(nzeros(12), 6)
 })
+
+
+test_that("distLweights checks for unused arguments",{
+expect_warning(distLquantile(rexp(199), ks=FALSE, hi=TRUE), "unused arguments in")
+})
+
