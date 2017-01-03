@@ -228,10 +228,11 @@ if(is.null(dlf))
   }
 #
 dn <- dlf$distnames # dn = distribution names
-df <- dlf$dn_failed # names of nonfitted (failed) distributions
+df <- dlf$distfailed # names of nonfitted (failed) distributions
 
 # check selection --------------------------------------------------------------
-if(!is.null(selection))
+sserror <- if(!is.null(dlf$error)) substr(dlf$error[1],1,18) =="dat size too small" else FALSE
+if(!is.null(selection) & !sserror)
   {
   missing <- selection[!selection %in% dn]
   if(length(missing)>0 & !quiet) message("Note in distLquantile: 'selection' (", 
@@ -291,23 +292,11 @@ if(signif(threshold,7) != signif(normalthr,7))
 # distribution quantiles: ------------------------------------------------------
 # This is the actual work...
 lenprob <- 1:length(probs)
-for(d in dn) 
-  {
-  if(!is.finite(dlf$gof[d, "RMSE"])) next # maybe this is too restricitive...
-  pard <- dlf$parameter[[d]]              # but it catches gno in skewed samples like
-  if(is.null(pard)) next                  # c(2.4,2.7,2.3,2.5,2.2, 62.4 ,3.8,3.1) 
-  if(inherits(pard, "try-error")) next
-  if(all(is.na(pard))) next
-  if(d=="kap") if(pard$ifail!=0) next
-  quantd <- tryStack(lmomco::qlmomco(f=probs2, para=dlf$parameter[[d]]), silent=TRUE)
-  if(inherits(quantd, "try-error")) next
-  if(is.null(quantd)) next
-  if(d=="kap") quantd[quantd<=pard$support[1] | quantd>=pard$support[2] ] <- NA
-  output[d,lenprob] <- quantd
-  }
+for(d in dn[!dn %in% dlf$distfailed & dn %in% names(dlf$parameter)]) 
+  output[d,lenprob] <- tryStack(lmomco::qlmomco(f=probs2, para=dlf$parameter[[d]]), silent=TRUE)
 #
-# Change results for probs below truncate to NA
-if(truncate!=0) output[ , probs < truncate] <- NA
+# Change columns for probs below truncate to NA (without any message currently)
+if(truncate!=0) output[ , c(probs < truncate,FALSE)] <- NA
 # Add RMSE values:
 output[dn,"RMSE"] <- dlf$gof[dn,"RMSE"]
 # Weighted quantile estimates:
