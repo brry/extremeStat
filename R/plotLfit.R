@@ -173,7 +173,8 @@ for(i in length(dn):1)
 #
 # legend -----------------------------------------------------------------------
 legdn <- paste(if(rmse[1]>0) formatC(round(dlf$gof[dn,"RMSE"],rmse), format='f', digits=rmse), dn)
-legdef <- list(legend=legdn, lwd=1, col=distcols, x="right", cex=0.7, lty=lty)
+legdef <- list(legend=legdn, lwd=1, col=distcols, x="right", cex=0.7, lty=lty,
+               title="distribution GOF")
 if(legend) do.call(graphics::legend, args=berryFunctions::owa(legdef, legargs, 
                                                               "legend","col","lty"))
 # add to (or change) output:
