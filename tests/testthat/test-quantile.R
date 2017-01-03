@@ -1,6 +1,8 @@
 context("distLquantile")
 
 data(annMax, package="extremeStat") # Annual Discharge Maxima (streamflow)
+set.seed(007) # with other random samples, there can be warnings in q_gpd -> Renext::fGPD -> fmaxlo
+
 
 test_that("distLquantile generally runs fine",{
 distLquantile(annMax)
