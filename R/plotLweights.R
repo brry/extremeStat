@@ -28,7 +28,7 @@ lty=1,
 lwd=1,
 legargs=NULL,
 main="Distribution function GOF and weights",
-xlab="Weight",
+xlab="Weight / RMSE",
 ylab="",
 xlim=range(gof[,grep("weight",colnames(gof))], na.rm=TRUE),
 ...)

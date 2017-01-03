@@ -61,7 +61,7 @@ printL(dlf)
 plotLfit(dlf)
 
 # arguments that can be passed to plotting function:
-plotLfit(dlf, lty=2, col=3, legargs=list(lwd=3), main="booh!")
+plotLfit(dlf, lty=2, col=3, nbest=17, legargs=list(lwd=3), main="booh!")
 set.seed(42)
 dlf_b <- distLfit(rbeta(100, 5, 2))
 plotLfit(dlf_b, nbest=10, legargs=c(x="left"))
@@ -74,7 +74,7 @@ plotLfit(dlf_b, cdf=TRUE, histargs=list(do.points=FALSE), sel="nor")
 
 # logarithmic axes:
 set.seed(1)
-y <- 10^rnorm(100, mean=2, sd=0.3) # if you use 1e4, distLfit will be much slower
+y <- 10^rnorm(300, mean=2, sd=0.3) # if you use 1e4, distLfit will be much slower
 hist(y, breaks=20)
 berryFunctions::logHist(y, col=8)
 dlf <- distLfit(log10(y))
@@ -84,6 +84,7 @@ plotLfit(dlf, breaks=50, log=TRUE)
 
 # Goodness of fit (see distLweights):
 # measured by RMSE of cumulated distribution function and ?ecdf
+plotLweights(dlf)
 plotLfit(distLfit(annMax              ), cdf=TRUE, nbest=17)$gof
 plotLfit(distLfit(annMax, truncate=0.7), cdf=TRUE, nbest=17)$gof
 
