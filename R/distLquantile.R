@@ -373,8 +373,8 @@ if(!all(is.na(sanerange)))
 #
 # output: ----------------------------------------------------------------------
 # add sample size and threshold info:
-output <- rbind(output, n_full=length(dlf$dat_full), n=length(dlf$dat), 
-                threshold=dlf$threshold)
+output <- rbind(output, n_full=NA, n=NA, threshold=NA)
+output[c("n_full","n","threshold"), 1] <- c(length(dlf$dat_full), length(dlf$dat), dlf$threshold)
 dlf$distnames <- dn
 dlf$distcols <- berryFunctions::rainbow2(length(dn))
 dlf$distselector <- "distLquantile"
