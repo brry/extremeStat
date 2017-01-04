@@ -32,7 +32,8 @@ They are rounded to \code{rmse} digits. DEFAULT: 4}
 \item{cdf}{If TRUE, plot cumulated DF instead of probability density. 
 DEFAULT: FALSE}
 
-\item{log}{If TRUE, logAxis is called. DEFAULT: FALSE}
+\item{log}{If TRUE, logAxis is called. Only makes sense if dlf$dat is 
+already logarithmic and ranges eg. from -2 to 3. DEFAULT: FALSE}
 
 \item{supportends}{If TRUE, dots are placed at the support bounds. DEFAULT: TRUE}
 

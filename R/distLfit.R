@@ -198,6 +198,7 @@ failed <- sapply(dlf$parameter, function(x)
     if(x$ifail!=0) return(TRUE)
     if(round(x$support[2],7)<=round(x$support[1],7) ) return(TRUE)
     quant <- lmomco::quakap(seq(truncate,1,len=200), para=x) 
+    # plot(xxx<-seq(-100,50,len=900), lmomco::pdfkap(xxx, para=x), type="l")
     if(length(unique(quant))<20) return(TRUE) # xx5 in test-quantile
     }
   cumuprob <- suppressWarnings(try(lmomco::plmomco(mean(dlf$dat),x), silent=TRUE))

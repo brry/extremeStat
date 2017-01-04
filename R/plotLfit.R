@@ -28,7 +28,8 @@
 #'                   They are rounded to \code{rmse} digits. DEFAULT: 4
 #' @param cdf        If TRUE, plot cumulated DF instead of probability density. 
 #'                   DEFAULT: FALSE
-#' @param log        If TRUE, logAxis is called. DEFAULT: FALSE
+#' @param log        If TRUE, logAxis is called. Only makes sense if dlf$dat is 
+#'                   already logarithmic and ranges eg. from -2 to 3. DEFAULT: FALSE
 #' @param supportends If TRUE, dots are placed at the support bounds. DEFAULT: TRUE
 #' @param breaks     \code{\link{hist}} breaks. DEFAULT: 20
 #' @param xlim,ylim  \code{\link{hist}} or \code{\link{ecdf}} axis limits.
@@ -119,8 +120,10 @@ if(!add)
              ylab=ylab, ylim=ylim, main=main, xlab=xlab, las=las)
   do.call(plot, args=berryFunctions::owa(ecdfdef, histargs, "x", "y"))
   if(log)
-    {do.call(logAxis, args=berryFunctions::owa(list(xaxt="s"), logargs))
-     do.call(lines,   args=berryFunctions::owa(ecdfdef,       histargs, "x", "y"))
+    {
+    if(any(dlf$dat>15 | dlf$dat< -15)) warning("dlf$dat range suggests that values are not logarithmic. Plot will look strange.")
+    do.call(logAxis, args=berryFunctions::owa(list(xaxt="s"), logargs))
+    do.call(lines,   args=berryFunctions::owa(ecdfdef, histargs, "x", "y"))
     }
   }
   else # if not cdf, then density
@@ -131,6 +134,7 @@ if(!add)
   do.call(hist, args=berryFunctions::owa(histdef, histargs, "x", "freq"))
   if(log)
     {
+    if(any(dlf$dat>15 | dlf$dat< -15)) warning("dlf$dat range suggests that values are not logarithmic. Plot will look strange.")
     do.call(logAxis, args=berryFunctions::owa(list(xaxt="s"), logargs))
     do.call(hist, owa(c(histdef, add=TRUE), histargs, "x", "freq", "add"))
     }
