@@ -193,7 +193,13 @@ failed <- sapply(dlf$parameter, function(x)
   if(is.null(x)) return(TRUE)
   if(all(is.na(x))) return(TRUE)
   if(inherits(x, "try-error")) return(TRUE)
-  if(x$type=="kap") if(x$ifail!=0 | round(x$support[2],7)<=round(x$support[1],7) ) return(TRUE)
+  if(x$type=="kap") 
+    {
+    if(x$ifail!=0) return(TRUE)
+    if(round(x$support[2],7)<=round(x$support[1],7) ) return(TRUE)
+    quant <- lmomco::quakap(seq(truncate,1,len=200), para=x) 
+    if(length(unique(quant))<20) return(TRUE) # xx5 in test-quantile
+    }
   cumuprob <- suppressWarnings(try(lmomco::plmomco(mean(dlf$dat),x), silent=TRUE))
   if(is.null(cumuprob)||inherits(cumuprob,"try-error")) return(TRUE) 
   any(is.na(x$para))

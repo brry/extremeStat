@@ -130,4 +130,15 @@ xx4 <- c(2.4,2.7,2.3,2.5,2.2, 62.4 ,3.8,3.1)
 expect_warning(dd <- distLquantile(xx4), 
                glob2rx("in pargno(lmom, ...): L-SKEW IS TOO LARGE FOR ROUTINE*"))
 
+# kap should fail:
+xx5 <- c(2.4, 2.5, 2.6, 2.9, 4.2, 4.6, 5.7)
+distLfit(xx5)$parameter$kap
+dfun <- function(xxx) expect_true(all(is.na(distLquantile(xxx, probs=0:10/10, 
+                                            sel="kap", emp=FALSE)["kap",])))
+dfun(xx5)
+dfun(c(2.2, 2.3, 2.3, 2.3, 4.1, 8.8))
+dfun(c(2.2, 2.3, 2.4, 2.5, 3.2, 4.2, 4.5, 5.9, 6))
+dfun(c(1.8, 1.8, 2, 2, 2.6, 2.7, 3.7, 3.7))
+dfun(c(2.2, 2.2, 2.3, 2.9, 3.4, 4.4, 5.2))
+dfun(c(2.1, 2.2, 2.5, 3.2, 7.8, 16.1)) # kap has 4 distinct values here...
 })
