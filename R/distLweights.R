@@ -123,7 +123,11 @@ if(is.null(names(RMSE))) stop("RMSE must have names.")
 mode(RMSE) <- "numeric"
 
 RMSE_orig <- RMSE
-if(onlydn) RMSE[!names(RMSE) %in% lmomco::dist.list()] <- NA
+if(onlydn)
+  {
+  dnexcl <- !names(RMSE) %in% lmomco::dist.list()
+  RMSE[dnexcl] <- NA
+  }
 
 # the lower RMSE, the better GOF, the more weight
 maxRMSE <- suppressWarnings(max(RMSE, na.rm=TRUE))
@@ -146,6 +150,7 @@ if(any(!is.na(weightc)))
   {
   cn <- names(weightc) # custom names
   rn <- names(RMSE)
+  if(onlydn) rn <- rn[!dnexcl]
   if(is.null(cn)) stop("weightc must have names.")
   miss <- ! rn %in% cn
   if(any(miss)) warning("names present in RMSE, but not in weightc, thus given zero weight: ", 
@@ -158,7 +163,7 @@ if(any(!is.na(weightc)))
     cn <- names(weightc) 
     }
   weightc2 <- rep(0,length(RMSE))
-  names(weightc2) <- rn
+  names(weightc2) <- names(RMSE) # cannot be rn, might be changed if onlydn
   weightc2[cn] <- weightc
   weightc <- weightc2
 } else
