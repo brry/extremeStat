@@ -325,7 +325,8 @@ if(package=="Renext") # fit Renext #################
   if(method=="f")
   {
   outlist$q_gpd_creator <- "Renext::fGPD"
-  z <- tryStack(Renext::fGPD(x-min(x)+1, ...), silent=TRUE)
+  rfloc <- min(x)-1e-6
+  z <- tryStack(Renext::fGPD(x-rfloc, ...), silent=TRUE)
   if(inherits(z, "try-error")) return(failfun(z, "Renext::fGPD"))
   } else
   if(method=="r")
@@ -431,13 +432,13 @@ if(package=="Renext") # quant Renext #################
 {
   # quantile estimates:
   if(method=="f")
-  output <- Renext::qGPD(probs2, loc=min(x)-1, scale=z$estimate["scale"], shape=z$estimate["shape"])
+  output <- Renext::qGPD(probs2, loc=rfloc, scale=z$estimate["scale"], shape=z$estimate["shape"])
   else if(method=="r")
   output <- Renext::qGPD(probs2, loc=z$threshold, scale=z$estimate["scale"], 
                          shape=z$estimate["shape"])
   # TCDF:
   if(method=="f")
-  TCDF <- Renext::pGPD(xt, loc=min(x)-1, scale=z$estimate["scale"], shape=z$estimate["shape"])
+  TCDF <- Renext::pGPD(xt, loc=rfloc, scale=z$estimate["scale"], shape=z$estimate["shape"])
   else if(method=="r")
   TCDF <- Renext::pGPD(xt, loc=z$threshold, scale=z$estimate["scale"], 
                          shape=z$estimate["shape"])
