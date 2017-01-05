@@ -160,8 +160,9 @@
 #' @param weighted  Include weighted averages across distribution functions to the output?
 #'                  DEFAULT: empirical, so additional options can all be excluded with emp=F.
 #' @param gpd       Include GPD quantile estimation via \code{\link{q_gpd}}? 
-#'                  Note that the 'GPD_LMO_lmomco' result differs slightly from 'gpa' if
-#'                  truncate=0. This comes from using x>threshold ('GPD_*') or
+#'                  Note that the 'GPD_LMO_lmomco' result differs slightly from 'gpa', 
+#'                  especially if truncate=0. This comes from using 
+#'                  x>threshold (all 'GPD_*' distributions) or
 #'                  x>=threshold ('gpa' and all other distributions in extremeStat). 
 #'                  DEFAULT: empirical
 #' @param speed     Compute \code{\link{q_gpd}} only for fast methods? 
@@ -300,7 +301,7 @@ if(truncate!=0) output[ , c(probs < truncate,FALSE)] <- NA
 # Add RMSE values:
 output[dn,"RMSE"] <- dlf$gof[dn,"RMSE"]
 # Weighted quantile estimates:
-if(weighted) output <- q_weighted(output, distLweights(output, order=order, ...))
+if(weighted) output <- q_weighted(output, order=order, ...)
 #
 # add further quantile estimates -----------------------------------------------
 # Empirical Quantiles:

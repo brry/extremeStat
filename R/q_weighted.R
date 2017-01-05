@@ -11,13 +11,22 @@
 #' 
 #' q_weighted(x)
 #' q_weighted(x,  distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE)  )
+#' 
+#' x <- rexp(190)
+#' d <- distLquantile(x)
+#' d2 <- q_weighted(d)
+#' stopifnot(all(d==d2, na.rm=TRUE))
 #'
 #' @param quant Data.frame as in \code{\link{distLquantile}} output.
 #' @param weights Data.frame as in \code{\link{distLweights}} output.
-#'
+#' @param \dots   Arguments passed to \code{\link{distLweights}} 
+#'                like weightc, onlydn=FALSE. order will be ignored, as 
+#'                q_weighted only adds/changes the rows weighted*.
+#' 
 q_weighted <- function(
 quant,
-weights=distLweights(quant)
+weights=distLweights(quant, ...),
+...
 )
 {
 weights <- weights # evaluate promise

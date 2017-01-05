@@ -4,12 +4,16 @@
 \alias{q_weighted}
 \title{Compute weighted averages of quantile estimates}
 \usage{
-q_weighted(quant, weights = distLweights(quant))
+q_weighted(quant, weights = distLweights(quant, ...), ...)
 }
 \arguments{
 \item{quant}{Data.frame as in \code{\link{distLquantile}} output.}
 
 \item{weights}{Data.frame as in \code{\link{distLweights}} output.}
+
+\item{\dots}{Arguments passed to \code{\link{distLweights}} 
+like weightc, onlydn=FALSE. order will be ignored, as 
+q_weighted only adds/changes the rows weighted*.}
 }
 \value{
 data.frame with rows "weighted*" added.
@@ -23,6 +27,11 @@ distLweights(x)
 
 q_weighted(x)
 q_weighted(x,  distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE)  )
+
+x <- rexp(190)
+d <- distLquantile(x)
+d2 <- q_weighted(d)
+stopifnot(all(d==d2, na.rm=TRUE))
 
 }
 \author{
