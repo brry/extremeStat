@@ -142,4 +142,15 @@ dfun(c(2.2, 2.3, 2.4, 2.5, 3.2, 4.2, 4.5, 5.9, 6))
 dfun(c(1.8, 1.8, 2, 2, 2.6, 2.7, 3.7, 3.7))
 dfun(c(2.2, 2.2, 2.3, 2.9, 3.4, 4.4, 5.2))
 dfun(c(2.1, 2.2, 2.5, 3.2, 7.8, 16.1)) # kap has 4 distinct values here...
+
+
+# wakeby (and others) with unrealistically high values:
+xx6 <- c(0.342, 0.398, 0.415, 0.415, 0.462, 0.477, 0.491, 0.756, 0.763, 1.699)
+d6 <- distLquantile(xx6, probs=c(0.8,0.9,0.99,0.9999), list=TRUE)
+plotLfit(d6, xlim=c(0,2), nbest=10); d6$quant[1:10,]              # 36!!!
+# works fine here:
+xx7 <- c(0.415, 0.415, 0.431, 0.447, 0.531, 0.544, 0.643, 0.732, 0.82, 1.134)
+d7 <- distLquantile(xx7, probs=c(0.8,0.9,0.99,0.9999), list=TRUE)
+plotLfit(d7, xlim=c(0,2), nbest=10); d7$quant[1:10,]              # 4 (good)
+
 })
