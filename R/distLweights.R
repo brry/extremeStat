@@ -20,19 +20,19 @@
 #' # weights from RMSE in data.frame:
 #' df <- data.frame("99.9%"=2:5, RMSE=sample(3:6))
 #' rownames(df) <- letters[1:4]
-#' df ;  distLweights(df)
+#' df ;  distLweights(df, onlydn=FALSE)
 #' 
 #' # custom weights:
 #' set.seed(42); x <- data.frame(A=1:5, RMSE=runif(5)) ; x
-#' distLweights(x)
-#' distLweights(x, weightc=c("1"=3, "3"=5)) 
-#' distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE) 
+#' distLweights(x) # two warnings
+#' distLweights(x, weightc=c("1"=3, "3"=5), onlydn=FALSE) 
+#' distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE, onlydn=FALSE) 
 #' 
 #' # real life example:
 #' data(annMax)
 #' cw <- c("gpa"=7, "gev"=3, "wak"=6, "wei"=4, "kap"=3.5, "gum"=3, "ray"=2.1,
 #'         "ln3"=2, "pe3"=2.5, "gno"=4, "gam"=5)
-#' dlf <- distLfit(annMax, plot=FALSE, weightc=cw, quiet=TRUE, order=FALSE)
+#' dlf <- distLfit(annMax, weightc=cw, quiet=TRUE, order=FALSE)
 #' plotLweights(dlf)
 #' 
 #' 
@@ -87,6 +87,7 @@
 #'                Are internally normalized to sum=1 after removing nonfitted dists.
 #'                Names match the parameter names from \code{RMSE}.
 #'                DEFAULT: NA
+#' @param quiet   Logical: Suppress messages. DEFAULT: FALSE
 #' @param \dots   Ignored arguments (so a set of arguments can be passed to
 #'                distLfit and distLquantile and arguments used only in the latter 
 #'                will not throw errors) 
@@ -96,6 +97,7 @@ RMSE,
 order=TRUE,
 onlydn=TRUE,
 weightc=NA,
+quiet=FALSE,
 ...
 )
 {
@@ -127,6 +129,9 @@ if(onlydn)
   {
   dnexcl <- !names(RMSE) %in% lmomco::dist.list()
   RMSE[dnexcl] <- NA
+  if(sum(!dnexcl)<1) warning("There are no distributions matching lmomco::dist.list(). ",
+                             "Probably you need to set onlydn=FALSE. ",
+                             "The distributions in RMSE are: ", toString(names(RMSE)))
   }
 
 # the lower RMSE, the better GOF, the more weight
@@ -146,19 +151,21 @@ weight3 <-  weight2
 weight3[weight3<median(weight3, na.rm=TRUE)] <- 0
 
 # custom weight:
+check_custom_weights <- FALSE
 if(any(!is.na(weightc)))
   {
+  check_custom_weights <- TRUE
   cn <- names(weightc) # custom names
   rn <- names(RMSE)
   if(onlydn) rn <- rn[!dnexcl]
   if(is.null(cn)) stop("weightc must have names.")
   miss <- ! rn %in% cn
-  if(any(miss)) warning("names present in RMSE, but not in weightc, thus given zero weight: ", 
+  if(any(miss)&!quiet) message("Note in distLweights: names present in RMSE, but not in weightc, thus given zero weight: ", 
                         toString(rn[miss]))
   miss <- ! cn %in% rn
   if(any(miss)) 
     {
-    warning("names present in weightc, but not in RMSE, thus ignored: ", toString(cn[miss]))
+    if(!quiet) message("Note in distLweights: names present in weightc, but not in RMSE, thus ignored: ", toString(cn[miss]))
     weightc <- weightc[!miss]
     cn <- names(weightc) 
     }
@@ -184,6 +191,14 @@ weightc <- weightc/mysum(weightc)
 
 # output data.frame:
 out <- data.frame(RMSE=RMSE_orig, weight1, weight2, weight3, weightc)
+
+if(length(RMSE_orig)>1 & !quiet)
+{
+cols2check <- 2:4
+if(check_custom_weights) cols2check <- 2:5
+weightsums <- round(colSums(out[,cols2check]),10)
+if(!all(weightsums==1)) message("Note in distLweights: Weights do not sum to 1. Sums are: ", toString(weightsums))
+}
 
 # order by GOF:
 if(order) out <- out[ order(RMSE_orig), ] # sorting by R2 does not work, see examples

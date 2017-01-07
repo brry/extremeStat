@@ -4,7 +4,8 @@
 \alias{distLweights}
 \title{Compute distribution weights from GOF}
 \usage{
-distLweights(RMSE, order = TRUE, onlydn = TRUE, weightc = NA, ...)
+distLweights(RMSE, order = TRUE, onlydn = TRUE, weightc = NA,
+  quiet = FALSE, ...)
 }
 \arguments{
 \item{RMSE}{Numeric: Named vector with goodness of fit values (RMSE).
@@ -21,6 +22,8 @@ DEFAULT: TRUE (all other RMSEs are set to 0)}
 Are internally normalized to sum=1 after removing nonfitted dists.
 Names match the parameter names from \code{RMSE}.
 DEFAULT: NA}
+
+\item{quiet}{Logical: Suppress messages. DEFAULT: FALSE}
 
 \item{\dots}{Ignored arguments (so a set of arguments can be passed to
 distLfit and distLquantile and arguments used only in the latter 
@@ -44,19 +47,19 @@ distLweights(RMSE, order=FALSE)
 # weights from RMSE in data.frame:
 df <- data.frame("99.9\%"=2:5, RMSE=sample(3:6))
 rownames(df) <- letters[1:4]
-df ;  distLweights(df)
+df ;  distLweights(df, onlydn=FALSE)
 
 # custom weights:
 set.seed(42); x <- data.frame(A=1:5, RMSE=runif(5)) ; x
-distLweights(x)
-distLweights(x, weightc=c("1"=3, "3"=5)) 
-distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE) 
+distLweights(x) # two warnings
+distLweights(x, weightc=c("1"=3, "3"=5), onlydn=FALSE) 
+distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE, onlydn=FALSE) 
 
 # real life example:
 data(annMax)
 cw <- c("gpa"=7, "gev"=3, "wak"=6, "wei"=4, "kap"=3.5, "gum"=3, "ray"=2.1,
         "ln3"=2, "pe3"=2.5, "gno"=4, "gam"=5)
-dlf <- distLfit(annMax, plot=FALSE, weightc=cw, quiet=TRUE, order=FALSE)
+dlf <- distLfit(annMax, weightc=cw, quiet=TRUE, order=FALSE)
 plotLweights(dlf)
 
 

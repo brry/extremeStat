@@ -37,8 +37,9 @@ expect_equal(dlf$distfailed, c(gam="gam", ln3="ln3"))
 
 dlf <- distLfit(annMax)
 shouldbe <- c("80%"=82.002, "90%"=93.374, "99%"=122.505, "RMSE"=0.022)
-expect_equal(distLquantile(annMax,  selection = "dummy"),
-             distLquantile(dlf=dlf, selection = "dummy"))
+d1 <- distLquantile(annMax,  selection="dummy", onlydn=FALSE)
+d2 <- distLquantile(dlf=dlf, selection="dummy", onlydn=FALSE)
+expect_equal(d1,d2)
 d1 <- distLquantile(annMax,  selection = c("dummy","revgum","wak"))
 d2 <- distLquantile(dlf=dlf, selection = c("dummy","revgum","wak"))
 expect_equal(d1,d2)
