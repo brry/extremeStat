@@ -315,7 +315,7 @@ if(gpd)
   q_gpd_int <- function(pack, meth=NULL) supwarn(q_gpd(package=pack, method=meth,
                         x=dlf$dat_full, probs=probs,
                         truncate=truncate, threshold=threshold, 
-                        quiet=gpquiet, ttquiet=TRUE))
+                        quiet=quiet, efquiet=gpquiet, ttquiet=TRUE))
   #
   output["GPD_LMO_lmomco",]       <- q_gpd_int("lmomco")
   output["GPD_LMO_extRemes",]     <- q_gpd_int("extRemes", meth="Lmoments")

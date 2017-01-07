@@ -22,7 +22,7 @@ d <- distLquantile(annMax, probs=0:4/4)
 test_that("distLquantile can handle selection input",{
 dlf <- distLquantile(annMax, selection="wak", empirical=FALSE, list=TRUE)
 plotLquantile(dlf, breaks=10)
-expect_message(distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9), quiet=FALSE),
+expect_message(distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9)),
   "Note in q_gpd: quantiles for probs (0.7) below truncate (0.8) replaced with NAs.", fixed=TRUE)
 distLquantile(rexp(199), selection=c("wak", "gpa"))
 distLquantile(rexp(199), selection="gpa")
