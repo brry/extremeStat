@@ -265,8 +265,8 @@ if( length(dlf$dat)<5 )
   if(!ssquiet) message(
     "Note in distLquantile: sample size is too small to fit parameters (",
     length(dlf$dat),"). Returning NAs")
-  dlf$quant <- rbind(output,output)
-  if(list) invisible(dlf) else invisible(dlf$quant)
+  dlf$quant <- output
+  if(list) reutrn(invisible(dlf)) else return(invisible(dlf$quant))
   }
 #
 # truncation probs update: -----------------------------------------------------
