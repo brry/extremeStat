@@ -26,6 +26,7 @@
 #' qw2 <- q_weighted(d, weights=dw); qw2
 #' stopifnot(all(qw1==qw2, na.rm=TRUE))
 #' q_weighted(d, weights=dw, onlyc=TRUE)
+#' q_weighted(d, weights=data.frame(weightc=cw), onlyc=TRUE)
 #' 
 #' \dontrun{ # time consuming
 #' system.time(pbreplicate(5000, q_weighted(d, weightc=cw)))             # 8.5 secs
