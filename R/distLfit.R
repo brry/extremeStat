@@ -162,7 +162,7 @@ if(length(dat) < 5)
   if(!ssquiet) message("Note in distLfit: sample size (", length(dat), 
                        ") is too small to fit parameters (<5).")
   # error output:
-  dlf$gof <- distLweights(replace(dn,TRUE,NA)) #suppressWarnings()
+  dlf$gof <- distLweights(replace(dn,TRUE,NA), quiet=TRUE, ...)
   dlf$error <- paste0("dat size too small (",length(dat),")")
   dlf$distfailed <- dn
   return(invisible(dlf))
@@ -180,10 +180,9 @@ if(lmomco::are.lmom.valid(mom))
 } else 
 {
   if(!quiet) message("Note in distLfit: L-moments are not valid. No distributions are fitted.")
-  dlf$gof <- distLweights(replace(dn,TRUE,NA)) #suppressWarnings()
+  dlf$gof <- distLweights(replace(dn,TRUE,NA), quiet=TRUE, ...)
   dlf$error <- c(error="invalid lmomco::lmoms", mom)
   dlf$distfailed <- dn
-  #return(invisible(dlf))
 }
 names(dlf$parameter) <- dn
 #
@@ -242,7 +241,7 @@ RMSE <- suppressWarnings(
 # change nonfitted distributions RMSE to NA:
 RMSE <- sapply(RMSE, function(x) if(inherits(x, "try-error")) NA else x)
 # distribution weights:
-dlf$gof <- distLweights(RMSE, ...)
+dlf$gof <- distLweights(RMSE, quiet=if(sum(!failed)<2) TRUE else quiet, ...)
 # ks and R^2 values:
 if(ks)
   {

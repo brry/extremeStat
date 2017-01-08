@@ -197,7 +197,8 @@ if(length(RMSE_orig)>1 & !quiet)
 cols2check <- 2:4
 if(check_custom_weights) cols2check <- 2:5
 weightsums <- round(colSums(out[,cols2check]),10)
-if(!all(weightsums==1)) message("Note in distLweights: Weights do not sum to 1. Sums are: ", toString(weightsums))
+if(!all(weightsums==1) & !quiet) message("Note in distLweights: Weights do not sum to 1. ",
+                                         "Sums are: ", toString(weightsums))
 }
 
 # order by GOF:

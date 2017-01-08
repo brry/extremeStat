@@ -167,10 +167,12 @@
 #'                  DEFAULT: empirical
 #' @param speed     Compute \code{\link{q_gpd}} only for fast methods? 
 #'                  Currently, only the Bayesian method is excluded. DEFAULT: TRUE
-#' @param quiet     Suppress notes? DEFAULT: FALSE
+#' @param quiet     Suppress notes? If it is actually set to FALSE (not missing), 
+#'                  gpquiet is set to FALSE to print all the warnings including stacks.
+#'                  DEFAULT: FALSE
 #' @param ssquiet   Suppress sample size notes? DEFAULT: quiet
 #' @param ttquiet   Suppress truncation!=threshold note? DEFAULT: quiet
-#' @param gpquiet   Suppress warnings in \code{\link{q_gpd}}? 
+#' @param gpquiet   Suppress warnings in \code{\link{q_gpd}}?
 #'                  DEFAULT: TRUE if quiet is not specified, else quiet
 #' @param \dots     Arguments passed to \code{\link{distLfit}} 
 #'                  and \code{\link{distLweights}} like weightc, ks=TRUE
@@ -267,7 +269,7 @@ if( length(dlf$dat)<5 )
     "Note in distLquantile: sample size is too small to fit parameters (",
     length(dlf$dat),"). Returning NAs")
   dlf$quant <- output
-  if(list) reutrn(invisible(dlf)) else return(invisible(dlf$quant))
+  if(list) return(invisible(dlf)) else return(invisible(dlf$quant))
   }
 #
 # truncation probs update: -----------------------------------------------------

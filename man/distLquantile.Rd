@@ -67,13 +67,15 @@ DEFAULT: empirical}
 \item{speed}{Compute \code{\link{q_gpd}} only for fast methods? 
 Currently, only the Bayesian method is excluded. DEFAULT: TRUE}
 
-\item{quiet}{Suppress notes? DEFAULT: FALSE}
+\item{quiet}{Suppress notes? If it is actually set to FALSE (not missing), 
+gpquiet is set to FALSE to print all the warnings including stacks.
+DEFAULT: FALSE}
 
 \item{ssquiet}{Suppress sample size notes? DEFAULT: quiet}
 
 \item{ttquiet}{Suppress truncation!=threshold note? DEFAULT: quiet}
 
-\item{gpquiet}{Suppress warnings in \code{\link{q_gpd}}? 
+\item{gpquiet}{Suppress warnings in \code{\link{q_gpd}}?
 DEFAULT: TRUE if quiet is not specified, else quiet}
 
 \item{\dots}{Arguments passed to \code{\link{distLfit}} 
