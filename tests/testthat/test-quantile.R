@@ -6,7 +6,7 @@ set.seed(007) # with other random samples, there can be warnings in q_gpd -> Ren
 
 test_that("distLquantile generally runs fine",{
 distLquantile(annMax)
-distLquantile(annMax[annMax<30])
+expect_equal(nrow(distLquantile(annMax[annMax<30])), 38)
 expect_equal(nrow(distLquantile(annMax)), 38)
 expect_silent(distLquantile(annMax, truncate=0.6, gpd=FALSE, time=FALSE))
 expect_message(distLquantile(annMax, selection="wak", empirical=FALSE, quiet=FALSE), 

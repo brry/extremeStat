@@ -258,6 +258,7 @@ if(gpd) output <- rbind(output,  GPD_LMO_lmomco=NA, GPD_LMO_extRemes=NA,
         GPD_PWM_evir=NA, GPD_PWM_fExtremes=NA, GPD_MLE_extRemes=NA, GPD_MLE_ismev=NA, 
         GPD_MLE_evd=NA, GPD_MLE_Renext_Renouv=NA, GPD_MLE_evir=NA, GPD_MLE_fExtremes=NA, 
         GPD_GML_extRemes=NA, GPD_MLE_Renext_2par=NA, GPD_BAY_extRemes=NA)
+output <- rbind(output, n_full=NA, n=NA, threshold=NA)
 #
 # if input sample size is too small, return NA matrix:
 if( length(dlf$dat)<5 )
@@ -363,7 +364,6 @@ if(!all(is.na(sanerange)))
 #
 # output: ----------------------------------------------------------------------
 # add sample size and threshold info:
-output <- rbind(output, n_full=NA, n=NA, threshold=NA)
 output[c("n_full","n","threshold"), 1] <- c(length(dlf$dat_full), length(dlf$dat), dlf$threshold)
 dlf$distnames <- dn
 dlf$distcols <- berryFunctions::rainbow2(length(dn))
