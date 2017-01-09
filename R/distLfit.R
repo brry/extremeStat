@@ -229,10 +229,9 @@ if(!quiet)
             toString(paste0(dn[nNA>0], " (", nNA[nNA>0], ")" )),
             " of ", length(tcdfs[[1]]), " values.")
   }
-ecdfs <- ecdf(dlf$dat_full)(dat) # Empirical CDF
+ecdfs <- ecdf(dlf$dat)(dat) # Empirical CDF
 # rescale for truncation
 tcdfs[sapply(tcdfs, inherits, "try-error")] <- NA
-if(truncate!=0) tcdfs <- lapply(tcdfs, function(x) x*(1-truncate)+truncate)
 # RMSE:
 if(progbars) message("Calculating RMSE:")
 RMSE <- suppressWarnings(
