@@ -27,13 +27,10 @@ dlq <- distLquantile(rain[1:900], probs=c(0.8,0.9,0.99,0.999), list=TRUE, quiet=
 
 ## ----dlprint, eval=1-----------------------------------------------------
 printL(dlq)
-# More information on dlf objects in
-?extremeStat
 
 ## ----dlplot, echo=-1, fig.height=3.5, fig.width=5.5----------------------
 par(mar=c(3.9,3.9,1.5,0.7), mgp=c(2.8,0.7,0))
-plotLquantile(dlq, nbest=8, linargs=list(lwd=2), 
-          heights=seq(0.04, 0.01, len=8), breaks=80)
+plotLquantile(dlq, nbest=8, linargs=list(lwd=2), heights=seq(0.04, 0.01, len=8), breaks=80)
 
 ## ----dlquant-------------------------------------------------------------
 dlq$quant # distLquantile output if returnlist=FALSE (the default)
@@ -58,33 +55,43 @@ plotLweights(dlq, legargs=list(cex=0.8, bg="transparent") )
 
 ## ----trunc, echo=-1, fig.height=3.5, fig.width=5.5-----------------------
 par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
-d <- distLquantile(rain, truncate=0.9, plot=TRUE, probs=0.999, quiet=TRUE, breaks=50)
+d <- distLquantile(rain, truncate=0.9, probs=0.999, quiet=TRUE, list=TRUE)
+plotLquantile(d, breaks=50)
 
 ## ----teff, eval=FALSE----------------------------------------------------
-#  tt <- seq(0,0.95, len=50)
+#  tt <- c(seq(0,0.5,0.1), seq(0.55,0.99,len=50))
 #  if(interactive()) lapply <- pbapply::pblapply # for progress bars
-#  qq <- lapply(tt, function(t) distLquantile(rain, truncate=t,
-#                                               probs=c(0.99,0.999), quiet=TRUE))
-#  save(tt,qq, file="qq.Rdata")
+#  qq <- lapply(tt, function(t)
+#    distLquantile(rain, truncate=t, probs=0.999, quiet=TRUE, gpd=FALSE))
+#  dlf00 <- plotLfit(distLfit(rain), nbest=17)
+#  dlf99 <- plotLfit(distLfit(rain, tr=0.99), nbest=17)
+#  save(tt,qq,dlf99,dlf00, file="qq.Rdata")
 
 ## ----teffplot, fig.height=3.5, fig.width=5.5-----------------------------
 load("qq.Rdata")
 par(mar=c(3,2.8,2.2,0.4), mgp=c(1.8,0.5,0))
-plot(tt,tt, type="n", xlab="truncation proportion", ylab="Quantile estimation",
-     main="truncation effect for 6k values of rain", ylim=c(22,90), las=1)
-dn <- c("wak","kap","wei","gpa","pe3","weighted2")
-cols <- c(4,5,3,"orange",2,1) ; names(cols) <- dn
-for(d in rownames(qq[[1]])) lines(tt, sapply(qq, "[", d, j=2), col=8)
-for(d in dn)
-  {
-  lines(tt, sapply(qq, "[", d, j=1), col=cols[d], lwd=2)
-  lines(tt, sapply(qq, "[", d, j=2), col=cols[d], lwd=2)
-  }
-abline(h=berryFunctions::quantileMean(rain, probs=c(0.99,0.999)), lty=3)
-legend("topright", c(dn,"other"), col=c(cols,8), lty=1, lwd=c(rep(2,6),1), bg="white", cex=0.6)
-text(0.9, 53, "Q99.9%") ; text(0.9, 34, "Q99%")
-text(0.35, 62, "empirical quantile (full sample)", cex=0.7)
+plot(tt,tt, type="n", xlab="truncation proportion", ylab="Quantile estimate",
+     main="truncation effect for 6k values of rain", ylim=c(22,90), las=1,
+     xlim=0:1, xaxs="i", xaxt="n") ;  axis(1, at=0:5*0.2, labels=c("0",1:4*0.2,"1"))
+dn <- dlf00$distnames ; names(dlf00$distcols) <- dn
+for(d in dn) lines(tt, sapply(qq, "[", d, j=1), col=dlf00$distcols[d], lwd=2)
+abline(h=berryFunctions::quantileMean(rain, probs=0.999), lty=3)
+gof <- formatC(round(dlf00$gof[dn,"RMSE"],3), format='f', digits=3)
+legend("center", paste(gof,dn), col=dlf00$distcols, lty=1, bg="white", cex=0.5)
+text(0.02, 62, "empirical quantile (full sample)", adj=0)
 
+## ----teffplotrmse, fig.height=3.5, fig.width=5.5, echo=FALSE-------------
+par(mfrow=c(1,2), mar=c(1.5,2,0,0.5), oma=c(2,2,2,0) )
+plot(1, type="n", xlim=0:1, xaxs="i", log="y", ylim=c(0.01,0.15), axes=FALSE, ylab="", xlab="")
+axis(1, at=0:5*0.2, labels=c("0",1:4*0.2,"1"))
+logAxis(2)
+for(d in dn) lines(tt, sapply(qq, "[", d, j="RMSE"), col=dlf00$distcols[d])
+
+plot(1, type="n", xlim=0:1, xaxs="i", ylim=c(0.011,0.025), xaxt="n", ylab="RMSE")
+title(xlab="truncation proportion", main="truncation effect for 6k values of rain", mgp=c(0.5,0,0), outer=TRUE)
+title(ylab="RMSE", mgp=c(1,0,0), outer=TRUE)
+axis(1, at=0:5*0.2, labels=c("0",1:4*0.2,"1"))
+for(d in dn) lines(tt, sapply(qq, "[", d, j="RMSE"), col=dlf00$distcols[d])
 
 ## ----ssdep, eval=FALSE---------------------------------------------------
 #  set.seed(1)
