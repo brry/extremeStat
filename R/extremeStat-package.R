@@ -99,6 +99,12 @@ NULL
 #' barplot(weightp, horiz=TRUE, las=1)
 #' stopifnot(   all.equal(sum(weightp), 1)   )
 #' 
+#' data(annMax) ; data(weightp)
+#' dlf <- distLfit(annMax, weightc=weightp)
+#' dlf$gof
+#' quant <- distLquantile(annMax, weightc=weightp)
+#' quant
+#' 
 if(FALSE){
 weightp1 <- read.table(text="
 wei    0.12915523
