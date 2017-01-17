@@ -84,7 +84,7 @@ text(0.02, 62, "empirical quantile (full sample)", adj=0)
 par(mfrow=c(1,2), mar=c(1.5,2,0,0.5), oma=c(2,2,2,0) )
 plot(1, type="n", xlim=0:1, xaxs="i", log="y", ylim=c(0.01,0.15), axes=FALSE, ylab="", xlab="")
 axis(1, at=0:5*0.2, labels=c("0",1:4*0.2,"1"))
-logAxis(2)
+berryFunctions::logAxis(2)
 for(d in dn) lines(tt, sapply(qq, "[", d, j="RMSE"), col=dlf00$distcols[d])
 
 plot(1, type="n", xlim=0:1, xaxs="i", ylim=c(0.011,0.025), xaxt="n", ylab="RMSE")
