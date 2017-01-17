@@ -1,33 +1,5 @@
 
 
-#' annual discharge maxima (streamflow)
-#' 
-#' Annual discharge maxima of a stream in Austria called Griesler or Fuschler
-#' Ache, at the measurement station (gauge) near St. Lorenz, catchment area ca
-#' 100 km^2. Extracted from the time series 1976-2010 with a resolution of 15
-#' Minutes.
-#' 
-#' 
-#' @name annMax
-#' @docType data
-#' @format num [1:35] 61.5 77 37 69.3 75.6 74.9 43.7 50.8 55.6 84.1 ...
-#' @source Hydrographische Dienste Oberoesterreich und Salzburg, analysed by
-#' package author (\email{berry-b@gmx.de})
-#' @keywords datasets
-#' @examples
-#' 
-#' data(annMax)
-#' str(annMax)
-#' str(annMax)
-#' plot(1976:2010, annMax, type="l", las=1, main="annMax dataset from Austria")
-#' # Moving Average with different window widths:
-#' berryFunctions::movAvLines(annMax, x=1976:2010, lwd=3, alpha=0.7)
-#' 
-NULL
-
-
-
-
 #' Extreme value statistics on a linear scale
 #' 
 #' Fit (via L moments), plot (on a linear scale) and compare (by goodness of fit)
@@ -80,4 +52,76 @@ NULL
 NULL
 
 
+
+
+#' annual discharge maxima (streamflow)
+#' 
+#' Annual discharge maxima of a stream in Austria called Griesler or Fuschler
+#' Ache, at the measurement station (gauge) near St. Lorenz, catchment area ca
+#' 100 km^2. Extracted from the time series 1976-2010 with a resolution of 15
+#' Minutes.
+#' 
+#' 
+#' @name annMax
+#' @docType data
+#' @format num [1:35] 61.5 77 37 69.3 75.6 74.9 43.7 50.8 55.6 84.1 ...
+#' @source Hydrographische Dienste Oberoesterreich und Salzburg, analysed by
+#' package author (\email{berry-b@gmx.de})
+#' @keywords datasets
+#' @examples
+#' 
+#' data(annMax)
+#' str(annMax)
+#' str(annMax)
+#' plot(1976:2010, annMax, type="l", las=1, main="annMax dataset from Austria")
+#' # Moving Average with different window widths:
+#' berryFunctions::movAvLines(annMax, x=1976:2010, lwd=3, alpha=0.7)
+#' 
+NULL
+
+
+
+#' distribution weights
+#' 
+#' Weights for weighted average as in the submission of revisions for the paper
+#' \url{http://www.nat-hazards-earth-syst-sci-discuss.net/nhess-2016-183/}
+#' 
+#' 
+#' @name weightp
+#' @docType data
+#' @format named num [1:17] 
+#' @source See paper revisions (not yet online at moment of extremeStat update) (\email{berry-b@gmx.de})
+#' @keywords datasets
+#' @examples
+#' 
+#' data(weightp)
+#' data.frame(weightp)
+#' barplot(weightp, horiz=TRUE, las=1)
+#' stopifnot(   all.equal(sum(weightp), 1)   )
+#' 
+if(FALSE){
+weightp1 <- read.table(text="
+wei    0.12915523
+pe3    0.12645899
+gpa    0.12070367
+wak    0.11883859
+gno    0.09569464
+gum    0.08812947
+exp    0.07123161
+gev    0.06609407
+lap    0.06180443
+ray    0.06040467
+gam    0.04881928
+glo    0.01266536
+rice   0.00000000
+nor    0.00000000
+ln3    0.00000000
+revgum 0.00000000
+kap    0.00000000")
+weightp <- weightp1[,2]
+names(weightp) <- weightp1[,1]
+rm(weightp1)
+devtools::use_data(weightp)
+}
+"weightp"
 
