@@ -40,6 +40,7 @@
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014, March + July 2015, Dec 2016
 #' @seealso \code{\link{extremeStat}}
 #' @keywords list methods print
+#' @importFrom berryFunctions truncMessage
 #' @export
 #' @examples
 #' 
@@ -78,7 +79,7 @@ PP <- "RPweibull" %in% names(dlf) | "RPgringorton" %in% names(dlf)
 RP <- "returnlev" %in% names(dlf)
 qq <- "quant" %in% names(dlf)
 other <- ! names(dlf) %in% c(must, "returnlev", "RPweibull", "RPgringorton", 
-                             "quant", "exBootRPs", "qexBootSim", "exBootCI")
+                             "quant", "exBootRPs", "qexBootSim", "exBootCI", "npy")
 
 
 # message output:
@@ -102,8 +103,9 @@ if(qq) paste("\nquant:",nrow(dlf$quant),"rows,",ncol(dlf$quant),"columns,",
             prod(dim(dlf$quant)),"values, of which",sum(is.na(dlf$quant)),"NA."),
 if(PP | RP) "\ndistLextreme elements:",
 if(PP) paste0("\nPlotting positions min/median/max: ", vals(c(dlf$RPweibull, dlf$RPgringorton))),
-if(RP) paste0("\nReturn Periods: ", toString(substr(colnames(dlf$returnlev), start=4, stop=8)),
-              "\nReturn Levels min/median/max: ", vals(dlf$returnlev)),
+if(RP) paste0("\nReturn Periods: ", berryFunctions::truncMessage(substr(colnames(dlf$returnlev), start=4, stop=8), ntrunc=10),
+              "\nReturn Levels min/median/max: ", vals(head(dlf$returnlev,-3))),
+if(RP) paste0("\nnpy: ", dlf$npy),
 if(any(other)) paste0("\n--> Other elements in the object '", obj, "': ",
                       toString(names(dlf)[other]))
 )
