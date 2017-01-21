@@ -139,7 +139,7 @@ as visualized along a probability line:
 
 ```
 
-In `distLquantile`, you can set the threshold manually, or (better) as a truncate percentage reflecting the proportion of data discarded:
+In `distLquantile`, you can set the threshold manually, or (better) as a truncate percentage (`t` above) reflecting the proportion of data discarded:
 ```{r trunc, echo=-1, fig.height=3.5, fig.width=5.5}
 par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
 d <- distLquantile(rain, truncate=0.9, probs=0.999, quiet=TRUE, list=TRUE)
@@ -241,7 +241,27 @@ Once you have a quantile estimator, you can easily compute extremes (= return le
 A value `x` in a time series has a certain expected frequency to occur or be exceeded: the exceedance probability Pe. 
 The Return Period (RP) of `x` can be computed as follows:
 
-$$ RP = \frac{1}{Pe} = \frac{1}{1-quantile(x)} $$
+$$ RP = \frac{1}{Pe} = \frac{1}{1-Pne} $$
+From that follows for the probability of non-exceedance Pne:
+$$ Pne = 1 - \frac{1}{RP} $$
+The Return Level RL can be computed as 
+$$ RL = quantile(x, ~~ prob=Pne) $$
+The Return Periods are given in years, thus if you use daily values in a POT approach, 
+you should set `npy=365.24`, as the formula in this package uses
+$$ returnlev = distLquantile(x, ~~ probs=1-\frac{1}{RP*npy}) $$
+
+An example with actual numbers (only valid in stationary cases!!):
+A once-in-a-century-flood (event with a return period of 100 years) is expected 
+to be exceeded ca. ten times in a dataset spanning a millennium. 
+Let the associated discharge (river flow) be 5400 m^3/s.
+The exceedance probability of 5400 m^3/s is 1%, which means that in any given year,
+the probability to have a flood larger than that is 1%.
+The probability that the largest flood in 2017 is smaller than 5400 is thus 99 %.
+RP = 100,  Pe=0.01,  Pne=0.99.
+Let there be 60 years of daily discharge records.
+In the annual block maxima approach with 60 values, 
+the probability passed to the quantile function to compute the 100-year flood is 0.99.
+In the peak over threshold approach with daily values above a threshold, it is 0.9999726.
 
 Here is an example with annual block maxima of stream discharge in Austria:
 ```{r RP, echo=-1, warning=FALSE, fig.height=4, fig.width=5.5}
