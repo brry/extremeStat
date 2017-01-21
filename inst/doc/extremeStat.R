@@ -1,17 +1,11 @@
 ## ----instcran, eval=FALSE------------------------------------------------
 #  install.packages("extremeStat")
-#  library(extremeStat)
-
-## ----instgit, eval=FALSE-------------------------------------------------
-#  install.packages(c("devtools","evd","evir","extRemes","fExtremes",
-#                     "ismev","lmomco","pbapply","Renext"))
-#  # reiterate untill all of them work (some may not install properly on first try)
 #  
-#  devtools::install_github("brry/berryFunctions")
-#  devtools::install_github("brry/extremeStat")
-#  library(extremeStat)
+#  # install the development version from github:
+#  berryFunctions::instGit("brry/berryFunctions")
+#  berryFunctions::instGit("brry/extremeStat")
 
-## ----library, echo=FALSE-------------------------------------------------
+## ----library, echo=TRUE--------------------------------------------------
 library(extremeStat)
 
 ## ----dataHist, fig.show='hold', echo=-3----------------------------------
@@ -38,6 +32,15 @@ dlq$quant # distLquantile output if returnlist=FALSE (the default)
 ## ----weight, echo=-1, fig.height=3.5, fig.width=5.5----------------------
 par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
 plotLweights(dlq, legargs=list(cex=0.8, bg="transparent") )
+
+## ----rmse_vis, fig.height=4, fig.width=7, echo=-1------------------------
+par(mar=c(2,4,1.5,0.5))
+sel <- c("wak","lap","revgum")
+dlf <- distLfit(annMax, sel=sel, quiet=TRUE)
+col <- plotLfit(dlf, cdf=TRUE, sel=sel)$distcol
+x <- sort(annMax)
+for(d in 3:1) segments(x0=x, y0=lmomco::plmomco(x, dlf$parameter[[sel[d]]]), 
+                             y1=ecdf(annMax)(x), col=col[d])
 
 ## ----prob, echo=FALSE, fig.height=1, fig.width=5.5-----------------------
   par(mar=rep(0,4))

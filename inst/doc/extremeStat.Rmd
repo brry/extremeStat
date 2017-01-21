@@ -12,7 +12,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-*The R package `extremeStat`, available at [github.com/brry](https://github.com/brry/extremeStat), contains code to fit, plot and compare several (extreme value) distribution functions. It can also compute (truncated) distribution quantile estimates and draw a plot with return periods on a linear scale. (Vignette [Rmd source](https://raw.githubusercontent.com/brry/extremeStat/master/vignettes/extremeStat.Rmd))*
+Vignette [Rmd source](https://raw.githubusercontent.com/brry/extremeStat/master/vignettes/extremeStat.Rmd)
+
+*The [R](https://www.r-project.org/) package `extremeStat`, available at [github.com/brry](https://github.com/brry/extremeStat), contains code to fit, plot and compare several (extreme value) distribution functions. It can also compute (truncated) distribution quantile estimates and draw a plot with return periods on a linear scale. *
 
 Main focus of this document:  
 **Quantile estimation via distribution fitting  
@@ -25,21 +27,14 @@ Comparison of GPD implementations in several R packages**
 
 ```{r instcran, eval=FALSE}
 install.packages("extremeStat")
-library(extremeStat)
-```
-To install the development version from github:
-```{r instgit, eval=FALSE}
-install.packages(c("devtools","evd","evir","extRemes","fExtremes",
-                   "ismev","lmomco","pbapply","Renext"))
-# reiterate untill all of them work (some may not install properly on first try)
 
-devtools::install_github("brry/berryFunctions")
-devtools::install_github("brry/extremeStat") 
-library(extremeStat)
+# install the development version from github:
+berryFunctions::instGit("brry/berryFunctions")
+berryFunctions::instGit("brry/extremeStat") 
 ```
-extremeStat has 28 dependencies, because of the GPD comparison across the packages.
+`extremeStat` has 28 dependencies, because of the GPD comparison across the packages.
 
-```{r library, echo=FALSE}
+```{r library, echo=TRUE}
 library(extremeStat)
 ```
 
@@ -75,15 +70,18 @@ L-moments are especially useful in the context of quantile functions"
 [TOC](#top)
 
 ## Quantile estimation
-To estimate the quantile of (small) samples via a distribution function, you can use `distLquantile`, which internally calls `distLfit`, in the following manner (More information on dlf objects in [extremeStat](https://www.rdocumentation.org/packages/extremeStat/topics/extremeStat?)) :
+To estimate the quantile of (small) samples via a distribution function, 
+you can use `distLquantile`, which internally calls `distLfit`, in the following manner 
+(More information on dlf objects in 
+[extremeStat](https://www.rdocumentation.org/packages/extremeStat/topics/extremeStat?)) :
 ```{r dlq}
 dlq <- distLquantile(rain[1:900], probs=c(0.8,0.9,0.99,0.999), list=TRUE, quiet=TRUE)
 ```
-If list is set to TRUE, it will return an object that can be examined with printL:
+If list is set to TRUE, it will return an object that can be examined with `printL`:
 ```{r dlprint, eval=1}
 printL(dlq)
 ```
-dlf objects can be plotted with plotLfit, plotLweights and plotLquantile:
+dlf objects can be plotted with `plotLfit`, `plotLweights` and `plotLquantile`:
 ```{r dlplot, echo=-1, fig.height=3.5, fig.width=5.5}
 par(mar=c(3.9,3.9,1.5,0.7), mgp=c(2.8,0.7,0))
 plotLquantile(dlq, nbest=8, linargs=list(lwd=2), heights=seq(0.04, 0.01, len=8), breaks=80)
@@ -95,15 +93,33 @@ dlq$quant # distLquantile output if returnlist=FALSE (the default)
 ```
 
 
-* The rows for each distribution function are sorted by their goodness of fit (see below). They each yield different results, epecially for very high quantile probailities (values that are exceeded very rarely). Note that the deviation from each other increases for badly fitted distributions.
-* The row `quantileMean` is an average of R's 9 methods implemented in `stats::quantile` to determine **empirical percentiles** (order based statistic, keyword plotting positions).  
-* The rows `q_gpd_*` are the General Pareto Distribution quantiles, as estimated by a range of different R packages and methods (specified in the row names), computed by `q_gpd`. More on that in the next section [GPD](#GPD).  
-* The rows `weighted*` are averages of the quantiles estimated from the distribution functions, weighted by their goodness of fit (RMSE ecdf / cdf) in three default and a custom weighting schemes:  
+* The first 17 rows for each distribution function are sorted by their goodness of fit (see below). 
+They each yield different results, epecially for very high quantile probailities (values that are exceeded very rarely). 
+Note that the deviation from each other increases for badly fitted distributions.
+* The row `quantileMean` is an average of R's 9 methods implemented in `stats::quantile` 
+to determine **empirical percentiles** (order based statistic, keyword plotting positions).  
+* The rows `GPD_*` are the General Pareto Distribution quantiles, 
+as estimated by a range of different R packages and methods (specified in the row names), computed by `q_gpd`. 
+More on that in the next section [GPD](#GPD).  
+* The rows `weighted*` are averages of the quantiles estimated from the distribution functions, 
+weighted by their goodness of fit (RMSE ecdf / cdf) in three default and a custom weighting schemes:  
 ```{r weight, echo=-1, fig.height=3.5, fig.width=5.5}
 par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
 plotLweights(dlq, legargs=list(cex=0.8, bg="transparent") )
 ```
 
+```{r rmse_vis, fig.height=4, fig.width=7, echo=-1}
+par(mar=c(2,4,1.5,0.5))
+sel <- c("wak","lap","revgum")
+dlf <- distLfit(annMax, sel=sel, quiet=TRUE)
+col <- plotLfit(dlf, cdf=TRUE, sel=sel)$distcol
+x <- sort(annMax)
+for(d in 3:1) segments(x0=x, y0=lmomco::plmomco(x, dlf$parameter[[sel[d]]]), 
+                             y1=ecdf(annMax)(x), col=col[d])
+```
+The vertical bars mark the deviance of the distribution CDF from the ECDF.
+They are aggregated by [rmse](https://www.rdocumentation.org/packages/berryFunctions/topics/rmse?)
+to mark distribution goodness of fit (GOF).
 
 [TOC](#top)
 <a name="GPD"></a>
@@ -139,7 +155,7 @@ as visualized along a probability line:
 
 ```
 
-In `distLquantile`, you can set the threshold manually, or (better) as a truncate percentage (`t` above) reflecting the proportion of data discarded:
+In `distLquantile`, you can set the threshold manually, or (better) as a truncate percentage (`truncate` = **` t `** above) reflecting the proportion of data discarded:
 ```{r trunc, echo=-1, fig.height=3.5, fig.width=5.5}
 par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
 d <- distLquantile(rain, truncate=0.9, probs=0.999, quiet=TRUE, list=TRUE)
@@ -178,7 +194,7 @@ legend("center", paste(gof,dn), col=dlf00$distcols, lty=1, bg="white", cex=0.5)
 text(0.02, 62, "empirical quantile (full sample)", adj=0)
 ```
 
-The 17 different distribution quantiles and 12 different GPD estimates seem to converge with increasing truncation percentage.
+The 17 different distribution quantiles (and 11 different GPD estimates, not in figure) seem to converge with increasing truncation percentage.
 However, at least 5 remaining values in the truncated sample are necessary to fit distributions via L-moments, so don't truncate too much.
 I found a good cutoff percentage is 0.8. If you fit to the top 20% of the data, you get good results, while needing 'only' approximately 25 values in a sample to infer a quantile estimate.
 
@@ -196,6 +212,7 @@ title(ylab="RMSE", mgp=c(1,0,0), outer=TRUE)
 axis(1, at=0:5*0.2, labels=c("0",1:4*0.2,"1"))
 for(d in dn) lines(tt, sapply(qq, "[", d, j="RMSE"), col=dlf00$distcols[d])
 ```
+
 
 [TOC](#top)
 
