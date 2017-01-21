@@ -15,8 +15,7 @@
 #' #see
 #' ?distLextreme
 #' 
-#' @param dlf     List as returned by \code{\link{distLextreme}}, containing the 
-#'                elements \code{dat, dleB <- distLexBoot(dlf, nbest=4, conf.lev=0.5), gof}.
+#' @param dlf     List as returned by \code{\link{distLextreme}} or \code{\link{distLexBoot}}
 #' @param selection Selection of distributions. Character vector with type as in 
 #'                \code{\link[lmomco]{lmom2par}}. DEFAULT: NULL
 #' @param order   If selection is given, should legend and colors be ordered 
@@ -46,12 +45,15 @@
 #' @param lwd     Line WiDth of distribution lines. Recycled vector of length nbest. 
 #'                DEFAULT: 1
 #' @param pch     Point CHaracter of points added at regular intervals. 
+#'                This makes lines more distinguishable from each other.
 #'                NA to suppress. Recycled vector of length nbest. DEFAULT: NA
 #' @param cex     if pch != NA, size of points. Recycled vector of length nbest. 
 #'                DEFAULT: 1
 #' @param n_pch   Number of points spread evenly along the line. 
 #'                Recycled vector of length nbest. DEFAULT: 15
 #' @param legend  Logical. Add a legend? DEFAULT: TRUE
+#' @param rmse    Integer. If rmse > 0, RMSE values are added to legend.
+#'                They are rounded to \code{rmse} digits. DEFAULT: 4
 #' @param legargs list of arguments passed to \code{\link{legend}} except for 
 #'                legend, col, pch, lwd, lty. DEFAULT: NULL
 #' @param quiet   Suppress notes? DEFAULT: FALSE
@@ -80,6 +82,7 @@ pch=NA,
 cex=1,
 n_pch=15,
 legend=TRUE,
+rmse=4,
 legargs=NULL,
 quiet=FALSE,
 ... )
@@ -89,14 +92,15 @@ if(length(PPpch)==1) PPpch[2] <- if(is.na(PPpch)) NA else if(PPpch[1]==3) 4 else
 PPcol <- rep(PPcol, length.out=2)
 PPcex <- rep(PPcex, length.out=2)
 # Plotting Positions -----------------------------------------------------------
+if(is.null(dlf$npy)) stop("dlf must contain npy element.")
 # Calculate PP according to Weibull and Gringorton
 # See chapter 15.2 RclickHandbuch.wordpress.com for differences in PP methods
 # They're not used for fitting distributions, but for plotting only
-m <- sort(dlf$dat) # ascendingly sorted extreme values
+m <- sort(dlf$dat_full) # ascendingly sorted extreme values
 n <- length(m);  Rank <- 1:n
 # RP = Returnperiod = recurrence interval = 1/P_exceedence = 1/(1-P_nonexc.) :
-RPw <- 1/(1-  Rank      /(n+1)     )  # Weibull
-RPg <- 1/(1- (Rank-0.44)/(n+0.12)  )  # Gringorton (taken from lmom:::evplot.default)
+RPw <- 1/(1-  Rank      /(n+1)     )/dlf$npy  # Weibull
+RPg <- 1/(1- (Rank-0.44)/(n+0.12)  )/dlf$npy  # Gringorton (taken from lmom:::evplot.default)
 #  Selection -------------------------------------------------------------------
 dn <- rownames(dlf$gof)[order(dlf$gof$RMSE)] # distribution names
 if(!is.null(selection))
@@ -135,7 +139,7 @@ if(length(distcols) != nbest & !quiet)
 # Plotting ---------------------------------------------------------------------
 # Calculate plot limits if not given:
 if(is.null(ylim)) ylim <- c(min(dlf$dat), max(dlf$dat)+0.1*diff(range(dlf$dat)) )
-if(is.null(xlim)) xlim <- range(RPw, RPg)
+if(is.null(xlim)) xlim <- c(1,range(RPw, RPg)[2])
 # draw discharges over return periods:
 if(!add) plot(1, type="n", las=las, ylim=ylim, xlim=xlim, main=main, ylab=ylab, xlab=xlab, 
               log=if(log) "x" else "", xaxt=if(log) "n" else "s", ...)
@@ -153,7 +157,8 @@ for(i in nbest:1)
   {
   Pnonexceed <- lmomco::plmomco(yval,dlf$parameter[[dn[i]]]) # print(Pnonexceed, digits=20)
   Pnonexceed[Pnonexceed>1] <- 1 # remove numerical errors
-  xval <- 1/(1-Pnonexceed)
+  if(dlf$truncate!=0) Pnonexceed <- Pnonexceed*(1-dlf$truncate) + dlf$truncate 
+  xval <- 1/(1-Pnonexceed)/dlf$npy
   lines(x=xval, y=yval, col=distcols[i], lty=lty[i], lwd=lwd[i])
   if(!is.na(pch[i]))
     {
@@ -170,8 +175,9 @@ box()
 if(legend){
 PP1 <- !is.na(PPpch[1])
 PP2 <- !is.na(PPpch[2])
+legdn <- paste(if(rmse>0) formatC(round(dlf$gof[dn,"RMSE"],rmse), format='f', digits=rmse), dn)
 legdef <- list(
-  legend=c(if(PP1) "Weibull PP",if(PP2)"Gringorten PP", dn[1:nbest]),
+  legend=c(if(PP1) "Weibull PP",if(PP2)"Gringorten PP", legdn[1:nbest]),
   pch=   c(if(PP1) PPpch[1],    if(PP2) PPpch[2],       pch),
   pt.cex=c(if(PP1) 1,           if(PP2) 1,              cex),
   lwd=   c(if(PP1) NA,          if(PP2) NA,             lwd),

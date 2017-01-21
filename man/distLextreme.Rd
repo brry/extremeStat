@@ -4,8 +4,8 @@
 \alias{distLextreme}
 \title{Extreme value stats}
 \usage{
-distLextreme(dat, dlf = NULL, RPs = c(2, 5, 10, 20, 50), quiet = FALSE,
-  ...)
+distLextreme(dat, dlf = NULL, RPs = c(2, 5, 10, 20, 50), npy = 1,
+  quiet = FALSE, ...)
 }
 \arguments{
 \item{dat}{Vector with extreme values e.g. annual discharge maxima. 
@@ -14,7 +14,13 @@ Ignored if dlf is given.}
 \item{dlf}{List as returned by \code{\link{distLfit}}. 
 Overrides dat! DEFAULT: NULL}
 
-\item{RPs}{ReturnPeriods for which discharge is estimated. DEFAULT: c(2,5,10,20,50)}
+\item{RPs}{ReturnPeriods (in years) for which discharge is estimated. 
+DEFAULT: c(2,5,10,20,50)}
+
+\item{npy}{Number of observations per year. 1 if you use annual block maxima.
+(Then leave truncate at 0). 
+If you use a POT approach (see vignette) on e.g. daily data,
+use npy=365.24. DEFAULT: 1}
 
 \item{quiet}{Suppress notes and progbars? DEFAULT: FALSE}
 
@@ -96,6 +102,35 @@ sort(1/(1-sapply(dlf$parameter, plmomco, x=120) )  )[1:13]
 # Weibull:                     every 72 years only
 
 
+# BM vs POT --------------------------------------------------------------------
+# Return levels by Block Maxima approach vs Peak Over Threshold approach:
+# BM distribution theoretically converges to GEV, POT to GPD
+
+data(rain, package="ismev")
+days <- seq(as.Date("1914-01-01"), as.Date("1961-12-30"), by="days")
+BM <- tapply(rain, format(days,"\%Y"), max)  ;  rm(days)
+dlfBM <- plotLextreme(distLextreme(BM, emp=FALSE), ylim=lim0(100), log=TRUE, nbest=10)
+
+dlfPOT99 <- distLextreme(rain, npy=365.24, trunc=0.99, emp=FALSE)
+dlfPOT99 <- plotLextreme(dlfPOT99, ylim=lim0(100), log=TRUE, nbest=10, main="POT 99")
+printL(dlfPOT99)
+
+\dontrun{ ## Excluded from CRAN R CMD check because of computing time
+dlfPOT90 <- distLextreme(rain, npy=365.24, trunc=0.90, emp=FALSE)
+dlfPOT90 <- plotLextreme(dlfPOT90, ylim=lim0(100), log=TRUE, nbest=10, main="POT 90")
+
+dlfPOT50 <- distLextreme(rain, npy=365.24, trunc=0.50, emp=FALSE)
+dlfPOT50 <- plotLextreme(dlfPOT50, ylim=lim0(100), log=TRUE, nbest=10, main="POT 50")
+}
+
+ig99 <- ismev::gpd.fit(rain, dlfPOT99$threshold)
+ismev::gpd.diag(ig99); title(main=paste(99, ig99$threshold))
+\dontrun{
+ig90 <- ismev::gpd.fit(rain, dlfPOT90$threshold)
+ismev::gpd.diag(ig90); title(main=paste(90, ig90$threshold))
+ig50 <- ismev::gpd.fit(rain, dlfPOT50$threshold)
+ismev::gpd.diag(ig50); title(main=paste(50, ig50$threshold))
+}
 
 # Advanced options -------------------------------------------------------------
 plotLextreme(dlf=dlf)

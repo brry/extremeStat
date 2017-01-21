@@ -80,6 +80,35 @@
 #' # Weibull:                     every 72 years only
 #' 
 #' 
+#' # BM vs POT --------------------------------------------------------------------
+#' # Return levels by Block Maxima approach vs Peak Over Threshold approach:
+#' # BM distribution theoretically converges to GEV, POT to GPD
+#' 
+#' data(rain, package="ismev")
+#' days <- seq(as.Date("1914-01-01"), as.Date("1961-12-30"), by="days")
+#' BM <- tapply(rain, format(days,"%Y"), max)  ;  rm(days)
+#' dlfBM <- plotLextreme(distLextreme(BM, emp=FALSE), ylim=lim0(100), log=TRUE, nbest=10)
+#' 
+#' dlfPOT99 <- distLextreme(rain, npy=365.24, trunc=0.99, emp=FALSE)
+#' dlfPOT99 <- plotLextreme(dlfPOT99, ylim=lim0(100), log=TRUE, nbest=10, main="POT 99")
+#' printL(dlfPOT99)
+#' 
+#' \dontrun{ ## Excluded from CRAN R CMD check because of computing time
+#' dlfPOT90 <- distLextreme(rain, npy=365.24, trunc=0.90, emp=FALSE)
+#' dlfPOT90 <- plotLextreme(dlfPOT90, ylim=lim0(100), log=TRUE, nbest=10, main="POT 90")
+#' 
+#' dlfPOT50 <- distLextreme(rain, npy=365.24, trunc=0.50, emp=FALSE)
+#' dlfPOT50 <- plotLextreme(dlfPOT50, ylim=lim0(100), log=TRUE, nbest=10, main="POT 50")
+#' }
+#' 
+#' ig99 <- ismev::gpd.fit(rain, dlfPOT99$threshold)
+#' ismev::gpd.diag(ig99); title(main=paste(99, ig99$threshold))
+#' \dontrun{
+#' ig90 <- ismev::gpd.fit(rain, dlfPOT90$threshold)
+#' ismev::gpd.diag(ig90); title(main=paste(90, ig90$threshold))
+#' ig50 <- ismev::gpd.fit(rain, dlfPOT50$threshold)
+#' ismev::gpd.diag(ig50); title(main=paste(50, ig50$threshold))
+#' }
 #' 
 #' # Advanced options -------------------------------------------------------------
 #' plotLextreme(dlf=dlf)
@@ -171,7 +200,12 @@
 #'                  Ignored if dlf is given.
 #' @param dlf       List as returned by \code{\link{distLfit}}. 
 #'                  Overrides dat! DEFAULT: NULL
-#' @param RPs       ReturnPeriods for which discharge is estimated. DEFAULT: c(2,5,10,20,50)
+#' @param RPs       ReturnPeriods (in years) for which discharge is estimated. 
+#'                  DEFAULT: c(2,5,10,20,50)
+#' @param npy       Number of observations per year. 1 if you use annual block maxima.
+#'                  (Then leave truncate at 0). 
+#'                  If you use a POT approach (see vignette) on e.g. daily data,
+#'                  use npy=365.24. DEFAULT: 1
 #' @param quiet     Suppress notes and progbars? DEFAULT: FALSE
 #' @param \dots     Further arguments passed to \code{\link{distLquantile}} (and
 #'                  \code{\link{distLfit}} if dlf=NULL) like truncate, selection,
@@ -181,6 +215,7 @@ distLextreme <- function(
 dat,
 dlf=NULL,
 RPs=c(2,5,10,20,50),
+npy=1,
 quiet=FALSE,
 ... )
 {
@@ -195,7 +230,7 @@ if(!missing(dat) & !is.null("dlf")) if(any(dlf$dat != dat) & !quiet)
   message("Note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored.")
 #
 # output (discharge) values at return periods ----------------------------------
-returnlev <- distLquantile(dlf=dlf, probs=1-1/RPs, quiet=quiet, gpquiet=TRUE, ...)
+returnlev <- distLquantile(dlf=dlf, probs=1-1/(RPs*npy), quiet=quiet, gpquiet=TRUE, ...)
 returnlev <- returnlev[, - ncol(returnlev), drop=FALSE]
 # column names:
 colnames(returnlev) <- paste0("RP.", RPs)
@@ -204,5 +239,6 @@ colnames(returnlev) <- paste0("RP.", RPs)
 #dlf$distcols <- NULL
 #dlf$distselector <- "distLextreme" # remains distLfit for now
 dlf$returnlev <- as.data.frame(returnlev)
+dlf$npy <- npy
 return(invisible(dlf))
 } # end of function

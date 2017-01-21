@@ -1,7 +1,6 @@
 
 extremeStat ToDo-list / wishlist / issues
 - read all of https://www.ine.pt/revstat/pdf/rs120102.pdf and coles (2001)
-- distLextreme correct RP for POT approach (npy)
 - distLextreme, distLquantile, q_gpd: reduce example section, potentially move some to tests. add Nile, rain, danish
 - split up q_gpd into f_gpd, p/q/d/r_gpd and comp_gpd
 
@@ -31,8 +30,8 @@ Package thoroughly cleaned up and restructured:
 - several arguments removed and some renamed
 - documentation more standardized
 
-For a complete change log, see https://github.com/brry/extremeStat/commits/master
-https://github.com/brry/extremeStat/compare/master@{2016-12-12}...master@{2017-01-03}
+For all changes, see
+https://github.com/brry/extremeStat/compare/master@{2016-12-13}...master@{2017-01-21}#files_bucket
 
 new functions: distLweights, q_weighted, plotLquantile
 
