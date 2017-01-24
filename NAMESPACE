@@ -2,7 +2,12 @@
 
 export(distLexBoot)
 export(distLextreme)
+export(distLextremePlot)
 export(distLfit)
+export(distLgof)
+export(distLgofPlot)
+export(distLplot)
+export(distLprint)
 export(distLquantile)
 export(distLweights)
 export(plotLexBoot)
