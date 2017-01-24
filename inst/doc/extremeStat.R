@@ -35,6 +35,7 @@ plotLweights(dlq, legargs=list(cex=0.8, bg="transparent") )
 
 ## ----rmse_vis, fig.height=4, fig.width=7, echo=-1------------------------
 par(mar=c(2,4,1.5,0.5))
+data("annMax") # annual discharge maxima in the extremeStat package itself
 sel <- c("wak","lap","revgum")
 dlf <- distLfit(annMax, sel=sel, quiet=TRUE)
 col <- plotLfit(dlf, cdf=TRUE, sel=sel)$distcol
@@ -120,7 +121,6 @@ text(600, 40, "median and central 20% of 100 simulations")
 
 ## ----RP, echo=-1, warning=FALSE, fig.height=4, fig.width=5.5-------------
 par(mar=c(3,2.8,1.2,0.4), mgp=c(1.8,0.5,0))
-data("annMax") # annual discharge maxima in the extremeStat package itself
 dlf <- distLextreme(annMax, quiet=TRUE)
 plotLextreme(dlf, log=TRUE, legargs=list(cex=0.6, bg="transparent"), nbest=17)
 dlf$returnlev[1:20,]

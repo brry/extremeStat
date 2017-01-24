@@ -102,7 +102,7 @@ to determine **empirical percentiles** (order based statistic, keyword plotting 
 as estimated by a range of different R packages and methods (specified in the row names), computed by `q_gpd`. 
 More on that in the next section [GPD](#GPD).  
 * The rows `weighted*` are averages of the quantiles estimated from the distribution functions, 
-weighted by their goodness of fit (RMSE ecdf / cdf) in three default and a custom weighting schemes:  
+weighted by their goodness of fit (RMSE ecdf / cdf) in three default (and a custom) weighting schemes:  
 ```{r weight, echo=-1, fig.height=3.5, fig.width=5.5}
 par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
 plotLweights(dlq, legargs=list(cex=0.8, bg="transparent") )
@@ -110,6 +110,7 @@ plotLweights(dlq, legargs=list(cex=0.8, bg="transparent") )
 
 ```{r rmse_vis, fig.height=4, fig.width=7, echo=-1}
 par(mar=c(2,4,1.5,0.5))
+data("annMax") # annual discharge maxima in the extremeStat package itself
 sel <- c("wak","lap","revgum")
 dlf <- distLfit(annMax, sel=sel, quiet=TRUE)
 col <- plotLfit(dlf, cdf=TRUE, sel=sel)$distcol
@@ -118,7 +119,7 @@ for(d in 3:1) segments(x0=x, y0=lmomco::plmomco(x, dlf$parameter[[sel[d]]]),
                              y1=ecdf(annMax)(x), col=col[d])
 ```
 The vertical bars mark the deviance of the distribution CDF from the ECDF.
-They are aggregated by [rmse](https://www.rdocumentation.org/packages/berryFunctions/topics/rmse?)
+They are aggregated by [rmse](https://www.rdocumentation.org/packages/berryFunctions/topics/gof?)
 to mark distribution goodness of fit (GOF).
 
 [TOC](#top)
@@ -283,7 +284,6 @@ In the peak over threshold approach with daily values above a threshold, it is 0
 Here is an example with annual block maxima of stream discharge in Austria:
 ```{r RP, echo=-1, warning=FALSE, fig.height=4, fig.width=5.5}
 par(mar=c(3,2.8,1.2,0.4), mgp=c(1.8,0.5,0))
-data("annMax") # annual discharge maxima in the extremeStat package itself
 dlf <- distLextreme(annMax, quiet=TRUE)
 plotLextreme(dlf, log=TRUE, legargs=list(cex=0.6, bg="transparent"), nbest=17)
 dlf$returnlev[1:20,]
