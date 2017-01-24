@@ -1,8 +1,8 @@
 Package: extremeStat
 Type: Package
 Title: Extreme Value Statistics and Quantile Estimation
-Version: 1.2.21
-Date: 2017-01-21
+Version: 1.2.22
+Date: 2017-01-24
 Depends: R (>= 2.10)
 Imports:
     lmomco (>= 2.2.5),

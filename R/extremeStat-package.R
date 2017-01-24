@@ -1,4 +1,4 @@
-
+# package doc ----
 
 #' Extreme value statistics on a linear scale
 #' 
@@ -52,7 +52,7 @@
 NULL
 
 
-
+# annMax ----
 
 #' annual discharge maxima (streamflow)
 #' 
@@ -80,6 +80,7 @@ NULL
 NULL
 
 
+# weightp ----
 
 #' distribution weights
 #' 
