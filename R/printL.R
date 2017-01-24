@@ -27,9 +27,9 @@
 #' optionally, it can also contain:
 #' 
 #' \tabular{ll}{
-#' \code{returnlev, }  \tab dataframe with values of distributions for given 
-#'                          return periods (\code{RPs}). This element is only added
-#'                          in \code{\link{distLextreme}}\cr
+#' \code{returnlev, npy }  \tab dataframe with values of distributions for given 
+#'                          return periods (\code{RPs}), number of observations per year/block. 
+#'                          These elements are only added in \code{\link{distLextreme}}\cr
 #' \code{RPweibull, RPgringorton} \tab Return periods according to plotting positions, 
 #'                          added in \code{\link{plotLextreme}}\cr
 #' \code{quant}        \tab Quantile estimates from \code{\link{distLquantile}}\cr
