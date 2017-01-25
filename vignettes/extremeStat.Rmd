@@ -32,7 +32,7 @@ install.packages("extremeStat")
 berryFunctions::instGit("brry/berryFunctions")
 berryFunctions::instGit("brry/extremeStat") 
 ```
-`extremeStat` has 28 dependencies, because of the GPD comparison across the packages.
+`extremeStat` has 31 dependencies, because of the GPD comparison across the packages.
 
 ```{r library, echo=TRUE}
 library(extremeStat)
