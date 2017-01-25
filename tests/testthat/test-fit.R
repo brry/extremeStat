@@ -1,4 +1,5 @@
-context("fit distributions")
+context("Fit distributions")
+
 library(lmomco)
 data("annMax")
 

@@ -11,7 +11,7 @@ Any feedback is welcome, per email or on github.com/brry/extremeStat
 ---------------------------------------
 
 
-Version 1.3.0 (2017-01-17)
+Version 1.3.0 (2017-01-)
 Package thoroughly cleaned up and restructured:
 - plot functions renamed to common syntax plotL*
 - distLgof integrated into distLfit, but weight part moved into distLweights

@@ -81,19 +81,52 @@ test_that("distLquantile can deal with a given dlf",{
 test_that("distLquantile can handle emp, truncate",{
 expect_equal(nrow(distLquantile(annMax, emp=FALSE)), 20) # only distributions in lmomco
 aq <- distLquantile(annMax, truncate=0.8, probs=0.95) # POT
-expect_equal(round(aq[1:35,1],2), 
-             structure(c(101.16, 100.55, 103.48, 103.48, 102.75, 102.48, 106.03, 
-102.14, 102.14, 101.97, 101.42, 102.55, 103.68, 103.9, 104.21, 
-104.22, 105, 105.73, 102.88, 102.74, 102.66, NaN, 103.48, 99.84, 
-100.99, 100.7, 99.1, 108.88, 108.44, 108.42, NA, NA, 99.1, 166.91,  # Renext2par 80.25
-NA), .Names = c("exp", "lap", "gpa", "wak", "wei", "pe3", "kap", 
-"gno", "ln3", "gev", "glo", "gum", "ray", "gam", "rice", "nor", 
-"revgum", "quantileMean", "weighted1", "weighted2", "weighted3", 
-"weightedc", "GPD_LMO_lmomco", "GPD_LMO_extRemes", "GPD_PWM_evir", 
-"GPD_PWM_fExtremes", "GPD_MLE_extRemes", "GPD_MLE_ismev", "GPD_MLE_evd", 
-"GPD_MLE_Renext_Renouv", "GPD_MLE_evir", "GPD_MLE_fExtremes", 
-"GPD_GML_extRemes", "GPD_MLE_Renext_2par", "GPD_BAY_extRemes"
-))) 
+#round(aq,4)
+aq_expected <- read.table(header=TRUE, text="
+                           95%   RMSE
+exp                   101.1631 0.0703
+lap                   100.5542 0.0774
+gpa                   103.4762 0.0778
+wak                   103.4762 0.0778
+wei                   102.7534 0.0796
+pe3                   102.4791 0.0806
+kap                   106.0260 0.0816
+gno                   102.1442 0.0822
+ln3                   102.1442 0.0822
+gev                   101.9731 0.0831
+glo                   101.4164 0.0870
+gum                   102.5500 0.0893
+ray                   103.6840 0.0971
+gam                   103.8951 0.1128
+rice                  104.2135 0.1217
+nor                   104.2161 0.1218
+revgum                104.9992 0.1595
+quantileMean          105.7259     NA
+weighted1             102.8789     NA
+weighted2             102.7408     NA
+weighted3             102.6636     NA
+weightedc                  NaN     NA
+GPD_LMO_lmomco        103.4762 0.0156
+GPD_LMO_extRemes       99.8417 0.0163
+GPD_PWM_evir          100.9874 0.0169
+GPD_PWM_fExtremes     100.7009 0.0176
+GPD_MLE_extRemes       99.0965 0.0161
+GPD_MLE_ismev         108.8776 0.0467
+GPD_MLE_evd           108.4444 0.0454
+GPD_MLE_Renext_Renouv 108.4226 0.0453
+GPD_MLE_evir                NA     NA
+GPD_MLE_fExtremes           NA     NA
+GPD_GML_extRemes       99.0965 0.0161
+GPD_MLE_Renext_2par   166.9137 0.0958
+GPD_BAY_extRemes            NA     NA
+n_full                 35.0000     NA
+n                       7.0000     NA
+threshold              82.1469     NA")
+colnames(aq_expected) <- colnames(aq)
+aq_expected <- as.matrix(aq_expected)
+expect_equal(round(aq[1:22,],4), aq_expected[1:22,])
+expect_equal(round(aq[23:38,],1), round(aq_expected[23:38,],1))
+
 dd <- distLquantile(annMax, selection="gpa", weighted=FALSE, truncate=0.001)
 expect_equal(sum(is.na(dd[1:15,1:3])), 3)
 expect_equal(dd["gpa",1:3], dd["GPD_LMO_lmomco",1:3])
