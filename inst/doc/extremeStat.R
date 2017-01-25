@@ -16,22 +16,22 @@ hist(rain, breaks=80, col=4, las=1)
 # Visual inspection is easier on a logarithmic scale:
 berryFunctions::logHist(rain, breaks=80, col=3, las=1)
 
-## ----dlq-----------------------------------------------------------------
-dlq <- distLquantile(rain[1:900], probs=c(0.8,0.9,0.99,0.999), list=TRUE, quiet=TRUE)
+## ----dlf-----------------------------------------------------------------
+dlf <- distLquantile(rain[1:900], probs=c(0.8,0.9,0.99,0.999), list=TRUE, quiet=TRUE)
 
 ## ----dlprint, eval=1-----------------------------------------------------
-printL(dlq)
+printL(dlf)
 
 ## ----dlplot, echo=-1, fig.height=3.5, fig.width=5.5----------------------
 par(mar=c(3.9,3.9,1.5,0.7), mgp=c(2.8,0.7,0))
-plotLquantile(dlq, nbest=8, linargs=list(lwd=2), heights=seq(0.04, 0.01, len=8), breaks=80)
+plotLquantile(dlf, nbest=8, linargs=list(lwd=2), heights=seq(0.04, 0.01, len=8), breaks=80)
 
 ## ----dlquant-------------------------------------------------------------
-dlq$quant # distLquantile output if returnlist=FALSE (the default)
+dlf$quant # distLquantile output if returnlist=FALSE (the default)
 
 ## ----weight, echo=-1, fig.height=3.5, fig.width=5.5----------------------
 par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
-plotLweights(dlq, legargs=list(cex=0.8, bg="transparent") )
+plotLweights(dlf, legargs=list(cex=0.8, bg="transparent") )
 
 ## ----rmse_vis, fig.height=4, fig.width=7, echo=-1------------------------
 par(mar=c(2,4,1.5,0.5))
@@ -41,7 +41,7 @@ dlf <- distLfit(annMax, sel=sel, quiet=TRUE)
 col <- plotLfit(dlf, cdf=TRUE, sel=sel)$distcol
 x <- sort(annMax)
 for(d in 3:1) segments(x0=x, y0=lmomco::plmomco(x, dlf$parameter[[sel[d]]]), 
-                             y1=ecdf(annMax)(x), col=col[d])
+                             y1=ecdf(x)(x), col=col[d])
 
 ## ----prob, echo=FALSE, fig.height=1, fig.width=5.5-----------------------
   par(mar=rep(0,4))
