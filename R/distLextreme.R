@@ -43,7 +43,8 @@
 #' @examples
 #' 
 #' # Basic examples
-#' # Advanced options
+#' # BM vs POT
+#' # Plotting options
 #' # weighted mean based on Goodness of fit (GOF)
 #' # Effect of data proportion used to estimate GOF
 #' # compare extremeStat with other packages
@@ -70,8 +71,7 @@
 #' # 99 to 143 m^3/s can make a relevant difference in engineering!
 #' # That's why the rows weighted by GOF are helpful. Weights are given as in
 #' plotLweights(dlf) # See also section weighted mean below
-#' # For confidence intervals see distLexBoot
-#' 
+#' # For confidence intervals see ?distLexBoot
 #' 
 #' # Return period of a given discharge value, say 120 m^3/s:
 #' sort(1/(1-sapply(dlf$parameter, plmomco, x=120) )  )[1:13]
@@ -93,6 +93,12 @@
 #' dlfPOT99 <- plotLextreme(dlfPOT99, ylim=lim0(100), log=TRUE, nbest=10, main="POT 99")
 #' printL(dlfPOT99)
 #' 
+#' # using only nonzero values (normally yields better fits, but not here)
+#' rainnz <- rain[rain>0]
+#' dlfPOT99nz <- distLextreme(rainnz, npy=length(rainnz)/48, trunc=0.99, emp=FALSE)
+#' dlfPOT99nz <- plotLextreme(dlfPOT99nz, ylim=lim0(100), log=TRUE, nbest=10, 
+#'                            main=paste("POT 99 x>0, npy =", round(dlfPOT99nz$npy,2)))
+#' 
 #' \dontrun{ ## Excluded from CRAN R CMD check because of computing time
 #' dlfPOT90 <- distLextreme(rain, npy=365.24, trunc=0.90, emp=FALSE)
 #' dlfPOT90 <- plotLextreme(dlfPOT90, ylim=lim0(100), log=TRUE, nbest=10, main="POT 90")
@@ -110,7 +116,8 @@
 #' ismev::gpd.diag(ig50); title(main=paste(50, ig50$threshold))
 #' }
 #' 
-#' # Advanced options -------------------------------------------------------------
+#' 
+#' # Plotting options -------------------------------------------------------------
 #' plotLextreme(dlf=dlf)
 #' # Line colors / select distributions to be plotted:
 #' plotLextreme(dlf, nbest=17, distcols=heat.colors(17), lty=1:5) # lty is recycled
@@ -119,14 +126,8 @@
 #'                  order=TRUE, cex=c(1,0.6, 1,1), log=TRUE, PPpch=c(16,NA), n_pch=20)
 #' # use n_pch to say how many points are drawn per line (important for linear axis) 
 #' 
-#' # Why do I not get the following warning in interactive mode?
-#' ## Warning in if (is.na(dn)) stop("No distributions are left with selection ",  :
-#' ## the condition has length > 1 and only the first element will be used
-#' # apparently, warnings do not get passed from one function to the next...
-#' 
 #' plotLextreme(dlf, legarg=list(cex=0.5, x="bottom", box.col="red", col=3))
 #' # col in legarg list is (correctly) ignored
-
 
 #' \dontrun{
 #' ## Excluded from package R CMD check because it's time consuming
