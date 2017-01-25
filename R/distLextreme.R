@@ -226,7 +226,7 @@ if( is.null(dlf) )  dlf <- distLfit(dat=dat, datname=deparse(substitute(dat)), q
 if("error" %in% names(dlf))
   message("Note in distLextreme: There was an error in distLfit: ", dlf$error)
 # Equality check
-if(!missing(dat) & !is.null("dlf")) if(any(dlf$dat != dat) & !quiet)
+if(!missing(dat) & !is.null("dlf")) if(any(dlf$dat != sort(dat, decreasing=TRUE)) & !quiet)
   message("Note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored.")
 #
 # output (discharge) values at return periods ----------------------------------
