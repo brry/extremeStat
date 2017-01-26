@@ -1,6 +1,6 @@
 context("Fit distributions")
 
-library(lmomco)
+suppressPackageStartupMessages(library(lmomco))
 data("annMax")
 
 test_that("plotLfit ordering works fine",{
