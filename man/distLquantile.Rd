@@ -201,9 +201,6 @@ q_gpd(rnum, probs=myprobs, truncate=0.5)
 } # end dontrun
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, March + July 2015, Feb 2016
-}
 \references{
 On GPD: \url{http://stats.stackexchange.com/questions/69438}
 }
@@ -213,7 +210,9 @@ On GPD: \url{http://stats.stackexchange.com/questions/69438}
         left truncated and right censored data, Statistica Sinica 10
          \url{http://www3.stat.sinica.edu.tw/statistica/oldpdf/A10n411.pdf}\cr
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, March + July 2015, Feb 2016
+}
 \keyword{distribution}
 \keyword{robust}
 \keyword{univar}
-

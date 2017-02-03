@@ -114,9 +114,6 @@ d_all$gof
 }
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014, July 2015, Dec 2016
-}
 \seealso{
 \code{\link{plotLfit}}, \code{\link{distLweights}}, \code{\link{plotLweights}}, 
     \code{extRemes::\link[extRemes]{fevd}}, \code{MASS::\link[MASS]{fitdistr}}.\cr
@@ -125,8 +122,10 @@ Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014, July 2015, Dec 2016
     Powerful goodness-of-fit tests for the extreme value distribution.
     http://chjs.mat.utfsm.cl/volumes/04/01/Fard_Holmquist(2013).pdf
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014, July 2015, Dec 2016
+}
 \keyword{distribution}
 \keyword{dplot}
 \keyword{hplot}
 \keyword{univar}
-

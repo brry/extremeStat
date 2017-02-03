@@ -4,6 +4,7 @@
 \name{extremeStat}
 \alias{extremeStat}
 \alias{extremeStat-package}
+\alias{extremeStat-package}
 \title{Extreme value statistics on a linear scale}
 \description{
 Fit (via L moments), plot (on a linear scale) and compare (by goodness of fit)
@@ -26,15 +27,13 @@ The main functions in the extremeStat package are:
 }
 They create and modify a list object printed by (and documented in) \code{\link{printL}}.
 }
+
 \examples{
 data(annMax) # annual discharge maxima from a stream in Austria
 plot(annMax, type="l")
 dle <- distLextreme(annMax)
 dle$returnlev
 
-}
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, 2014-2016
 }
 \seealso{
 If you are looking for more detailed (uncertainty) analysis, eg confidence intervals,
@@ -46,6 +45,8 @@ Distributions: \url{https://www.rmetrics.org/files/Meielisalp2009/Presentations/
 and: \url{https://cran.r-project.org/view=Distributions} \cr
 R in Hydrology: \url{http://abouthydrology.blogspot.de/2012/08/r-resources-for-hydrologists.html}\cr
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, 2014-2016
+}
 \keyword{documentation}
 \keyword{package}
-

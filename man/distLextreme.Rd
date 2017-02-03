@@ -219,9 +219,6 @@ plotLextreme(distLextreme(Dresden_AnnualMax))
 } # end dontrun
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, 2012 (first draft) - 2014 & 2015 (main updates)
-}
 \references{
 \url{http://RclickHandbuch.wordpress.com} Chapter 15 (German)\cr
             Christoph Mudersbach: Untersuchungen zur Ermittlung von hydrologischen
@@ -232,8 +229,10 @@ Berry Boessenkool, \email{berry-b@gmx.de}, 2012 (first draft) - 2014 & 2015 (mai
          interval from Bootstrapping. 
          \code{\link[extRemes]{fevd}} in the package \code{extRemes}.
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, 2012 (first draft) - 2014 & 2015 (main updates)
+}
 \keyword{distribution}
 \keyword{dplot}
 \keyword{hplot}
 \keyword{ts}
-

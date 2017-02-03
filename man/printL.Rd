@@ -58,13 +58,12 @@ optionally, it can also contain:
 ?distLextreme
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014, March + July 2015, Dec 2016
-}
 \seealso{
 \code{\link{extremeStat}}
+}
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014, March + July 2015, Dec 2016
 }
 \keyword{list}
 \keyword{methods}
 \keyword{print}
-

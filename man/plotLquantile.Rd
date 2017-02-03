@@ -40,12 +40,11 @@ Plot quantiles of distributions fitted with L-moments
 # See distLquantile
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Dec 2016
-}
 \seealso{
 \code{\link{distLquantile}}, \code{\link{plotLfit}}
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, Dec 2016
+}
 \keyword{distribution}
 \keyword{hplot}
-

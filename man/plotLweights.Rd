@@ -33,12 +33,11 @@ Plot rank comparison of fitted distributions calculated by \code{\link{distLfit}
 # see distLweights and distLfit
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014
-}
 \seealso{
 \code{\link{distLweights}}, \code{\link{distLfit}}
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014
+}
 \keyword{distribution}
 \keyword{hplot}
-

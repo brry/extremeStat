@@ -54,11 +54,10 @@ system.time(pbreplicate(5000, q_weighted(d, weights=dw, onlyc=TRUE))) # 0.8 secs
 }
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Dec 2016
-}
 \seealso{
 \code{\link{distLquantile}}
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, Dec 2016
+}
 \keyword{distribution}
-

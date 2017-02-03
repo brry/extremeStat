@@ -57,11 +57,11 @@ dlfB <- distLexBoot(dlf, nbest=4, conf.lev=0.5, n=10) # n low for quick example 
 plotLexBoot(dlfB)
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2015 + Dec 2016
-}
 \seealso{
 \code{\link{plotLexBoot}}, \code{\link{distLextreme}}
+}
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2015 + Dec 2016
 }
 \keyword{bootstrap}
 \keyword{distribution}
@@ -69,4 +69,3 @@ Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2015 + Dec 2016
 \keyword{hplot}
 \keyword{montecarlo}
 \keyword{ts}
-

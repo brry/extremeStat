@@ -30,11 +30,11 @@ plot bootstrap uncertainty intervals for \code{\link{plotLextreme}}.
 # see distLexBoot
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Dec 2016
-}
 \seealso{
 \code{\link{distLexBoot}}
+}
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, Dec 2016
 }
 \keyword{bootstrap}
 \keyword{distribution}
@@ -42,4 +42,3 @@ Berry Boessenkool, \email{berry-b@gmx.de}, Dec 2016
 \keyword{hplot}
 \keyword{montecarlo}
 \keyword{ts}
-

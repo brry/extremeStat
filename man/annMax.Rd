@@ -26,4 +26,3 @@ berryFunctions::movAvLines(annMax, x=1976:2010, lwd=3, alpha=0.7)
 
 }
 \keyword{datasets}
-

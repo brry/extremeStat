@@ -87,12 +87,11 @@ easier to discern and tail behaviour is easier to judge visually. See also
  # See distLfit
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014
-}
 \seealso{
 \code{\link{distLfit}}, \code{\link{plotLquantile}}
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, Sept 2014
+}
 \keyword{distribution}
 \keyword{hplot}
-

@@ -104,11 +104,10 @@ berryFunctions::linReg(x, y1, add=TRUE, digits=4, col="blue", pos1="left")
 abline(a=0, b=1, lwd=3, lty=3)
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Dec 2016
-}
 \seealso{
 \code{\link{distLfit}}, \code{\link{distLquantile}}
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, Dec 2016
+}
 \keyword{distribution}
-

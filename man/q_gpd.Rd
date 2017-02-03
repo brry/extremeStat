@@ -206,9 +206,6 @@ text(300, 300, "empirical quantile estimate", col="green3")
 } # end of dontrun
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Feb 2016
-}
 \references{
 \url{http://stackoverflow.com/q/27524131}, 
             \url{http://stats.stackexchange.com/q/129438}
@@ -221,7 +218,9 @@ Berry Boessenkool, \email{berry-b@gmx.de}, Feb 2016
                \url{https://cran.r-project.org/package=fitdistrplus}\cr
                \url{https://cran.r-project.org/package=lmom}\cr
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, Feb 2016
+}
 \keyword{distribution}
 \keyword{robust}
 \keyword{univar}
-
