@@ -17,9 +17,9 @@ Overrides dat! DEFAULT: NULL}
 \item{RPs}{ReturnPeriods (in years) for which discharge is estimated. 
 DEFAULT: c(2,5,10,20,50)}
 
-\item{npy}{Number of observations per year. 1 if you use annual block maxima.
-(Then leave truncate at 0). 
-If you use a POT approach (see vignette) on e.g. daily data,
+\item{npy}{Number of observations per year. Leave \code{npy=1} if you 
+use annual block maxima (and leave truncate at 0). 
+If you use a POT approach (see vignette) e.g. on daily data,
 use npy=365.24. DEFAULT: 1}
 
 \item{quiet}{Suppress notes and progbars? DEFAULT: FALSE}
@@ -110,6 +110,7 @@ data(rain, package="ismev")
 days <- seq(as.Date("1914-01-01"), as.Date("1961-12-30"), by="days")
 BM <- tapply(rain, format(days,"\%Y"), max)  ;  rm(days)
 dlfBM <- plotLextreme(distLextreme(BM, emp=FALSE), ylim=lim0(100), log=TRUE, nbest=10)
+plotLexBoot(distLexBoot(dlfBM, quiet=TRUE), ylim=lim0(100))
 
 dlfPOT99 <- distLextreme(rain, npy=365.24, trunc=0.99, emp=FALSE)
 dlfPOT99 <- plotLextreme(dlfPOT99, ylim=lim0(100), log=TRUE, nbest=10, main="POT 99")
@@ -122,6 +123,12 @@ dlfPOT99nz <- plotLextreme(dlfPOT99nz, ylim=lim0(100), log=TRUE, nbest=10,
                            main=paste("POT 99 x>0, npy =", round(dlfPOT99nz$npy,2)))
 
 \dontrun{ ## Excluded from CRAN R CMD check because of computing time
+
+dlfPOT99boot <- distLexBoot(dlfPOT99, prop=0.4)
+printL(dlfPOT99boot)
+plotLexBoot(dlfPOT99boot)
+
+
 dlfPOT90 <- distLextreme(rain, npy=365.24, trunc=0.90, emp=FALSE)
 dlfPOT90 <- plotLextreme(dlfPOT90, ylim=lim0(100), log=TRUE, nbest=10, main="POT 90")
 
