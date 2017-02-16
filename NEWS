@@ -3,6 +3,8 @@ extremeStat ToDo-list / wishlist / issues
 - read all of https://www.ine.pt/revstat/pdf/rs120102.pdf and coles (2001)
 - distLextreme, distLquantile, q_gpd: reduce example section, potentially move some to tests. add Nile, rain, danish
 - split up q_gpd into f_gpd, p/q/d/r_gpd and comp_gpd
+- distLexBoot (+plot) conf.lev vectorization
+- distLquantile and g_gpd: reference to vignette POT
 
 
 ---------------------------------------
