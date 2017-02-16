@@ -49,7 +49,7 @@ optionally, it can also contain:
 \code{RPweibull, RPgringorton} \tab Return periods according to plotting positions, 
                          added in \code{\link{plotLextreme}}\cr
 \code{quant}        \tab Quantile estimates from \code{\link{distLquantile}}\cr
-\code{exBootRPs, qexBootSim, exBootCI} \tab objects from \code{\link{distLexBoot}}\cr
+\code{exBootRPs, qexBootSim, exBootCI, exBootCL} \tab objects from \code{\link{distLexBoot}}\cr
 }
 }
 \examples{

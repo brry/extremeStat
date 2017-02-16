@@ -33,7 +33,7 @@
 #' \code{RPweibull, RPgringorton} \tab Return periods according to plotting positions, 
 #'                          added in \code{\link{plotLextreme}}\cr
 #' \code{quant}        \tab Quantile estimates from \code{\link{distLquantile}}\cr
-#' \code{exBootRPs, qexBootSim, exBootCI} \tab objects from \code{\link{distLexBoot}}\cr
+#' \code{exBootRPs, qexBootSim, exBootCI, exBootCL} \tab objects from \code{\link{distLexBoot}}\cr
 #' }
 #' 
 #' @return none, prints via \code{\link{message}}.
@@ -63,13 +63,13 @@ must <- c("dat", "dat_full", "datname", "parameter", "gof",
 if(any(!must %in% names(dlf))) warning("dlf must include the element(s) ", 
                                        toString(must[!must %in% names(dlf)]))
 # functions:
-vals <- function(x, signi=FALSE)
+vals <- function(x, signi=FALSE, pre="min/median/max: ")
   suppressWarnings({
   nNA <- sum(is.na(x))
   x <- x[!is.na(x)]
   if(!signi)values <-  round(c(min(x), median(x), max(x)), digits)
   if(signi) values <- signif(c(min(x), median(x), max(x)), digits+1)
-  paste(paste(values, collapse="/"), " nNA:", nNA)
+  paste(pre, paste(values, collapse="/"), " nNA:", nNA)
   })
 # message preparation:
 n <- length(dlf$dat)
@@ -77,35 +77,42 @@ inparnotgof <- ! names(dlf$parameter) %in% rownames(dlf$gof)
 ingofnotpar <- ! rownames(dlf$gof) %in% names(dlf$parameter)
 PP <- "RPweibull" %in% names(dlf) | "RPgringorton" %in% names(dlf)
 RP <- "returnlev" %in% names(dlf)
-qq <- "quant" %in% names(dlf)
+EB <- "exBootRPs" %in% names(dlf)
+QQ <-     "quant" %in% names(dlf)
 other <- ! names(dlf) %in% c(must, "returnlev", "RPweibull", "RPgringorton", 
-                             "quant", "exBootRPs", "qexBootSim", "exBootCI", "npy")
-
+                             "exBootRPs", "exBootSim", "exBootCI", "exBootCL", 
+                             "quant", "npy")
+if(RP) rlev <- substr(colnames(dlf$returnlev), start=4, stop=8)
 
 # message output:
-message("----------\nDataset '", dlf$datname, "' with ", 
-        n, " values. min/median/max: ", vals(dlf$dat),
-if( ! is.vector(dlf$dat)) "\n--> dat is not a vector!",
+message("----------\nDataset '",dlf$datname,"' with ",n," values. ",vals(dlf$dat),
+if( ! is.vector(dlf$dat)) paste0("\n--> dat is not a vector, but ",class(dlf$dat),"!"),
 "\ntruncate: ", dlf$truncate, " threshold: ",round(dlf$threshold,digits+1),
-    ". dat_full with ", length(dlf$dat_full), " values: ", vals(dlf$dat_full),
+    ". dat_full with ", length(dlf$dat_full), " values: ", vals(dlf$dat_full, pre=""),
 "\ndlf with ", nrow(dlf$gof), " distributions. In descending order of fit quality:\n", 
    toString(rownames(dlf$gof)[order(dlf$gof$RMSE)]),
 if(any(inparnotgof)) paste0("\n--> dists in parameter but not in gof: ",
                       toString(names(dlf$parameter)[inparnotgof]) ),
 if(any(ingofnotpar)) paste0("\n--> dists in gof but not in parameter: ",
                        toString(rownames(dlf$gof)[ingofnotpar])),
-"\nRMSE min/median/max: ", vals(dlf$gof$RMSE, TRUE),
+"\nRMSE ", vals(dlf$gof$RMSE, TRUE),
 "\n", length(dlf$distnames), " distnames + ", length(dlf$distcols), 
       " distcols from distselector ", dlf$distselector,
 if(dlf$distfailed[1]!="") paste0("\n--> fitting failed for ",length(dlf$distfailed),
                                 " distributions: ", toString(dlf$distfailed)),
-if(qq) paste("\nquant:",nrow(dlf$quant),"rows,",ncol(dlf$quant),"columns,",
+if(QQ) paste("\nquant:",nrow(dlf$quant),"rows,",ncol(dlf$quant),"columns,",
             prod(dim(dlf$quant)),"values, of which",sum(is.na(dlf$quant)),"NA."),
-if(PP | RP) "\ndistLextreme elements:",
-if(PP) paste0("\nPlotting positions min/median/max: ", vals(c(dlf$RPweibull, dlf$RPgringorton))),
-if(RP) paste0("\nReturn Periods: ", berryFunctions::truncMessage(substr(colnames(dlf$returnlev), start=4, stop=8), ntrunc=10),
-              "\nReturn Levels min/median/max: ", vals(head(dlf$returnlev,-3))),
-if(RP) paste0("\nnpy: ", dlf$npy),
+if(PP | RP) "\n-- distLextreme elements:",
+if(PP) paste0("\n",length(dlf$RPweibull)," Plotting positions ", 
+              vals(c(dlf$RPweibull, dlf$RPgringorton))),
+if(RP) paste0("\n", ncol(dlf$returnlev), " Return Periods (", vals(as.numeric(rlev)), "): ",
+              berryFunctions::truncMessage(rlev, ntrunc=10, prefix="", midfix=""),
+              "\nReturn Levels ", vals(head(dlf$returnlev,-3)), "\nnpy: ", dlf$npy),
+if(EB) paste0("\n-- distLexBoot elements (",ncol(dlf$exBootSim[[1]])," simulations @ ",
+              dlf$exBootCL*100, "% conf.lev):\n",
+              length(dlf$exBootSim)," distributions: ", toString(names(dlf$exBootSim)),
+              "\n", length(dlf$exBootRPs), " Return periods ", vals(dlf$exBootRPs),
+              "\nReturn levels ", vals(unlist(dlf$exBootSim))),
 if(any(other)) paste0("\n--> Other elements in the object '", obj, "': ",
                       toString(names(dlf)[other]))
 )
