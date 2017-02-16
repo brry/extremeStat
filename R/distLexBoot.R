@@ -5,10 +5,10 @@
 #' @details Has not been thoroughly tested yet. Bootstrapping defaults can probably be improved.
 #' 
 #' @return invisible dlf object, see \code{\link{printL}}.
-#' Additional elements are: exBootSelection (names of distributions), 
+#' Additional elements are: exBootCL (confidence level),
 #' exBootRPs (x values for plot)
 #' exBootSim (all simulation results) and exBootCI (agregated into CI band). 
-#' The last two are each a list with a matrix (RPs)
+#' The last two are each a list with a matrix (return levels)
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2015 + Dec 2016
 #' @seealso \code{\link{plotLexBoot}}, \code{\link{distLextreme}}
 #' @keywords bootstrap montecarlo hplot dplot distribution ts
@@ -22,8 +22,7 @@
 #' dlfB <- distLexBoot(dlf, nbest=4, conf.lev=0.5, n=10) # n low for quick example tests
 #' plotLexBoot(dlfB)
 #' 
-#' @param dlf       \code{dlf} object, as returned by \code{\link{distLextreme}}, 
-#'                  is passed to \code{\link{plotLextreme}}.
+#' @param dlf       \code{dlf} object, as returned by \code{\link{distLextreme}}
 #' @param nbest     Number of best fitted distribution functions in dlf for which 
 #'                  bootstrapping is to be done. Overriden by \code{selection}. DEFAULT: 3
 #' @param selection Character vector with distribution function names to be used. 
@@ -38,8 +37,8 @@
 #'                  value of \code{log}. DEFAULT: NULL
 #' @param log       RPs suitable for plot on a logarithmic axis? DEFAULT: TRUE
 #' @param progbars  Show progress bar for Monte Carlo simulation? DEFAULT: TRUE
-#' @param \dots     Further arguments passed to \code{\link{distLquantile}}
-#'                  like truncate, quiet=TRUE
+#' @param quiet     Logical: suppress messages? See \code{\link{distLquantile}}.
+#'                  DEFAULT: FALSE
 #' 
 distLexBoot <- function(
 dlf,
@@ -51,7 +50,7 @@ conf.lev=0.95,
 RPs=NULL,
 log=TRUE,
 progbars=TRUE,
-...
+quiet=FALSE
 )
 {
 # Selection
@@ -61,12 +60,13 @@ RPdef <- berryFunctions::logSpaced(min=1, n=100, plot=FALSE,
                                    base=if(log) 1.1708 else 1, max=length(dlf$dat)*2)
 if(is.null(RPs)) RPs <-  unique(round(RPdef, digits=2))
 # subsample size:
-sss <- round(length(dlf$dat)*prop)
+sss <- round(length(dlf$dat_full)*prop)
 # Actual computation for each subsample
 if(progbars) replicate <- pbapply::pbreplicate
 simQ_orig <- replicate(n=n,
-   distLquantile(x=sample(dlf$dat, size=sss), selection=selection, order=FALSE,
-   probs=1-1/RPs, empirical=FALSE, weighted=FALSE, progbars=FALSE, time=FALSE, ...),
+   distLquantile(x=c(sample(dlf$dat_full,size=sss)), selection=selection, order=FALSE,
+   probs=1-1/(RPs*dlf$npy), empirical=FALSE, progbars=FALSE, time=FALSE, quiet=quiet,
+   truncate=dlf$truncate),
    simplify=FALSE)
 # list restructuring
 simQ <- lapply(selection, function(i)
@@ -81,6 +81,7 @@ returnCI <- lapply(simQ, function(x)
 # Output
 dlf$exBootSim <- simQ
 dlf$exBootCI <- returnCI
+dlf$exBootCL <- conf.lev
 dlf$exBootRPs <- RPs
 dlf$distnames <- selection
 dlf$distcols <- berryFunctions::rainbow2(length(selection))

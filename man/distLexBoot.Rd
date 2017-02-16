@@ -5,11 +5,11 @@
 \title{Bootstrapping uncertainty intervals for return periods}
 \usage{
 distLexBoot(dlf, nbest = 3, selection = NULL, n = 100, prop = 0.8,
-  conf.lev = 0.95, RPs = NULL, log = TRUE, progbars = TRUE, ...)
+  conf.lev = 0.95, RPs = NULL, log = TRUE, progbars = TRUE,
+  quiet = FALSE)
 }
 \arguments{
-\item{dlf}{\code{dlf} object, as returned by \code{\link{distLextreme}}, 
-is passed to \code{\link{plotLextreme}}.}
+\item{dlf}{\code{dlf} object, as returned by \code{\link{distLextreme}}}
 
 \item{nbest}{Number of best fitted distribution functions in dlf for which 
 bootstrapping is to be done. Overriden by \code{selection}. DEFAULT: 3}
@@ -33,15 +33,15 @@ value of \code{log}. DEFAULT: NULL}
 
 \item{progbars}{Show progress bar for Monte Carlo simulation? DEFAULT: TRUE}
 
-\item{\dots}{Further arguments passed to \code{\link{distLquantile}}
-like truncate, quiet=TRUE}
+\item{quiet}{Logical: suppress messages? See \code{\link{distLquantile}}.
+DEFAULT: FALSE}
 }
 \value{
 invisible dlf object, see \code{\link{printL}}.
-Additional elements are: exBootSelection (names of distributions), 
+Additional elements are: exBootCL (confidence level),
 exBootRPs (x values for plot)
 exBootSim (all simulation results) and exBootCI (agregated into CI band). 
-The last two are each a list with a matrix (RPs)
+The last two are each a list with a matrix (return levels)
 }
 \description{
 Calculates and plots bootstrap uncertainty intervals for \code{\link{plotLextreme}}.
