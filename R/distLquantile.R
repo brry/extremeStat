@@ -23,6 +23,7 @@
 #' @export
 #' @importFrom berryFunctions quantileMean owa tryStack
 #' @importFrom lmomco plmomco dlmomco qlmomco
+#' @importFrom stats quantile
 #' 
 #' @examples
 #'
@@ -155,8 +156,12 @@
 #' @param list      Return full \code{dlf}list with output attached as element \code{quant}? 
 #'                  If FALSE (the default), just the matrix with quantile estimates 
 #'                  is returned. DEFAULT: FALSE
-#' @param empirical Add empirical \code{\link{quantileMean}} in the output matrix 
-#'                  and vertical lines? DEFAULT: TRUE
+#' @param empirical Add rows "empirical" and "quantileMean" in the output matrix?
+#'                  Uses \code{\link{quantile}} with \code{qemp.type} (ignoring truncation) 
+#'                  and \code{\link{quantileMean}}. DEFAULT: TRUE
+#' @param qemp.type Method passed to \code{\link{quantile}} for row "empirical".
+#'                  Only used if \code{empirical=TRUE}. 
+#'                  DEFAULT: 8 (NOT the \code{stats::quantile} default)
 #' @param weighted  Include weighted averages across distribution functions to the output?
 #'                  DEFAULT: empirical, so additional options can all be excluded with emp=F.
 #' @param gpd       Include GPD quantile estimation via \code{\link{q_gpd}}? 
@@ -189,6 +194,7 @@ order=TRUE,
 dlf=NULL,
 list=FALSE,
 empirical=TRUE,
+qemp.type=8,
 weighted=empirical,
 gpd=empirical,
 speed=TRUE,
@@ -254,7 +260,7 @@ output <- matrix(NA, ncol=length(probs)+1, nrow=length(dn) )
 colnames(output) <- c(paste0(probs*100,"%"), "RMSE")
 rownames(output) <- dn
 # add rows for weighted averages of distribution functions and GPD comparison methods
-if(empirical) output <- rbind(output, quantileMean=NA)
+if(empirical) output <- rbind(output, empirical=NA, quantileMean=NA)
 if(weighted) output <- rbind(output,weighted1=NA, weighted2=NA, weighted3=NA, weightedc=NA)
 if(gpd) output <- rbind(output,  GPD_LMO_lmomco=NA, GPD_LMO_extRemes=NA,
         GPD_PWM_evir=NA, GPD_PWM_fExtremes=NA, GPD_MLE_extRemes=NA, GPD_MLE_ismev=NA, 
@@ -308,8 +314,12 @@ if(weighted) output <- q_weighted(output, order=order, ...)
 #
 # add further quantile estimates -----------------------------------------------
 # Empirical Quantiles:
-if(empirical) output["quantileMean",lenprob] <- berryFunctions::quantileMean(dlf$dat_full,
+if(empirical) 
+  {
+  output["empirical",lenprob] <- quantile(dlf$dat_full, probs=probs, type=qemp.type)
+  output["quantileMean",lenprob] <- berryFunctions::quantileMean(dlf$dat_full,
                                              probs=probs, truncate=truncate)
+  }
 # q_gpd estimates: -------------------------------------------------------------
 if(gpd)
   {

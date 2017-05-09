@@ -7,9 +7,9 @@
 distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
   threshold = berryFunctions::quantileMean(dlf$dat_full, truncate),
   sanerange = NA, sanevals = NA, selection = NULL, order = TRUE,
-  dlf = NULL, list = FALSE, empirical = TRUE, weighted = empirical,
-  gpd = empirical, speed = TRUE, quiet = FALSE, ssquiet = quiet,
-  ttquiet = quiet, gpquiet = missing(quiet) | quiet, ...)
+  dlf = NULL, list = FALSE, empirical = TRUE, qemp.type = 8,
+  weighted = empirical, gpd = empirical, speed = TRUE, quiet = FALSE,
+  ssquiet = quiet, ttquiet = quiet, gpquiet = missing(quiet) | quiet, ...)
 }
 \arguments{
 \item{x}{Sample for which parametrical quantiles are to be calculated. 
@@ -51,8 +51,13 @@ DEFAULT: NULL}
 If FALSE (the default), just the matrix with quantile estimates 
 is returned. DEFAULT: FALSE}
 
-\item{empirical}{Add empirical \code{\link{quantileMean}} in the output matrix 
-and vertical lines? DEFAULT: TRUE}
+\item{empirical}{Add rows "empirical" and "quantileMean" in the output matrix?
+Uses \code{\link{quantile}} with \code{qemp.type} (ignoring truncation) 
+and \code{\link{quantileMean}}. DEFAULT: TRUE}
+
+\item{qemp.type}{Method passed to \code{\link{quantile}} for row "empirical".
+Only used if \code{empirical=TRUE}. 
+DEFAULT: 8 (NOT the \code{stats::quantile} default)}
 
 \item{weighted}{Include weighted averages across distribution functions to the output?
 DEFAULT: empirical, so additional options can all be excluded with emp=F.}
