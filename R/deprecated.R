@@ -32,10 +32,12 @@ deprmes <- function(new) warning("'", as.character(sys.call(sys.parent()))[1L],
                               "help('extremeStat-deprecated')", call.=FALSE)
 
 
+if(FALSE){
 ".onAttach" <- function(lib, pkg) 
 {
   d <- utils::packageDescription(pkg)
   packageStartupMessage("# Loaded extremeStat ", d$Version, " (",d$Date,"). Package restructured since 0.6.0 (2016-12-13).\n",
                         "# Computing functions don't plot anymore and some are renamed. See help('extremeStat-deprecated')")
+}
 }
 
