@@ -186,7 +186,7 @@ distLquantile <- function(
 x=NULL,
 probs=c(0.8,0.9,0.99),
 truncate=0,
-threshold=berryFunctions::quantileMean(dlf$dat_full, truncate),
+threshold=berryFunctions::quantileMean(dlf$dat_full, truncate, na.rm=TRUE),
 sanerange=NA,
 sanevals=NA,
 selection=NULL,
@@ -230,7 +230,8 @@ if(!is.null(dlf)) if( dlf$truncate!=truncate | dlf$threshold!=threshold )
 if(is.null(dlf))
   {
   # threshold initialization impossible if dlf = NULL
-  if(is.na(threshold)) threshold <- berryFunctions::quantileMean(x, truncate)
+  suppressWarnings(force(threshold))
+  if(is.na(threshold)) threshold <- berryFunctions::quantileMean(x, truncate, na.rm=TRUE)
   dlf <- distLfit(dat=x, datname=internaldatname, selection=selection,
                   truncate=truncate, threshold=threshold,
                   quiet=quiet, ssquiet=ssquiet, order=order, ...)
@@ -290,7 +291,7 @@ if(truncate!=0)
   }
 #
 # Threshold check:
-normalthr <- berryFunctions::quantileMean(dlf$dat_full, truncate)
+normalthr <- berryFunctions::quantileMean(dlf$dat_full, truncate, na.rm=TRUE)
 if(signif(threshold,7) != signif(normalthr,7))
     {
     probs2 <- probs
@@ -316,9 +317,9 @@ if(weighted) output <- q_weighted(output, order=order, ...)
 # Empirical Quantiles:
 if(empirical) 
   {
-  output["empirical",lenprob] <- quantile(dlf$dat_full, probs=probs, type=qemp.type)
+  output["empirical",lenprob] <- quantile(dlf$dat_full, probs=probs, type=qemp.type, na.rm=TRUE)
   output["quantileMean",lenprob] <- berryFunctions::quantileMean(dlf$dat_full,
-                                             probs=probs, truncate=truncate)
+                                             probs=probs, truncate=truncate, na.rm=TRUE)
   }
 # q_gpd estimates: -------------------------------------------------------------
 if(gpd)

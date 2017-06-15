@@ -5,8 +5,8 @@
 \title{distribution quantiles}
 \usage{
 distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
-  threshold = berryFunctions::quantileMean(dlf$dat_full, truncate),
-  sanerange = NA, sanevals = NA, selection = NULL, order = TRUE,
+  threshold = berryFunctions::quantileMean(dlf$dat_full, truncate, na.rm =
+  TRUE), sanerange = NA, sanevals = NA, selection = NULL, order = TRUE,
   dlf = NULL, list = FALSE, empirical = TRUE, qemp.type = 8,
   weighted = empirical, gpd = empirical, speed = TRUE, quiet = FALSE,
   ssquiet = quiet, ttquiet = quiet, gpquiet = missing(quiet) | quiet, ...)
