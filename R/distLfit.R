@@ -127,7 +127,15 @@ if( ! is.numeric(dat) ) stop("dat must be numeric.")
 if(!is.vector(dat) & !quiet) message("Note in distLfit: dat was not a vector.")
 # remove NAs, convert to vector:
 dat_full <- dat
-dat <- as.numeric( dat[!is.na(dat)]  )
+dat <- as.numeric(dat)
+if(anyNA(dat))
+  {
+  Na <- is.na(dat)
+  if(!quiet) message("Note in distLfit: ", sum(Na), " NA", 
+                     ifelse(sum(Na)>1,"s were"," was")," omitted from ", length(dat), 
+                     " data points (",round(sum(Na)/length(dat)*100,1),"%).")
+  dat <- dat[!Na] 
+  }
 # truncate (fit values only to upper part of values):
 dat <- dat[dat>=threshold] 
 # GPD fits in q_gpd all use x>t, not x>=t, but if t=0, I want to use _all_ data
