@@ -1,11 +1,11 @@
 #' Extreme value stats
 #' 
 #' Extreme value statistics for flood risk estimation.
-#' Input: vector with annual discharge maxima.
+#' Input: vector with annual discharge maxima (or all observations for POT approach).
 #' Output: discharge estimates for given return periods, 
 #' parameters of several distributions (fit based on L-moments), 
-#' quality of fits, plot with linear axis 
-#' (dists + plotting positions by Weibull and Gringorton).
+#' quality of fits, plot with linear/logarithmic axis.
+#' (plotting positions by Weibull and Gringorton).
 #'
 #' @details \code{\link{plotLextreme}} adds weibull and gringorton plotting positions
 #' to the distribution lines, which are estimated from the L-moments of the data itself.\cr
@@ -38,7 +38,7 @@
 #'             Bemessungsgroessen mit Verfahren der instationaeren Extremwertstatistik
 #' @keywords hplot dplot distribution ts
 #' @export
-#' @importFrom berryFunctions owa
+#' @importFrom berryFunctions owa almost.equal
 #' 
 #' @examples
 #' 
@@ -67,7 +67,7 @@
 #' 
 #' # Estimate discharge that could occur every 80 years (at least empirically):
 #' Q80 <- distLextreme(dlf=dlf, RPs=80)$returnlev
-#' round(sort(Q80[,1], decr=TRUE),1)
+#' round(sort(Q80[1:17,1], decr=TRUE),1)
 #' # 99 to 143 m^3/s can make a relevant difference in engineering!
 #' # That's why the rows weighted by GOF are helpful. Weights are given as in
 #' plotLweights(dlf) # See also section weighted mean below
@@ -76,8 +76,8 @@
 #' # Return period of a given discharge value, say 120 m^3/s:
 #' sort(1/(1-sapply(dlf$parameter, plmomco, x=120) )  )[1:13]
 #' # exponential:                 every 29 years
-#' # gev (general extreme value dist):  58,
-#' # Weibull:                     every 72 years only
+#' # gev (general extreme value dist):  59,
+#' # Weibull:                     every 73 years only
 #' 
 #' 
 #' # BM vs POT --------------------------------------------------------------------
@@ -89,6 +89,7 @@
 #' BM <- tapply(rain, format(days,"%Y"), max)  ;  rm(days)
 #' dlfBM <- plotLextreme(distLextreme(BM, emp=FALSE), ylim=lim0(100), log=TRUE, nbest=10)
 #' plotLexBoot(distLexBoot(dlfBM, quiet=TRUE), ylim=lim0(100))
+#' plotLextreme(dlfBM, log=TRUE, ylim=lim0(100))
 #' 
 #' dlfPOT99 <- distLextreme(rain, npy=365.24, trunc=0.99, emp=FALSE)
 #' dlfPOT99 <- plotLextreme(dlfPOT99, ylim=lim0(100), log=TRUE, nbest=10, main="POT 99")
@@ -212,8 +213,11 @@
 #'                  DEFAULT: c(2,5,10,20,50)
 #' @param npy       Number of observations per year. Leave \code{npy=1} if you 
 #'                  use annual block maxima (and leave truncate at 0). 
-#'                  If you use a POT approach (see vignette) e.g. on daily data,
-#'                  use npy=365.24. DEFAULT: 1
+#'                  If you use a POT approach (see \href{../doc/extremeStat}{vignette} 
+#'                  and examples below) e.g. on daily data, use npy=365.24. 
+#'                  DEFAULT: 1
+#' @param truncate  Truncated proportion to determine POT threshold,
+#'                  see \code{\link{distLquantile}}. DEFAULT: 0
 #' @param quiet     Suppress notes and progbars? DEFAULT: FALSE
 #' @param \dots     Further arguments passed to \code{\link{distLquantile}} (and
 #'                  \code{\link{distLfit}} if dlf=NULL) like truncate, selection,
@@ -224,21 +228,25 @@ dat,
 dlf=NULL,
 RPs=c(2,5,10,20,50),
 npy=1,
+truncate=0,
 quiet=FALSE,
 ... )
 {
 if(any(RPs<1.05) & !quiet) message("Note in distLextreme: for RPs=1 rather use min(dat).")
+if(!almost.equal(npy,1) & almost.equal(truncate,0)) message("Note in distLextreme: ",
+                    "npy != 1 but truncate == 0. for POT, it is recommended to use truncate.") 
 # fit distributions and calculate goodness of fits -----------------------------
-if( is.null(dlf) )  dlf <- distLfit(dat=dat, datname=deparse(substitute(dat)), quiet=quiet, ...)
+null_dlf <- is.null(dlf)
+if(null_dlf)  dlf <- distLfit(dat=dat, datname=deparse(substitute(dat)), quiet=quiet, truncate=truncate, ...)
 # Emptyness check:
 if("error" %in% names(dlf))
   message("Note in distLextreme: There was an error in distLfit: ", dlf$error)
 # Equality check
-if(!missing(dat) & !is.null("dlf")) if(any(dlf$dat != sort(dat, decreasing=TRUE)) & !quiet)
-  message("Note in distLextreme: 'dat' differs from 'dlf$dat'. 'dat' is ignored.")
+if(!missing(dat) & !null_dlf) if(any(dlf$dat_full != sort(dat, decreasing=TRUE)) & !quiet)
+  message("Note in distLextreme: 'dat' differs from 'dlf$dat_full'. 'dat' is ignored.")
 #
 # output (discharge) values at return periods ----------------------------------
-returnlev <- distLquantile(dlf=dlf, probs=1-1/(RPs*npy), quiet=quiet, gpquiet=TRUE, ...)
+returnlev <- distLquantile(dlf=dlf, probs=1-1/(RPs*npy), quiet=quiet, gpquiet=TRUE, truncate=truncate, ...)
 returnlev <- returnlev[, - ncol(returnlev), drop=FALSE]
 # column names:
 colnames(returnlev) <- paste0("RP.", RPs)
