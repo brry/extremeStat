@@ -4,15 +4,17 @@
 \alias{distLextreme}
 \title{Extreme value stats}
 \usage{
-distLextreme(dat, dlf = NULL, RPs = c(2, 5, 10, 20, 50), npy = 1,
+distLextreme(dat = NULL, dlf = NULL, RPs = c(2, 5, 10, 20, 50), npy = 1,
   truncate = 0, quiet = FALSE, ...)
 }
 \arguments{
-\item{dat}{Vector with extreme values e.g. annual discharge maxima. 
-Ignored if dlf is given.}
+\item{dat}{Vector with \emph{either} (for Block Maxima Approach) 
+extreme values like annual discharge maxima \emph{or}
+(for Peak Over Threshold approach) all values in time-series.
+Ignored if dlf is given. DEFAULT: NULL}
 
-\item{dlf}{List as returned by \code{\link{distLfit}}. 
-Overrides dat! DEFAULT: NULL}
+\item{dlf}{List as returned by \code{\link{distLfit}}. See also
+\code{\link{distLquantile}}. Overrides dat! DEFAULT: NULL}
 
 \item{RPs}{ReturnPeriods (in years) for which discharge is estimated. 
 DEFAULT: c(2,5,10,20,50)}
@@ -28,8 +30,7 @@ see \code{\link{distLquantile}}. DEFAULT: 0}
 
 \item{quiet}{Suppress notes and progbars? DEFAULT: FALSE}
 
-\item{\dots}{Further arguments passed to \code{\link{distLquantile}} (and
-\code{\link{distLfit}} if dlf=NULL) like truncate, selection,
+\item{\dots}{Further arguments passed to \code{\link{distLquantile}} like truncate, selection,
 time, progbars}
 }
 \value{
@@ -93,14 +94,14 @@ dlf$returnlev
 
 # Estimate discharge that could occur every 80 years (at least empirically):
 Q80 <- distLextreme(dlf=dlf, RPs=80)$returnlev
-round(sort(Q80[1:17,1], decr=TRUE),1)
+round(sort(Q80[1:17,1]),1)
 # 99 to 143 m^3/s can make a relevant difference in engineering!
 # That's why the rows weighted by GOF are helpful. Weights are given as in
 plotLweights(dlf) # See also section weighted mean below
 # For confidence intervals see ?distLexBoot
 
 # Return period of a given discharge value, say 120 m^3/s:
-sort(1/(1-sapply(dlf$parameter, plmomco, x=120) )  )[1:13]
+round0(sort(1/(1-sapply(dlf$parameter, plmomco, x=120) )  ),1)
 # exponential:                 every 29 years
 # gev (general extreme value dist):  59,
 # Weibull:                     every 73 years only

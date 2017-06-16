@@ -67,14 +67,14 @@
 #' 
 #' # Estimate discharge that could occur every 80 years (at least empirically):
 #' Q80 <- distLextreme(dlf=dlf, RPs=80)$returnlev
-#' round(sort(Q80[1:17,1], decr=TRUE),1)
+#' round(sort(Q80[1:17,1]),1)
 #' # 99 to 143 m^3/s can make a relevant difference in engineering!
 #' # That's why the rows weighted by GOF are helpful. Weights are given as in
 #' plotLweights(dlf) # See also section weighted mean below
 #' # For confidence intervals see ?distLexBoot
 #' 
 #' # Return period of a given discharge value, say 120 m^3/s:
-#' sort(1/(1-sapply(dlf$parameter, plmomco, x=120) )  )[1:13]
+#' round0(sort(1/(1-sapply(dlf$parameter, plmomco, x=120) )  ),1)
 #' # exponential:                 every 29 years
 #' # gev (general extreme value dist):  59,
 #' # Weibull:                     every 73 years only
@@ -205,10 +205,12 @@
 #' plotLextreme(distLextreme(Dresden_AnnualMax))
 #' } # end dontrun
 #' 
-#' @param dat       Vector with extreme values e.g. annual discharge maxima. 
-#'                  Ignored if dlf is given.
-#' @param dlf       List as returned by \code{\link{distLfit}}. 
-#'                  Overrides dat! DEFAULT: NULL
+#' @param dat       Vector with \emph{either} (for Block Maxima Approach) 
+#'                  extreme values like annual discharge maxima \emph{or}
+#'                  (for Peak Over Threshold approach) all values in time-series.
+#'                  Ignored if dlf is given. DEFAULT: NULL
+#' @param dlf       List as returned by \code{\link{distLfit}}. See also
+#'                  \code{\link{distLquantile}}. Overrides dat! DEFAULT: NULL
 #' @param RPs       ReturnPeriods (in years) for which discharge is estimated. 
 #'                  DEFAULT: c(2,5,10,20,50)
 #' @param npy       Number of observations per year. Leave \code{npy=1} if you 
@@ -219,12 +221,11 @@
 #' @param truncate  Truncated proportion to determine POT threshold,
 #'                  see \code{\link{distLquantile}}. DEFAULT: 0
 #' @param quiet     Suppress notes and progbars? DEFAULT: FALSE
-#' @param \dots     Further arguments passed to \code{\link{distLquantile}} (and
-#'                  \code{\link{distLfit}} if dlf=NULL) like truncate, selection,
+#' @param \dots     Further arguments passed to \code{\link{distLquantile}} like truncate, selection,
 #'                  time, progbars
 #' 
 distLextreme <- function(
-dat,
+dat=NULL,
 dlf=NULL,
 RPs=c(2,5,10,20,50),
 npy=1,
@@ -235,18 +236,10 @@ quiet=FALSE,
 if(any(RPs<1.05) & !quiet) message("Note in distLextreme: for RPs=1 rather use min(dat).")
 if(!almost.equal(npy,1) & almost.equal(truncate,0)) message("Note in distLextreme: ",
                     "npy != 1 but truncate == 0. for POT, it is recommended to use truncate.") 
-# fit distributions and calculate goodness of fits -----------------------------
-null_dlf <- is.null(dlf)
-if(null_dlf)  dlf <- distLfit(dat=dat, datname=deparse(substitute(dat)), quiet=quiet, truncate=truncate, ...)
-# Emptyness check:
-if("error" %in% names(dlf))
-  message("Note in distLextreme: There was an error in distLfit: ", dlf$error)
-# Equality check
-if(!missing(dat) & !null_dlf) if(any(dlf$dat_full != sort(dat, decreasing=TRUE)) & !quiet)
-  message("Note in distLextreme: 'dat' differs from 'dlf$dat_full'. 'dat' is ignored.")
-#
-# output (discharge) values at return periods ----------------------------------
-returnlev <- distLquantile(dlf=dlf, probs=1-1/(RPs*npy), quiet=quiet, gpquiet=TRUE, truncate=truncate, ...)
+# (discharge) values at return periods:
+dlf <- distLquantile(x=dat, dlf=dlf, probs=1-1/(RPs*npy), list=TRUE,
+                     quiet=quiet, gpquiet=TRUE, truncate=truncate, ...)
+returnlev <- dlf$quant
 returnlev <- returnlev[, - ncol(returnlev), drop=FALSE]
 # column names:
 colnames(returnlev) <- paste0("RP.", RPs)
