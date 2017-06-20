@@ -153,6 +153,8 @@
 #' @param dlf       dlf object described in \code{\link{extremeStat}}. Use this to save 
 #'                  computing time for large datasets where you already have dlf. 
 #'                  DEFAULT: NULL
+#' @param datname   Character string: data name, important if list=TRUE.
+#'                  DEFAULT: deparse(substitute(x))
 #' @param list      Return full \code{dlf}list with output attached as element \code{quant}? 
 #'                  If FALSE (the default), just the matrix with quantile estimates 
 #'                  is returned. DEFAULT: FALSE
@@ -192,6 +194,7 @@ sanevals=NA,
 selection=NULL,
 order=TRUE,
 dlf=NULL,
+datname=deparse(substitute(x)),
 list=FALSE,
 empirical=TRUE,
 qemp.type=8,
@@ -206,7 +209,7 @@ gpquiet=missing(quiet)|quiet,
 )
 {
 # input checks: ----------------------------------------------------------------
-internaldatname <- deparse(substitute(x))
+datname <- datname
 truncate <- truncate[1] # cannot be vectorized
 if(truncate<0 | truncate>=1) stop("truncate (proportion discarded) must be 0<t<1, not ", truncate)
 if( is.null(x) &  is.null(dlf)) stop("Either dlf or x must be given.")
@@ -223,7 +226,7 @@ if(!is.null(dlf)) if( dlf$truncate!=truncate | dlf$threshold!=threshold )
        "). Thresholds: ",toString(signif(c(threshold, dlf$threshold),7)),
        ".\n   distLfit is called with the original dlf$dat.")
   x <- dlf$dat
-  internaldatname <- dlf$datname
+  datname <- dlf$datname
   dlf <- NULL
   }
 # actual fitting of distributions:
@@ -232,7 +235,7 @@ if(is.null(dlf))
   # threshold initialization impossible if dlf = NULL
   suppressWarnings(force(threshold))
   if(is.na(threshold)) threshold <- berryFunctions::quantileMean(x, truncate, na.rm=TRUE)
-  dlf <- distLfit(dat=x, datname=internaldatname, selection=selection,
+  dlf <- distLfit(dat=x, datname=datname, selection=selection,
                   truncate=truncate, threshold=threshold,
                   quiet=quiet, ssquiet=ssquiet, order=order, ...)
   }

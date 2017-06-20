@@ -7,9 +7,10 @@
 distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
   threshold = berryFunctions::quantileMean(dlf$dat_full, truncate, na.rm =
   TRUE), sanerange = NA, sanevals = NA, selection = NULL, order = TRUE,
-  dlf = NULL, list = FALSE, empirical = TRUE, qemp.type = 8,
-  weighted = empirical, gpd = empirical, speed = TRUE, quiet = FALSE,
-  ssquiet = quiet, ttquiet = quiet, gpquiet = missing(quiet) | quiet, ...)
+  dlf = NULL, datname = deparse(substitute(x)), list = FALSE,
+  empirical = TRUE, qemp.type = 8, weighted = empirical,
+  gpd = empirical, speed = TRUE, quiet = FALSE, ssquiet = quiet,
+  ttquiet = quiet, gpquiet = missing(quiet) | quiet, ...)
 }
 \arguments{
 \item{x}{Sample for which parametrical quantiles are to be calculated. 
@@ -46,6 +47,9 @@ See \code{\link{distLweights}}. DEFAULT: TRUE}
 \item{dlf}{dlf object described in \code{\link{extremeStat}}. Use this to save 
 computing time for large datasets where you already have dlf. 
 DEFAULT: NULL}
+
+\item{datname}{Character string: data name, important if list=TRUE.
+DEFAULT: deparse(substitute(x))}
 
 \item{list}{Return full \code{dlf}list with output attached as element \code{quant}? 
 If FALSE (the default), just the matrix with quantile estimates 

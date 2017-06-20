@@ -237,8 +237,9 @@ if(any(RPs<1.05) & !quiet) message("Note in distLextreme: for RPs=1 rather use m
 if(!almost.equal(npy,1) & almost.equal(truncate,0)) message("Note in distLextreme: ",
                     "npy != 1 but truncate == 0. for POT, it is recommended to use truncate.") 
 # (discharge) values at return periods:
+datname <- deparse(substitute(dat))
 dlf <- distLquantile(x=dat, dlf=dlf, probs=1-1/(RPs*npy), list=TRUE,
-                     quiet=quiet, gpquiet=TRUE, truncate=truncate, ...)
+                     quiet=quiet, gpquiet=TRUE, truncate=truncate, datname=datname, ...)
 returnlev <- dlf$quant
 returnlev <- returnlev[, - ncol(returnlev), drop=FALSE]
 # column names:
