@@ -58,6 +58,19 @@ if(truncate!=0)
   }
 out <- tryStack(lmomco::qlmomco(f=probs2, para=par))
 names(out) <- paste0(probs*100,"%")
+out[probs < truncate] <- NA
 if(addn) out <- c(out, n=length(x))
 out
+}
+
+
+if(FALSE){
+library(microbenchmark)
+data(rain, package="ismev"); rain <- rain[rain>0]
+mb <- microbenchmark(quantGPD(rain[1:200], truncate=0.8, probs=0.99, addn=F),
+distLquantile(rain[1:200], sel="gpa", emp=F, truncate=0.8, quiet=T, probs=0.99)[1,1]
+)
+boxplot(mb)
+# since computing the lmoments takes most of the computational time, 
+# there's not much to optimize in large samples like n=2000
 }
