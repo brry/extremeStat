@@ -5,7 +5,6 @@
 #' @seealso \code{\link{q_gpd}} for a comparison across R packages and methods, \code{\link{distLquantile}} to compare distributions
 #' @keywords distribution robust univar
 #' @importFrom lmomco lmoms pargpa qlmomco
-#' @importFrom stats na.omit
 #' @export
 #' @examples
 #' data(annMax)
@@ -46,7 +45,8 @@ quiet=FALSE,
 ...
 )
 {
-x <- na.omit(as.numeric(x))
+x <- as.numeric(x)
+x <- x[is.finite(x)]
 x <- x[x>=threshold] 
 mom <- lmomco::lmoms(x, nmom=5)
 par <- lmomco::pargpa(mom, ...)

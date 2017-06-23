@@ -128,10 +128,10 @@ if(!is.vector(dat) & !quiet) message("Note in distLfit: dat was not a vector.")
 # remove NAs, convert to vector:
 dat_full <- dat
 dat <- as.numeric(dat)
-if(anyNA(dat))
+if(any(!is.finite(dat)))
   {
-  Na <- is.na(dat)
-  if(!quiet) message("Note in distLfit: ", sum(Na), " NA", 
+  Na <- !is.finite(dat)
+  if(!quiet) message("Note in distLfit: ", sum(Na), " Inf/NA", 
                      ifelse(sum(Na)>1,"s were"," was")," omitted from ", length(dat), 
                      " data points (",round(sum(Na)/length(dat)*100,1),"%).")
   dat <- dat[!Na] 
@@ -210,7 +210,7 @@ failed <- sapply(dlf$parameter, function(x)
     }
   cumuprob <- suppressWarnings(try(lmomco::plmomco(mean(dlf$dat),x), silent=TRUE))
   if(is.null(cumuprob)||inherits(cumuprob,"try-error")) return(TRUE) 
-  any(is.na(x$para))
+  anyNA(x$para)
   })
 if(any(failed))
   {

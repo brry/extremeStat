@@ -217,7 +217,7 @@ if(length(package)!=1) stop("package must have length 1, not ", length(package))
 pospack <- c("lmomco", "evir","evd","extRemes","fExtremes","ismev","Renext")
 if(!package %in% pospack) stop("package ('",
      package, "') must be one of:\n", toString(pospack))
-x <- sort(x[!is.na(x)])
+x <- sort(x[is.finite(x)])
 xt <- x[x > threshold]
 if(length(truncate)>1)
   {
