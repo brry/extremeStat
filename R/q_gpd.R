@@ -237,7 +237,7 @@ if(truncate!=0)
 # threshold warning:
 if(!missing(threshold))
   {
-  normalthr <- berryFunctions::quantileMean(x, truncate)
+  normalthr <- berryFunctions::quantileMean(x[is.finite(x)], truncate)
   if(threshold != normalthr)
     {
     probs2 <- probs

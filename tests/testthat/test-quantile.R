@@ -20,6 +20,10 @@ d <- distLquantile(annMax, probs=0:4/4)
 })
 
 
+test_that("infinite values are removed",{
+distLextreme(c(-Inf,annMax))
+})
+
 test_that("distLquantile can handle selection input",{
 dlf <- distLquantile(annMax, selection="wak", empirical=FALSE, list=TRUE)
 plotLquantile(dlf, breaks=10)
