@@ -16,7 +16,7 @@ a vector? Useful to add those to existing results. See examples.
 DEFAULT: FALSE}
 
 \item{\dots}{Arguments passed to \code{\link{distLweights}} like
-weightc, onlydn=FALSE. order will be ignored, as 
+weightc, onlydn=FALSE. order will be ignored, as
 q_weighted only adds/changes the rows weighted*.}
 }
 \value{
@@ -39,7 +39,7 @@ stopifnot(all(d==d2, na.rm=TRUE))
 
 # fast option for adding custom weighted estimates:
 cw <- runif(17)
-names(cw) <- c("exp", "gam", "gev", "glo", "gno", "gpa", "gum", "kap", "lap", 
+names(cw) <- c("exp", "gam", "gev", "glo", "gno", "gpa", "gum", "kap", "lap",
                "ln3", "nor", "pe3", "ray", "revgum", "rice", "wak", "wei")
 dw <- distLweights(d, weightc=cw)
 qw1 <- q_weighted(d, weightc=cw); qw1

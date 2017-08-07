@@ -1,10 +1,10 @@
 #' Compute distribution weights from GOF
-#'
+#' 
 #' Determine distribution function weights from RMSE for weighted averages.
-#' The weights are inverse to RMSE: weight1 for all dists, 
-#' weight2 places zero weight on the worst fitting function, 
+#' The weights are inverse to RMSE: weight1 for all dists,
+#' weight2 places zero weight on the worst fitting function,
 #' weight3 on the worst half of functions.
-#'
+#' 
 #' @return data.frame
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Dec 2016
 #' @seealso \code{\link{distLfit}}, \code{\link{distLquantile}}
@@ -25,8 +25,8 @@
 #' # custom weights:
 #' set.seed(42); x <- data.frame(A=1:5, RMSE=runif(5)) ; x
 #' distLweights(x) # two warnings
-#' distLweights(x, weightc=c("1"=3, "3"=5), onlydn=FALSE) 
-#' distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE, onlydn=FALSE) 
+#' distLweights(x, weightc=c("1"=3, "3"=5), onlydn=FALSE)
+#' distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE, onlydn=FALSE)
 #' 
 #' # real life example:
 #' data(annMax)
@@ -38,7 +38,7 @@
 #' 
 #' # GOF judgement by RMSE, not R2 --------
 #' # Both RMSE and R2 are computed with ECDF and TCDF
-#' # R2 may be very good (see below), but fit needs to be close to 1:1 line, 
+#' # R2 may be very good (see below), but fit needs to be close to 1:1 line,
 #' # which is better measured by RMSE
 #' 
 #' dlf <- distLfit(annMax, ks=TRUE)
@@ -59,12 +59,12 @@
 #' #points(TCDF[,"wak"],    ECDF, col="blue")
 #' #points(TCDF[,"revgum"], ECDF, col="red")
 #' abline(a=0, b=1, lwd=3, lty=3)
-#' legend("bottomright", c("lap good RMSE bad R2", "nor bad RMSE good R2"), 
+#' legend("bottomright", c("lap good RMSE bad R2", "nor bad RMSE good R2"),
 #'        col=c("cyan","green"), lwd=2)
 #' berryFunctions::linReg(TCDF[,"lap"], ECDF, add=TRUE, digits=3, col="cyan", pos1="topleft")
 #' berryFunctions::linReg(TCDF[,"nor"], ECDF, add=TRUE, digits=3, col="green", pos1="left")
 #' 
-#'  
+#' 
 #' # more distinct example (but with fake data)
 #' set.seed(42); x <- runif(30)
 #' y1 <-     x+rnorm(30,sd=0.09)
@@ -75,11 +75,11 @@
 #' points(x,y1, col="blue")
 #' berryFunctions::linReg(x, y1, add=TRUE, digits=4, col="blue", pos1="left")
 #' abline(a=0, b=1, lwd=3, lty=3)
-#'
+#' 
 #' @param RMSE    Numeric: Named vector with goodness of fit values (RMSE).
 #'                Can also be a data.frame, in which case the column rmse or RMSE is used.
 #' @param order   Logical: should result be ordered by RMSE? If order=FALSE,
-#'                the order of appearance in RMSE is kept (alphabetic or selection 
+#'                the order of appearance in RMSE is kept (alphabetic or selection
 #'                in \code{\link{distLfit}}). DEFAULT: TRUE
 #' @param onlydn  Logical: weight only distributions from \code{lmomco::\link{dist.list}}?
 #'                DEFAULT: TRUE (all other RMSEs are set to 0)
@@ -89,8 +89,8 @@
 #'                DEFAULT: NA
 #' @param quiet   Logical: Suppress messages. DEFAULT: FALSE
 #' @param \dots   Ignored arguments (so a set of arguments can be passed to
-#'                distLfit and distLquantile and arguments used only in the latter 
-#'                will not throw errors) 
+#'                distLfit and distLquantile and arguments used only in the latter
+#'                will not throw errors)
 #' 
 distLweights <- function(
 RMSE,
@@ -104,21 +104,21 @@ quiet=FALSE,
 # warning:
 unused <- names(list(...))
 unused <- unused[!unused %in% names(formals(distLfit))]
-if(length(unused)>0) warning("unused arguments in ", traceCall(1,"",""), ": ", 
+if(length(unused)>0) warning("unused arguments in ", traceCall(1,"",""), ": ",
                              toString(unused), call.=FALSE)
 # get data.frame column:
 if(is.data.frame(RMSE) | is.matrix(RMSE))
   {
   colm <- grep("rmse", colnames(RMSE), ignore.case=TRUE)
-  if(length(colm)<1) stop("There is no column matching 'RMSE' among ", 
+  if(length(colm)<1) stop("There is no column matching 'RMSE' among ",
                            toString(colnames(RMSE)))
-  if(length(colm)>1) stop("There are several columns matching 'RMSE' among ", 
+  if(length(colm)>1) stop("There are several columns matching 'RMSE' among ",
                            toString(colnames(RMSE)))
   RMSE2 <- RMSE[,colm]
   names(RMSE2) <- rownames(RMSE)
   RMSE <- RMSE2
   }
-  
+
 if(is.null(names(RMSE))) stop("RMSE must have names.")
 
 # convert character NAs to numerics without losing the names:
@@ -136,7 +136,7 @@ if(onlydn)
 
 # the lower RMSE, the better GOF, the more weight
 maxRMSE <- suppressWarnings(max(RMSE, na.rm=TRUE))
-  
+
 # Zero weight to worst fit (needs 2 or more distributions to work):
 weight2 <- maxRMSE - RMSE
 if(sum(weight2,na.rm=TRUE)==0) weight2[weight2==0] <- 1
@@ -160,14 +160,14 @@ if(any(!is.na(weightc)))
   if(onlydn) rn <- rn[!dnexcl]
   if(is.null(cn)) stop("weightc must have names.")
   miss <- ! rn %in% cn
-  if(any(miss)&!quiet) message("Note in distLweights: names present in RMSE, but not in weightc, thus given zero weight: ", 
+  if(any(miss)&!quiet) message("Note in distLweights: names present in RMSE, but not in weightc, thus given zero weight: ",
                         toString(rn[miss]))
   miss <- ! cn %in% rn
-  if(any(miss)) 
+  if(any(miss))
     {
     if(!quiet) message("Note in distLweights: names present in weightc, but not in RMSE, thus ignored: ", toString(cn[miss]))
     weightc <- weightc[!miss]
-    cn <- names(weightc) 
+    cn <- names(weightc)
     }
   weightc2 <- rep(0,length(RMSE))
   names(weightc2) <- names(RMSE) # cannot be rn, might be changed if onlydn
@@ -184,7 +184,7 @@ weightc[!is.finite(weightc)] <- 0
 
 # normalize to get sum=1
 mysum <- function(x) {y <- sum(x); if(y==0) 1 else y}
-weight1 <- weight1/mysum(weight1) 
+weight1 <- weight1/mysum(weight1)
 weight2 <- weight2/mysum(weight2)
 weight3 <- weight3/mysum(weight3)
 weightc <- weightc/mysum(weightc)

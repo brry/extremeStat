@@ -9,21 +9,21 @@ plotLquantile(dlf, nbest = 5, selection = NULL, order = FALSE,
   distcols = dlfplot$distcols, linargs = NULL, ...)
 }
 \arguments{
-\item{dlf}{List as returned by \code{\link{distLquantile}}, containing the 
+\item{dlf}{List as returned by \code{\link{distLquantile}}, containing the
 elements \code{dat, parameter, gof, datname, quant}}
 
 \item{nbest, selection, order}{Distributions to be plotted, see \code{\link{plotLfit}}}
 
-\item{rows}{Rowname(s) of \code{dlf$quant} that should be drawn instead of 
+\item{rows}{Rowname(s) of \code{dlf$quant} that should be drawn instead of
 the selection / nbest highest ranking distribution functions.
-'GPD*' will select all the gpd fits. heights and distcols must then 
-accordingly have at least 13 elements (or will be recycled). 
+'GPD*' will select all the gpd fits. heights and distcols must then
+accordingly have at least 13 elements (or will be recycled).
 DEFAULT: NULL}
 
-\item{heights}{Coordinates of quantile line ends, recycled if necessary. 
+\item{heights}{Coordinates of quantile line ends, recycled if necessary.
 DEFAULT: 20\% of plot height.}
 
-\item{distcols}{Color for each distribution added with \code{\link{lines}}. 
+\item{distcols}{Color for each distribution added with \code{\link{lines}}.
 DEFAULT: dlfplot$distcols}
 
 \item{linargs}{Arguments passed to \code{\link{lines}}. DEFAULT: NULL}

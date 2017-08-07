@@ -1,13 +1,13 @@
 #' Bootstrapping uncertainty intervals for return periods
 #' 
 #' Calculates and plots bootstrap uncertainty intervals for \code{\link{plotLextreme}}.
-#'
+#' 
 #' @details Has not been thoroughly tested yet. Bootstrapping defaults can probably be improved.
 #' 
 #' @return invisible dlf object, see \code{\link{printL}}.
 #' Additional elements are: exBootCL (confidence level),
 #' exBootRPs (x values for plot)
-#' exBootSim (all simulation results) and exBootCI (agregated into CI band). 
+#' exBootSim (all simulation results) and exBootCI (agregated into CI band).
 #' The last two are each a list with a matrix (return levels)
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2015 + Dec 2016
 #' @seealso \code{\link{plotLexBoot}}, \code{\link{distLextreme}}
@@ -23,17 +23,17 @@
 #' plotLexBoot(dlfB)
 #' 
 #' @param dlf       \code{dlf} object, as returned by \code{\link{distLextreme}}
-#' @param nbest     Number of best fitted distribution functions in dlf for which 
+#' @param nbest     Number of best fitted distribution functions in dlf for which
 #'                  bootstrapping is to be done. Overriden by \code{selection}. DEFAULT: 3
-#' @param selection Character vector with distribution function names to be used. 
+#' @param selection Character vector with distribution function names to be used.
 #'                  Suggested to keep this low. DEFAULT: NULL
-#' @param n         Number of subsamples to be processed 
+#' @param n         Number of subsamples to be processed
 #'                  (computing time increases extraordinarily). DEFAULT: 100
 #' @param prop      Proportion of sample to be used in each run. DEFAULT: 0.8
-#' @param conf.lev  Confidence level (Proportion of subsamples within 'confidence interval'). 
-#'                  Quantiles extracted from this value are passed to 
+#' @param conf.lev  Confidence level (Proportion of subsamples within 'confidence interval').
+#'                  Quantiles extracted from this value are passed to
 #'                  \code{\link[berryFunctions]{quantileMean}}. DEFAULT: 0.95
-#' @param RPs       Return Period vector, by default calculated internally based on 
+#' @param RPs       Return Period vector, by default calculated internally based on
 #'                  value of \code{log}. DEFAULT: NULL
 #' @param log       RPs suitable for plot on a logarithmic axis? DEFAULT: TRUE
 #' @param progbars  Show progress bar for Monte Carlo simulation? DEFAULT: TRUE
@@ -56,7 +56,7 @@ quiet=FALSE
 # Selection
 if(is.null(selection)) selection <- rownames(dlf$gof)[order(dlf$gof$RMSE)][1:nbest]
 # Return period vector:
-RPdef <- berryFunctions::logSpaced(min=1, n=100, plot=FALSE, 
+RPdef <- berryFunctions::logSpaced(min=1, n=100, plot=FALSE,
                                    base=if(log) 1.1708 else 1, max=length(dlf$dat)*2)
 if(is.null(RPs)) RPs <-  unique(round(RPdef, digits=2))
 # subsample size:

@@ -5,13 +5,13 @@
 #' 
 #' @return invisible dlf object, see \code{\link{printL}}.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014, July 2015, Dec 2016
-#' @seealso \code{\link{plotLfit}}, \code{\link{distLweights}}, \code{\link{plotLweights}}, 
+#' @seealso \code{\link{plotLfit}}, \code{\link{distLweights}}, \code{\link{plotLweights}},
 #'     \code{extRemes::\link[extRemes]{fevd}}, \code{MASS::\link[MASS]{fitdistr}}.\cr
 #'     More complex estimates of quality of fits:
-#'     Fard, M.N.P. and Holmquist, B. (2013, Chilean Journal of Statistics): 
+#'     Fard, M.N.P. and Holmquist, B. (2013, Chilean Journal of Statistics):
 #'     Powerful goodness-of-fit tests for the extreme value distribution.
 #'     http://chjs.mat.utfsm.cl/volumes/04/01/Fard_Holmquist(2013).pdf
-#'          
+#' 
 #' @keywords hplot dplot distribution univar
 #' @export
 #' @importFrom lmomco dist.list lmoms lmom2par plmomco
@@ -63,7 +63,7 @@
 #' plotLfit(distLfit(annMax, truncate=0.7), cdf=TRUE, nbest=17)$gof
 #' pairs(dlf$gof[,-(2:5)]) # measures of goodness of fit are correlated quite well here.
 #' dlf$gof
-#'
+#' 
 #' # Kolmogorov-Smirnov Tests for normal distribution return slightly different values:
 #' library(lmomco)
 #' ks.test(annMax, "pnorm", mean(annMax), sd(annMax) )$p.value
@@ -81,25 +81,25 @@
 #' }
 #' 
 #' @param dat       Vector with values
-#' @param datname   Character string for main, xlab etc. 
+#' @param datname   Character string for main, xlab etc.
 #'                  DEFAULT: \code{deparse(substitute(dat))}
-#' @param selection Selection of distributions. Character vector with types 
+#' @param selection Selection of distributions. Character vector with types
 #'                  as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL
-#' @param speed     If TRUE, several distributions are omitted, for the reasons 
+#' @param speed     If TRUE, several distributions are omitted, for the reasons
 #'                  shown in \code{lmomco::\link[lmomco]{dist.list}()}. DEFAULT: TRUE
 #' @param ks        Include ks.test results and CDF R^2 in \code{dlf$gof}?
 #'                  Computing is much faster when FALSE. DEFAULT: FALSE
-#' @param truncate  Number between 0 and 1. POT Censored \code{\link{distLquantile}}: 
-#'                  fit to highest values only (truncate lower proportion of x). 
+#' @param truncate  Number between 0 and 1. POT Censored \code{\link{distLquantile}}:
+#'                  fit to highest values only (truncate lower proportion of x).
 #'                  Probabilities are adjusted accordingly. DEFAULT: 0
-#' @param threshold POT cutoff value. If you want correct percentiles, 
-#'                  set this only via truncate, see Details of \code{\link{q_gpd}}. 
+#' @param threshold POT cutoff value. If you want correct percentiles,
+#'                  set this only via truncate, see Details of \code{\link{q_gpd}}.
 #'                  DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}
 #' @param progbars  Show progress bars for each loop? DEFAULT: TRUE if n > 200
 #' @param time      \code{\link{message}} execution time? DEFAULT: TRUE
 #' @param quiet     Suppress notes? DEFAULT: FALSE
 #' @param ssquiet   Suppress sample size notes? DEFAULT: quiet
-#' @param \dots     Further arguments passed to \code{\link{distLweights}} 
+#' @param \dots     Further arguments passed to \code{\link{distLweights}}
 #'                  like weightc, order=FALSE
 #' 
 distLfit <- function(
@@ -131,13 +131,13 @@ dat <- as.numeric(dat)
 if(any(!is.finite(dat)))
   {
   Na <- !is.finite(dat)
-  if(!quiet) message("Note in distLfit: ", sum(Na), " Inf/NA", 
-                     ifelse(sum(Na)>1,"s were"," was")," omitted from ", length(dat), 
+  if(!quiet) message("Note in distLfit: ", sum(Na), " Inf/NA",
+                     ifelse(sum(Na)>1,"s were"," was")," omitted from ", length(dat),
                      " data points (",round(sum(Na)/length(dat)*100,1),"%).")
-  dat <- dat[!Na] 
+  dat <- dat[!Na]
   }
 # truncate (fit values only to upper part of values):
-dat <- dat[dat>=threshold] 
+dat <- dat[dat>=threshold]
 # GPD fits in q_gpd all use x>t, not x>=t, but if t=0, I want to use _all_ data
 dat <- sort(dat, decreasing=TRUE)
 # possible / selected distributions --------------------------------------------
@@ -159,15 +159,15 @@ if( ! is.null(selection) )
 #
 # output list ------------------------------------------------------------------
 dlf <- list(parameter=as.list(replace(dn,TRUE,NA)),
-            dat_full=dat_full, dat=dat, datname=datname, 
-            distnames=dn, distcols=berryFunctions::rainbow2(length(dn)), 
+            dat_full=dat_full, dat=dat, datname=datname,
+            distnames=dn, distcols=berryFunctions::rainbow2(length(dn)),
             distselector="distLfit", distfailed="",
             truncate=truncate, threshold=threshold)
 
 # Check remaining sample size:
-if(length(dat) < 5) 
+if(length(dat) < 5)
   {
-  if(!ssquiet) message("Note in distLfit: sample size (", length(dat), 
+  if(!ssquiet) message("Note in distLfit: sample size (", length(dat),
                        ") is too small to fit parameters (<5).")
   # error output:
   dlf$gof <- distLweights(replace(dn,TRUE,NA), quiet=TRUE, ...)
@@ -185,7 +185,7 @@ if(lmomco::are.lmom.valid(mom))
   # estimate parameters for each distribution:    # this takes time!
   if(progbars) message("Parameter estimation from L-moments:")
   dlf$parameter <- lapply(dn, function(d) tryStack(lmomco::lmom2par(mom, type=d), silent=TRUE) )
-} else 
+} else
 {
   if(!quiet) message("Note in distLfit: L-moments are not valid. No distributions are fitted.")
   dlf$gof <- distLweights(replace(dn,TRUE,NA), quiet=TRUE, ...)
@@ -195,21 +195,21 @@ if(lmomco::are.lmom.valid(mom))
 names(dlf$parameter) <- dn
 #
 # Error check ------------------------------------------------------------------
-failed <- sapply(dlf$parameter, function(x) 
+failed <- sapply(dlf$parameter, function(x)
   {
   if(is.null(x)) return(TRUE)
   if(all(is.na(x))) return(TRUE)
   if(inherits(x, "try-error")) return(TRUE)
-  if(x$type=="kap") 
+  if(x$type=="kap")
     {
     if(x$ifail!=0) return(TRUE)
     if(round(x$support[2],7)<=round(x$support[1],7) ) return(TRUE)
-    quant <- lmomco::quakap(seq(truncate,1,len=200), para=x) 
+    quant <- lmomco::quakap(seq(truncate,1,len=200), para=x)
     # plot(xxx<-seq(-100,50,len=900), lmomco::pdfkap(xxx, para=x), type="l")
     if(length(unique(quant))<20) return(TRUE) # xx5 in test-quantile
     }
   cumuprob <- suppressWarnings(try(lmomco::plmomco(mean(dlf$dat),x), silent=TRUE))
-  if(is.null(cumuprob)||inherits(cumuprob,"try-error")) return(TRUE) 
+  if(is.null(cumuprob)||inherits(cumuprob,"try-error")) return(TRUE)
   anyNA(x$para)
   })
 if(any(failed))
@@ -231,9 +231,9 @@ tcdfs <- suppressWarnings(
 if(!quiet)
   {
   nNA <- sapply(tcdfs, function(x) sum(is.na(x)))
-  if(any(nNA>0)) 
+  if(any(nNA>0))
     message("Note in distLfit: there are NAs in CDF (distribution support region ",
-            "probably does not span the whole data range): ", 
+            "probably does not span the whole data range): ",
             toString(paste0(dn[nNA>0], " (", nNA[nNA>0], ")" )),
             " of ", length(tcdfs[[1]]), " values.")
   }
@@ -243,7 +243,7 @@ tcdfs[sapply(tcdfs, inherits, "try-error")] <- NA
 # RMSE:
 if(progbars) message("Calculating RMSE:")
 RMSE <- suppressWarnings(
-        lapply(dn, function(d)  tryStack(rmse(tcdfs[[d]], ecdfs, quiet=TRUE), 
+        lapply(dn, function(d)  tryStack(rmse(tcdfs[[d]], ecdfs, quiet=TRUE),
                                          silent=TRUE)))
 # change nonfitted distributions RMSE to NA:
 RMSE <- sapply(RMSE, function(x) if(inherits(x, "try-error")) NA else x)
@@ -256,25 +256,25 @@ if(ks)
   if(progbars) message("Performing ks.test:")
   ## library("lmomco") # flagged by R CMD check, not necessary if plmomco is imported
   ksA <- suppressWarnings(
-         lapply(dn, function(d) tryStack(ks.test(dlf$dat, "plmomco", 
+         lapply(dn, function(d) tryStack(ks.test(dlf$dat, "plmomco",
                                                  dlf$parameter[[d]]), silent=TRUE)))
-  ksP <- sapply(ksA, function(x) x$p.value   ) 
+  ksP <- sapply(ksA, function(x) x$p.value   )
   ksD <- sapply(ksA, function(x) x$statistic )
   # R2
   if(progbars) message("Calculating R2:")
   R2 <- suppressWarnings(
-        lapply(dn, function(d)  tryStack(rsquare(tcdfs[[d]], ecdfs, quiet=TRUE), 
+        lapply(dn, function(d)  tryStack(rsquare(tcdfs[[d]], ecdfs, quiet=TRUE),
                                          silent=TRUE)))
   R2 <- sapply(R2, function(x) if(inherits(x, "try-error")) NA else x)
   # add to output data.frame:
-  dlf$gof$ksP <- ksP[rownames(dlf$gof)] 
+  dlf$gof$ksP <- ksP[rownames(dlf$gof)]
   dlf$gof$ksD <- ksD[paste0(rownames(dlf$gof),".D")]
-  dlf$gof$R2  <-  R2[rownames(dlf$gof)] 
+  dlf$gof$R2  <-  R2[rownames(dlf$gof)]
   }
 #
 # time message + output --------------------------------------------------------
 dlf$distnames <- rownames(dlf$gof)
-if(time & !quiet) message("distLfit execution took ", 
+if(time & !quiet) message("distLfit execution took ",
                   signif(difftime(Sys.time(), StartTime, units="s"),2), " seconds.")
 return(invisible(dlf))
 } # end of function

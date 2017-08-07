@@ -35,15 +35,15 @@
 #' # there's not much to optimize in large samples like n=2000
 #' 
 #' }
-#'
+#' 
 #' @param x         Vector with numeric values. NAs are silently ignored.
 #' @param probs     Probabilities. DEFAULT: c(0.8,0.9,0.99)
 #' @param truncate,threshold Truncation proportion or threshold. DEFAULT: 0, computed
-#'                  See \code{\link{q_gpd}}. 
+#'                  See \code{\link{q_gpd}}.
 #' @param quiet     Should messages from this function be suppressed? DEFAULT: FALSE
 #' @param addn      Logical: add element with sample size (after truncation). DEFAULT: TRUE
 #' @param \dots     Further arguments passed to \code{lmomco::\link[lmomco]{pargpa}}
-#'
+#' 
 quantGPD <- function(
 x,
 probs=c(0.8,0.9,0.99),
@@ -56,14 +56,14 @@ quiet=FALSE,
 {
 x <- as.numeric(x)
 x <- x[is.finite(x)]
-x <- x[x>=threshold] 
+x <- x[x>=threshold]
 mom <- lmomco::lmoms(x, nmom=5)
 par <- lmomco::pargpa(mom, ...)
 probs2 <- probs
 if(truncate!=0)
   {
-  probs2 <- (probs-truncate)/(1-truncate) 
-  probs2[probs < truncate] <- 0   
+  probs2 <- (probs-truncate)/(1-truncate)
+  probs2[probs < truncate] <- 0
   }
 out <- tryStack(lmomco::qlmomco(f=probs2, para=par))
 names(out) <- paste0(probs*100,"%")

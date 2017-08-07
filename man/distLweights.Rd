@@ -12,7 +12,7 @@ distLweights(RMSE, order = TRUE, onlydn = TRUE, weightc = NA,
 Can also be a data.frame, in which case the column rmse or RMSE is used.}
 
 \item{order}{Logical: should result be ordered by RMSE? If order=FALSE,
-the order of appearance in RMSE is kept (alphabetic or selection 
+the order of appearance in RMSE is kept (alphabetic or selection
 in \code{\link{distLfit}}). DEFAULT: TRUE}
 
 \item{onlydn}{Logical: weight only distributions from \code{lmomco::\link{dist.list}}?
@@ -26,7 +26,7 @@ DEFAULT: NA}
 \item{quiet}{Logical: Suppress messages. DEFAULT: FALSE}
 
 \item{\dots}{Ignored arguments (so a set of arguments can be passed to
-distLfit and distLquantile and arguments used only in the latter 
+distLfit and distLquantile and arguments used only in the latter
 will not throw errors)}
 }
 \value{
@@ -34,8 +34,8 @@ data.frame
 }
 \description{
 Determine distribution function weights from RMSE for weighted averages.
-The weights are inverse to RMSE: weight1 for all dists, 
-weight2 places zero weight on the worst fitting function, 
+The weights are inverse to RMSE: weight1 for all dists,
+weight2 places zero weight on the worst fitting function,
 weight3 on the worst half of functions.
 }
 \examples{
@@ -52,8 +52,8 @@ df ;  distLweights(df, onlydn=FALSE)
 # custom weights:
 set.seed(42); x <- data.frame(A=1:5, RMSE=runif(5)) ; x
 distLweights(x) # two warnings
-distLweights(x, weightc=c("1"=3, "3"=5), onlydn=FALSE) 
-distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE, onlydn=FALSE) 
+distLweights(x, weightc=c("1"=3, "3"=5), onlydn=FALSE)
+distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE, onlydn=FALSE)
 
 # real life example:
 data(annMax)
@@ -65,7 +65,7 @@ plotLweights(dlf)
 
 # GOF judgement by RMSE, not R2 --------
 # Both RMSE and R2 are computed with ECDF and TCDF
-# R2 may be very good (see below), but fit needs to be close to 1:1 line, 
+# R2 may be very good (see below), but fit needs to be close to 1:1 line,
 # which is better measured by RMSE
 
 dlf <- distLfit(annMax, ks=TRUE)
@@ -86,12 +86,12 @@ points(TCDF[,"nor"],    ECDF, col="green")
 #points(TCDF[,"wak"],    ECDF, col="blue")
 #points(TCDF[,"revgum"], ECDF, col="red")
 abline(a=0, b=1, lwd=3, lty=3)
-legend("bottomright", c("lap good RMSE bad R2", "nor bad RMSE good R2"), 
+legend("bottomright", c("lap good RMSE bad R2", "nor bad RMSE good R2"),
        col=c("cyan","green"), lwd=2)
 berryFunctions::linReg(TCDF[,"lap"], ECDF, add=TRUE, digits=3, col="cyan", pos1="topleft")
 berryFunctions::linReg(TCDF[,"nor"], ECDF, add=TRUE, digits=3, col="green", pos1="left")
 
- 
+
 # more distinct example (but with fake data)
 set.seed(42); x <- runif(30)
 y1 <-     x+rnorm(30,sd=0.09)

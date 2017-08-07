@@ -1,5 +1,5 @@
 #' Compute weighted averages of quantile estimates
-#'
+#' 
 #' @return data.frame with rows "weighted*" added.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Dec 2016
 #' @seealso \code{\link{distLquantile}}
@@ -19,7 +19,7 @@
 #' 
 #' # fast option for adding custom weighted estimates:
 #' cw <- runif(17)
-#' names(cw) <- c("exp", "gam", "gev", "glo", "gno", "gpa", "gum", "kap", "lap", 
+#' names(cw) <- c("exp", "gam", "gev", "glo", "gno", "gpa", "gum", "kap", "lap",
 #'                "ln3", "nor", "pe3", "ray", "revgum", "rice", "wak", "wei")
 #' dw <- distLweights(d, weightc=cw)
 #' qw1 <- q_weighted(d, weightc=cw); qw1
@@ -32,14 +32,14 @@
 #' system.time(pbreplicate(5000, q_weighted(d, weightc=cw)))             # 8.5 secs
 #' system.time(pbreplicate(5000, q_weighted(d, weights=dw, onlyc=TRUE))) # 0.8 secs
 #' }
-#'
+#' 
 #' @param quant   Data.frame as in \code{\link{distLquantile}} output.
 #' @param weights Data.frame as in \code{\link{distLweights}} output.
 #' @param onlyc   Logical: only return custom weighted quantile estimates as
 #'                a vector? Useful to add those to existing results. See examples.
 #'                DEFAULT: FALSE
 #' @param \dots   Arguments passed to \code{\link{distLweights}} like
-#'                weightc, onlydn=FALSE. order will be ignored, as 
+#'                weightc, onlydn=FALSE. order will be ignored, as
 #'                q_weighted only adds/changes the rows weighted*.
 #' 
 q_weighted <- function(

@@ -10,7 +10,7 @@
 Fit (via L moments), plot (on a linear scale) and compare (by goodness of fit)
 several (extreme value) distributions.
 Compute high quantiles even in small samples and estimate extrema at given return periods.\cr
-Open the \href{https://cran.r-project.org/package=extremeStat/vignettes/extremeStat.html}{Vignette} 
+Open the \href{https://cran.r-project.org/package=extremeStat/vignettes/extremeStat.html}{Vignette}
 for an introduction to the package: \code{vignette("extremeStat")}\cr
 This package heavily relies on and thankfully acknowledges the package \code{lmomco} by WH Asquith.
 }

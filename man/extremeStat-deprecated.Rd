@@ -27,8 +27,8 @@ distLprint(...)
 }
 \description{
 With version 1.3.0 (Jan 2017), a number of functions have been renamed and restructured.
-The computing functions don't plot anymore. 
-This is changed to reduce number of arguments in functions 
+The computing functions don't plot anymore.
+This is changed to reduce number of arguments in functions
 and increase reproducibility by explicitly creating dlf objects.
 Renaming has been done to create a consistent and short naming pattern.
 See the new structure in \code{\link{extremeStat}}.

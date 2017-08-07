@@ -9,7 +9,7 @@ plotLexBoot(dlf, selection = NULL, add = FALSE, log = TRUE, ...)
 \arguments{
 \item{dlf}{\code{dlf} object, as returned by \code{\link{distLexBoot}}}
 
-\item{selection}{Character vector with distribution function names to be used. 
+\item{selection}{Character vector with distribution function names to be used.
 Suggested to keep this low. DEFAULT: NULL}
 
 \item{add}{Add to existing plot? DEFAULT: FALSE}
@@ -17,7 +17,7 @@ Suggested to keep this low. DEFAULT: NULL}
 \item{log}{Plot on a logarithmic axis. DEFAULT: TRUE}
 
 \item{\dots}{Further arguments passed to \code{\link{plotLextreme}}.
-If add=TRUE, they are instead passed to 
+If add=TRUE, they are instead passed to
 \code{berryFunctions::\link{ciBand}}}
 }
 \value{

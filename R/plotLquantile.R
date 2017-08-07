@@ -9,17 +9,17 @@
 #' @examples
 #' # See distLquantile
 #' 
-#' @param dlf     List as returned by \code{\link{distLquantile}}, containing the 
+#' @param dlf     List as returned by \code{\link{distLquantile}}, containing the
 #'                elements \code{dat, parameter, gof, datname, quant}
 #' @param nbest,selection,order Distributions to be plotted, see \code{\link{plotLfit}}
-#' @param rows    Rowname(s) of \code{dlf$quant} that should be drawn instead of 
+#' @param rows    Rowname(s) of \code{dlf$quant} that should be drawn instead of
 #'                the selection / nbest highest ranking distribution functions.
-#'                'GPD*' will select all the gpd fits. heights and distcols must then 
-#'                accordingly have at least 13 elements (or will be recycled). 
+#'                'GPD*' will select all the gpd fits. heights and distcols must then
+#'                accordingly have at least 13 elements (or will be recycled).
 #'                DEFAULT: NULL
-#' @param heights Coordinates of quantile line ends, recycled if necessary. 
+#' @param heights Coordinates of quantile line ends, recycled if necessary.
 #'                DEFAULT: 20\% of plot height.
-#' @param distcols Color for each distribution added with \code{\link{lines}}. 
+#' @param distcols Color for each distribution added with \code{\link{lines}}.
 #'                DEFAULT: dlfplot$distcols
 #' @param linargs Arguments passed to \code{\link{lines}}. DEFAULT: NULL
 #' @param \dots   Further arguments passed to \code{\link{plotLfit}}

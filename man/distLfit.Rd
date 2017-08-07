@@ -13,24 +13,24 @@ distLfit(dat, datname = deparse(substitute(dat)), selection = NULL,
 \arguments{
 \item{dat}{Vector with values}
 
-\item{datname}{Character string for main, xlab etc. 
+\item{datname}{Character string for main, xlab etc.
 DEFAULT: \code{deparse(substitute(dat))}}
 
-\item{selection}{Selection of distributions. Character vector with types 
+\item{selection}{Selection of distributions. Character vector with types
 as in \code{\link[lmomco]{lmom2par}}. Overrides speed. DEFAULT: NULL}
 
-\item{speed}{If TRUE, several distributions are omitted, for the reasons 
+\item{speed}{If TRUE, several distributions are omitted, for the reasons
 shown in \code{lmomco::\link[lmomco]{dist.list}()}. DEFAULT: TRUE}
 
 \item{ks}{Include ks.test results and CDF R^2 in \code{dlf$gof}?
 Computing is much faster when FALSE. DEFAULT: FALSE}
 
-\item{truncate}{Number between 0 and 1. POT Censored \code{\link{distLquantile}}: 
-fit to highest values only (truncate lower proportion of x). 
+\item{truncate}{Number between 0 and 1. POT Censored \code{\link{distLquantile}}:
+fit to highest values only (truncate lower proportion of x).
 Probabilities are adjusted accordingly. DEFAULT: 0}
 
-\item{threshold}{POT cutoff value. If you want correct percentiles, 
-set this only via truncate, see Details of \code{\link{q_gpd}}. 
+\item{threshold}{POT cutoff value. If you want correct percentiles,
+set this only via truncate, see Details of \code{\link{q_gpd}}.
 DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
 
 \item{progbars}{Show progress bars for each loop? DEFAULT: TRUE if n > 200}
@@ -41,7 +41,7 @@ DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
 
 \item{ssquiet}{Suppress sample size notes? DEFAULT: quiet}
 
-\item{\dots}{Further arguments passed to \code{\link{distLweights}} 
+\item{\dots}{Further arguments passed to \code{\link{distLweights}}
 like weightc, order=FALSE}
 }
 \value{
@@ -115,10 +115,10 @@ d_all$gof
 
 }
 \seealso{
-\code{\link{plotLfit}}, \code{\link{distLweights}}, \code{\link{plotLweights}}, 
+\code{\link{plotLfit}}, \code{\link{distLweights}}, \code{\link{plotLweights}},
     \code{extRemes::\link[extRemes]{fevd}}, \code{MASS::\link[MASS]{fitdistr}}.\cr
     More complex estimates of quality of fits:
-    Fard, M.N.P. and Holmquist, B. (2013, Chilean Journal of Statistics): 
+    Fard, M.N.P. and Holmquist, B. (2013, Chilean Journal of Statistics):
     Powerful goodness-of-fit tests for the extreme value distribution.
     http://chjs.mat.utfsm.cl/volumes/04/01/Fard_Holmquist(2013).pdf
 }

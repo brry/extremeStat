@@ -33,14 +33,14 @@ ylab="",
 xlim=range(gof[,grep("weight",colnames(gof))], na.rm=TRUE),
 ...)
 {
-  
+
 # Object from list, for code readability and internal ordering:
 gof <- dlf$gof
 gof <- gof[order(gof$RMSE),]
 
 # Input control:
 if(nrow(gof)<1) stop("No fitted distributions in dlf.")
-if(nrow(gof)<2) stop("Only ", toString(rownames(gof)), 
+if(nrow(gof)<2) stop("Only ", toString(rownames(gof)),
                      " was fitted, thus GOF can't be compared.")
 # recycling:
 pch <- rep(pch, length=5)
@@ -52,13 +52,13 @@ type<- rep(type,length=5)
 # plotting
 plot(1, type="n", xlim=xlim, ylim=c(1,nrow(gof)), yaxt="n", xlab=xlab, ylab=ylab, main=main, ...)
 cnames <- c("weight1","weight2","weight3","weightc","RMSE")
-for(i in 1:5) lines(gof[,cnames[i]], nrow(gof):1, 
+for(i in 1:5) lines(gof[,cnames[i]], nrow(gof):1,
                     pch=pch[i], col=col[i], lty=lty[i], lwd=lwd[i], type=type[i])
 text(gof$RMSE[1], nrow(gof), "RMSE", col=col[5], adj=-0.2)
 axis(2, nrow(gof):1, rownames(gof), las=1)
-do.call(legend, berryFunctions::owa(list(x="bottomright", 
+do.call(legend, berryFunctions::owa(list(x="bottomright",
         legend=c("1: max(r)-r + min(r)", "2: max(r)-r", "3: first half", "c: custom"),
-        title="Weighted by RMSE = r", 
+        title="Weighted by RMSE = r",
         pch=pch[1:4], col=col[1:4], lty=lty[1:4], lwd=lwd[1:4]), legargs))
 
 } # end of function

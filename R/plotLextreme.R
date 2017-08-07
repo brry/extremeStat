@@ -16,13 +16,13 @@
 #' ?distLextreme
 #' 
 #' @param dlf     List as returned by \code{\link{distLextreme}} or \code{\link{distLexBoot}}
-#' @param selection Selection of distributions. Character vector with type as in 
+#' @param selection Selection of distributions. Character vector with type as in
 #'                \code{\link[lmomco]{lmom2par}}. DEFAULT: NULL
-#' @param order   If selection is given, should legend and colors be ordered 
+#' @param order   If selection is given, should legend and colors be ordered
 #'                by gof anyways? DEFAULT: FALSE
-#' @param add     If TRUE, plot is not called before adding lines. This lets you 
+#' @param add     If TRUE, plot is not called before adding lines. This lets you
 #'                add lines to an existing plot. DEFAULT: FALSE
-#' @param nbest   Number of distributions plotted, in order of goodness of fit. 
+#' @param nbest   Number of distributions plotted, in order of goodness of fit.
 #'                Overwritten internally if selection is given. DEFAULT: 5
 #' @param log     Logarithmic x-axis? DEFAULT: FALSE
 #' @param xlim    X-axis limits. DEFAULT: xlim of plotting positions
@@ -30,31 +30,31 @@
 #' @param las     LabelAxisStyle to orient labels, see \code{\link{par}}. DEFAULT: 1
 #' @param main    Title of plot. DEFAULT: dlf$datname
 #' @param xlab    X axis label. DEFAULT: "Return Period RP  [a]"
-#' @param ylab    Y axis label. Please note that the ubuntu pdf viewer might be 
+#' @param ylab    Y axis label. Please note that the ubuntu pdf viewer might be
 #'                unable to display unicode superscript. DEFAULT: "Discharge HQ  [m3/s]"
-#' @param PPcol   Plotting Position point colors, vector of length two for 
-#'                Weibull and Gringorton, recycled. PP are not used for 
+#' @param PPcol   Plotting Position point colors, vector of length two for
+#'                Weibull and Gringorton, recycled. PP are not used for
 #'                fitting distributions, but for plotting only. DEFAULT: "black"
-#' @param PPpch   point characters for plotting positions after Weibull and 
+#' @param PPpch   point characters for plotting positions after Weibull and
 #'                Gringorton, respectively. NA to suppress in plot and legend. DEFAULT: c(16,3)
 #' @param PPcex   Character EXpansion of plotting points. DEFAULT: 1
-#' @param distcols Color for each distribution added with \code{\link{lines}}. 
+#' @param distcols Color for each distribution added with \code{\link{lines}}.
 #'                Recycled, if necessary. DEFAULT: \code{\link[berryFunctions]{rainbow2}}
-#' @param lty     Line TYpe for plotted distributions. Is recycled to from a 
+#' @param lty     Line TYpe for plotted distributions. Is recycled to from a
 #'                vector of length nbest, i.e. a value for each dist. DEFAULT: 1
-#' @param lwd     Line WiDth of distribution lines. Recycled vector of length nbest. 
+#' @param lwd     Line WiDth of distribution lines. Recycled vector of length nbest.
 #'                DEFAULT: 1
-#' @param pch     Point CHaracter of points added at regular intervals. 
+#' @param pch     Point CHaracter of points added at regular intervals.
 #'                This makes lines more distinguishable from each other.
 #'                NA to suppress. Recycled vector of length nbest. DEFAULT: NA
-#' @param cex     if pch != NA, size of points. Recycled vector of length nbest. 
+#' @param cex     if pch != NA, size of points. Recycled vector of length nbest.
 #'                DEFAULT: 1
-#' @param n_pch   Number of points spread evenly along the line. 
+#' @param n_pch   Number of points spread evenly along the line.
 #'                Recycled vector of length nbest. DEFAULT: 15
 #' @param legend  Logical. Add a legend? DEFAULT: TRUE
 #' @param rmse    Integer. If rmse > 0, RMSE values are added to legend.
 #'                They are rounded to \code{rmse} digits. DEFAULT: 4
-#' @param legargs list of arguments passed to \code{\link{legend}} except for 
+#' @param legargs list of arguments passed to \code{\link{legend}} except for
 #'                legend, col, pch, lwd, lty. DEFAULT: NULL
 #' @param quiet   Suppress notes? DEFAULT: FALSE
 #' @param \dots   Further arguments passed to \code{\link{plot}} like yaxt="n", ...
@@ -107,9 +107,9 @@ if(!is.null(selection))
   {
   names(dn) <- dn
   sind <- selection %in% dn
-  if(!any(sind)) stop("selection ", toString(selection), 
+  if(!any(sind)) stop("selection ", toString(selection),
                                    " is not available in dlf$gof.")
-  if(any(!sind)) message("Note in plotLextreme: selection ", toString(selection[!sind]), 
+  if(any(!sind)) message("Note in plotLextreme: selection ", toString(selection[!sind]),
                          " is not available in dlf$gof, thus ignored.")
   selection <- selection[sind]
   dn <- dn[selection]
@@ -141,7 +141,7 @@ if(length(distcols) != nbest & !quiet)
 if(is.null(ylim)) ylim <- c(min(dlf$dat), max(dlf$dat)+0.1*diff(range(dlf$dat)) )
 if(is.null(xlim)) xlim <- c(1,range(RPw, RPg)[2])
 # draw discharges over return periods:
-if(!add) plot(1, type="n", las=las, ylim=ylim, xlim=xlim, main=main, ylab=ylab, xlab=xlab, 
+if(!add) plot(1, type="n", las=las, ylim=ylim, xlim=xlim, main=main, ylab=ylab, xlab=xlab,
               log=if(log) "x" else "", xaxt=if(log) "n" else "s", ...)
 if(log) berryFunctions::logAxis(1)
 # range of discharges:
@@ -157,7 +157,7 @@ for(i in nbest:1)
   {
   Pnonexceed <- lmomco::plmomco(yval,dlf$parameter[[dn[i]]]) # print(Pnonexceed, digits=20)
   Pnonexceed[Pnonexceed>1] <- 1 # remove numerical errors
-  if(dlf$truncate!=0) Pnonexceed <- Pnonexceed*(1-dlf$truncate) + dlf$truncate 
+  if(dlf$truncate!=0) Pnonexceed <- Pnonexceed*(1-dlf$truncate) + dlf$truncate
   xval <- 1/(1-Pnonexceed)/dlf$npy
   lines(x=xval, y=yval, col=distcols[i], lty=lty[i], lwd=lwd[i])
   if(!is.na(pch[i]))
@@ -183,9 +183,9 @@ legdef <- list(
   lwd=   c(if(PP1) NA,          if(PP2) NA,             lwd),
   col=   c(if(PP1) PPcol[1],    if(PP2) PPcol[2],       distcols),
   lty=   c(if(PP1) NA,          if(PP2) NA,             lty),
-  x="bottomright",  
+  x="bottomright",
   cex=0.8, bg="white")
-do.call(graphics::legend, args=berryFunctions::owa(legdef, legargs, 
+do.call(graphics::legend, args=berryFunctions::owa(legdef, legargs,
                                                    "legend","pch","lwd","col","lty"))
 }
 # output dlf object
