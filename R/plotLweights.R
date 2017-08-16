@@ -9,6 +9,7 @@
 #' @export
 #' @importFrom berryFunctions owa
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom graphics axis lines plot text
 #' @examples
 #' # see distLweights and distLfit
 #' 

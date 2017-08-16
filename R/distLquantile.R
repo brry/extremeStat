@@ -21,7 +21,7 @@
 #' @references On GPD: \url{http://stats.stackexchange.com/questions/69438}
 #' @keywords distribution robust univar
 #' @export
-#' @importFrom berryFunctions quantileMean owa tryStack
+#' @importFrom berryFunctions quantileMean owa tryStack rainbow2
 #' @importFrom lmomco plmomco dlmomco qlmomco
 #' @importFrom stats quantile
 #' 
@@ -106,7 +106,7 @@
 #' trunc <- seq(0,0.1,len=200)
 #' dd <- pbsapply(trunc, function(t) distLquantile(annMax,
 #'           selection="gpa", weight=FALSE, truncate=t, prob=0.99, quiet=T)[c(1,3),])
-#   plot(trunc, dd[1,], type="o", las=1)
+#'  plot(trunc, dd[1,], type="o", las=1)
 #' lines(trunc, dd[2,], type="o", col=2)
 #' 
 #' 

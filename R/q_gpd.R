@@ -54,7 +54,10 @@
 #' @importFrom fExtremes gpdFit
 #' @importFrom ismev gpd.fit
 #' @importFrom Renext fGPD Renouv qGPD
-#' @importFrom berryFunctions quantileMean tryStack
+#' @importFrom berryFunctions quantileMean tryStack rmse
+#' @importFrom lmomco lmoms pargpa plmomco
+#' @importFrom methods slotNames
+#' @importFrom stats ecdf
 #' 
 #' @examples
 #' data(annMax)

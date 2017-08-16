@@ -189,6 +189,7 @@ par(op)
 trunc <- seq(0,0.1,len=200)
 dd <- pbsapply(trunc, function(t) distLquantile(annMax,
           selection="gpa", weight=FALSE, truncate=t, prob=0.99, quiet=T)[c(1,3),])
+ plot(trunc, dd[1,], type="o", las=1)
 lines(trunc, dd[2,], type="o", col=2)
 
 

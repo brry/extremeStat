@@ -15,8 +15,9 @@
 #' @keywords hplot dplot distribution univar
 #' @export
 #' @importFrom lmomco dist.list lmoms lmom2par plmomco
-#' @importFrom berryFunctions rainbow2 tryStack rmse rsquare
+#' @importFrom berryFunctions rainbow2 tryStack rmse rsquare quantileMean
 #' @importFrom utils getFromNamespace
+#' @importFrom stats ecdf ks.test
 #' 
 #' @examples
 #' 

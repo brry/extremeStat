@@ -13,6 +13,10 @@
 #' @export
 #' @importFrom berryFunctions lim0 owa rainbow2
 #' @importFrom lmomco plmomco dlmomco supdist
+#' @importFrom graphics hist legend lines par points
+#' @importFrom grDevices extendrange
+#' @importFrom stats ecdf
+#' @importFrom utils tail
 #' @examples
 #'  # See distLfit
 #' 

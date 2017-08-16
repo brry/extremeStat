@@ -11,6 +11,7 @@
 #' @aliases distLextremePlot distLgofPlot distLplot distLprint
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Jan 2017
 #' @seealso \code{\link{extremeStat}}
+#' @importFrom utils help packageDescription
 #' @param \dots Ignored arguments
 #' @export
 distLextremePlot <- function(...) deprmes("plotLextreme")

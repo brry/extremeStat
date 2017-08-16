@@ -41,6 +41,8 @@
 #' @seealso \code{\link{extremeStat}}
 #' @keywords list methods print
 #' @importFrom berryFunctions truncMessage
+#' @importFrom stats median
+#' @importFrom utils head
 #' @export
 #' @examples
 #' 

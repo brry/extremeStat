@@ -10,6 +10,8 @@
 #' @export
 #' @importFrom berryFunctions rainbow2 owa logAxis
 #' @importFrom lmomco plmomco
+#' @importFrom graphics box lines par plot points legend
+#' @importFrom stats approx
 #' 
 #' @examples
 #' #see

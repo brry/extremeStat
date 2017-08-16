@@ -5,6 +5,7 @@
 #' @seealso \code{\link{q_gpd}} for a comparison across R packages and methods, \code{\link{distLquantile}} to compare distributions
 #' @keywords distribution robust univar
 #' @importFrom lmomco lmoms pargpa qlmomco
+#' @importFrom berryFunctions quantileMean tryStack
 #' @export
 #' @examples
 #' data(annMax)

@@ -13,7 +13,7 @@
 #' @seealso \code{\link{plotLexBoot}}, \code{\link{distLextreme}}
 #' @keywords bootstrap montecarlo hplot dplot distribution ts
 #' @export
-#' @importFrom berryFunctions logSpaced quantileMean
+#' @importFrom berryFunctions logSpaced quantileMean rainbow2
 #' 
 #' @examples
 #' 

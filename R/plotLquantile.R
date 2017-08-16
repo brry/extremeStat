@@ -5,7 +5,9 @@
 #' @seealso \code{\link{distLquantile}}, \code{\link{plotLfit}}
 #' @keywords hplot distribution
 #' @export
-#' @importFrom berryFunctions owa
+#' @importFrom berryFunctions rainbow2 owa
+#' @importFrom graphics lines par
+#' @importFrom stats quantile
 #' @examples
 #' # See distLquantile
 #' 

@@ -10,6 +10,8 @@
 #' @seealso \code{\link{distLfit}}, \code{\link{distLquantile}}
 #' @keywords distribution
 #' @importFrom berryFunctions traceCall
+#' @importFrom lmomco dist.list
+#' @importFrom stats median
 #' @export
 #' @examples
 #' # weights from RMSE vector:
