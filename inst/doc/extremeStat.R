@@ -62,14 +62,17 @@ par(mar=c(3.2,3.6,2.6,0.7), mgp=c(2.1,0.7,0))
 d <- distLquantile(rain, truncate=0.9, probs=0.999, quiet=TRUE, list=TRUE)
 plotLquantile(d, breaks=50)
 
-## ----teff, eval=FALSE----------------------------------------------------
-#  tt <- c(seq(0,0.5,0.1), seq(0.55,0.99,len=50))
-#  if(interactive()) lapply <- pbapply::pblapply # for progress bars
-#  qq <- lapply(tt, function(t)
-#    distLquantile(rain, truncate=t, probs=0.999, quiet=TRUE, gpd=FALSE))
-#  dlf00 <- plotLfit(distLfit(rain), nbest=17)
-#  dlf99 <- plotLfit(distLfit(rain, tr=0.99), nbest=17)
-#  save(tt,qq,dlf99,dlf00, file="qq.Rdata")
+## ----teff----------------------------------------------------------------
+canload <- suppressWarnings(try(load("qq.Rdata"), silent = TRUE))
+if(inherits(canload, "try-error")) {
+tt <- c(seq(0,0.5,0.1), seq(0.55,0.99,len=50))
+if(interactive()) lapply <- pbapply::pblapply # for progress bars
+qq <- lapply(tt, function(t) 
+  distLquantile(rain, truncate=t, probs=0.999, quiet=TRUE, gpd=FALSE))     
+dlf00 <- plotLfit(distLfit(rain), nbest=17)
+dlf99 <- plotLfit(distLfit(rain, tr=0.99), nbest=17)
+save(tt,qq,dlf99,dlf00, file="qq.Rdata") 
+}
 
 ## ----teffplot, fig.height=3.5, fig.width=5.5-----------------------------
 load("qq.Rdata")
@@ -98,12 +101,15 @@ axis(1, at=0:5*0.2, labels=c("0",1:4*0.2,"1"))
 for(d in dn) lines(tt, sapply(qq, "[", d, j="RMSE"), col=dlf00$distcols[d])
 
 ## ----ssdep, eval=FALSE---------------------------------------------------
+#  canload <- suppressWarnings(try(load("sq.Rdata"), silent = TRUE))
+#  if(inherits(canload, "try-error")) {
 #  set.seed(1)
 #  ss <- c(30,50,70,100,200,300,400,500,1000)
 #  rainsamplequantile <- function() sapply(ss, function(s) distLquantile(sample(rain,s),
 #            probs=0.999, plot=F, truncate=0.8, quiet=T, sel="wak", gpd=F, weight=F))
 #  sq <- pbapply::pbreplicate(n=100, rainsamplequantile())
 #  save(ss,sq, file="sq.Rdata")
+#  }
 
 ## ----ssdepplot, fig.height=3.5, fig.width=5.5----------------------------
 load("sq.Rdata")

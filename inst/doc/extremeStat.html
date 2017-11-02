@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -12,7 +12,7 @@
 
 <meta name="author" content="Berry Boessenkool, berry-b@gmx.de" />
 
-<meta name="date" content="2017-01-25" />
+<meta name="date" content="2017-11-02" />
 
 <title>extremeStat: quantile estimation</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">extremeStat: quantile estimation</h1>
 <h4 class="author"><em>Berry Boessenkool, <a href="mailto:berry-b@gmx.de">berry-b@gmx.de</a></em></h4>
-<h4 class="date"><em>2017-01-25</em></h4>
+<h4 class="date"><em>2017-11-02</em></h4>
 
 
 <div id="TOC">
@@ -102,7 +102,7 @@ Comparison of GPD implementations in several R packages</strong></p>
 <span class="co"># install the development version from github:</span>
 berryFunctions::<span class="kw">instGit</span>(<span class="st">&quot;brry/berryFunctions&quot;</span>)
 berryFunctions::<span class="kw">instGit</span>(<span class="st">&quot;brry/extremeStat&quot;</span>) </code></pre></div>
-<p><code>extremeStat</code> has 31 dependencies, because of the GPD comparison across the packages.</p>
+<p><code>extremeStat</code> has 33 dependencies, because of the GPD comparison across the packages.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(extremeStat)</code></pre></div>
 <p><a href="#top">TOC</a></p>
 </div>
@@ -131,13 +131,13 @@ berryFunctions::<span class="kw">logHist</span>(rain, <span class="dt">breaks=</
 <p>If list is set to TRUE, it will return an object that can be examined with <code>printL</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">printL</span>(dlf)</code></pre></div>
 <pre><code>## ----------
-## Dataset 'rain[1:900]' with 900 values. min/median/max: 2.3/6.4/44.5  nNA: 0
-## truncate: 0 threshold: 2.3. dat_full with 900 values: 2.3/6.4/44.5  nNA: 0
+## Dataset 'rain[1:900]' with 900 values. min/median/max:  2.3/6.4/44.5  nNA: 0
+## truncate: 0 threshold: 2.3. dat_full with 900 values:  2.3/6.4/44.5  nNA: 0
 ## dlf with 17 distributions. In descending order of fit quality:
 ## exp, gpa, wak, wei, kap, pe3, ln3, gno, gev, glo, gam, lap, gum, ray, nor, rice, revgum
-## RMSE min/median/max: 0.022/0.036/0.14  nNA: 0
+## RMSE min/median/max:  0.022/0.036/0.14  nNA: 0
 ## 17 distnames + 17 distcols from distselector distLquantile
-## quant: 38 rows, 5 columns, 190 values, of which 26 NA.</code></pre>
+## quant: 39 rows, 5 columns, 195 values, of which 27 NA.</code></pre>
 <p>Detailed documentation on dlf objects can be found in <a href="https://www.rdocumentation.org/packages/extremeStat/topics/extremeStat">extremeStat</a>. dlf objects can be plotted with several functions, e.g. <code>plotLquantile</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotLquantile</span>(dlf, <span class="dt">nbest=</span><span class="dv">8</span>, <span class="dt">linargs=</span><span class="kw">list</span>(<span class="dt">lwd=</span><span class="dv">2</span>), <span class="dt">heights=</span><span class="kw">seq</span>(<span class="fl">0.04</span>, <span class="fl">0.01</span>, <span class="dt">len=</span><span class="dv">8</span>), <span class="dt">breaks=</span><span class="dv">80</span>)</code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
@@ -161,6 +161,7 @@ berryFunctions::<span class="kw">logHist</span>(rain, <span class="dt">breaks=</
 ## nor                    13.06524 15.55792 21.47781 25.80604 0.10397763
 ## rice                   11.87654 14.20564 20.08981 24.60489 0.10510552
 ## revgum                 13.15337 14.80512 18.00186 19.87183 0.14317497
+## empirical              12.32000 16.69000 32.19900 44.19623         NA
 ## quantileMean           12.27056 16.60778 32.10953 43.96441         NA
 ## weighted1              11.92725 15.97296 30.87800 49.94920         NA
 ## weighted2              11.90196 16.01229 31.24988 50.81810         NA
@@ -225,13 +226,16 @@ derived from
 <div id="truncation-effect" class="section level2">
 <h2>Truncation effect</h2>
 <p>To examine the effect of the truncation percentage, we can compute the quantiles for different cutoff percentages. This computes for a few minutes, so the code is not performed upon vignette creation. The <a href="https://github.com/brry/extremeStat/raw/master/vignettes/qq.Rdata">result</a> is loaded instead.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tt &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="fl">0.5</span>,<span class="fl">0.1</span>), <span class="kw">seq</span>(<span class="fl">0.55</span>,<span class="fl">0.99</span>,<span class="dt">len=</span><span class="dv">50</span>))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">canload &lt;-<span class="st"> </span><span class="kw">suppressWarnings</span>(<span class="kw">try</span>(<span class="kw">load</span>(<span class="st">&quot;qq.Rdata&quot;</span>), <span class="dt">silent =</span> <span class="ot">TRUE</span>))
+if(<span class="kw">inherits</span>(canload, <span class="st">&quot;try-error&quot;</span>)) {
+tt &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">seq</span>(<span class="dv">0</span>,<span class="fl">0.5</span>,<span class="fl">0.1</span>), <span class="kw">seq</span>(<span class="fl">0.55</span>,<span class="fl">0.99</span>,<span class="dt">len=</span><span class="dv">50</span>))
 if(<span class="kw">interactive</span>()) lapply &lt;-<span class="st"> </span>pbapply::pblapply <span class="co"># for progress bars</span>
 qq &lt;-<span class="st"> </span><span class="kw">lapply</span>(tt, function(t) 
   <span class="kw">distLquantile</span>(rain, <span class="dt">truncate=</span>t, <span class="dt">probs=</span><span class="fl">0.999</span>, <span class="dt">quiet=</span><span class="ot">TRUE</span>, <span class="dt">gpd=</span><span class="ot">FALSE</span>))     
 dlf00 &lt;-<span class="st"> </span><span class="kw">plotLfit</span>(<span class="kw">distLfit</span>(rain), <span class="dt">nbest=</span><span class="dv">17</span>)
 dlf99 &lt;-<span class="st"> </span><span class="kw">plotLfit</span>(<span class="kw">distLfit</span>(rain, <span class="dt">tr=</span><span class="fl">0.99</span>), <span class="dt">nbest=</span><span class="dv">17</span>)
-<span class="kw">save</span>(tt,qq,dlf99,dlf00, <span class="dt">file=</span><span class="st">&quot;qq.Rdata&quot;</span>)   </code></pre></div>
+<span class="kw">save</span>(tt,qq,dlf99,dlf00, <span class="dt">file=</span><span class="st">&quot;qq.Rdata&quot;</span>) 
+}</code></pre></div>
 <p>We can visualize the truncation dependency with</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="st">&quot;qq.Rdata&quot;</span>)
 <span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="fl">2.8</span>,<span class="fl">2.2</span>,<span class="fl">0.4</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="fl">1.8</span>,<span class="fl">0.5</span>,<span class="dv">0</span>))
@@ -252,13 +256,16 @@ gof &lt;-<span class="st"> </span><span class="kw">formatC</span>(<span class="k
 <div id="sample-size-dependency" class="section level2">
 <h2>Sample size dependency</h2>
 <p>One motivation behind the development of this package is the finding that high empirical quantiles depend not only on the values of a sample (as it should be), but also on the number of observations available. That is not surprising: Given a distribution of a population, small samples tend to less often include the high (and rare) values. The cool thing about parametric quantiles is that they don’t systematically underestimate the actual quantile in small samples. Here’s a quick demonstration.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">canload &lt;-<span class="st"> </span><span class="kw">suppressWarnings</span>(<span class="kw">try</span>(<span class="kw">load</span>(<span class="st">&quot;sq.Rdata&quot;</span>), <span class="dt">silent =</span> <span class="ot">TRUE</span>))
+if(<span class="kw">inherits</span>(canload, <span class="st">&quot;try-error&quot;</span>)) {
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
 ss &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">30</span>,<span class="dv">50</span>,<span class="dv">70</span>,<span class="dv">100</span>,<span class="dv">200</span>,<span class="dv">300</span>,<span class="dv">400</span>,<span class="dv">500</span>,<span class="dv">1000</span>)
 rainsamplequantile &lt;-<span class="st"> </span>function() <span class="kw">sapply</span>(ss, function(s) <span class="kw">distLquantile</span>(<span class="kw">sample</span>(rain,s), 
           <span class="dt">probs=</span><span class="fl">0.999</span>, <span class="dt">plot=</span>F, <span class="dt">truncate=</span><span class="fl">0.8</span>, <span class="dt">quiet=</span>T, <span class="dt">sel=</span><span class="st">&quot;wak&quot;</span>, <span class="dt">gpd=</span>F, <span class="dt">weight=</span>F))
 sq &lt;-<span class="st"> </span>pbapply::<span class="kw">pbreplicate</span>(<span class="dt">n=</span><span class="dv">100</span>, <span class="kw">rainsamplequantile</span>())    
-<span class="kw">save</span>(ss,sq, <span class="dt">file=</span><span class="st">&quot;sq.Rdata&quot;</span>)   </code></pre></div>
-<p>Load the <a href="https://github.com/brry/extremeStat/raw/master/vignettes/sq.Rdata">resulting R objects</a>:</p>
+<span class="kw">save</span>(ss,sq, <span class="dt">file=</span><span class="st">&quot;sq.Rdata&quot;</span>)   
+}</code></pre></div>
+<p>Loading the <a href="https://github.com/brry/extremeStat/raw/master/vignettes/sq.Rdata">resulting R objects</a>, the sample size dependency can be visualized as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="st">&quot;sq.Rdata&quot;</span>)
 <span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="fl">2.8</span>,<span class="fl">2.2</span>,<span class="fl">0.4</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="fl">1.7</span>,<span class="fl">0.5</span>,<span class="dv">0</span>))
 sqs &lt;-<span class="st"> </span>function(prob,row) <span class="kw">apply</span>(sq, <span class="dv">1</span>:<span class="dv">2</span>, quantile, <span class="dt">na.rm=</span><span class="ot">TRUE</span>, <span class="dt">probs=</span>prob)[row,]
@@ -303,9 +310,9 @@ A value <code>x</code> in a time series has a certain expected frequency to occu
 ## nor          64.78000 82.13652 91.20908  98.70136 107.13390
 ## exp          57.63946 78.96177 95.09148 111.22119 132.54351
 ## revgum       68.31684 82.45728 88.46912  92.88645  97.36604
+## empirical    61.50000 82.32000 93.76000 109.20000 113.48800
 ## quantileMean 61.42222 82.14694 93.28444 105.64000 112.76000
-## weighted1    62.14394 81.21538 92.70405 102.97786 115.41622
-## weighted2    62.04278 81.23617 92.80714 103.14857 115.65607</code></pre>
+## weighted1    62.14394 81.21538 92.70405 102.97786 115.41622</code></pre>
 <p>Explore the other possibilities of the package by reading the function help files.<br />
 A good place to start is the package help:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">?extremeStat</code></pre></div>
@@ -320,7 +327,7 @@ A good place to start is the package help:</p>
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
