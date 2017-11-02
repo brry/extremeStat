@@ -7,9 +7,6 @@
 \alias{distLplot}
 \alias{distLprint}
 \alias{distLgof}
-\alias{distLgofPlot}
-\alias{distLplot}
-\alias{distLprint}
 \title{Deprecated Functions}
 \usage{
 distLextremePlot(...)

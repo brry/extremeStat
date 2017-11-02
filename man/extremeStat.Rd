@@ -4,7 +4,6 @@
 \name{extremeStat}
 \alias{extremeStat}
 \alias{extremeStat-package}
-\alias{extremeStat-package}
 \title{Extreme value statistics on a linear scale}
 \description{
 Fit (via L moments), plot (on a linear scale) and compare (by goodness of fit)
