@@ -170,7 +170,7 @@ expect_equal(dd["kap","RMSE"], NA_real_)
 # strongly skewed (gno):
 xx4 <- c(2.4,2.7,2.3,2.5,2.2, 62.4 ,3.8,3.1) 
 expect_warning(dd <- distLquantile(xx4), 
-               glob2rx("in pargno(lmom, ...): L-skew is too large*"))
+               glob2rx("in pargno(lmom, ...): L-skew is too large*"), ignore.case=TRUE)
 
 # kap should fail:
 xx5 <- c(2.4, 2.5, 2.6, 2.9, 4.2, 4.6, 5.7)
