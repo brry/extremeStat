@@ -45,7 +45,7 @@ already logarithmic and ranges eg. from -2 to 3. DEFAULT: FALSE}
 DEFAULT: "grey"}
 
 \item{main, xlab, ylab}{\code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab.
-DEFAULT: abstractions fom \code{dlf$datname}}
+DEFAULT: abstractions from \code{dlf$datname}}
 
 \item{las}{Label Axis Style for orientation of numbers along axes. DEFAULT: 1}
 
@@ -80,7 +80,7 @@ Plot histogram and distribution densities \emph{or} ecdf with cumulated probabil
 }
 \details{
 By default, this plots density instead of CDF, because the distributions are
-easier to discern and tail behaviour is easier to judge visually. See also
+easier to discern and tail behavior is easier to judge visually. See also
 \url{http://www.vosesoftware.com/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_(histogram)_plots.htm}
 }
 \examples{

@@ -6,7 +6,7 @@
 \title{annual discharge maxima (streamflow)}
 \format{num [1:35] 61.5 77 37 69.3 75.6 74.9 43.7 50.8 55.6 84.1 ...}
 \source{
-Hydrographische Dienste Oberoesterreich und Salzburg, analysed by
+Hydrographische Dienste Oberoesterreich und Salzburg, analyzed by
 package author (\email{berry-b@gmx.de})
 }
 \description{

@@ -12,7 +12,7 @@ distLexBoot(dlf, nbest = 3, selection = NULL, n = 100, prop = 0.8,
 \item{dlf}{\code{dlf} object, as returned by \code{\link{distLextreme}}}
 
 \item{nbest}{Number of best fitted distribution functions in dlf for which
-bootstrapping is to be done. Overriden by \code{selection}. DEFAULT: 3}
+bootstrapping is to be done. Overridden by \code{selection}. DEFAULT: 3}
 
 \item{selection}{Character vector with distribution function names to be used.
 Suggested to keep this low. DEFAULT: NULL}
@@ -40,7 +40,7 @@ DEFAULT: FALSE}
 invisible dlf object, see \code{\link{printL}}.
 Additional elements are: exBootCL (confidence level),
 exBootRPs (x values for plot)
-exBootSim (all simulation results) and exBootCI (agregated into CI band).
+exBootSim (all simulation results) and exBootCI (aggregated into CI band).
 The last two are each a list with a matrix (return levels)
 }
 \description{

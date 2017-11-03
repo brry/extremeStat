@@ -13,7 +13,7 @@ distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
   ttquiet = quiet, gpquiet = missing(quiet) | quiet, ...)
 }
 \arguments{
-\item{x}{Sample for which parametrical quantiles are to be calculated.
+\item{x}{Sample for which parametric quantiles are to be calculated.
 If it is NULL (the default), \code{dat} from \code{dlf} is used.
 DEFAULT: NULL}
 
@@ -179,7 +179,7 @@ par(mar=c(3,4.5,3,0.5))
 plot(mytrunc, trunceffect[1,], ylim=range(trunceffect), las=1, type="l",
      main=c("High quantiles of 1000 random numbers from gev distribution",
            "Estimation based on proportion of lower values truncated"),
-     xlab="", ylab="parametrical quantile")
+     xlab="", ylab="parametric quantile")
 title(xlab="Proportion censored", mgp=c(1.8,1,0))
 for(i in 2:4) lines(mytrunc, trunceffect[i,])
 library("berryFunctions")

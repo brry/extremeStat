@@ -1,7 +1,7 @@
 #' GPD quantile of sample
 #' 
-#' Compute quantile of General Pareto Distribution fitted to sample by peak over treshold (POT) method
-#' using treshold from truncation proportion,
+#' Compute quantile of General Pareto Distribution fitted to sample by peak over threshold (POT) method
+#' using threshold from truncation proportion,
 #' comparing several R packages doing this
 #' 
 #' @details Depending on the value of "package", this fits the GPD using \cr
@@ -26,9 +26,9 @@
 #' The Quantiles are always given with \code{probs} in regard to the full (uncensored) sample.
 #' If e.g. truncate is 0.90, the distribution function is fitted to the top 10\% of the sample.
 #' The 95th percentile of the full sample is equivalent to the 50\% quantile of
-#'     the subsample acutally used for fitting.
+#'     the subsample actually used for fitting.
 #' For computation, the probabilities are internally updated with \code{p2=(p-t)/(1-t)}
-#' but labelled with the original \code{p}.
+#' but labeled with the original \code{p}.
 #' If you truncate 90\% of the sample, you cannot compute the 70th percentile anymore,
 #' thus \code{undertruncNA} should be left to TRUE. \cr
 #' If not exported by the packages, the quantile functions are extracted from their source code (Nov 2016).
@@ -176,7 +176,7 @@
 #' } # end of dontrun
 #' 
 #' @param x         Vector with numeric values. NAs are silently ignored.
-#' @param probs     Probabilities of truncated (Peak over treshold) quantile.
+#' @param probs     Probabilities of truncated (Peak over threshold) quantile.
 #'                  DEFAULT: c(0.8,0.9,0.99)
 #' @param truncate  Truncation percentage (proportion of sample discarded). DEFAULT: 0
 #' @param threshold POT cutoff value. If you want correct percentiles, set this
@@ -188,7 +188,7 @@
 #' @param method    \code{method} passed to the fitting function, if applicable.
 #'                  Defaults are internally specified (See Details), depending on
 #'                  \code{package}, if left to the DEFAULT: NULL.
-#' @param list      Return result from the fitting funtion with the quantiles
+#' @param list      Return result from the fitting function with the quantiles
 #'                  added to the list as element \code{quant} and some information
 #'                  in elements starting with \code{q_gpd_}. DEFAULT: FALSE
 #' @param undertruncNA Return NAs for probs below truncate? Highly recommended

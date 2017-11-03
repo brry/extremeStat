@@ -16,7 +16,7 @@ Ignored if dlf is given. DEFAULT: NULL}
 \item{dlf}{List as returned by \code{\link{distLfit}}. See also
 \code{\link{distLquantile}}. Overrides dat! DEFAULT: NULL}
 
-\item{RPs}{ReturnPeriods (in years) for which discharge is estimated.
+\item{RPs}{Return Periods (in years) for which discharge is estimated.
 DEFAULT: c(2,5,10,20,50)}
 
 \item{npy}{Number of observations per year. Leave \code{npy=1} if you
@@ -58,10 +58,10 @@ But if you care, go ahead and google "weibull vs gringorton plotting positions".
 
 Plotting positions are not used for fitting distributions, but for plotting only.
 The ranks of ascendingly sorted extreme values are used to
-compute the probability of non-exceedence Pn:\cr
+compute the probability of non-exceedance Pn:\cr
 \code{Pn_w <-  Rank      /(n+1)       # Weibull}\cr
 \code{Pn_g <- (Rank-0.44)/(n+0.12)    # Gringorton (taken from lmom:::evplot.default)}\cr
-Finally: RP = Returnperiod = recurrence interval = 1/P_exceedence = 1/(1-P_nonexc.), thus:\cr
+Finally: RP = Return period = recurrence interval = 1/P_exceedance = 1/(1-P_nonexc.), thus:\cr
 \code{RPweibull = 1/(1-Pn_w)} and analogous for gringorton.\cr
 }
 \note{

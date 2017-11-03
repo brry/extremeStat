@@ -3,7 +3,7 @@
 #' Plot histogram and distribution densities \emph{or} ecdf with cumulated probability
 #' 
 #' @details By default, this plots density instead of CDF, because the distributions are
-#' easier to discern and tail behaviour is easier to judge visually. See also
+#' easier to discern and tail behavior is easier to judge visually. See also
 #' \url{http://www.vosesoftware.com/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_(histogram)_plots.htm}
 #' 
 #' @return invisible dlf object, see \code{\link{printL}}
@@ -40,7 +40,7 @@
 #' @param col        \code{\link{hist}} bar color or \code{\link{ecdf}} point color.
 #'                   DEFAULT: "grey"
 #' @param main,xlab,ylab \code{\link{hist}} or \code{\link{ecdf}} main, xlab, ylab.
-#'                   DEFAULT: abstractions fom \code{dlf$datname}
+#'                   DEFAULT: abstractions from \code{dlf$datname}
 #' @param las        Label Axis Style for orientation of numbers along axes. DEFAULT: 1
 #' @param distcols   Color for each distribution added with \code{\link{lines}}.
 #'                   DEFAULT: \code{\link[berryFunctions]{rainbow2}}
