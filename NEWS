@@ -12,6 +12,16 @@ extremeStat Package by Berry Boessenkool, berry-b@gmx.de
 Any feedback is welcome, per email or on github.com/brry/extremeStat
 ---------------------------------------
 
+Version 1.4.0 (2017-11-02)
+- printL improved
+- distLexBoot now uses npy
+- distLextreme can now use truncate
+- examples improved
+- deprecated functions are now entirely removed
+
+---------------------------------------
+---------------------------------------
+
 
 Version 1.3.0 (2017-01-26)
 Package thoroughly cleaned up and restructured:
