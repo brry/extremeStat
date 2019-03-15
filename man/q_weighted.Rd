@@ -33,6 +33,7 @@ distLweights(x, onlydn=FALSE)
 q_weighted(x,  onlydn=FALSE)
 q_weighted(x,  distLweights(x, weightc=c("1"=3, "3"=5), order=FALSE, onlydn=FALSE)  )
 
+\dontrun{ # time consuming
 x <- rexp(190)
 d <- distLquantile(x)
 d2 <- q_weighted(d)
@@ -49,7 +50,6 @@ stopifnot(all(qw1==qw2, na.rm=TRUE))
 q_weighted(d, weights=dw, onlyc=TRUE)
 q_weighted(d, weights=data.frame(weightc=cw), onlyc=TRUE)
 
-\dontrun{ # time consuming
 system.time(pbreplicate(5000, q_weighted(d, weightc=cw)))             # 8.5 secs
 system.time(pbreplicate(5000, q_weighted(d, weights=dw, onlyc=TRUE))) # 0.8 secs
 }
