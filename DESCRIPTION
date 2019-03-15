@@ -15,9 +15,11 @@ Maintainer: Berry Boessenkool <berry-b@gmx.de>
 Description: Code to fit, plot and compare several (extreme value)
     distribution functions. Can also compute (truncated) distribution quantile estimates and
     draw a plot with return periods on a linear scale.
+   	On the fitting method, see Asquith (2011):
+   	Distributional Analysis with L-moment Statistics [...]  ISBN 1463508417 
 License: GPL (>= 2)
 URL: https://github.com/brry/extremeStat
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.1
 Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 BugReports: https://github.com/brry/extremeStat

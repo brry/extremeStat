@@ -4,11 +4,11 @@
 \alias{plotLweights}
 \title{Distribution rank comparison}
 \usage{
-plotLweights(dlf, type = "o", col = RColorBrewer::brewer.pal(5, "Set2"),
-  pch = c(1:4, NA), lty = 1, lwd = 1, legargs = NULL,
-  main = "Distribution function GOF and weights", xlab = "Weight / RMSE",
-  ylab = "", xlim = range(gof[, grep("weight", colnames(gof))], na.rm =
-  TRUE), ...)
+plotLweights(dlf, type = "o", col = RColorBrewer::brewer.pal(5,
+  "Set2"), pch = c(1:4, NA), lty = 1, lwd = 1, legargs = NULL,
+  main = "Distribution function GOF and weights",
+  xlab = "Weight / RMSE", ylab = "", xlim = range(gof[,
+  grep("weight", colnames(gof))], na.rm = TRUE), ...)
 }
 \arguments{
 \item{dlf}{List as returned by \code{\link{distLfit}}, containing the element \code{gof}}

@@ -7,11 +7,13 @@
 plotLfit(dlf, nbest = 5, selection = NULL, order = TRUE, rmse = 4,
   cdf = FALSE, log = FALSE, supportends = TRUE, breaks = 20,
   xlim = extendrange(dlf$dat, f = 0.15), ylim = NULL, col = "grey",
-  main = paste(if (cdf) "Cumulated", "density distributions of", dlf$datname),
-  xlab = dlf$datname, ylab = if (cdf) "(Empirical) Cumulated Density (CDF)"
-  else "Probability Density Function (PDF)", las = 1,
+  main = paste(if (cdf) "Cumulated", "density distributions of",
+  dlf$datname), xlab = dlf$datname, ylab = if (cdf)
+  "(Empirical) Cumulated Density (CDF)" else
+  "Probability Density Function (PDF)", las = 1,
   distcols = berryFunctions::rainbow2(nbest), lty = 1, add = FALSE,
-  logargs = NULL, legend = TRUE, legargs = NULL, histargs = NULL, ...)
+  logargs = NULL, legend = TRUE, legargs = NULL, histargs = NULL,
+  ...)
 }
 \arguments{
 \item{dlf}{List as returned by \code{\link{distLfit}}, containing the
