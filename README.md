@@ -10,6 +10,7 @@ Can also compute (truncated) distribution quantile estimates and draw a plot wit
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version-last-release/extremeStat)](https://cran.r-project.org/package=extremeStat) 
 [![downloads](http://cranlogs.r-pkg.org/badges/extremeStat)](http://www.r-pkg.org/services)
 [![Rdoc](http://www.rdocumentation.org/badges/version/extremeStat)](http://www.rdocumentation.org/packages/extremeStat)
+!["extremeStat dependencies"](https://tinyverse.netlify.com/badge/extremeStat)
 
 
 Install / load the package and browse through the examples:
