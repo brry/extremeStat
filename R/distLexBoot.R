@@ -18,9 +18,11 @@
 #' @examples
 #' 
 #' data(annMax)
-#' dlf <- distLextreme(annMax, selection=c("wak","gum","gev","nor"))
+#' dlf <- distLextreme(annMax, selection=c("gum","gev","wak","nor"))
 #' dlfB <- distLexBoot(dlf, nbest=4, conf.lev=0.5, n=10) # n low for quick example tests
 #' plotLexBoot(dlfB)
+#' plotLexBoot(dlfB, selection=c("nor","gev"))
+#' plotLexBoot(dlfB, selection=c("gum","gev","wak","nor"), order=FALSE)
 #' 
 #' @param dlf       \code{dlf} object, as returned by \code{\link{distLextreme}}
 #' @param nbest     Number of best fitted distribution functions in dlf for which

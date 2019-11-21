@@ -33,7 +33,7 @@ log=TRUE,
 if(is.null(selection)) selection <- dlf$distnames
 # plot
 if(!add) dlf <- plotLextreme(dlf=dlf, selection=selection, log=log, ...)
-exBootCI <- dlf$exBootCI
+exBootCI <- dlf$exBootCI[selection]
 for(i in length(exBootCI):1) if(add)
 berryFunctions::ciBand(yu=exBootCI[[i]][2,], yl=exBootCI[[i]][1,], x=dlf$exBootRPs,
                        add=TRUE, colm=dlf$distcols[i], nastars=FALSE, ...) else
