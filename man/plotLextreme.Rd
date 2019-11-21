@@ -9,7 +9,7 @@ plotLextreme(dlf, selection = NULL, order = FALSE, add = FALSE,
   ylab = "Discharge HQ  [m\U00B3/s]", PPcol = "black", PPpch = c(16, 3),
   PPcex = 1, distcols = berryFunctions::rainbow2(nbest), lty = 1,
   lwd = 1, pch = NA, cex = 1, n_pch = 15, legend = TRUE,
-  rmse = 4, legargs = NULL, quiet = FALSE, ...)
+  rmse = 4, legargs = NULL, quiet = FALSE, logargs = NULL, ...)
 }
 \arguments{
 \item{dlf}{List as returned by \code{\link{distLextreme}} or \code{\link{distLexBoot}}}
@@ -78,6 +78,8 @@ They are rounded to \code{rmse} digits. DEFAULT: 4}
 legend, col, pch, lwd, lty. DEFAULT: NULL}
 
 \item{quiet}{Suppress notes? DEFAULT: FALSE}
+
+\item{logargs}{list of arguments passed to \code{berryFunctions::\link{logAxis}}.}
 
 \item{\dots}{Further arguments passed to \code{\link{plot}} like yaxt="n", ...}
 }

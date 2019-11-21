@@ -59,6 +59,7 @@
 #' @param legargs list of arguments passed to \code{\link{legend}} except for
 #'                legend, col, pch, lwd, lty. DEFAULT: NULL
 #' @param quiet   Suppress notes? DEFAULT: FALSE
+#' @param logargs list of arguments passed to \code{berryFunctions::\link{logAxis}}.
 #' @param \dots   Further arguments passed to \code{\link{plot}} like yaxt="n", ...
 #' 
 plotLextreme <- function(
@@ -87,6 +88,7 @@ legend=TRUE,
 rmse=4,
 legargs=NULL,
 quiet=FALSE,
+logargs=NULL,
 ... )
 {
 # PP (Plotting Position) points charactereistics recycled:
@@ -145,7 +147,7 @@ if(is.null(xlim)) xlim <- c(1,range(RPw, RPg)[2])
 # draw discharges over return periods:
 if(!add) plot(1, type="n", las=las, ylim=ylim, xlim=xlim, main=main, ylab=ylab, xlab=xlab,
               log=if(log) "x" else "", xaxt=if(log) "n" else "s", ...)
-if(log) berryFunctions::logAxis(1)
+if(log) do.call(berryFunctions::logAxis, logargs)
 # range of discharges:
 yval <- seq(from=par("usr")[3], to=par("usr")[4], length=300)
 y_int <- approx(yval, n=n_pch)$y
