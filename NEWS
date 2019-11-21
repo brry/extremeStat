@@ -5,12 +5,27 @@ extremeStat ToDo-list / wishlist / issues
 - split up q_gpd into f_gpd, p/q/d/r_gpd and comp_gpd
 - distLexBoot (+plot) conf.lev vectorization
 - distLquantile and g_gpd: reference to vignette POT
+- replace berryFunctions::rainbow2 with catPal/seqPal
 
 
 ---------------------------------------
 extremeStat Package by Berry Boessenkool, berry-b@gmx.de
 Any feedback is welcome, per email or on github.com/brry/extremeStat
 ---------------------------------------
+
+---------------------------------------
+---------------------------------------
+
+
+Version 1.5.0 (2017-xx-xx)
+
+- CRAN computation time of examples reduced (YET TO DO!!)
+
+
+
+---------------------------------------
+---------------------------------------
+
 
 Version 1.4.0 (2017-11-02)
 - printL improved
