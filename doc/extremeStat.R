@@ -1,9 +1,9 @@
 ## ----instcran, eval=FALSE------------------------------------------------
 #  install.packages("extremeStat")
 #  
-#  # install the development version from github:
-#  berryFunctions::instGit("brry/berryFunctions")
-#  berryFunctions::instGit("brry/extremeStat")
+#  # install the development version on github, incl. vignette:
+#  if(!requireNamespace("remotes", quitly=TRUE)) install.packages("remotes")
+#  remotes::install_github("brry/extremeStat", build_opts="--no-manual")
 
 ## ----library, echo=TRUE--------------------------------------------------
 library(extremeStat)
