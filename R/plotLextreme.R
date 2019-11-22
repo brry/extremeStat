@@ -147,7 +147,7 @@ if(is.null(xlim)) xlim <- c(1,range(RPw, RPg)[2])
 # draw discharges over return periods:
 if(!add) plot(1, type="n", las=las, ylim=ylim, xlim=xlim, main=main, ylab=ylab, xlab=xlab,
               log=if(log) "x" else "", xaxt=if(log) "n" else "s", ...)
-if(log) do.call(berryFunctions::logAxis, logargs)
+if(log) do.call(berryFunctions::logAxis, berryFunctions::owa(list(side=1),logargs))
 # range of discharges:
 yval <- seq(from=par("usr")[3], to=par("usr")[4], length=300)
 y_int <- approx(yval, n=n_pch)$y

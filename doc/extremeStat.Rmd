@@ -30,7 +30,7 @@ install.packages("extremeStat")
 
 # install the development version on github, incl. vignette:
 if(!requireNamespace("remotes", quitly=TRUE)) install.packages("remotes")
-remotes::install_github("brry/extremeStat", build_opts="--no-manual")
+remotes::install_github("brry/extremeStat", build_vignettes=TRUE)
 ```
 `extremeStat` has 33 dependencies, because of the GPD comparison across the packages.
 
