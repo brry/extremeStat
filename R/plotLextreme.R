@@ -26,7 +26,7 @@
 #'                add lines to an existing plot. DEFAULT: FALSE
 #' @param nbest   Number of distributions plotted, in order of goodness of fit.
 #'                Overwritten internally if selection is given. DEFAULT: 5
-#' @param log     Logarithmic x-axis? DEFAULT: FALSE
+#' @param log     Charstring ("x", "y", "xy") for lgarithmic axes. See \code{logargs}. DEFAULT: ""
 #' @param xlim    X-axis limits. DEFAULT: xlim of plotting positions
 #' @param ylim    Y-lim. DEFAULT: from min to extended max
 #' @param las     LabelAxisStyle to orient labels, see \code{\link{par}}. DEFAULT: 1
@@ -68,7 +68,7 @@ selection=NULL,
 order=FALSE,
 add=FALSE,
 nbest=5,
-log=FALSE,
+log="",
 xlim=NULL,
 ylim=NULL,
 las=1,
@@ -145,11 +145,17 @@ if(length(distcols) != nbest & !quiet)
 if(is.null(ylim)) ylim <- c(min(dlf$dat), max(dlf$dat)+0.1*diff(range(dlf$dat)) )
 if(is.null(xlim)) xlim <- c(1,range(RPw, RPg)[2])
 # draw discharges over return periods:
+if(isTRUE (log)) log <- "x" # keep backwards compatibility, used to be log=T/F
+if(isFALSE(log)) log <- ""
+xlog <- grepl("x", log)
+ylog <- grepl("y", log)
+slog <- c(if(xlog) 1, if(ylog) 2)
 if(!add) plot(1, type="n", las=las, ylim=ylim, xlim=xlim, main=main, ylab=ylab, xlab=xlab,
-              log=if(log) "x" else "", xaxt=if(log) "n" else "s", ...)
-if(log) do.call(berryFunctions::logAxis, berryFunctions::owa(list(side=1),logargs))
+              log=log, xaxt=if(xlog) "n" else "s", yaxt=if(ylog) "n" else "s", ...)
+if(xlog|ylog) do.call(berryFunctions::logAxis, berryFunctions::owa(list(side=slog),logargs))
 # range of discharges:
 yval <- seq(from=par("usr")[3], to=par("usr")[4], length=300)
+if(ylog) yval <- 10^yval
 y_int <- approx(yval, n=n_pch)$y
 # Rycycle distfun lines arguments:
 lty <- rep(lty, length=nbest)

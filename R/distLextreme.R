@@ -57,6 +57,8 @@
 #' # Basic examples ---------------------------------------------------------------
 #' dlf <- distLextreme(annMax)
 #' plotLextreme(dlf, log=TRUE)
+#' plotLextreme(dlf, log="xy")
+#' plotLextreme(dlf)
 #' 
 #' # Object structure:
 #' str(dlf, max.lev=2)
