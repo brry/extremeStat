@@ -4,9 +4,18 @@
 \alias{distLexBoot}
 \title{Bootstrapping uncertainty intervals for return periods}
 \usage{
-distLexBoot(dlf, nbest = 3, selection = NULL, n = 100, prop = 0.8,
-  conf.lev = 0.95, RPs = NULL, log = TRUE, progbars = TRUE,
-  quiet = FALSE)
+distLexBoot(
+  dlf,
+  nbest = 3,
+  selection = NULL,
+  n = 100,
+  prop = 0.8,
+  conf.lev = 0.95,
+  RPs = NULL,
+  log = TRUE,
+  progbars = TRUE,
+  quiet = FALSE
+)
 }
 \arguments{
 \item{dlf}{\code{dlf} object, as returned by \code{\link{distLextreme}}}

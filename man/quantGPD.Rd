@@ -4,9 +4,15 @@
 \alias{quantGPD}
 \title{Fast GPD quantile estimate}
 \usage{
-quantGPD(x, probs = c(0.8, 0.9, 0.99), truncate = 0,
-  threshold = berryFunctions::quantileMean(x, truncate), addn = TRUE,
-  quiet = FALSE, ...)
+quantGPD(
+  x,
+  probs = c(0.8, 0.9, 0.99),
+  truncate = 0,
+  threshold = berryFunctions::quantileMean(x, truncate),
+  addn = TRUE,
+  quiet = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{Vector with numeric values. NAs are silently ignored.}

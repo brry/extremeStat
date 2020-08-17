@@ -4,9 +4,17 @@
 \alias{plotLquantile}
 \title{Plot quantiles of distributions fitted with L-moments}
 \usage{
-plotLquantile(dlf, nbest = 5, selection = NULL, order = FALSE,
-  rows = NULL, heights = stats::quantile(par("usr")[3:4], 0.2),
-  distcols = dlfplot$distcols, linargs = NULL, ...)
+plotLquantile(
+  dlf,
+  nbest = 5,
+  selection = NULL,
+  order = FALSE,
+  rows = NULL,
+  heights = stats::quantile(par("usr")[3:4], 0.2),
+  distcols = dlfplot$distcols,
+  linargs = NULL,
+  ...
+)
 }
 \arguments{
 \item{dlf}{List as returned by \code{\link{distLquantile}}, containing the

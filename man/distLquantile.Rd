@@ -4,14 +4,29 @@
 \alias{distLquantile}
 \title{distribution quantiles}
 \usage{
-distLquantile(x = NULL, probs = c(0.8, 0.9, 0.99), truncate = 0,
-  threshold = quantileMean(dlf$dat_full[is.finite(dlf$dat_full)],
-  truncate), sanerange = NA, sanevals = NA, selection = NULL,
-  order = TRUE, dlf = NULL, datname = deparse(substitute(x)),
-  list = FALSE, empirical = TRUE, qemp.type = 8,
-  weighted = empirical, gpd = empirical, speed = TRUE,
-  quiet = FALSE, ssquiet = quiet, ttquiet = quiet,
-  gpquiet = missing(quiet) | quiet, ...)
+distLquantile(
+  x = NULL,
+  probs = c(0.8, 0.9, 0.99),
+  truncate = 0,
+  threshold = quantileMean(dlf$dat_full[is.finite(dlf$dat_full)], truncate),
+  sanerange = NA,
+  sanevals = NA,
+  selection = NULL,
+  order = TRUE,
+  dlf = NULL,
+  datname = deparse(substitute(x)),
+  list = FALSE,
+  empirical = TRUE,
+  qemp.type = 8,
+  weighted = empirical,
+  gpd = empirical,
+  speed = TRUE,
+  quiet = FALSE,
+  ssquiet = quiet,
+  ttquiet = quiet,
+  gpquiet = missing(quiet) | quiet,
+  ...
+)
 }
 \arguments{
 \item{x}{Sample for which parametric quantiles are to be calculated.

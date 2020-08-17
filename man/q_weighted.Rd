@@ -4,8 +4,7 @@
 \alias{q_weighted}
 \title{Compute weighted averages of quantile estimates}
 \usage{
-q_weighted(quant, weights = distLweights(quant, ...), onlyc = FALSE,
-  ...)
+q_weighted(quant, weights = distLweights(quant, ...), onlyc = FALSE, ...)
 }
 \arguments{
 \item{quant}{Data.frame as in \code{\link{distLquantile}} output.}

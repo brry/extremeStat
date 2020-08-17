@@ -4,8 +4,14 @@
 \alias{distLweights}
 \title{Compute distribution weights from GOF}
 \usage{
-distLweights(RMSE, order = TRUE, onlydn = TRUE, weightc = NA,
-  quiet = FALSE, ...)
+distLweights(
+  RMSE,
+  order = TRUE,
+  onlydn = TRUE,
+  weightc = NA,
+  quiet = FALSE,
+  ...
+)
 }
 \arguments{
 \item{RMSE}{Numeric: Named vector with goodness of fit values (RMSE).

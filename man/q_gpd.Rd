@@ -4,11 +4,20 @@
 \alias{q_gpd}
 \title{GPD quantile of sample}
 \usage{
-q_gpd(x, probs = c(0.8, 0.9, 0.99), truncate = 0,
+q_gpd(
+  x,
+  probs = c(0.8, 0.9, 0.99),
+  truncate = 0,
   threshold = berryFunctions::quantileMean(x, truncate),
-  package = "extRemes", method = NULL, list = FALSE,
-  undertruncNA = TRUE, quiet = FALSE, ttquiet = quiet,
-  efquiet = quiet, ...)
+  package = "extRemes",
+  method = NULL,
+  list = FALSE,
+  undertruncNA = TRUE,
+  quiet = FALSE,
+  ttquiet = quiet,
+  efquiet = quiet,
+  ...
+)
 }
 \arguments{
 \item{x}{Vector with numeric values. NAs are silently ignored.}

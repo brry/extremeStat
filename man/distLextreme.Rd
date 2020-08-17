@@ -4,8 +4,15 @@
 \alias{distLextreme}
 \title{Extreme value stats}
 \usage{
-distLextreme(dat = NULL, dlf = NULL, RPs = c(2, 5, 10, 20, 50),
-  npy = 1, truncate = 0, quiet = FALSE, ...)
+distLextreme(
+  dat = NULL,
+  dlf = NULL,
+  RPs = c(2, 5, 10, 20, 50),
+  npy = 1,
+  truncate = 0,
+  quiet = FALSE,
+  ...
+)
 }
 \arguments{
 \item{dat}{Vector with \emph{either} (for Block Maxima Approach)

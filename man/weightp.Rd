@@ -4,7 +4,9 @@
 \name{weightp}
 \alias{weightp}
 \title{distribution weights}
-\format{named num [1:17]}
+\format{
+named num [1:17]
+}
 \source{
 See paper revisions (not yet online at moment of extremeStat update) (\email{berry-b@gmx.de})
 }

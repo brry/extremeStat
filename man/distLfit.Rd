@@ -4,11 +4,20 @@
 \alias{distLfit}
 \title{Fit distributions via L-moments}
 \usage{
-distLfit(dat, datname = deparse(substitute(dat)), selection = NULL,
-  speed = TRUE, ks = FALSE, truncate = 0,
+distLfit(
+  dat,
+  datname = deparse(substitute(dat)),
+  selection = NULL,
+  speed = TRUE,
+  ks = FALSE,
+  truncate = 0,
   threshold = berryFunctions::quantileMean(dat, truncate),
-  progbars = length(dat) > 200, time = TRUE, quiet = FALSE,
-  ssquiet = quiet, ...)
+  progbars = length(dat) > 200,
+  time = TRUE,
+  quiet = FALSE,
+  ssquiet = quiet,
+  ...
+)
 }
 \arguments{
 \item{dat}{Vector with values}
