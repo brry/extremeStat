@@ -3,13 +3,35 @@
 \alias{plotLextreme}
 \title{Plot extreme value statistics}
 \usage{
-plotLextreme(dlf, selection = NULL, order = FALSE, add = FALSE,
-  nbest = 5, log = FALSE, xlim = NULL, ylim = NULL, las = 1,
-  main = dlf$datname, xlab = "Return Period RP  [a]",
-  ylab = "Discharge HQ  [m\U00B3/s]", PPcol = "black", PPpch = c(16, 3),
-  PPcex = 1, distcols = berryFunctions::rainbow2(nbest), lty = 1,
-  lwd = 1, pch = NA, cex = 1, n_pch = 15, legend = TRUE,
-  rmse = 4, legargs = NULL, quiet = FALSE, logargs = NULL, ...)
+plotLextreme(
+  dlf,
+  selection = NULL,
+  order = FALSE,
+  add = FALSE,
+  nbest = 5,
+  log = "",
+  xlim = NULL,
+  ylim = NULL,
+  las = 1,
+  main = dlf$datname,
+  xlab = "Return Period RP  [a]",
+  ylab = "Discharge HQ  [m\U00B3/s]",
+  PPcol = "black",
+  PPpch = c(16, 3),
+  PPcex = 1,
+  distcols = berryFunctions::rainbow2(nbest),
+  lty = 1,
+  lwd = 1,
+  pch = NA,
+  cex = 1,
+  n_pch = 15,
+  legend = TRUE,
+  rmse = 4,
+  legargs = NULL,
+  quiet = FALSE,
+  logargs = NULL,
+  ...
+)
 }
 \arguments{
 \item{dlf}{List as returned by \code{\link{distLextreme}} or \code{\link{distLexBoot}}}
@@ -26,7 +48,7 @@ add lines to an existing plot. DEFAULT: FALSE}
 \item{nbest}{Number of distributions plotted, in order of goodness of fit.
 Overwritten internally if selection is given. DEFAULT: 5}
 
-\item{log}{Logarithmic x-axis? DEFAULT: FALSE}
+\item{log}{Charstring ("x", "y", "xy") for logarithmic axes. See \code{logargs}. DEFAULT: ""}
 
 \item{xlim}{X-axis limits. DEFAULT: xlim of plotting positions}
 

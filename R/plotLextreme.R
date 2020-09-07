@@ -26,7 +26,7 @@
 #'                add lines to an existing plot. DEFAULT: FALSE
 #' @param nbest   Number of distributions plotted, in order of goodness of fit.
 #'                Overwritten internally if selection is given. DEFAULT: 5
-#' @param log     Charstring ("x", "y", "xy") for lgarithmic axes. See \code{logargs}. DEFAULT: ""
+#' @param log     Charstring ("x", "y", "xy") for logarithmic axes. See \code{logargs}. DEFAULT: ""
 #' @param xlim    X-axis limits. DEFAULT: xlim of plotting positions
 #' @param ylim    Y-lim. DEFAULT: from min to extended max
 #' @param las     LabelAxisStyle to orient labels, see \code{\link{par}}. DEFAULT: 1
