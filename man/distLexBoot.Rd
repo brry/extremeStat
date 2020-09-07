@@ -11,6 +11,7 @@ distLexBoot(
   n = 100,
   prop = 0.8,
   conf.lev = 0.95,
+  replace = FALSE,
   RPs = NULL,
   log = TRUE,
   progbars = TRUE,
@@ -34,6 +35,8 @@ Suggested to keep this low. DEFAULT: NULL}
 \item{conf.lev}{Confidence level (Proportion of subsamples within 'confidence interval').
 Quantiles extracted from this value are passed to
 \code{\link[berryFunctions]{quantileMean}}. DEFAULT: 0.95}
+
+\item{replace}{Logical: replace in each \code{\link[base]{sample}}? DEFAULT: FALSE}
 
 \item{RPs}{Return Period vector, by default calculated internally based on
 value of \code{log}. DEFAULT: NULL}

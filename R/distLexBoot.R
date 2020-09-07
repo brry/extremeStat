@@ -35,6 +35,7 @@
 #' @param conf.lev  Confidence level (Proportion of subsamples within 'confidence interval').
 #'                  Quantiles extracted from this value are passed to
 #'                  \code{\link[berryFunctions]{quantileMean}}. DEFAULT: 0.95
+#' @param replace   Logical: replace in each \code{\link[base]{sample}}? DEFAULT: FALSE
 #' @param RPs       Return Period vector, by default calculated internally based on
 #'                  value of \code{log}. DEFAULT: NULL
 #' @param log       RPs suitable for plot on a logarithmic axis? DEFAULT: TRUE
@@ -49,6 +50,7 @@ selection=NULL,
 n=100,
 prop=0.8,
 conf.lev=0.95,
+replace=FALSE,
 RPs=NULL,
 log=TRUE,
 progbars=TRUE,
@@ -66,7 +68,7 @@ sss <- round(length(dlf$dat_full)*prop)
 # Actual computation for each subsample
 if(progbars) replicate <- pbapply::pbreplicate
 simQ_orig <- replicate(n=n,
-   distLquantile(x=c(sample(dlf$dat_full,size=sss)), selection=selection, order=FALSE,
+   distLquantile(x=c(sample(dlf$dat_full,size=sss, replace=replace)), selection=selection, order=FALSE,
    probs=1-1/(RPs*dlf$npy), empirical=FALSE, progbars=FALSE, time=FALSE, quiet=quiet,
    truncate=dlf$truncate),
    simplify=FALSE)
