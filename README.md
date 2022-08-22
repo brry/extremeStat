@@ -7,9 +7,9 @@ Can also compute (truncated) distribution quantile estimates and draw a plot wit
 
 ### installation
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version-last-release/extremeStat)](https://cran.r-project.org/package=extremeStat) 
-[![downloads](http://cranlogs.r-pkg.org/badges/extremeStat)](http://www.r-pkg.org/services)
-[![Rdoc](http://www.rdocumentation.org/badges/version/extremeStat)](http://www.rdocumentation.org/packages/extremeStat)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-last-release/extremeStat)](https://cran.r-project.org/package=extremeStat) 
+[![downloads](https://cranlogs.r-pkg.org/badges/extremeStat)](https://www.r-pkg.org/services)
+[![Rdoc](https://www.rdocumentation.org/badges/version/extremeStat)](https://www.rdocumentation.org/packages/extremeStat)
 !["extremeStat dependencies"](https://tinyverse.netlify.com/badge/extremeStat)
 
 
