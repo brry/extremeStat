@@ -242,7 +242,7 @@ plotLextreme(distLextreme(Dresden_AnnualMax))
 
 }
 \references{
-\url{http://RclickHandbuch.wordpress.com} Chapter 15 (German)\cr
+\url{https://RclickHandbuch.wordpress.com} Chapter 15 (German)\cr
             Christoph Mudersbach: Untersuchungen zur Ermittlung von hydrologischen
             Bemessungsgroessen mit Verfahren der instationaeren Extremwertstatistik
 }

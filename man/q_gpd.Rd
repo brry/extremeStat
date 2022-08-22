@@ -216,8 +216,8 @@ text(300, 300, "empirical quantile estimate", col="green3")
 
 }
 \references{
-\url{http://stackoverflow.com/q/27524131},
-            \url{http://stats.stackexchange.com/q/129438}
+\url{https://stackoverflow.com/q/27524131},
+            \url{https://stats.stackexchange.com/q/129438}
 }
 \seealso{
 \code{\link{distLquantile}} which compares results for all packages\cr

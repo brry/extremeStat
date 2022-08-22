@@ -33,7 +33,7 @@
 #' @seealso \code{\link{distLfit}}. \code{\link{distLexBoot}} for confidence
 #'          interval from Bootstrapping.
 #'          \code{\link[extRemes]{fevd}} in the package \code{extRemes}.
-#' @references \url{http://RclickHandbuch.wordpress.com} Chapter 15 (German)\cr
+#' @references \url{https://RclickHandbuch.wordpress.com} Chapter 15 (German)\cr
 #'             Christoph Mudersbach: Untersuchungen zur Ermittlung von hydrologischen
 #'             Bemessungsgroessen mit Verfahren der instationaeren Extremwertstatistik
 #' @keywords hplot dplot distribution ts

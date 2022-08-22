@@ -228,13 +228,13 @@ q_gpd(rnum, probs=myprobs, truncate=0.5)
 
 }
 \references{
-On GPD: \url{http://stats.stackexchange.com/questions/69438}
+On GPD: \url{https://stats.stackexchange.com/questions/69438}
 }
 \seealso{
 \code{\link{q_gpd}}, \code{\link{distLfit}}, require("truncdist")
         Xian Zhou, Liuquan Sun and Haobo Ren (2000): Quantile estimation for
         left truncated and right censored data, Statistica Sinica 10
-         \url{http://www3.stat.sinica.edu.tw/statistica/oldpdf/A10n411.pdf}\cr
+         \url{https://www3.stat.sinica.edu.tw/statistica/oldpdf/A10n411.pdf}\cr
 }
 \author{
 Berry Boessenkool, \email{berry-b@gmx.de}, March + July 2015, Feb 2016

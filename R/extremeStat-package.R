@@ -30,9 +30,9 @@
 #' If you are looking for more detailed (uncertainty) analysis, eg confidence intervals,
 #' check out the package \code{extRemes}, especially the function \code{\link[extRemes]{fevd}}.
 #' \url{https://cran.r-project.org/package=extRemes}\cr
-#' Intro slides: \url{http://sites.lsa.umich.edu/eva2015/wp-content/uploads/sites/44/2015/06/Intro2EVT.pdf}\cr
+#' Intro slides: \url{https://sites.lsa.umich.edu/eva2015/wp-content/uploads/sites/44/2015/06/Intro2EVT.pdf}\cr
 #' Parameter fitting and distribution functions: \url{https://cran.r-project.org/package=lmomco}\cr
-#' Distributions: \url{https://www.rmetrics.org/files/Meielisalp2009/Presentations/Scott.pdf}
+#' Distributions: \url{https://web.archive.org/web/20110807225801/https://www.rmetrics.org/files/Meielisalp2009/Presentations/Scott.pdf}
 #' and: \url{https://cran.r-project.org/view=Distributions} \cr
 #' R in Hydrology: \url{http://abouthydrology.blogspot.de/2012/08/r-resources-for-hydrologists.html}\cr
 #' 

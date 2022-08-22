@@ -38,8 +38,8 @@
 #'    q_gpd_n_geq is number of values greater than or equal to q_gpd_threshold.
 #'    gt is only greater than.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Feb 2016
-#' @references \url{http://stackoverflow.com/q/27524131},
-#'             \url{http://stats.stackexchange.com/q/129438}
+#' @references \url{https://stackoverflow.com/q/27524131},
+#'             \url{https://stats.stackexchange.com/q/129438}
 #' @seealso \code{\link{distLquantile}} which compares results for all packages\cr
 #'          Other related packages (not implemented):\cr
 #'                \url{https://cran.r-project.org/package=gPdtest}\cr
