@@ -12,7 +12,7 @@ See paper revisions (not yet online at moment of extremeStat update) (\email{ber
 }
 \description{
 Weights for weighted average as in the submission of revisions for the paper
-\url{http://www.nat-hazards-earth-syst-sci-discuss.net/nhess-2016-183/}
+\url{https://www.nat-hazards-earth-syst-sci-discuss.net/nhess-2016-183/}
 }
 \examples{
 

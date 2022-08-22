@@ -10,7 +10,7 @@
 #'     More complex estimates of quality of fits:
 #'     Fard, M.N.P. and Holmquist, B. (2013, Chilean Journal of Statistics):
 #'     Powerful goodness-of-fit tests for the extreme value distribution.
-#'     http://chjs.mat.utfsm.cl/volumes/04/01/Fard_Holmquist(2013).pdf
+#'     https://chjs.mat.utfsm.cl/volumes/04/01/Fard_Holmquist(2013).pdf
 #' 
 #' @keywords hplot dplot distribution univar
 #' @export

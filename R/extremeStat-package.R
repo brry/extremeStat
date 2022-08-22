@@ -34,7 +34,7 @@
 #' Parameter fitting and distribution functions: \url{https://cran.r-project.org/package=lmomco}\cr
 #' Distributions: \url{https://web.archive.org/web/20110807225801/https://www.rmetrics.org/files/Meielisalp2009/Presentations/Scott.pdf}
 #' and: \url{https://cran.r-project.org/view=Distributions} \cr
-#' R in Hydrology: \url{http://abouthydrology.blogspot.de/2012/08/r-resources-for-hydrologists.html}\cr
+#' R in Hydrology: \url{https://abouthydrology.blogspot.de/2012/08/r-resources-for-hydrologists.html}\cr
 #' 
 #' @keywords package documentation
 #' @importFrom grDevices extendrange
@@ -85,7 +85,7 @@ NULL
 #' distribution weights
 #' 
 #' Weights for weighted average as in the submission of revisions for the paper
-#' \url{http://www.nat-hazards-earth-syst-sci-discuss.net/nhess-2016-183/}
+#' \url{https://www.nat-hazards-earth-syst-sci-discuss.net/nhess-2016-183/}
 #' 
 #' 
 #' @name weightp

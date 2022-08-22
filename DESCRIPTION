@@ -1,7 +1,7 @@
 Package: extremeStat
 Type: Package
 Title: Extreme Value Statistics and Quantile Estimation
-Version: 1.5.0
+Version: 1.5.1
 Date: 2022-08-22
 Depends: R (>= 2.10)
 Imports:

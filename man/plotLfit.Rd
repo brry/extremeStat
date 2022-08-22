@@ -100,7 +100,7 @@ Plot histogram and distribution densities \emph{or} ecdf with cumulated probabil
 \details{
 By default, this plots density instead of CDF, because the distributions are
 easier to discern and tail behavior is easier to judge visually. See also
-\url{http://www.vosesoftware.com/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_(histogram)_plots.htm}
+\url{https://www.vosesoftware.com/ModelRiskHelp/index.htm#Presenting_results/Cumulative_plots/Relationship_between_cdf_and_density_(histogram)_plots.htm}
 }
 \examples{
  # See distLfit

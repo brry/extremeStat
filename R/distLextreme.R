@@ -169,7 +169,7 @@
 #' 
 #' # Minima -----------------------------------------------------------------------
 #' 
-#' browseURL("http://nrfa.ceh.ac.uk/data/station/meanflow/39072")
+#' browseURL("https://nrfa.ceh.ac.uk/data/station/meanflow/39072")
 #' qfile <- system.file("extdata/discharge39072.csv", package="berryFunctions")
 #' Q <- read.table(qfile, skip=19, header=TRUE, sep=",", fill=TRUE)[,1:2]
 #' rm(qfile)
