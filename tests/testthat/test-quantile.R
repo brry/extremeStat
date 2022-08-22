@@ -3,11 +3,14 @@ context("distLquantile")
 data(annMax, package="extremeStat") # Annual Discharge Maxima (streamflow)
 set.seed(007) # with other random samples, there can be warnings in q_gpd -> Renext::fGPD -> fmaxlo
 
+ndist <- length(lmomco::dist.list()) - 13 + 22
+# 13: excluded in distLfit.R Line 149
+# 22: empirical, weighted, GPD_, n, threshold, etc
 
 test_that("distLquantile generally runs fine",{
 distLquantile(annMax)
-expect_equal(nrow(distLquantile(annMax[annMax<30])), 39)
-expect_equal(nrow(distLquantile(annMax)), 39)
+expect_equal(nrow(distLquantile(annMax[annMax<30])), ndist)
+expect_equal(nrow(distLquantile(annMax)), ndist)
 expect_silent(distLquantile(annMax, truncate=0.6, gpd=FALSE, time=FALSE))
 expect_message(distLquantile(annMax, selection="wak", empirical=FALSE, quiet=FALSE), 
   "distLfit execution took")
@@ -21,7 +24,8 @@ d <- distLquantile(annMax, probs=0:4/4)
 
 
 test_that("infinite values are removed",{
-distLextreme(c(-Inf,annMax))
+expect_message(distLextreme(c(-Inf,annMax)),
+               "1 Inf/NA was omitted from 36 data points (2.8%)", fixed=TRUE)
 })
 
 test_that("distLquantile can handle selection input",{
@@ -83,7 +87,7 @@ test_that("distLquantile can deal with a given dlf",{
 })
 
 test_that("distLquantile can handle emp, truncate",{
-expect_equal(nrow(distLquantile(annMax, emp=FALSE)), 20) # only distributions in lmomco
+expect_equal(nrow(distLquantile(annMax, emp=FALSE)), ndist-19) # only distributions in lmomco
 aq <- distLquantile(annMax, truncate=0.8, probs=0.95) # POT
 #round(aq,4)
 aq_expected <- read.table(header=TRUE, text="
@@ -99,17 +103,19 @@ gno                   102.1442 0.0822
 ln3                   102.1442 0.0822
 gev                   101.9731 0.0831
 glo                   101.4164 0.0870
+pdq3                  101.2073 0.0875 # added Aug 2022
 gum                   102.5500 0.0893
 ray                   103.6840 0.0971
+pdq4                  107.0252 0.1023 # added Aug 2022
 gam                   103.8951 0.1128
 rice                  104.2135 0.1217
 nor                   104.2161 0.1218
 revgum                104.9992 0.1595
 empirical             109.2000     NA
 quantileMean          105.7259     NA
-weighted1             102.8789     NA
-weighted2             102.7408     NA
-weighted3             102.6636     NA
+weighted1             102.9910     NA # changed Aug 2022
+weighted2             102.8478     NA # changed Aug 2022
+weighted3             102.5979     NA # changed Aug 2022
 weightedc                  NaN     NA
 GPD_LMO_lmomco        103.4762 0.0156
 GPD_LMO_extRemes       99.8417 0.0163
@@ -130,8 +136,8 @@ threshold              82.1469     NA")
 colnames(aq_expected) <- colnames(aq)
 aq_expected <- as.matrix(aq_expected)
 # expect_equal(round(aq,4), aq_expected) # not on win builder
-expect_equal(round(aq[1:22,],4), aq_expected[1:22,])
-tst <- which(!is.na(aq[23:38,1]))+22
+expect_equal(round(aq[1:24,],4), aq_expected[1:24,])
+tst <- which(!is.na(aq[25:38,1]))+24
 expect_equal(round(aq[tst,],1), round(aq_expected[tst,],1))
 
 dd <- distLquantile(annMax, selection="gpa", weighted=FALSE, truncate=0.001)

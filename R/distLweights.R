@@ -45,8 +45,9 @@
 #' 
 #' dlf <- distLfit(annMax, ks=TRUE)
 #' op <- par(mfrow=c(1,2), mar=c(3,4,0.5,0.5), mgp=c(1.9,0.7,0))
-#' plot(dlf$gof$RMSE, 17:1, yaxt="n", ylab="", type="o"); axis(2, 17:1, rownames(dlf$gof), las=1)
-#' plot(dlf$gof$R2,   17:1, yaxt="n", ylab="", type="o"); axis(2, 17:1, rownames(dlf$gof), las=1)
+#' yy <- nrow(dlf$gof):1 # depends on length of lmomco::dist.list()
+#' plot(dlf$gof$RMSE, yy, yaxt="n", ylab="", type="o"); axis(2, yy, rownames(dlf$gof), las=1)
+#' plot(dlf$gof$R2,   yy, yaxt="n", ylab="", type="o"); axis(2, yy, rownames(dlf$gof), las=1)
 #' par(op)
 #' sel <- c("wak","lap","nor","revgum")
 #' plotLfit(dlf, selection=sel, cdf=TRUE)
