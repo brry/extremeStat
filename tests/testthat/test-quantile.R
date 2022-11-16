@@ -128,7 +128,7 @@ GPD_MLE_evd           108.4444 0.0454
 GPD_MLE_Renext_Renouv 108.4226 0.0453
 GPD_MLE_evir                NA     NA
 GPD_MLE_fExtremes           NA     NA
-GPD_GML_extRemes       99.0965 0.0161
+GPD_GML_extRemes      100.9103 0.0161 # changed from 99.0965 (2022-11-16) after bug fix by Eric G.
 GPD_MLE_Renext_2par   166.9137 0.0958
 GPD_BAY_extRemes            NA     NA
 n_full                 35.0000     NA
@@ -139,6 +139,8 @@ ex <- as.matrix(ex)
 
 tsta <- rownames(aq) %in% lmomco::dist.list() | substr(rownames(aq),1,3) %in% c("GPD","n_f","n","thr")
 tste <- rownames(ex) %in% lmomco::dist.list() | substr(rownames(ex),1,3) %in% c("GPD","n_f","n","thr")
+tsta[rownames(aq)=="GPD_GML_extRemes"] <- FALSE # excluded while extRemes is being updated
+tste[rownames(ex)=="GPD_GML_extRemes"] <- FALSE
 expect_equal(round(aq[tsta,],1), round(ex[tste,],1))
 
 dd <- distLquantile(annMax, selection="gpa", weighted=FALSE, truncate=0.001)
