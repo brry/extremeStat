@@ -1,8 +1,8 @@
 Package: extremeStat
 Type: Package
 Title: Extreme Value Statistics and Quantile Estimation
-Version: 1.5.3
-Date: 2022-11-16
+Version: 1.5.4
+Date: 2023-04-06
 Depends: R (>= 2.10)
 Imports:
     lmomco (>= 2.2.5),
@@ -17,7 +17,7 @@ Description: Fit, plot and compare several (extreme value) distribution function
    	On the fitting method, see Asquith (2011): Distributional Analysis with L-moment Statistics [...]  ISBN 1463508417.
 License: GPL (>= 2)
 URL: https://github.com/brry/extremeStat
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
