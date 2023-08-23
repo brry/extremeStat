@@ -28,7 +28,7 @@ expect_message(distLextreme(c(-Inf,annMax)),
                "1 Inf/NA was omitted from 36 data points (2.8%)", fixed=TRUE)
 })
 
-test_that("distLquantile can handle selection input",{
+test_that("dlq handles selection input",{
 dlf <- distLquantile(annMax, selection="wak", empirical=FALSE, list=TRUE)
 plotLquantile(dlf, breaks=10)
 expect_message(distLquantile(rexp(199), sel=c("wak", "gpa"), truncate=0.8, probs=c(0.7, 0.8, 0.9)),
@@ -86,7 +86,7 @@ test_that("distLquantile can deal with a given dlf",{
   expect_message(dlf <- distLfit(annMax), "distLfit execution")
 })
 
-test_that("distLquantile can handle emp, truncate",{
+test_that("dlq handles emp, truncate",{
 expect_equal(nrow(distLquantile(annMax, emp=FALSE)), ndist-19) # only distributions in lmomco
 aq <- distLquantile(annMax, truncate=0.8, probs=0.95) # POT
 #round(aq,4)
@@ -154,7 +154,7 @@ expect_equal(sum(is.na(dd[1:15,1:3])), 0)
 expect_equal(dd["gpa",1:3], dd["GPD_LMO_lmomco",1:3])
 })
 
-test_that("distLquantile can handle list",{
+test_that("dlq handles list",{
 # Compare several GPD Fitting functions:
 distLquantile(annMax, threshold=70, selection="gpa", weighted=FALSE, list=TRUE)
 expect_is(distLquantile(annMax, truncate=0.62, list=TRUE), "list")
@@ -162,7 +162,7 @@ expect_is(distLquantile(annMax, threshold=70,  list=TRUE), "list")
 })
 
 
-test_that("distLquantile can handle inputs with (rare) errors",{
+test_that("dlq handles inputs with (rare) errors",{
 # invalid lmoms
 xx1 <- c(4.2, 1.1, 0.9, 5, 0.6, 5.1, 0.9, 1.2, 0.6, 0.7, 0.9, 1.1, 1.3, 
 1.4, 1.4, 0.6, 3, 1.6, 0.5, 1.4, 1.1, 0.5, 1.3, 3.6, 0.5)
