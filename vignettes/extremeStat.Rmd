@@ -78,7 +78,7 @@ The parameters are estimated via L-moments.
 These are analogous to the conventional statistical moments (mean, variance, skewness and kurtosis), but "robust [and] suitable for analysis of rare events of non-Normal data. 
 L-moments are consistent and often have smaller sampling variances than maximum likelihood in small to moderate sample sizes.
 L-moments are especially useful in the context of quantile functions"
-[Asquith, W. (2015): lmomco package](https://www.rdocumentation.org/packages/lmomco/topics/lmomco-package)
+[Asquith, W. (2015): lmomco package](https://www.rdocumentation.org/packages/lmomco)
 
 `distLfit` ranks the distributions according to their goodness of fit (RMSE between ecdf and cdf), see section [GOF](#goodness-of-fit).
 
@@ -96,7 +96,7 @@ If list is set to TRUE, it will return an object that can be examined with `prin
 printL(dlf)
 ```
 Detailed documentation on dlf objects can be found in 
-[extremeStat](https://www.rdocumentation.org/packages/extremeStat/topics/extremeStat). 
+[?extremeStat](https://www.rdocumentation.org/packages/extremeStat). 
 dlf objects can be plotted with several functions, e.g. `plotLquantile`:
 ```{r dlplot, echo=-1, fig.height=3.5, fig.width=5.5}
 par(mar=c(3.9,3.9,1.5,0.7), mgp=c(2.8,0.7,0))
@@ -142,7 +142,7 @@ for(d in 3:1) segments(x0=x, y0=lmomco::plmomco(x, dlf$parameter[[sel[d]]]),
                              y1=ecdf(x)(x), col=col[d])
 ```
 The vertical bars mark the deviance of the distribution CDF from the ECDF.
-They are aggregated by [rmse](https://www.rdocumentation.org/packages/berryFunctions/topics/gof?)
+They are aggregated by [?rmse](https://www.rdocumentation.org/packages/berryFunctions)
 to mark distribution goodness of fit (GOF).
 
 [TOC](#top)

@@ -1,3 +1,11 @@
+## ----extreme, fig.height=3.5, fig.width=5, message=FALSE, echo=-1-------------
+par(mar=c(3.2,3.2,1.5,0.7), mgp=c(2.1,0.7,0))
+library(extremeStat)
+data("annMax")
+extremes <- distLextreme(annMax, RPs=c(2,5,10,20,50,100,200), gpd=FALSE)
+plotLextreme(extremes, log="x", xlim=c(1,200), ylim=c(35,140), nbest=7)
+head(extremes$returnlev)
+
 ## ----instcran, eval=FALSE-----------------------------------------------------
 #  install.packages("extremeStat")
 #  
