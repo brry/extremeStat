@@ -1,5 +1,6 @@
 # package doc ----
-
+#' @keywords internal 
+"_PACKAGE"
 #' Extreme value statistics on a linear scale
 #' 
 #' Fit (via L moments), plot (on a linear scale) and compare (by goodness of fit)
@@ -22,8 +23,6 @@
 #' They create and modify a list object printed by (and documented in) \code{\link{printL}}.
 #' 
 #' @name extremeStat
-#' @aliases extremeStat-package extremeStat
-#' @docType package
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, 2014-2016
 #' 
 #' @seealso
