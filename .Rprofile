@@ -1,8 +1,5 @@
-if(.Platform$OS.type=="unix") .libPaths("/home/berry/R/libBerry/")
-if(requireNamespace("installB", quietly=TRUE))
-{
-if(.Platform$OS.type=="unix") installB::loadPackages()
-installB::checkOutdated("extremeStat")
-}
+if(.Platform$OS.type=="unix") try(br::loadPackages(), silent=TRUE)
+try(br:::loadAndMessage("extremeStat"), silent=TRUE)
+
 requireNamespace("testthat", quietly=TRUE)
 utils::data(annMax)

@@ -150,6 +150,12 @@ tsta[rownames(aq)=="GPD_MLE_Renext_Renouv"] <- FALSE # excluded on weird Mac CRA
 tste[rownames(ex)=="GPD_MLE_Renext_Renouv"] <- FALSE
 }
 
+# gno + ln3 are the same, but get sorted depending on OS etc.
+if(which(rownames(aq[tsta,])=="gno") != which(rownames(ex[tste,])=="gno"))
+{
+tsta[rownames(aq)=="gno"] <- FALSE # excluded on some Mac CRAN check
+tste[rownames(ex)=="gno"] <- FALSE
+}
 
 expect_equal(rownames(aq[tsta,]), rownames(ex[tste,]))
 expect_equal(round(aq[tsta,],1), round(ex[tste,],1))
