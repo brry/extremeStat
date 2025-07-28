@@ -10,7 +10,7 @@
 #' @seealso \code{\link{distLfit}}, \code{\link{plotLquantile}}
 #' @keywords hplot distribution
 #' @export
-#' @importFrom berryFunctions lim0 owa rainbow2
+#' @importFrom berryFunctions lim0 owa rainbow2 logAxis
 #' @importFrom lmomco plmomco dlmomco supdist
 #' @importFrom graphics hist legend lines par points
 #' @importFrom grDevices extendrange
@@ -31,7 +31,7 @@
 #'                   They are rounded to \code{rmse} digits. DEFAULT: 4
 #' @param cdf        If TRUE, plot cumulated DF instead of probability density.
 #'                   DEFAULT: FALSE
-#' @param log        If TRUE, logAxis is called. Only makes sense if dlf$dat is
+#' @param log        If TRUE, \code{berryFunctions::\link[berryFunctions]{logAxis}} is called. Only makes sense if dlf$dat is
 #'                   already logarithmic and ranges eg. from -2 to 3. DEFAULT: FALSE
 #' @param supportends If TRUE, dots are placed at the support bounds. DEFAULT: TRUE
 #' @param breaks     \code{\link{hist}} breaks. DEFAULT: 20
@@ -42,13 +42,13 @@
 #'                   DEFAULT: abstractions from \code{dlf$datname}
 #' @param las        Label Axis Style for orientation of numbers along axes. DEFAULT: 1
 #' @param distcols   Color for each distribution added with \code{\link{lines}}.
-#'                   DEFAULT: \code{\link[berryFunctions]{rainbow2}}
+#'                   DEFAULT: \code{berryFunctions::\link[berryFunctions]{rainbow2}}
 #' @param lty        Line TYpe for plotted distributions.
 #'                   Recycled vector of length nbest. DEFAULT: 1
 #' @param add        If TRUE, hist/ecdf is not called before adding lines.
 #'                   This lets you add lines highly customized one by one.
 #'                   DEFAULT: FALSE
-#' @param logargs    List of arguments passed to \code{\link{logAxis}} if
+#' @param logargs    List of arguments passed to \code{berryFunctions::\link[berryFunctions]{logAxis}} if
 #'                   \code{log=TRUE}. DEFAULT: NULL
 #' @param legend     Should \code{\link{legend}} be called? DEFAULT: TRUE
 #' @param legargs    List of arguments passed to \code{\link{legend}} except for

@@ -33,7 +33,7 @@ is a list with the following elements:
 \code{distnames}    \tab character vector with selected distribution names\cr
 \code{distfailed}   \tab Names of nonfitted distributions or ""\cr
 \code{distcols}     \tab colors for distnames (for plotting). If not given manually,
-                         determined by \code{berryFunctions::\link{rainbow2}}\cr
+                         determined by \code{berryFunctions::\link[berryFunctions]{rainbow2}}\cr
 \code{distselector} \tab character string with function name creating
                          the selection\cr
 \code{truncate, threshold} \tab Truncation percentage and threshold value,

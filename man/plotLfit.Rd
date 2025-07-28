@@ -51,7 +51,7 @@ They are rounded to \code{rmse} digits. DEFAULT: 4}
 \item{cdf}{If TRUE, plot cumulated DF instead of probability density.
 DEFAULT: FALSE}
 
-\item{log}{If TRUE, logAxis is called. Only makes sense if dlf$dat is
+\item{log}{If TRUE, \code{berryFunctions::\link[berryFunctions]{logAxis}} is called. Only makes sense if dlf$dat is
 already logarithmic and ranges eg. from -2 to 3. DEFAULT: FALSE}
 
 \item{supportends}{If TRUE, dots are placed at the support bounds. DEFAULT: TRUE}
@@ -69,7 +69,7 @@ DEFAULT: abstractions from \code{dlf$datname}}
 \item{las}{Label Axis Style for orientation of numbers along axes. DEFAULT: 1}
 
 \item{distcols}{Color for each distribution added with \code{\link{lines}}.
-DEFAULT: \code{\link[berryFunctions]{rainbow2}}}
+DEFAULT: \code{berryFunctions::\link[berryFunctions]{rainbow2}}}
 
 \item{lty}{Line TYpe for plotted distributions.
 Recycled vector of length nbest. DEFAULT: 1}
@@ -78,7 +78,7 @@ Recycled vector of length nbest. DEFAULT: 1}
 This lets you add lines highly customized one by one.
 DEFAULT: FALSE}
 
-\item{logargs}{List of arguments passed to \code{\link{logAxis}} if
+\item{logargs}{List of arguments passed to \code{berryFunctions::\link[berryFunctions]{logAxis}} if
 \code{log=TRUE}. DEFAULT: NULL}
 
 \item{legend}{Should \code{\link{legend}} be called? DEFAULT: TRUE}

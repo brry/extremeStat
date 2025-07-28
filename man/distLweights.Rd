@@ -21,7 +21,7 @@ Can also be a data.frame, in which case the column rmse or RMSE is used.}
 the order of appearance in RMSE is kept (alphabetic or selection
 in \code{\link{distLfit}}). DEFAULT: TRUE}
 
-\item{onlydn}{Logical: weight only distributions from \code{lmomco::\link{dist.list}}?
+\item{onlydn}{Logical: weight only distributions from \code{lmomco::\link[lmomco]{dist.list}}?
 DEFAULT: TRUE (all other RMSEs are set to 0)}
 
 \item{weightc}{Optional: a named vector with custom weights for each distribution.

@@ -4,3 +4,4 @@ cran-comments.md
 exTimeResults.txt
 ^doc$
 ^Meta$
+^CRAN-SUBMISSION$

@@ -18,7 +18,7 @@ Suggested to keep this low. DEFAULT: NULL}
 
 \item{\dots}{Further arguments passed to \code{\link{plotLextreme}}.
 If add=TRUE, they are instead passed to
-\code{berryFunctions::\link{ciBand}}}
+\code{berryFunctions::\link[berryFunctions]link{ciBand}}}
 }
 \value{
 invisible dlf object, see \code{\link{printL}}

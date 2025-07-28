@@ -41,7 +41,7 @@ Probabilities are adjusted accordingly. DEFAULT: 0}
 
 \item{threshold}{POT cutoff value. If you want correct percentiles,
 set this only via truncate, see Details of \code{\link{q_gpd}}.
-DEFAULT: \code{\link[berryFunctions]{quantileMean}(x, truncate)}}
+DEFAULT: \code{berryFunctions::\link[berryFunctions]{quantileMean}(x, truncate)}}
 
 \item{sanerange}{Range outside of which results should be changed to \code{sanevals}.
 This can capture numerical errors in small samples
@@ -73,7 +73,7 @@ is returned. DEFAULT: FALSE}
 
 \item{empirical}{Add rows "empirical" and "quantileMean" in the output matrix?
 Uses \code{\link{quantile}} with \code{qemp.type} (ignoring truncation)
-and \code{\link{quantileMean}}. DEFAULT: TRUE}
+and \code{berryFunctions::\link[berryFunctions]{quantileMean}}. DEFAULT: TRUE}
 
 \item{qemp.type}{Method passed to \code{\link{quantile}} for row "empirical".
 Only used if \code{empirical=TRUE}.

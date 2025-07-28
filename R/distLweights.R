@@ -84,7 +84,7 @@
 #' @param order   Logical: should result be ordered by RMSE? If order=FALSE,
 #'                the order of appearance in RMSE is kept (alphabetic or selection
 #'                in \code{\link{distLfit}}). DEFAULT: TRUE
-#' @param onlydn  Logical: weight only distributions from \code{lmomco::\link{dist.list}}?
+#' @param onlydn  Logical: weight only distributions from \code{lmomco::\link[lmomco]{dist.list}}?
 #'                DEFAULT: TRUE (all other RMSEs are set to 0)
 #' @param weightc Optional: a named vector with custom weights for each distribution.
 #'                Are internally normalized to sum=1 after removing nonfitted dists.

@@ -11,8 +11,12 @@ Fit, plot and compare several (extreme value) distribution functions. Compute (t
 Useful links:
 \itemize{
   \item \url{https://github.com/brry/extremeStat}
-  \item Report bugs at \url{https://github.com/brry/extremeStat}
+  \item Report bugs at \url{https://github.com/brry/extremeStat/issues}
 }
+
+}
+\author{
+\strong{Maintainer}: Berry Boessenkool \email{berry-b@gmx.de}
 
 }
 \keyword{internal}
