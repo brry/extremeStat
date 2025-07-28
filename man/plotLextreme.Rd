@@ -73,7 +73,7 @@ Gringorton, respectively. NA to suppress in plot and legend. DEFAULT: c(16,3)}
 \item{PPcex}{Character EXpansion of plotting points. DEFAULT: 1}
 
 \item{distcols}{Color for each distribution added with \code{\link{lines}}.
-Recycled, if necessary. DEFAULT: \code{\link[berryFunctions]{rainbow2}}}
+Recycled, if necessary. DEFAULT: \code{berryFunctions::\link[berryFunctions]{rainbow2}}}
 
 \item{lty}{Line TYpe for plotted distributions. Is recycled to from a
 vector of length nbest, i.e. a value for each dist. DEFAULT: 1}
@@ -101,7 +101,7 @@ legend, col, pch, lwd, lty. DEFAULT: NULL}
 
 \item{quiet}{Suppress notes? DEFAULT: FALSE}
 
-\item{logargs}{list of arguments passed to \code{berryFunctions::\link{logAxis}}.}
+\item{logargs}{list of arguments passed to \code{berryFunctions::\link[berryFunctions]{logAxis}}.}
 
 \item{\dots}{Further arguments passed to \code{\link{plot}} like yaxt="n", ...}
 }

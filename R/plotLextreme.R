@@ -59,7 +59,7 @@
 #' @param legargs list of arguments passed to \code{\link{legend}} except for
 #'                legend, col, pch, lwd, lty. DEFAULT: NULL
 #' @param quiet   Suppress notes? DEFAULT: FALSE
-#' @param logargs list of arguments passed to \code{berryFunctions::\link{logAxis}}.
+#' @param logargs list of arguments passed to \code{berryFunctions::\link[berryFunctions]{logAxis}}.
 #' @param \dots   Further arguments passed to \code{\link{plot}} like yaxt="n", ...
 #' 
 plotLextreme <- function(

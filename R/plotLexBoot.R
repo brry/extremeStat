@@ -19,7 +19,7 @@
 #' @param log       Plot on a logarithmic axis. DEFAULT: TRUE
 #' @param \dots     Further arguments passed to \code{\link{plotLextreme}}.
 #'                  If add=TRUE, they are instead passed to
-#'                  \code{berryFunctions::\link[berryFunctions]link{ciBand}}
+#'                  \code{berryFunctions::\link[berryFunctions]{ciBand}}
 #' 
 plotLexBoot <- function(
 dlf,
