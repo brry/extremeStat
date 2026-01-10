@@ -217,7 +217,7 @@
 #'                  DEFAULT: c(2,5,10,20,50)
 #' @param npy       Number of observations per year. Leave \code{npy=1} if you
 #'                  use annual block maxima (and leave truncate at 0).
-#'                  If you use a POT approach (see \href{../doc/extremeStat}{vignette}
+#'                  If you use a POT approach (see \href{../doc/extremeStat.html}{vignette}
 #'                  and examples below) e.g. on daily data, use npy=365.24.
 #'                  DEFAULT: 1
 #' @param truncate  Truncated proportion to determine POT threshold,
